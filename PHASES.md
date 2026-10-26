@@ -1,21 +1,20 @@
 # PHASES.md — Roadmap & Status Fase
 
 ## Proyek
-**Nama Proyek:** Portal Timja Harwat (Nakhoda)  
+**Nama Proyek:** Nakhoda — Portal Timja Harwat  
 **Repositori:** https://github.com/mhdztr/Nakhoda.git  
-**Apps Script ID:** 1WJimi2JBFXG8_wsgS9K74Z5ztO-Y037NbLAJ-LquiNCwtq7Bvh-uXcc6
+**Apps Script ID:** 1WJimi2JBFXG8_wsgS9K74Z5ztO-Y037NbLAJ-LquiNCwtq7Bvh-uXcc6  
+**Spreadsheet:** `RadarPOA_Harwat_DB` | **Drive:** `POA_Evidence_Harwat`
 
-## Status Keseluruhan
-**Status:** Inisialisasi Selesai (Fase 1)
+## Status
+**Status:** Fase 1 Selesai — Siap Fase 2
 
-## Daftar Fase
-
+## Fase
 | Fase | Nama | Status | Keterangan |
 |---|---|---|---|
-| Fase 1 | Initialization & Project Setup (Establishment) | Selesai | Inisialisasi repo Git/GitHub, clasp, seluruh dokumentasi wajib, spreadsheet terisolasi, Drive folder, master data |
-| Fase 2 | Pembangunan Modul Input Sesuai Scope Divisi | Belum Mulai | Implementasi sub-modul anti-gabruk sesuai scope masing-masing aplikasi satelit/Radar POA |
-| Fase 3 | Integrasi Federasi & Aggregator (khusus Radar POA) / Finalisasi Modul (satelit) | Belum Mulai | Integrasi lintas-spreadsheet / finalisasi dan verifikasi |
-| Fase 4 | QA, Hardening & Dokumentasi Final | Belum Mulai | Verifikasi RBAC, versioning/anulir, kontrol UI 3-tier, update CHANGELOG final |
+| Fase 1 | Initialization & Project Setup | Selesai | Repo, clasp, dokumen wajib |
+| Fase 2 | [HAR-A] Kesiapan Armada | Belum Mulai | Checklist 34 kapal, validasi wajib jika TIDAK_SIAP, interlock status |
+| Fase 3 | [HAR-B] Monitoring Docking | Belum Mulai | 4 tahap, kontraktor, nilai, jadwal |
+| Fase 4 | [HAR-C] Item Pekerjaan + Multi-Evidence + Hardening | Belum Mulai | Per-item, tautan docking, upload multi-file, RBAC, UI 3-tier, versioning/anulir |
 
-## Catatan
-Fase 1 wajib diselesaikan untuk SEMUA proyek sebelum memulai Fase 2. Seluruh dokumen wajib (PRD.md, ARCHITECTURE.md, DATA_SCHEMA.md, DESIGN.md, AGENTS.md, CHANGELOG.md, PHASES.md) telah dibuat pada Fase 1.
+Prioritas: HAR-A → HAR-B → HAR-C

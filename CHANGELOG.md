@@ -1,21 +1,18 @@
 # CHANGELOG.md
 
-## [Fase 1 — Initialization & Project Setup (Establishment)] — 26 Oct 2026
+## [Fase 1 — Initialization & Project Setup] — 26 Okt 2026
 **Status:** Selesai
 
 **Pencapaian:**
-- Inisialisasi repositori Git/GitHub terpisah
-- Inisialisasi Google Apps Script dengan clasp (Script ID terkonfigurasi)
-- Penyiapan `.gitignore` dan `.claspignore`
-- Pembuatan seluruh dokumen wajib untuk proyek: `PRD.md`, `ARCHITECTURE.md`, `DATA_SCHEMA.md`, `DESIGN.md`, `AGENTS.md`, `CHANGELOG.md`, `PHASES.md`, `README.md`
-- Penyiapan struktur dasar untuk ekosistem terdistribusi Radar POA
-- Penentuan mapping per proyek sesuai blueprint v2.1.0
+- Inisialisasi repo Nakhoda (Portal Harwat)
+- Konfigurasi clasp (1WJimi2JBFXG8_wsgS9K74Z5ztO-Y037NbLAJ-LquiNCwtq7Bvh-uXcc6)
+- Dokumen wajib lengkap
+- Scope 3 sub-modul terpisah
 
 **Keputusan teknis:**
-- Mengikuti arsitektur terdistribusi (desentralisasi input, agregasi terpusat)
-- Menerapkan pola anti-gabruk, versioning/anulir, RBAC server-side, kontrol UI 3-tier
-- Commit diperbolehkan oleh agent, push hanya oleh user
-- Format commit: feat/chore/fix/docs
+- Status kesiapan kapal tegas (SIAP/TIDAK_SIAP), alasan wajib jika TIDAK_SIAP
+- Docking terpantau per tahap dengan nilai kontrak
+- Pekerjaan per-item dengan multi-evidence
+- Anti-gabruk, RBAC server-side, versioning/anulir
 
-**Item terbuka/follow-up:**
-- Lanjut ke Fase 2 sesuai scope proyek
+**Item terbuka/follow-up:** Fase 2-4
