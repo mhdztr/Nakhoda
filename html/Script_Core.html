@@ -629,6 +629,12 @@ var Router = (function () {
       }
     });
 
+    register('direktori', function () {
+      if (typeof DirektoriView !== 'undefined' && DirektoriView.init) {
+        DirektoriView.init();
+      }
+    });
+
     // Daftarkan click handler pada menu navigasi sidebar
     var navItems = document.querySelectorAll('#app-sidebar .nav-item');
     navItems.forEach(function (btn) {

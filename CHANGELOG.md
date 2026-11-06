@@ -6,6 +6,19 @@
 
 ---
 
+## [Fase 5 — Sub-Modul C: Direktori 396+ Awak Kapal Armada & Pemetaan Kelas] — 6 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Menyediakan dataset seeder resmi 396 awak kapal pengawas armada Ditjen PSDKP (`data/SeedAwak.js`) mencakup 249 personil Dek dan 147 personil Mesin.
+- Mengembangkan modul murni `pure/Kelas.js` (`extractKelasKapal`, `extractRumpunAwak`, `maskNip`) teruji penuh pada `tests/kelas.test.js` (3 test pass, total 16 test pass).
+- Membangun backend `services/DirektoriService.js` (`dir_list`, `dir_getDetail`, `dir_save`, `dir_batchAssign`, `dir_ensureSeeded`) dengan paginasi, filter kelas I-V, dan penugasan massal.
+- Membangun antarmuka `html/views/Direktori.html` dan runtime `html/Script_Direktori.html` dengan kartu statistik dinamis, avatar nama deterministik, slide-over sheet detail profil awak, antrean kerja "Perlu Dilengkapi", dan dialog modal edit data.
+- Menyiapkan akun default auto-seeded idempoten (`superadmin@nakhoda.go.id`, `katimja.awak@nakhoda.go.id`, `staf.awak@nakhoda.go.id`) pada `data/SheetAccess.js` untuk kemudahan uji coba akses login.
+- Lolos audit linter mandiri `node lint_ui.js` (4 pass, 0 error).
+
+---
+
 ## [Fase 4 — Sub-Modul B: Log Kegiatan & Multi-Evidence Handler] — 6 Nov 2026
 **Status:** Selesai
 

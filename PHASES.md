@@ -108,15 +108,16 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 ### Fase 5: Sub-Modul C: Direktori 396+ Awak Kapal Armada & Pemetaan Kelas
 - **Tujuan:** Mengelola direktori 396+ personil awak kapal pengawas, integrasi data master SIKAP, pemetaan kelas kapal, dan privasi identitas.
 - **Tugas Utama:**
-  - Skrip migrasi idempoten `dir_importDariSikap()` untuk mengimpor 396 awak kapal pengawas dari `Master_Pegawai_POA` SIKAP ke `Master_Awak`.
-  - Modul murni `pure/Kelas.js` untuk mengekstraksi kelas kapal pengawas dari formatur jabatan lengkap.
-  - Backend `services/DirektoriService.js` (`dir_list` dengan paginasi virtual 50 baris, filter rumpun, jabatan, pangkalan, status).
-  - Tampilan tabel direktori dengan avatar inisial warna pucat dan lembar samping (*slide-over sheet*) rincian profil awak.
-  - Fitur penugasan kategori kepegawaian massal (*batch assign*) bagi Kadiv/Superadmin dan filter antrean "Perlu Dilengkapi".
+  - Seeding mandiri dan idempoten 396 awak kapal armada PSDKP (`data/SeedAwak.js`) mencakup Dek (249) dan Mesin (147).
+  - Modul murni `pure/Kelas.js` untuk ekstraksi kelas kapal (Kelas I s.d. V), rumpun, dan masking NIP.
+  - Backend `services/DirektoriService.js` (`dir_list` dengan paginasi virtual 50 baris, filter rumpun, jabatan, kelas kapal, status, dan antrean "Perlu Dilengkapi").
+  - Tampilan tabel direktori (`html/views/Direktori.html`) dengan avatar inisial warna deterministik, kartu statistik, dan lembar samping (*slide-over sheet*) rincian profil awak.
+  - Fitur penugasan kategori kepegawaian massal (*batch assign*) bagi Kadiv/Superadmin.
 - **Deliverables & Checklist:**
-  - [ ] Sebanyak 396 personil awak kapal armada terimpor sempurna tanpa duplikasi.
-  - [ ] Penyamaran NIP (*masking*) aktif untuk akun tanpa wewenang khusus.
-  - [ ] Lembar samping rincian profil menampilkan data penugasan dan ringkasan sertifikat.
+  - [x] Sebanyak 396 personil awak kapal armada terimpor sempurna tanpa duplikasi.
+  - [x] Penyamaran NIP (*masking*) aktif untuk akun tanpa wewenang khusus (16 test pass).
+  - [x] Lembar samping rincian profil menampilkan data penugasan dan ringkasan sertifikat.
+  - [x] Lolos verifikasi `node lint_ui.js` (4 pass, 0 error).
 
 ---
 

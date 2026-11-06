@@ -1,0 +1,457 @@
+<script>
+/**
+ * html/Script_Direktori.html
+ * Controller Klien Sub-Modul C: Direktori 396+ Awak Kapal Armada PSDKP
+ * Nakhoda — Timja Pengawakan Dit. POA KKP RI
+ */
+var DirektoriView = (function () {
+  'use strict';
+
+  var _offset = 0;
+  var _limit = 50;
+  var _total = 0;
+  var _isPrivileged = false;
+  var _selectedIds = {};
+  var _perluDilengkapiOnly = false;
+
+  function init() {
+    var outlet = document.getElementById('outlet-content');
+    var viewTemplate = document.getElementById('view-direktori');
+    if (viewTemplate && outlet) {
+      outlet.innerHTML = viewTemplate.outerHTML;
+      var activeView = outlet.querySelector('#view-direktori');
+      if (activeView) activeView.classList.remove('hidden');
+    }
+
+    _bindEvents();
+    load(0);
+  }
+
+  function _bindEvents() {
+    var filterRumpun = document.getElementById('dir-filter-rumpun');
+    var filterKelas = document.getElementById('dir-filter-kelas');
+    var searchInput = document.getElementById('dir-search-input');
+    var btnSearch = document.getElementById('btn-dir-search');
+    var btnPrev = document.getElementById('btn-dir-prev');
+    var btnNext = document.getElementById('btn-dir-next');
+    var btnTogglePerlu = document.getElementById('btn-toggle-perlu');
+    var cardFilterPerlu = document.getElementById('card-filter-perlu');
+    var checkAll = document.getElementById('check-select-all');
+    var btnBatch = document.getElementById('btn-batch-assign');
+    var btnTambah = document.getElementById('btn-tambah-awak');
+    var formAwak = document.getElementById('form-dir-awak');
+    var formBatch = document.getElementById('form-dir-batch');
+
+    if (filterRumpun) filterRumpun.onchange = function () { load(0); };
+    if (filterKelas) filterKelas.onchange = function () { load(0); };
+    if (btnSearch) btnSearch.onclick = function () { load(0); };
+    if (searchInput) {
+      searchInput.onkeydown = function (e) {
+        if (e.key === 'Enter') load(0);
+      };
+    }
+
+    if (btnPrev) {
+      btnPrev.onclick = function () {
+        if (_offset >= _limit) load(_offset - _limit);
+      };
+    }
+
+    if (btnNext) {
+      btnNext.onclick = function () {
+        if (_offset + _limit < _total) load(_offset + _limit);
+      };
+    }
+
+    if (btnTogglePerlu) {
+      btnTogglePerlu.onclick = function () {
+        _perluDilengkapiOnly = !_perluDilengkapiOnly;
+        btnTogglePerlu.textContent = _perluDilengkapiOnly ? 'Hanya Perlu Dilengkapi' : 'Semua Personil';
+        btnTogglePerlu.className = _perluDilengkapiOnly ? 'btn btn-primary-md' : 'btn btn-secondary-md';
+        load(0);
+      };
+    }
+
+    if (cardFilterPerlu) {
+      cardFilterPerlu.onclick = function () {
+        _perluDilengkapiOnly = true;
+        if (btnTogglePerlu) {
+          btnTogglePerlu.textContent = 'Hanya Perlu Dilengkapi';
+          btnTogglePerlu.className = 'btn btn-primary-md';
+        }
+        load(0);
+      };
+    }
+
+    if (checkAll) {
+      checkAll.onchange = function () {
+        var cbs = document.querySelectorAll('.cb-select-awak');
+        cbs.forEach(function (cb) {
+          cb.checked = checkAll.checked;
+          var id = cb.getAttribute('data-id');
+          if (checkAll.checked) {
+            _selectedIds[id] = true;
+          } else {
+            delete _selectedIds[id];
+          }
+        });
+        _updateBatchButton();
+      };
+    }
+
+    if (btnBatch) {
+      btnBatch.onclick = function () {
+        _openBatchModal();
+      };
+    }
+
+    if (btnTambah) {
+      btnTambah.onclick = function () {
+        _openFormModal();
+      };
+    }
+
+    if (formAwak) {
+      formAwak.onsubmit = function (e) {
+        e.preventDefault();
+        _submitFormAwak();
+      };
+    }
+
+    if (formBatch) {
+      formBatch.onsubmit = function (e) {
+        e.preventDefault();
+        _submitBatch();
+      };
+    }
+  }
+
+  function load(offset) {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    _offset = offset || 0;
+    var rumpun = (document.getElementById('dir-filter-rumpun') || {}).value || '';
+    var kelas = (document.getElementById('dir-filter-kelas') || {}).value || '';
+    var search = (document.getElementById('dir-search-input') || {}).value || '';
+
+    rpc('dir_list', {
+      token: token,
+      rumpun: rumpun,
+      kelasKapal: kelas,
+      search: search,
+      perluDilengkapi: _perluDilengkapiOnly,
+      limit: _limit,
+      offset: _offset
+    })
+      .then(function (res) {
+        _total = res.total || 0;
+        _isPrivileged = res.isPrivileged;
+
+        // Update Stat Cards
+        var stTot = document.getElementById('stat-total-awak');
+        var stDek = document.getElementById('stat-dek-awak');
+        var stMes = document.getElementById('stat-mesin-awak');
+        var stPerlu = document.getElementById('stat-perlu-awak');
+        var stMatch = document.getElementById('dir-total-matched');
+
+        if (stTot) stTot.textContent = Format.number(res.stats.total);
+        if (stDek) stDek.textContent = Format.number(res.stats.dek);
+        if (stMes) stMes.textContent = Format.number(res.stats.mesin);
+        if (stPerlu) stPerlu.textContent = Format.number(res.stats.perluDilengkapi);
+        if (stMatch) stMatch.textContent = res.total + ' personil cocok';
+
+        _renderTable(res.items || []);
+        _updatePagination();
+      })
+      .catch(function (err) {
+        Toast.error('Gagal memuat direktori awak: ' + err.message);
+      });
+  }
+
+  function _renderTable(items) {
+    var tbody = document.getElementById('dir-list-tbody');
+    if (!tbody) return;
+
+    if (!items || items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada personil yang sesuai dengan filter pencarian.</td></tr>';
+      return;
+    }
+
+    var html = '';
+    items.forEach(function (a) {
+      var isChecked = !!_selectedIds[a.pegawaiId];
+      var avBg = Format.avatarBg(a.nama);
+      var avInit = Format.initials(a.nama);
+
+      var kelasLabel = a.kelasKapal.replace(/_/g, ' ');
+      var bukuBadge = a.nomorBukuPelaut && a.nomorBukuPelaut !== '-'
+        ? '<span style="font-family:var(--font-mono); font-size:12px;">' + Format.escape(a.nomorBukuPelaut) + '</span>'
+        : '<span class="badge badge-warning">Belum Ada</span>';
+
+      html += '<tr>' +
+        '<td style="text-align:center;">' +
+          '<input type="checkbox" class="cb-select-awak" data-id="' + a.pegawaiId + '" ' + (isChecked ? 'checked' : '') + '>' +
+        '</td>' +
+        '<td>' +
+          '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<div class="user-avatar" style="width:32px; height:32px; font-size:11px; background-color:' + avBg + ';">' + avInit + '</div>' +
+            '<div>' +
+              '<div style="font-weight:600; color:var(--text); font-size:13px;">' + Format.escape(a.nama) + '</div>' +
+              '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">' + a.nipDisplay + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</td>' +
+        '<td>' +
+          '<div style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(a.kelompokJabatan) + '</div>' +
+          '<div style="font-size:11px; color:var(--muted);">' + Format.escape(a.jabatanLengkap) + '</div>' +
+        '</td>' +
+        '<td><span class="badge badge-muted">' + Format.escape(kelasLabel) + '</span></td>' +
+        '<td>' + Format.kelompokBadge(a.rumpun) + '</td>' +
+        '<td><span class="badge badge-accent">' + Format.escape(a.kategoriKepegawaian) + '</span></td>' +
+        '<td>' + bukuBadge + '</td>' +
+        '<td style="text-align:center;">' +
+          '<div style="display:inline-flex; gap:4px;">' +
+            '<button class="btn btn-secondary-sm btn-dir-detail" data-id="' + a.pegawaiId + '">Profil</button>' +
+            '<button class="btn btn-secondary-sm btn-dir-edit" data-id="' + a.pegawaiId + '">Edit</button>' +
+          '</div>' +
+        '</td>' +
+      '</tr>';
+    });
+
+    tbody.innerHTML = html;
+
+    // Pasang listener checkbox
+    tbody.querySelectorAll('.cb-select-awak').forEach(function (cb) {
+      cb.onchange = function () {
+        var id = cb.getAttribute('data-id');
+        if (cb.checked) {
+          _selectedIds[id] = true;
+        } else {
+          delete _selectedIds[id];
+        }
+        _updateBatchButton();
+      };
+    });
+
+    // Pasang listener detail
+    tbody.querySelectorAll('.btn-dir-detail').forEach(function (btn) {
+      btn.onclick = function () {
+        _openDetailModal(btn.getAttribute('data-id'));
+      };
+    });
+
+    // Pasang listener edit
+    tbody.querySelectorAll('.btn-dir-edit').forEach(function (btn) {
+      btn.onclick = function () {
+        _openEditModal(btn.getAttribute('data-id'));
+      };
+    });
+  }
+
+  function _updateBatchButton() {
+    var count = Object.keys(_selectedIds).length;
+    var btn = document.getElementById('btn-batch-assign');
+    var badge = document.getElementById('selected-count-badge');
+    if (badge) badge.textContent = count;
+    if (btn) {
+      if (count > 0 && _isPrivileged) {
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
+    }
+  }
+
+  function _updatePagination() {
+    var pageInfo = document.getElementById('dir-page-info');
+    var btnPrev = document.getElementById('btn-dir-prev');
+    var btnNext = document.getElementById('btn-dir-next');
+
+    var start = _total > 0 ? _offset + 1 : 0;
+    var end = Math.min(_offset + _limit, _total);
+    if (pageInfo) pageInfo.textContent = 'Menampilkan ' + start + ' - ' + end + ' dari ' + _total + ' personil';
+
+    if (btnPrev) btnPrev.disabled = _offset <= 0;
+    if (btnNext) btnNext.disabled = _offset + _limit >= _total;
+  }
+
+  function _openDetailModal(pegawaiId) {
+    var token = AuthApp.getToken();
+    rpc('dir_getDetail', token, pegawaiId)
+      .then(function (res) {
+        document.getElementById('detail-dir-nama').textContent = res.nama;
+        document.getElementById('detail-dir-nip').textContent = res.nipDisplay;
+        document.getElementById('detail-dir-id').textContent = res.pegawaiId;
+        document.getElementById('detail-dir-jabatan').textContent = res.jabatanLengkap || res.kelompokJabatan;
+        document.getElementById('detail-dir-kategori').textContent = res.kategoriKepegawaian || 'Belum Ditentukan';
+        document.getElementById('detail-dir-buku').textContent = res.nomorBukuPelaut || 'Belum Ada';
+        document.getElementById('detail-dir-penempatan').textContent = (res.kapalId || '-') + ' (' + (res.pangkalanId || '-') + ')';
+
+        var avEl = document.getElementById('detail-dir-avatar');
+        if (avEl) {
+          avEl.textContent = Format.initials(res.nama);
+          avEl.style.backgroundColor = Format.avatarBg(res.nama);
+        }
+
+        var rmpBadge = document.getElementById('detail-dir-rumpun-badge');
+        if (rmpBadge) {
+          rmpBadge.className = 'badge ' + (res.rumpun === 'MESIN' ? 'badge-navy' : 'badge-accent');
+          rmpBadge.textContent = 'Rumpun ' + res.rumpun;
+        }
+
+        var klsBadge = document.getElementById('detail-dir-kelas-badge');
+        if (klsBadge) {
+          klsBadge.textContent = res.kelasKapal.replace(/_/g, ' ');
+        }
+
+        // Render daftar sertifikat
+        var srtList = document.getElementById('detail-dir-sertifikat-list');
+        if (srtList) {
+          if (!res.sertifikat || res.sertifikat.length === 0) {
+            srtList.innerHTML = '<div style="padding:12px; text-align:center; color:var(--muted);">Belum ada catatan sertifikat yang terdaftar.</div>';
+          } else {
+            var sHtml = '';
+            res.sertifikat.forEach(function (s) {
+              sHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-bottom:1px solid #ECEEEF;">' +
+                '<div>' +
+                  '<div style="font-weight:600; color:var(--text);">' + Format.escape(s.namaPelatihan) + '</div>' +
+                  '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">No: ' + Format.escape(s.nomorSertifikat) + '</div>' +
+                '</div>' +
+                '<div>' +
+                  (s.berlakuSampai ? '<span style="font-size:11px; font-family:var(--font-mono); color:var(--muted);">' + Format.date(s.berlakuSampai) + '</span>' : '') +
+                '</div>' +
+              '</div>';
+            });
+            srtList.innerHTML = sHtml;
+          }
+        }
+
+        Modal.open('modal-dir-detail');
+      })
+      .catch(function (err) {
+        Toast.error('Gagal mengambil rincian awak: ' + err.message);
+      });
+  }
+
+  function _openFormModal() {
+    document.getElementById('modal-dir-form-title').textContent = 'Tambah Personil Awak Kapal Baru';
+    document.getElementById('dir-form-pegawai-id').value = '';
+    document.getElementById('dir-form-nama').value = '';
+    document.getElementById('dir-form-nip').value = '';
+    document.getElementById('dir-form-buku').value = '';
+    document.getElementById('dir-form-jabatan').value = '';
+    document.getElementById('dir-form-jabatan-lengkap').value = '';
+    Modal.open('modal-dir-form');
+  }
+
+  function _openEditModal(pegawaiId) {
+    var token = AuthApp.getToken();
+    rpc('dir_getDetail', token, pegawaiId)
+      .then(function (res) {
+        document.getElementById('modal-dir-form-title').textContent = 'Pembaruan Data Awak Kapal';
+        document.getElementById('dir-form-pegawai-id').value = res.pegawaiId;
+        document.getElementById('dir-form-nama').value = res.nama;
+        document.getElementById('dir-form-nip').value = res.nipRaw || res.nipDisplay.replace(/•/g, '');
+        document.getElementById('dir-form-buku').value = res.nomorBukuPelaut === '-' ? '' : res.nomorBukuPelaut;
+        document.getElementById('dir-form-jabatan').value = res.kelompokJabatan;
+        document.getElementById('dir-form-rumpun').value = res.rumpun;
+        document.getElementById('dir-form-kelas').value = res.kelasKapal;
+        document.getElementById('dir-form-kategori').value = res.kategoriKepegawaian || 'PNS';
+        document.getElementById('dir-form-jabatan-lengkap').value = res.jabatanLengkap;
+        Modal.open('modal-dir-form');
+      })
+      .catch(function (err) {
+        Toast.error('Gagal membuka form edit: ' + err.message);
+      });
+  }
+
+  function _submitFormAwak() {
+    var token = AuthApp.getToken();
+    var pId = document.getElementById('dir-form-pegawai-id').value;
+    var payload = {
+      token: token,
+      pegawaiId: pId,
+      nama: document.getElementById('dir-form-nama').value.trim(),
+      nip: document.getElementById('dir-form-nip').value.trim(),
+      nomorBukuPelaut: document.getElementById('dir-form-buku').value.trim(),
+      kelompokJabatan: document.getElementById('dir-form-jabatan').value.trim(),
+      rumpun: document.getElementById('dir-form-rumpun').value,
+      kelasKapal: document.getElementById('dir-form-kelas').value,
+      kategoriKepegawaian: document.getElementById('dir-form-kategori').value,
+      jabatanLengkap: document.getElementById('dir-form-jabatan-lengkap').value.trim()
+    };
+
+    var btnSubmit = document.getElementById('btn-submit-dir');
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Menyimpan...';
+    }
+
+    rpc('dir_save', payload)
+      .then(function (res) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Simpan Data';
+        }
+        Modal.close('modal-dir-form');
+        Toast.success(res.message || 'Data personil berhasil disimpan.');
+        load(_offset);
+      })
+      .catch(function (err) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Simpan Data';
+        }
+        Toast.error('Gagal menyimpan: ' + err.message);
+      });
+  }
+
+  function _openBatchModal() {
+    var ids = Object.keys(_selectedIds);
+    document.getElementById('batch-selected-count').textContent = ids.length;
+    Modal.open('modal-dir-batch');
+  }
+
+  function _submitBatch() {
+    var token = AuthApp.getToken();
+    var ids = Object.keys(_selectedIds);
+    var kat = document.getElementById('batch-kategori-select').value;
+
+    var btnSubmit = document.getElementById('btn-submit-batch');
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Menerapkan...';
+    }
+
+    rpc('dir_batchAssign', {
+      token: token,
+      pegawaiIds: ids,
+      kategoriKepegawaian: kat
+    })
+      .then(function (res) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Terapkan Perubahan';
+        }
+        Modal.close('modal-dir-batch');
+        Toast.success(res.message || 'Perubahan massal berhasil diterapkan.');
+        _selectedIds = {};
+        _updateBatchButton();
+        load(_offset);
+      })
+      .catch(function (err) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Terapkan Perubahan';
+        }
+        Toast.error('Gagal menerapkan batch assign: ' + err.message);
+      });
+  }
+
+  return {
+    init: init,
+    load: load
+  };
+})();
+</script>

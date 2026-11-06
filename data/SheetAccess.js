@@ -80,7 +80,90 @@ function openMasterSheet(sheetName) {
   if (!sheet) {
     sheet = _autoCreateMasterSheet(ss, sheetName);
   }
+  if (sheetName === SHEET_MASTER.USERS) {
+    _ensureDefaultUsersSeeded(sheet);
+  }
   return sheet;
+}
+
+/**
+ * Memastikan akun-akun default (Superadmin, Katimja, Staf) ter-seed secara idempoten.
+ */
+function _ensureDefaultUsersSeeded(usersSheet) {
+  try {
+    var data = usersSheet.getDataRange().getValues();
+    if (data.length <= 1) {
+      // Sheet kosong atau hanya header -> seed ketiga akun
+      _appendDefaultUsers(usersSheet);
+      return;
+    }
+
+    var headers = data[0];
+    var emailIdx = headers.indexOf('Email');
+    var nipIdx = headers.indexOf('NIP');
+    var existingEmails = {};
+    for (var i = 1; i < data.length; i++) {
+      if (emailIdx !== -1 && data[i][emailIdx]) {
+        existingEmails[String(data[i][emailIdx]).trim().toLowerCase()] = true;
+      }
+    }
+
+    if (!existingEmails['superadmin@nakhoda.go.id']) {
+      _appendDefaultUsers(usersSheet);
+    }
+  } catch (e) {
+    Logger.log('[_ensureDefaultUsersSeeded] ' + e.message);
+  }
+}
+
+function _appendDefaultUsers(usersSheet) {
+  var now = new Date();
+  var defaultUsers = [
+    {
+      'UserID': 'USR-SUPERADMIN-001',
+      'Nama': 'Super Administrator Nakhoda',
+      'Email': 'superadmin@nakhoda.go.id',
+      'NIP': '198501012010011001',
+      'PasswordHash': hashPassword('Nakhoda2026!'),
+      'DivisiID': DIVISI_ID.AWAK,
+      'Role': ROLE.SUPERADMIN,
+      'Status': USER_STATUS.APPROVED,
+      'ApprovedBy': 'SYSTEM',
+      'RegisteredAt': now,
+      'ApprovedAt': now
+    },
+    {
+      'UserID': 'USR-KATIMJA-AWAK-001',
+      'Nama': 'Ketua Timja Pengawakan',
+      'Email': 'katimja.awak@nakhoda.go.id',
+      'NIP': '198207152006041002',
+      'PasswordHash': hashPassword('Katimja2026!'),
+      'DivisiID': DIVISI_ID.AWAK,
+      'Role': ROLE.KADIV,
+      'Status': USER_STATUS.APPROVED,
+      'ApprovedBy': 'USR-SUPERADMIN-001',
+      'RegisteredAt': now,
+      'ApprovedAt': now
+    },
+    {
+      'UserID': 'USR-STAF-AWAK-001',
+      'Nama': 'Staf Pengawakan Armada',
+      'Email': 'staf.awak@nakhoda.go.id',
+      'NIP': '199402102019021003',
+      'PasswordHash': hashPassword('StafAwak2026!'),
+      'DivisiID': DIVISI_ID.AWAK,
+      'Role': ROLE.STAF,
+      'Status': USER_STATUS.APPROVED,
+      'ApprovedBy': 'USR-KATIMJA-AWAK-001',
+      'RegisteredAt': now,
+      'ApprovedAt': now
+    }
+  ];
+
+  defaultUsers.forEach(function (u) {
+    appendRowData(usersSheet, u);
+  });
+  Logger.log('[_appendDefaultUsers] 3 akun default Nakhoda berhasil di-seed.');
 }
 
 function openTransaksiSheet(sheetName) {

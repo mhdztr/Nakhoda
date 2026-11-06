@@ -1,18 +1,32 @@
-# Dokumentasi — tidak perlu di-push ke GAS
+# .claspignore — Nakhoda (Timja Pengawakan Dit. POA KKP RI)
+
+# Dokumentasi & Desain
 *.md
-# Config lokal — tidak dibutuhkan di GAS
+LICENSE
+
+# Konfigurasi & Lingkungan Lokal
 .clasp.json
 .claspignore
 .gitignore
-# Git
+package.json
+package-lock.json
+skills-lock.json
+
+# Tooling, AI Skills & Cache (TIDAK BOLEH di-push ke GAS)
 .git/**
-# Script pembantu / artifact verifikasi — BUKAN bagian GAS project.
-# (Pernah ter-push duluan dan bikin duplikat function di GAS editor → merah.)
+.taste-skill/**
+.agents/**
+.impeccable/**
+.codex/**
+
+# Pengujian Unit Lokal & Script Linter Node.js
+tests/**
+*.test.js
+lint_ui.js
 test.js
 test_pure.js
 fix.py
 hotfix.py
-lint_ui.js
-# Data geospasial besar — di-fetch dari GitHub oleh frontend, bukan di-host GAS
+
+# Aset Geospasial
 *.geojson
-.agents/
