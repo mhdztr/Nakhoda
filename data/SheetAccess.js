@@ -1,11 +1,6 @@
 /**
  * data/SheetAccess.js
- * Layer akses data generik + assertScope RBAC + hashPassword.
- *
- * ATURAN:
- * - Service layer TIDAK memanggil SpreadsheetApp secara langsung — semua melalui fungsi di sini.
- * - assertScope() WAJIB dipanggil di awal setiap service function yang baca/tulis data sensitif.
- * - hashPassword() adalah satu-satunya implementasi hashing di seluruh proyek — jangan duplikasi.
+ * Layer akses data generik + assertScope RBAC + hashPassword (Nakhoda)
  */
 
 // ===========================================================================
@@ -14,13 +9,10 @@
 
 /**
  * Validasi bahwa session memiliki scope yang dibutuhkan.
- * Melempar Error jika tidak memenuhi syarat — error akan ditangkap di caller
- * dan dikembalikan ke client sebagai {success: false, error: "..."}.
  *
- * @param {Object} session       - {userId, role, divisiId, status, nama}
- * @param {string[]|null} allowedRoles    - null = semua role APPROVED boleh; array = hanya role tsb
- * @param {string|null} requiredDivisiId  - null = lintas-divisi OK; string = harus match divisi ini
- *                                          (dikecualikan untuk SUPERADMIN dan DIREKTUR)
+ * @param {Object} session
+ * @param {string[]|null} allowedRoles
+ * @param {string|null} requiredDivisiId
  */
 function assertScope(session, allowedRoles, requiredDivisiId) {
   if (!session || !session.userId) {
@@ -35,7 +27,6 @@ function assertScope(session, allowedRoles, requiredDivisiId) {
     }
   }
   if (requiredDivisiId) {
-    // SUPERADMIN dan DIREKTUR bypass pembatasan divisi
     if (session.role !== ROLE.SUPERADMIN && session.role !== ROLE.DIREKTUR) {
       if (session.divisiId !== requiredDivisiId) {
         throw new Error(
@@ -48,23 +39,17 @@ function assertScope(session, allowedRoles, requiredDivisiId) {
 }
 
 // ===========================================================================
-// HASHING — satu implementasi kanonik untuk seluruh proyek
+// HASHING — SHA-256 / HMAC dengan salt & pepper
 // ===========================================================================
 
-/**
- * Hash password menggunakan SHA-256 (built-in GAS, tanpa library eksternal).
- * Output: hex string 64 karakter.
- *
- * CATATAN: SHA-256 tanpa salt — dipertahankan untuk simplisitas internal GAS.
- * Ditinjau ulang di Fase 12 (QA & Polish) sebelum go-live.
- *
- * @param {string} plaintext
- * @returns {string} hex SHA-256 hash
- */
-function hashPassword(plaintext) {
+function hashPassword(plaintext, salt) {
+  var props = PropertiesService.getScriptProperties();
+  var pepper = props ? (props.getProperty(PROP_KEY.PEPPER) || '') : '';
+  var toHash = String(plaintext || '') + ':' + String(salt || '') + ':' + pepper;
+
   var bytes = Utilities.computeDigest(
     Utilities.DigestAlgorithm.SHA_256,
-    plaintext,
+    toHash,
     Utilities.Charset.UTF_8
   );
   return bytes.map(function (b) {
@@ -79,68 +64,112 @@ function hashPassword(plaintext) {
 
 function openMasterSheet(sheetName) {
   var ids = getSpreadsheetIds();
-  return SpreadsheetApp.openById(ids.masterId).getSheetByName(sheetName);
+  var ss = null;
+  if (ids.masterId) {
+    try {
+      ss = SpreadsheetApp.openById(ids.masterId);
+    } catch (e) {
+      Logger.log('[openMasterSheet] masterId ' + ids.masterId + ' gagal dibuka: ' + e.message);
+    }
+  }
+  if (!ss) {
+    var awakId = ensureAwakSpreadsheet();
+    ss = SpreadsheetApp.openById(awakId);
+  }
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = _autoCreateMasterSheet(ss, sheetName);
+  }
+  return sheet;
 }
 
 function openTransaksiSheet(sheetName) {
-  var ids = getSpreadsheetIds();
-  return SpreadsheetApp.openById(ids.transaksiId).getSheetByName(sheetName);
+  return openAwakSheet(sheetName);
 }
 
 function openLogSheet(sheetName) {
   var ids = getSpreadsheetIds();
-  return SpreadsheetApp.openById(ids.logId).getSheetByName(sheetName);
-}
-
-/**
- * Membuka sheet pada spreadsheet dedicated Nautika_TU.
- * Otomatis melakukan self-heal membuat spreadsheet dan sheet jika belum ada.
- *
- * @param {string} sheetName - nama sheet di Nautika_TU (SHEET_TU.*)
- * @returns {GoogleAppsScript.Spreadsheet.Sheet}
- */
-function openTuSheet(sheetName) {
-  var tuId = ensureTuSpreadsheet();
-  var ss = SpreadsheetApp.openById(tuId);
+  var ss = null;
+  if (ids.logId) {
+    try {
+      ss = SpreadsheetApp.openById(ids.logId);
+    } catch (e) {
+      Logger.log('[openLogSheet] logId ' + ids.logId + ' err: ' + e.message);
+    }
+  }
+  if (!ss) {
+    var awakId = ensureAwakSpreadsheet();
+    ss = SpreadsheetApp.openById(awakId);
+  }
   var sheet = ss.getSheetByName(sheetName);
   if (!sheet) {
-    sheet = _autoCreateTuSheet(ss, sheetName);
+    sheet = _autoCreateLogSheet(ss, sheetName);
   }
   return sheet;
 }
 
 /**
- * Memastikan spreadsheet Nautika_TU sudah ada dan ID tersimpan di Script Properties.
- * Idempoten: jika ID sudah ada & valid, langsung mengembalikannya.
- * @returns {string} ID spreadsheet Nautika_TU
+ * Membuka sheet pada database satelit RadarPOA_Nakhoda_DB.
+ * Self-healing: otomatis membuat spreadsheet dan sheet jika belum ada.
+ *
+ * @param {string} sheetName - nama sheet (SHEET_AWAK.*)
+ * @returns {GoogleAppsScript.Spreadsheet.Sheet}
  */
-function ensureTuSpreadsheet() {
+function openAwakSheet(sheetName) {
   var props = PropertiesService.getScriptProperties();
-  var tuId  = props.getProperty(PROP_KEY.TU_SS_ID);
-  if (tuId) {
+  var awakId = props.getProperty(PROP_KEY.AWAK_SS_ID) || props.getProperty(PROP_KEY.NAKHODA_SS_ID);
+  var ss = null;
+  if (awakId) {
     try {
-      SpreadsheetApp.openById(tuId);
-      return tuId;
+      ss = SpreadsheetApp.openById(awakId);
     } catch (e) {
-      Logger.log('[ensureTuSpreadsheet] ID lama tidak valid/tidak ditemukan, membuat baru...');
+      Logger.log('[openAwakSheet] ID lama tidak valid: ' + e.message);
+    }
+  }
+  if (!ss) {
+    awakId = ensureAwakSpreadsheet();
+    ss = SpreadsheetApp.openById(awakId);
+  }
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = _autoCreateAwakSheet(ss, sheetName);
+  }
+  return sheet;
+}
+
+/**
+ * Memastikan spreadsheet satelit RadarPOA_Nakhoda_DB sudah ada.
+ * Idempoten: mengembalikan ID yang tersimpan jika valid.
+ * @returns {string} ID spreadsheet
+ */
+function ensureAwakSpreadsheet() {
+  var props = PropertiesService.getScriptProperties();
+  var awakId = props.getProperty(PROP_KEY.AWAK_SS_ID) || props.getProperty(PROP_KEY.NAKHODA_SS_ID);
+  if (awakId) {
+    try {
+      SpreadsheetApp.openById(awakId);
+      return awakId;
+    } catch (e) {
+      Logger.log('[ensureAwakSpreadsheet] ID lama tidak valid, membuat baru...');
     }
   }
 
-  // Buat spreadsheet Nautika_TU baru
-  var ss = SpreadsheetApp.create(SS_NAME.TU);
-  tuId = ss.getId();
-  props.setProperty(PROP_KEY.TU_SS_ID, tuId);
-  Logger.log('[ensureTuSpreadsheet] Nautika_TU berhasil dibuat dengan ID: ' + tuId);
+  var ss = SpreadsheetApp.create(SS_NAME.AWAK);
+  awakId = ss.getId();
+  props.setProperty(PROP_KEY.AWAK_SS_ID, awakId);
+  Logger.log('[ensureAwakSpreadsheet] RadarPOA_Nakhoda_DB berhasil dibuat dengan ID: ' + awakId);
 
-  // Inisialisasi sheet standar TU
-  _autoCreateTuSheet(ss, SHEET_TU.PEGAWAI);
-  _autoCreateTuSheet(ss, SHEET_TU.BMN_ASET);
-  _autoCreateTuSheet(ss, SHEET_TU.BMN_PENGHAPUSAN);
-  _autoCreateTuSheet(ss, SHEET_TU.BMN_PENGHAPUSAN_DETAIL);
-  _autoCreateTuSheet(ss, SHEET_TU.MASTER_LOKASI_UPT);
-  _autoCreateTuSheet(ss, SHEET_TU.MASTER_BMN_KATEGORI);
-  _autoCreateTuSheet(ss, SHEET_TU.TATA_USAHA);
-  _autoCreateTuSheet(ss, SHEET_TU.PAKET_PROGRES);
+  // Inisialisasi sheet standar Pengawakan
+  _autoCreateAwakSheet(ss, SHEET_AWAK.PENGAWAKAN_AKN);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.PENGAWAKAN_KEGIATAN);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.KEGIATAN_PESERTA);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.MASTER_AWAK);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.PELATIHAN_AWAK);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.PENUGASAN_KAPAL);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.KONFIRMASI_MINGGUAN);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.MASTER_STANDAR_PELATIHAN);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.MASTER_SAFE_MANNING);
+  _autoCreateAwakSheet(ss, SHEET_AWAK.EVIDENCE);
 
   // Hapus Sheet1 default
   var sheets = ss.getSheets();
@@ -151,57 +180,54 @@ function ensureTuSpreadsheet() {
     }
   }
 
-  // Seed data awal jika modul Setup.js tersedia
-  try {
-    if (typeof _seedLokasiUpt === 'function') _seedLokasiUpt(ss);
-    if (typeof _seedBmnKategori === 'function') _seedBmnKategori(ss);
-  } catch (errSeed) {
-    Logger.log('[ensureTuSpreadsheet] Seed UPT/Kategori info: ' + errSeed.message);
-  }
-
-  return tuId;
+  return awakId;
 }
 
-function _autoCreateTuSheet(ss, sheetName) {
+function _autoCreateAwakSheet(ss, sheetName) {
   var existing = ss.getSheetByName(sheetName);
   if (existing) return existing;
 
   var headers = [];
-  if (sheetName === SHEET_TU.PEGAWAI) {
-    headers = STD_COLS.concat(['Kategori', 'Jumlah', 'Keterangan']);
-  } else if (sheetName === SHEET_TU.BMN_ASET) {
+  if (sheetName === SHEET_AWAK.PENGAWAKAN_AKN) {
+    headers = STD_COLS.concat(['Scope', 'Kategori', 'Jumlah', 'Keterangan', 'BatchID']);
+  } else if (sheetName === SHEET_AWAK.PENGAWAKAN_KEGIATAN) {
     headers = STD_COLS.concat([
-      'AsetID', 'KodeBarang', 'NUP', 'NamaBarang', 'MerekTipe', 'KategoriPencatatan',
-      'KodeKategori', 'TanggalPerolehan', 'NilaiPerolehan', 'NilaiBuku', 'Kondisi',
-      'LokasiID', 'LokasiDetailRuangan', 'Latitude', 'Longitude', 'SumberLokasi',
-      'JarakKeUPT_Km', 'TanggalVerifikasi', 'FotoEvidenceID', 'StatusAset',
-      'PenghapusanID', 'KapalID', 'ImportBatchID', 'Keterangan'
+      'JudulKegiatan', 'JenisKegiatan', 'TanggalMulai', 'TanggalSelesai',
+      'Wilayah', 'JumlahPeserta', 'Deskripsi', 'EvidenceUrl'
     ]);
-  } else if (sheetName === SHEET_TU.BMN_PENGHAPUSAN) {
+  } else if (sheetName === SHEET_AWAK.KEGIATAN_PESERTA) {
+    headers = STD_COLS.concat(['ParentRowID', 'PegawaiID', 'Catatan']);
+  } else if (sheetName === SHEET_AWAK.MASTER_AWAK) {
+    headers = [
+      'PegawaiID', 'NIP', 'Nama', 'KelompokJabatan', 'JabatanLengkap',
+      'KelasKapal', 'Rumpun', 'KategoriKepegawaian', 'StatusAktif',
+      'PangkalanID', 'KapalID', 'TanggalMulaiKerja', 'TanggalSelesaiKontrak',
+      'NomorBukuPelaut', 'Catatan', 'UpdatedAt', 'UpdatedBy'
+    ];
+  } else if (sheetName === SHEET_AWAK.PELATIHAN_AWAK) {
     headers = STD_COLS.concat([
-      'PenghapusanID', 'Tahap', 'AlasanPenghapusan', 'KeteranganAlasan',
-      'NomorSuratUsulan', 'TanggalSuratUsulan', 'EvidenceSuratUsulan',
-      'NomorSuratPersetujuan', 'TanggalSuratPersetujuan', 'InstansiKemenkeu', 'EvidenceSuratPersetujuan',
-      'NomorSK', 'TanggalSK', 'EvidenceSK', 'EvidenceBAST',
-      'TotalUnit', 'TotalNilaiPerolehan', 'TotalNilaiBuku'
+      'PegawaiID', 'KodePelatihan', 'NamaPelatihan', 'StatusKelulusan',
+      'NomorSertifikat', 'TahunPelatihan', 'TanggalTerbit', 'BerlakuSampai',
+      'PenerbitLembaga', 'EvidenceID'
     ]);
-  } else if (sheetName === SHEET_TU.BMN_PENGHAPUSAN_DETAIL) {
-    headers = STD_COLS.concat(['ParentRowID', 'PenghapusanID', 'AsetID', 'KondisiSaatUsul', 'NilaiBukuSaatUsul']);
-  } else if (sheetName === SHEET_TU.MASTER_LOKASI_UPT) {
-    headers = ['LokasiID', 'NamaLokasi', 'JenisLokasi', 'Latitude', 'Longitude', 'RadiusVerifikasiKm', 'StatusAktif'];
-  } else if (sheetName === SHEET_TU.MASTER_BMN_KATEGORI) {
-    headers = ['KodeKategori', 'NamaKategori', 'Golongan', 'MasaManfaatTahun'];
-  } else if (sheetName === SHEET_TU.TATA_USAHA) {
+  } else if (sheetName === SHEET_AWAK.PENUGASAN_KAPAL) {
     headers = STD_COLS.concat([
-      'PaguReguler', 'PaguABT', 'RealisasiSP2D_Minggu', 'RealisasiAkrual_Minggu',
-      'RealisasiSP2D_Reguler_Minggu', 'RealisasiSP2D_ABT_Minggu',
-      'RealisasiAkrual_Reguler_Minggu', 'RealisasiAkrual_ABT_Minggu', 'CatatanRevisiPagu'
+      'PegawaiID', 'KapalID', 'PosSijil', 'TanggalNaik', 'TanggalTurun', 'Keterangan'
     ]);
-  } else if (sheetName === SHEET_TU.PAKET_PROGRES) {
-    headers = STD_COLS.concat([
-      'PaketID', 'TahapPekerjaan', 'NilaiKontrak', 'RekananPenyedia', 'NomorKontrak',
-      'ProgresFisikPct', 'RealisasiKeuangan', 'KendalaKeterangan', 'EvidenceUrl'
-    ]);
+  } else if (sheetName === SHEET_AWAK.KONFIRMASI_MINGGUAN) {
+    headers = STD_COLS.concat(['Catatan']);
+  } else if (sheetName === SHEET_AWAK.MASTER_STANDAR_PELATIHAN) {
+    headers = [
+      'KodePelatihan', 'KelompokJabatan', 'TingkatKelas', 'Kategori',
+      'NamaPelatihan', 'MasaBerlakuBulan', 'Wajib', 'Urutan'
+    ];
+  } else if (sheetName === SHEET_AWAK.MASTER_SAFE_MANNING) {
+    headers = ['ManningID', 'KelasKapal', 'PosSijil', 'Minimum', 'BerlakuMulai', 'Sumber'];
+  } else if (sheetName === SHEET_AWAK.EVIDENCE) {
+    headers = [
+      'EvidenceID', 'RefSheet', 'RefRowID', 'DriveFileID', 'FileName',
+      'FileType', 'SourceMode', 'UploadedBy', 'UploadedAt', 'Status', 'Catatan'
+    ];
   } else {
     headers = STD_COLS;
   }
@@ -212,243 +238,80 @@ function _autoCreateTuSheet(ss, sheetName) {
     .setFontWeight('bold')
     .setBackground('#E8EAF6');
   created.setFrozenRows(1);
-  Logger.log('[_autoCreateTuSheet] Sheet ' + sheetName + ' dibuat otomatis di Nautika_TU.');
+  Logger.log('[_autoCreateAwakSheet] Sheet ' + sheetName + ' dibuat otomatis di DB Nakhoda.');
   return created;
 }
 
-/**
- * Pastikan kolom ada pada sheet di Nautika_TU (self-heal).
- *
- * @param {string} sheetName - nama sheet TU
- * @param {string} colName - nama kolom
- */
-function ensureTuColumn(sheetName, colName) {
-  var sheet = openTuSheet(sheetName);
-  if (!sheet) return;
-  var lastCol = sheet.getLastColumn();
-  if (lastCol < 1) return;
-  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-  if (headers.indexOf(colName) !== -1) return;
-  var newCol = lastCol + 1;
-  var cell = sheet.getRange(1, newCol);
-  cell.setValue(colName);
-  cell.setFontWeight('bold');
-  cell.setBackground('#E8EAF6');
-  Logger.log('[ensureTuColumn] Kolom ' + colName + ' ditambahkan ke ' + sheetName + ' (kolom ' + newCol + ').');
-}
+function _autoCreateMasterSheet(ss, sheetName) {
+  var existing = ss.getSheetByName(sheetName);
+  if (existing) return existing;
 
-/**
- * Pastikan sebuah kolom ada pada sheet transaksi (self-heal). Berguna saat
- * skema bertambah setelah sheet dibuat (mis. kolom KapalID — Fase 12):
- * `_createSheetWithHeaders` di Setup.js meng-skip sheet yang sudah ada, jadi
- * kolom baru tidak otomatis muncul di DB terlanjur dibuat. Fungsi ini men-
- * append header jika belum ada. Idempoten & aman dipanggil berulang.
- *
- * @param {string} sheetName  - nama sheet transaksi
- * @param {string} colName    - nama kolom yang dipastikan ada
- */
-function ensureTxColumn(sheetName, colName) {
-  var sheet = openTransaksiSheet(sheetName);
-  if (!sheet) return;
-  var lastCol = sheet.getLastColumn();
-  if (lastCol < 1) return;
-  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-  if (headers.indexOf(colName) !== -1) return;
-  var newCol = lastCol + 1;
-  var cell = sheet.getRange(1, newCol);
-  cell.setValue(colName);
-  cell.setFontWeight('bold');
-  cell.setBackground('#E8EAF6');
-  Logger.log('[ensureTxColumn] Kolom ' + colName + ' ditambahkan ke ' + sheetName + ' (kolom ' + newCol + ').');
-}
+  var headers = [];
+  var seedRows = [];
 
-/**
- * Pastikan kolom ada pada sheet master (self-heal), setara ensureTxColumn
- * tapi untuk sheet di Nautika_Master. Dipakai untuk kolom `Users.NIP` yang
- * ditambahkan setelah DB terlanjur dibuat.
- *
- * @param {string} sheetName  - nama sheet master
- * @param {string} colName    - nama kolom yang dipastikan ada
- */
-function ensureMasterColumn(sheetName, colName) {
-  var sheet = openMasterSheet(sheetName);
-  if (!sheet) return;
-  var lastCol = sheet.getLastColumn();
-  if (lastCol < 1) return;
-  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-  if (headers.indexOf(colName) !== -1) return;
-  var newCol = lastCol + 1;
-  var cell = sheet.getRange(1, newCol);
-  cell.setValue(colName);
-  cell.setFontWeight('bold');
-  cell.setBackground('#E8EAF6');
-  Logger.log('[ensureMasterColumn] Kolom ' + colName + ' ditambahkan ke ' +
-    sheetName + ' (kolom ' + newCol + ').');
-}
+  if (sheetName === SHEET_MASTER.USERS) {
+    headers = [
+      'UserID', 'Nama', 'Email', 'NIP', 'PasswordHash', 'Salt',
+      'DivisiID', 'Role', 'Status', 'ApprovedBy', 'RegisteredAt', 'ApprovedAt'
+    ];
+  } else if (sheetName === SHEET_MASTER.DIVISI) {
+    headers = ['DivisiID', 'NamaResmi', 'NamaDashboard', 'Kode'];
+    seedRows = [
+      ['DIV-AWAK', 'Subdirektorat Pengawakan Armada', 'Pengawakan', 'AWAK'],
+      ['DIV-TU', 'Subbagian Tata Usaha', 'Tata Usaha', 'TU']
+    ];
+  } else if (sheetName === SHEET_MASTER.OPSI) {
+    headers = ['Kode', 'Urutan', 'Label', 'LabelTampil', 'Aktif', 'DibuatOleh', 'DibuatAt'];
+  } else if (sheetName === SHEET_MASTER.KAPAL) {
+    headers = ['KapalID', 'NamaKapal', 'JenisKapal', 'KelasKapal', 'PangkalanID', 'StatusOperasi'];
+  } else {
+    headers = ['ID', 'Nama', 'Keterangan'];
+  }
 
-/**
- * Pastikan kolom NIP ada di sheet Users. Self-heal supaya akun yang dibuat
- * sebelum kolom ini ada tetap terbaca (NIP kosong, bukan error).
- */
-function ensureUsersNipColumn() {
-  ensureMasterColumn(SHEET_MASTER.USERS, 'NIP');
-}
-
-/**
- * Pastikan kolom KapalID ada di keempat sheet transaksi yang dihubungkan ke
- * Profil Kapal (Fase 12): OperasiLaut, OperasiUdara, Logistik_Amunisi,
- * Logistik_BBM. Dipanggil di titik tulis service terkait supaya DB lama
- * ter-heal otomatis tanpa setupForce.
- */
-function ensureKapalColumns() {
-  ensureTxColumn(SHEET_TX.OPERASI_LAUT,        'KapalID');
-  ensureTxColumn(SHEET_TX.OPERASI_UDARA,       'KapalID');
-  ensureTxColumn(SHEET_TX.LOGISTIK_AMUNISI,    'KapalID');
-  ensureTxColumn(SHEET_TX.LOGISTIK_BBM,        'KapalID');
-}
-
-/**
- * Pastikan kolom NamaKapal & JenisKapal ada di TX_Pemantauan (kapal
- * marabahaya = kapal eksternal, bukan ref Master Data). Dipanggil di titik
- * tulis service supaya DB lama ter-heal otomatis tanpa setupForce.
- */
-function ensurePemantauanKapalKolom() {
-  ensureTxColumn(SHEET_TX.PEMANTAUAN, 'NamaKapal');
-  ensureTxColumn(SHEET_TX.PEMANTAUAN, 'JenisKapal');
-}
-
-/**
- * Pastikan kolom JenisKapal ada di sheet master `Kapal` (enum grup Opsi
- * `KAPAL_JENIS`). Dipanggil di titik tulis Master Kapal supaya DB lama ter-heal
- * otomatis tanpa setupForce. Baris kapal lama yang kolomnya kosong tetap
- * valid — dibaca sebagai "tidak dibatasi jenis" (lihat `master_kapalJenis`).
- */
-function ensureKapalJenisColumn() {
-  ensureMasterColumn(SHEET_MASTER.KAPAL, 'JenisKapal');
-}
-
-/**
- * Pastikan kolom KelasKapal, PanjangMeter, WPPDefault, PangkalanHomebase ada di sheet master `Kapal`
- * (DATA_SCHEMA.md & Fase 18 untuk penanda 34 Kapal Pengawas Ukuran Besar).
- */
-function ensureKapalKelasColumn() {
-  ensureMasterColumn(SHEET_MASTER.KAPAL, 'KelasKapal');
-  ensureMasterColumn(SHEET_MASTER.KAPAL, 'PanjangMeter');
-  ensureMasterColumn(SHEET_MASTER.KAPAL, 'WPPDefault');
-  ensureMasterColumn(SHEET_MASTER.KAPAL, 'PangkalanHomebase');
-}
-
-/**
- * Pastikan sheet TX_Kapal_Posisi ada di database transaksi (Fase 18).
- */
-function ensureKapalPosisiSheet() {
-  var headers = STD_COLS.concat([
-    'KapalID', 'TanggalUpdate', 'Latitude', 'Longitude', 'StatusKondisi', 'WPPCode', 'LokasiPelabuhan', 'HariOperasiYTD'
-  ]);
-  return ensureDetailTxSheet(SHEET_TX.KAPAL_POSISI, headers);
-}
-
-/**
- * Ambil sheet detail transaksi, buat otomatis bila belum ada (self-heal,
- * idempoten). Dipakai untuk sheet rincian per-item (TX_*_Detail — revisi
- * rincian audit) supaya DB lama ter-heal tanpa `setupForce`.
- * Header dibuat sesuai definisi Setup.js (urutan kolom wajib sama).
- *
- * @param {string} sheetName - nama sheet transaksi
- * @param {Array<string>} headers - header kolom (STD_COLS + kolom rinci)
- * @returns {Sheet}
- */
-function ensureDetailTxSheet(sheetName, headers) {
-  var sheet = openTransaksiSheet(sheetName);
-  if (sheet) return sheet;
-  var ss = SpreadsheetApp.openById(getSpreadsheetIds().transaksiId);
   var created = ss.insertSheet(sheetName);
   created.getRange(1, 1, 1, headers.length)
     .setValues([headers])
     .setFontWeight('bold')
     .setBackground('#E8EAF6');
   created.setFrozenRows(1);
-  Logger.log('[ensureDetailTxSheet] Sheet ' + sheetName + ' dibuat otomatis.');
+
+  if (seedRows.length > 0) {
+    created.getRange(2, 1, seedRows.length, seedRows[0].length).setValues(seedRows);
+  }
   return created;
 }
 
-/**
- * Pastikan sheet master `Opsi` ada (self-heal). Jika belum ada (mis. Master
- * dibuat sebelum revisi Opsi Fase 9/10), buat dengan header sesuai
- * DATA_SCHEMA.md `Opsi`. Aman dipanggil berulang (idempoten).
- * @returns {Sheet}
- */
-function ensureOpsiSheet() {
-  var existing = openMasterSheet(SHEET_MASTER.OPSI);
-  if (existing) { ensureOpsiColumns(existing); return existing; }
-  var ss = SpreadsheetApp.openById(getSpreadsheetIds().masterId);
-  var sheet = ss.insertSheet(SHEET_MASTER.OPSI);
-  sheet.getRange(1, 1, 1, 7)
-    .setValues([['Kode', 'Urutan', 'Label', 'LabelTampil', 'Aktif', 'DibuatOleh', 'DibuatAt']])
-    .setFontWeight('bold')
-    .setBackground('#E8EAF6');
-  sheet.setFrozenRows(1);
-  Logger.log('[ensureOpsiSheet] Sheet ' + SHEET_MASTER.OPSI + ' dibuat otomatis.');
-  return sheet;
-}
+function _autoCreateLogSheet(ss, sheetName) {
+  var existing = ss.getSheetByName(sheetName);
+  if (existing) return existing;
 
-/**
- * Self-heal kolom `LabelTampil` pada sheet `Opsi` yang dibuat sebelum kolom ini
- * ada (versi lama 6 kolom). Kolom baru disisipkan tepat setelah `Label` supaya
- * urutan kolom tetap sama dengan header kanonik di `DATA_SCHEMA.md` — seluruh
- * penulisan baris Opsi memakai urutan header tersebut, sehingga bila kolom baru
- * hanya ditambahkan di posisi terakhir, baris baru akan masuk ke kolom keliru.
- * Aman dipanggil berulang (idempoten).
- * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet
- */
-function ensureOpsiColumns(sheet) {
-  if (!sheet) return;
-  var lastCol = sheet.getLastColumn();
-  if (lastCol < 1) return;
-  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-  if (headers.indexOf('LabelTampil') !== -1) return;
-
-  // Sisipkan sesudah kolom `Label`; bila header tidak wajar, sisipkan di akhir.
-  var labelCol = headers.indexOf('Label') + 1; // 1-based
-  if (labelCol < 1) labelCol = lastCol;
-  sheet.insertColumnAfter(labelCol);
-  var newCol = labelCol + 1;
-
-  var cell = sheet.getRange(1, newCol);
-  cell.setValue('LabelTampil');
-  cell.setFontWeight('bold');
-  cell.setBackground('#E8EAF6');
-
-  // Baris lama yang LabelTampil-nya kosong diisi dengan nilai Label agar UI
-  // tidak menampilkan token mentah untuk data yang sudah ada.
-  var lastRow = sheet.getLastRow();
-  if (lastRow >= 2) {
-    sheet.getRange(2, newCol, lastRow - 1, 1)
-      .setValues(sheet.getRange(2, labelCol, lastRow - 1, 1).getValues());
+  var headers = [];
+  if (sheetName === SHEET_LOG.APPROVAL_QUEUE) {
+    headers = [
+      'QueueID', 'UserID', 'RoleDilamar', 'DivisiID', 'Status',
+      'KeputusanOleh', 'KeputusanAt', 'AlasanReject', 'CreatedAt'
+    ];
+  } else if (sheetName === SHEET_LOG.AUDIT_LOG) {
+    headers = ['LogID', 'UserID', 'Aksi', 'SheetTarget', 'RowIDTarget', 'Alasan', 'Sebelum', 'Sesudah', 'Timestamp'];
+  } else if (sheetName === SHEET_LOG.NOTIFICATIONS) {
+    headers = ['NotifID', 'UserID', 'Jenis', 'Pesan', 'IsRead', 'CreatedAt'];
+  } else {
+    headers = ['LogID', 'UserID', 'Aksi', 'Timestamp'];
   }
-  Logger.log('[ensureOpsiColumns] Kolom LabelTampil disisipkan di ' + SHEET_MASTER.OPSI +
-    ' (kolom ' + newCol + '), diisi dari kolom Label.');
-}
 
-/**
- * Baca isi sheet, aman terhadap sheet null (mis. belum dibuat) → [].
- */
-function readOpsiRows() {
-  var sheet = ensureOpsiSheet();
-  return sheetToObjects(sheet);
+  var created = ss.insertSheet(sheetName);
+  created.getRange(1, 1, 1, headers.length)
+    .setValues([headers])
+    .setFontWeight('bold')
+    .setBackground('#F1F5F9');
+  created.setFrozenRows(1);
+  return created;
 }
 
 // ===========================================================================
-// ROW READING
+// ROW READING & WRITING HELPERS
 // ===========================================================================
 
-/**
- * Konversi seluruh data sheet ke array of plain objects, header row sebagai key.
- * Row 1 = header, row 2+ = data.
- *
- * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet
- * @returns {Object[]}
- */
 function sheetToObjects(sheet) {
   if (!sheet) return [];
   var data = sheet.getDataRange().getValues();
@@ -461,15 +324,8 @@ function sheetToObjects(sheet) {
   });
 }
 
-/**
- * Cari satu baris berdasarkan nilai di kolom tertentu (string match, case-insensitive tidak dipakai).
- *
- * @param {Sheet} sheet
- * @param {string} colName   - nama kolom header
- * @param {*}     value      - nilai yang dicari
- * @returns {{obj: Object, rowIndex: number}|null} rowIndex = 1-based (termasuk baris header)
- */
 function findRowByField(sheet, colName, value) {
+  if (!sheet) return null;
   var data = sheet.getDataRange().getValues();
   if (data.length < 2) return null;
   var headers = data[0];
@@ -485,293 +341,109 @@ function findRowByField(sheet, colName, value) {
   return null;
 }
 
-/**
- * Cari baris berdasarkan RowID (shorthand untuk findRowByField(..., 'RowID', ...)).
- */
 function findRowById(sheet, rowId) {
   return findRowByField(sheet, 'RowID', rowId);
 }
 
-/**
- * Baca seluruh baris detail (sheet rincian, mis. TX_OperasiLaut_Detail) dan
- * kelompokkan berdasarkan ParentRowID. Baris dengan ParentRowID kosong/tidak
- * diinput diabaikan.
- *
- * @param {string} sheetName - nama sheet detail
- * @returns {Object} peta { ParentRowID_String: [rowObj, ...] } tanpa kolom
- *                   dinamis pandas; nilai string dikembalikan apa adanya.
- */
-function readDetailByParent(sheetName) {
-  var map = {};
-  var rows = sheetToObjects(openTransaksiSheet(sheetName));
-  rows.forEach(function (r) {
-    var parent = (r.ParentRowID === undefined || r.ParentRowID === null) ? '' : String(r.ParentRowID);
-    if (!parent) return;
-    if (!map[parent]) map[parent] = [];
-    map[parent].push(r);
-  });
-  return map;
-}
-
-// ===========================================================================
-// ROW WRITING
-// ===========================================================================
-
-/**
- * Naikkan penanda versi data transaksi — kunci invalidasi cache agregat
- * DashboardService. `appendRowData()` dan `updateRowCells()` di bawah
- * memanggilnya otomatis setiap ada tulis baris transaksi.
- *
- * Latar belakang: `dashboard_getOverview` & `dashboard_profilKapal` memakai
- * CacheService (TTL 300 detik) per user. Tanpa penanda ini, agregat Ikhtisar
- * kedaluwarsa hingga 5 menit setelah submit/revisi/anulir — contoh kasus:
- * anulir laporan mingguan Tata Usaha tidak mengubah kartu "Realisasi
- * SP2D/Akrual (YTD)". Penanda ikut masuk ke cache key, sehingga setelah ada
- * tulis, cache lama tidak terpakai lagi dan agregat dihitung ulang.
- */
 function bumpTxVersion(sheetName) {
   try {
     var cache = CacheService.getScriptCache();
-    var n = Number(cache.get('DASH_TX_VERSION')) || 0;
-    // TTL 6 jam — jauh melebihi TTL cache agregat (300s) agar penanda tidak
-    // lebih dulu kedaluwarsa daripada entri yang dijaganya.
-    cache.put('DASH_TX_VERSION', String(n + 1), 21600);
-
-    // Metadata transaksi terakhir (Fase 17 — Live Telemetry)
-    var meta = {
-      timestamp: new Date().toISOString(),
-      sheet: sheetName || 'Transaksi'
-    };
-    cache.put('METADATA_LAST_TX', JSON.stringify(meta), 21600);
-    try {
-      PropertiesService.getScriptProperties().setProperty('METADATA_LAST_TX', JSON.stringify(meta));
-    } catch (eProp) {}
-  } catch (ignore) { /* tidak pernah mengganggu alur tulis */ }
+    var key = 'tx_ver_' + String(sheetName || 'global');
+    var curr = parseInt(cache.get(key) || '0', 10);
+    cache.put(key, String(curr + 1), 21600);
+  } catch (e) {
+    Logger.log('[bumpTxVersion] ' + e.message);
+  }
 }
 
-/**
- * Append satu baris baru ke sheet, mengikuti urutan kolom di header row.
- * Kolom yang tidak ada di dataObj diisi string kosong.
- *
- * @param {Sheet}  sheet
- * @param {Object} dataObj - {namaKolom: nilai}
- */
 function appendRowData(sheet, dataObj) {
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  var row = headers.map(function (h) {
-    var val = dataObj[h];
-    return (val === undefined || val === null) ? '' : val;
+  var newRow = headers.map(function (h) {
+    return dataObj[h] !== undefined ? dataObj[h] : '';
   });
-  sheet.appendRow(row);
-  bumpTxVersion(sheet.getName ? sheet.getName() : 'Transaksi');
-  SpreadsheetApp.flush();
+  sheet.appendRow(newRow);
+  bumpTxVersion(sheet.getName());
 }
 
-/**
- * Update satu atau lebih sel di baris tertentu (1-based rowIndex).
- *
- * @param {Sheet}  sheet
- * @param {number} rowIndex  - baris yang diupdate (1-based; baris header = 1, data mulai dari 2)
- * @param {Object} updates   - {namaKolom: nilaiBaru}
- */
 function updateRowCells(sheet, rowIndex, updates) {
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  Object.keys(updates).forEach(function (colName) {
-    var colIndex = headers.indexOf(colName) + 1; // 1-based
-    if (colIndex > 0) {
-      sheet.getRange(rowIndex, colIndex).setValue(updates[colName]);
+  Object.keys(updates).forEach(function (key) {
+    var colIdx = headers.indexOf(key);
+    if (colIdx !== -1) {
+      sheet.getRange(rowIndex, colIdx + 1).setValue(updates[key]);
     }
   });
-  bumpTxVersion(sheet.getName ? sheet.getName() : 'Transaksi');
-  SpreadsheetApp.flush();
+  bumpTxVersion(sheet.getName());
 }
 
 // ===========================================================================
-// OPSI (daftar pilihan dinamis)
+// OPSI HELPERS
 // ===========================================================================
 
-/**
- * Ambil daftar label aktif untuk sebuah grup Opsi (DATA_SCHEMA.md `Opsi`).
- * Sumber TUNGGAL = sheet master `Opsi` (tidak ada daftar hardcoded lagi; isi
- * awal di-seed oleh `Setup.js`). Baris NON-aktif hanya berguna untuk riwayat —
- * tidak dimasukkan. Hasil di-cache ke CacheService (TTL 10 menit) supaya
- * getOptions/KPI/tren tidak scan ulang tiap kali.
- *
- * @param {string} kode - kunci dari OPSI_KODE
- * @returns {string[]} token label terurut (Urutan)
- */
 function getOpsiList(kode) {
-  var key = 'OPSI_LIST_' + String(kode || '');
-  var cache = CacheService.getScriptCache();
-  var cached = cache.get(key);
-  if (cached) {
-    try { return JSON.parse(cached); } catch (e) { /* fall through */ }
-  }
-
-  var orderMap = {};
-
   try {
-    readOpsiRows().forEach(function (r) {
-      if (String(r['Kode']) !== String(kode)) return;
-      var label = String(r['Label'] || '').trim();
-      if (!label) return;
-      var aktif = String(r['Aktif']).toLowerCase() !== 'false';
-      if (!aktif) return;
-      var urutan = Number(r['Urutan']) || 0;
-      orderMap[label] = urutan;
+    var sheet = openMasterSheet(SHEET_MASTER.OPSI);
+    var rows = sheetToObjects(sheet);
+    return rows.filter(function (r) {
+      return String(r['Kode']) === String(kode) && (r['Aktif'] === true || String(r['Aktif']).toUpperCase() === 'TRUE');
+    }).map(function (r) {
+      return String(r['Label']);
     });
   } catch (e) {
     Logger.log('[getOpsiList] ' + e.message);
+    return [];
   }
-
-  var labels = Object.keys(orderMap).sort(function (a, b) {
-    return (orderMap[a] || 0) - (orderMap[b] || 0) || a.localeCompare(b);
-  });
-  try { cache.put(key, JSON.stringify(labels), 600); } catch (e) { /* ignore */ }
-  return labels;
 }
 
-/**
- * Peta `token -> teks tampilan` untuk satu grup Opsi, untuk seluruh baris di
- * sheet — termasuk token yang sudah dinonaktifkan dan token yang tidak lagi
- * ada di `getOpsiList` — agar baris riwayat lama tetap tampil memakai nama
- * yang benar, bukan token mentah.
- *
- * @param {string} kode
- * @returns {Object.<string,string>}
- */
 function getOpsiLabelMap(kode) {
-  var key = 'OPSI_MAP_' + String(kode || '');
-  var cache = CacheService.getScriptCache();
-  var cached = cache.get(key);
-  if (cached) {
-    try { return JSON.parse(cached); } catch (e) { /* fall through */ }
-  }
-
-  var map = {};
   try {
-    readOpsiRows().forEach(function (r) {
-      if (String(r['Kode']) !== String(kode)) return;
-      var label = String(r['Label'] || '').trim();
-      if (!label) return;
-      // `LabelTampil` tetap dipakai walau token sudah dinonaktifkan — status
-      // `Aktif` hanya mengatur boleh/tidaknya token muncul di dropdown
-      // (lihat getOpsiList), bukan menghapus nama yang tampil di riwayat.
-      // Token tanpa `LabelTampil` (baris lama) memakai `Label` sebagai gantinya.
-      var tampil = String(r['LabelTampil'] || '').trim() || label;
-      map[label] = tampil;
+    var sheet = openMasterSheet(SHEET_MASTER.OPSI);
+    var rows = sheetToObjects(sheet);
+    var map = {};
+    rows.filter(function (r) {
+      return String(r['Kode']) === String(kode);
+    }).forEach(function (r) {
+      map[String(r['Label'])] = String(r['LabelTampil'] || r['Label']);
     });
+    return map;
   } catch (e) {
     Logger.log('[getOpsiLabelMap] ' + e.message);
+    return {};
   }
-  try { cache.put(key, JSON.stringify(map), 600); } catch (e) { /* ignore */ }
-  return map;
 }
 
-/**
- * Label tampilan satu token enum; jatuh ke token itu sendiri bila tidak ada
- * di peta (atau token kosong → string kosong). Dipakai untuk pesan error yang
- * perlu menyebut nama ramah, bukan token mentah.
- * @param {string} kode grup enum (OPSI_KODE)
- * @param {string} token
- * @returns {string}
- */
-function getOpsiLabel(kode, token) {
-  var t = String(token || '').trim().toUpperCase();
-  if (!t) return '';
-  var map = getOpsiLabelMap(kode);
-  return map[t] || t;
-}
-
-/**
- * Item siap pakai untuk combobox typeahead: `value` = token yang disimpan ke
- * sheet transaksi, `label` = teks yang dilihat user.
- *
- * @param {string} kode
- * @returns {Array<{value:string,label:string}>}
- */
 function getOpsiItems(kode) {
-  var map = getOpsiLabelMap(kode);
-  return getOpsiList(kode).map(function (token) {
-    return { value: token, label: map[token] || token };
-  });
-}
-
-/**
- * Detail baris opsi satu grup (untuk halaman Master Data): semua baris
- * termasuk non-aktif, berikut urutan & teks tampilan.
- * @param {string} kode
- * @returns {Array<{label:string, labelTampil:string, aktif:boolean, urutan:number}>}
- */
-function getOpsiDetail(kode) {
-  var out = [];
-  var seen = {};
   try {
-    readOpsiRows().forEach(function (r) {
-        if (String(r['Kode']) !== String(kode)) return;
-        var label = String(r['Label'] || '').trim();
-        if (!label || seen[label]) return;
-        seen[label] = true;
-        var tampil = String(r['LabelTampil'] || '').trim();
-        out.push({
-          label: label,
-          labelTampil: tampil || label,
-          aktif: String(r['Aktif']).toLowerCase() !== 'false',
-          urutan: Number(r['Urutan']) || 0
-        });
-      });
-  } catch (e) {
-    Logger.log('[getOpsiDetail] ' + e.message);
-  }
-  out.sort(function (a, b) { return a.urutan - b.urutan || a.label.localeCompare(b.label); });
-  return out;
-}
-
-/** Buang cache daftar & peta label Opsi (dipanggil setelah Superadmin mengubah sheet). */
-function clearOpsiCache() {
-  var cache = CacheService.getScriptCache();
-  Object.keys(OPSI_KODE).forEach(function (k) {
-    var kode = OPSI_KODE[k];
-    cache.remove('OPSI_LIST_' + kode);
-    cache.remove('OPSI_MAP_' + kode);
-  });
-}
-
-/**
- * Global audit logging helper — mencatat transaksi ke SHEET_LOG.AUDIT_LOG di Nautika_Log.
- *
- * @param {string} userId - ID pengguna yang melakukan aksi
- * @param {string} aksi - Jenis aksi (e.g. 'SUBMIT_PEGAWAI', 'ANULIR_PEGAWAI', 'CREATE_BMN', etc.)
- * @param {string} sheetTarget - Nama sheet target
- * @param {string} rowIdTarget - ID baris target
- * @param {string|Object} alasanOrDetail - Alasan atau objek detail aksi
- */
-function logAudit(userId, aksi, sheetTarget, rowIdTarget, alasanOrDetail) {
-  try {
-    var sheet = openLogSheet(SHEET_LOG.AUDIT_LOG);
-    if (!sheet) return;
-    var alasanStr = '';
-    if (typeof alasanOrDetail === 'object' && alasanOrDetail !== null) {
-      try {
-        alasanStr = JSON.stringify(alasanOrDetail);
-      } catch (errJson) {
-        alasanStr = String(alasanOrDetail);
-      }
-    } else {
-      alasanStr = String(alasanOrDetail || '');
-    }
-
-    appendRowData(sheet, {
-      'LogID':       'LOG-' + Utilities.getUuid().replace(/-/g, '').substring(0, 12).toUpperCase(),
-      'UserID':      userId,
-      'Aksi':        aksi,
-      'SheetTarget': sheetTarget,
-      'RowIDTarget': rowIdTarget,
-      'Alasan':      alasanStr,
-      'Timestamp':   new Date()
+    var sheet = openMasterSheet(SHEET_MASTER.OPSI);
+    var rows = sheetToObjects(sheet);
+    return rows.filter(function (r) {
+      return String(r['Kode']) === String(kode) && (r['Aktif'] === true || String(r['Aktif']).toUpperCase() === 'TRUE');
+    }).map(function (r) {
+      return { token: String(r['Label']), label: String(r['LabelTampil'] || r['Label']) };
     });
   } catch (e) {
-    Logger.log('[logAudit] ' + e.message);
+    Logger.log('[getOpsiItems] ' + e.message);
+    return [];
   }
 }
 
+function logAudit(userId, aksi, sheetTarget, rowIdTarget, alasan, sebelum, sesudah) {
+  try {
+    var sheet = openLogSheet(SHEET_LOG.AUDIT_LOG);
+    var logId = 'AWAK-AUD-' + Utilities.getUuid().substring(0, 10).toUpperCase();
+    var row = [
+      logId,
+      String(userId || 'SYSTEM'),
+      String(aksi || 'UNKNOWN'),
+      String(sheetTarget || ''),
+      String(rowIdTarget || ''),
+      String(alasan || ''),
+      sebelum ? JSON.stringify(sebelum) : '',
+      sesudah ? JSON.stringify(sesudah) : '',
+      new Date().toISOString()
+    ];
+    sheet.appendRow(row);
+  } catch (e) {
+    Logger.log('[logAudit] err: ' + e.message);
+  }
+}
