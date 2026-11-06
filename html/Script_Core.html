@@ -616,6 +616,13 @@ var Router = (function () {
   }
 
   function init() {
+    // Daftarkan handler modul
+    register('komposisi', function () {
+      if (typeof AknView !== 'undefined' && AknView.init) {
+        AknView.init();
+      }
+    });
+
     // Daftarkan click handler pada menu navigasi sidebar
     var navItems = document.querySelectorAll('#app-sidebar .nav-item');
     navItems.forEach(function (btn) {

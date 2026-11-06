@@ -78,13 +78,15 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 - **Tujuan:** Menyelenggarakan pencatatan berkala komposisi personil awak kapal (Keseluruhan vs POA) untuk 5 kategori kepegawaian dengan algoritma *carry-forward* antar-periode yang konsisten.
 - **Tugas Utama:**
   - Implementasi modul murni `pure/Carry.js` untuk kalkulasi nilai efektif lintas minggu/bulan.
-  - Backend `services/AknService.js` (`akn_getPapan`, `akn_submit`, `akn_revisi`, `akn_anulir`, `akn_getTren`).
+  - Backend `services/AknService.js` (`akn_getPapan`, `akn_submit`, `akn_revisi`, `akn_anulir`, `akn_konfirmasiTanpaMutasi`, `akn_getTren`).
   - Antarmuka form input matriks 2x5 yang terisi nilai aktif terkini (*snapshot total*) dan validasi `POA <= Keseluruhan`.
   - Tabel riwayat transaksi dengan aksi baris tier SM (`26px`) untuk dialog Revisi dan Anulir.
+  - Visualisasi tren deret waktu batang SVG murni (Oranye Keselamatan `#D9480F` vs Tinta Hitam).
 - **Deliverables & Checklist:**
-  - [ ] Algoritma carry-forward teruji 100% pada unit test kasus lintas tahun, revisi, dan anulir.
-  - [ ] Form submit hanya mencatat sel yang berubah dalam satu `BatchID`.
-  - [ ] Grafik batang komposisi terisi warna Oranye Keselamatan (`#D9480F`) aktif.
+  - [x] Algoritma carry-forward teruji 100% pada unit test kasus lintas tahun, revisi, dan anulir (8 test pass).
+  - [x] Form submit mencatat snapshot total terkini dalam satu `BatchID`.
+  - [x] Grafik batang komposisi terisi warna Oranye Keselamatan (`#D9480F`) aktif tanpa speedometer.
+  - [x] Lolos verifikasi `node lint_ui.js` (4 pass, 0 error).
 
 ---
 

@@ -1,0 +1,473 @@
+<script>
+/**
+ * html/Script_Akn.html
+ * Controller Logika Klien Sub-Modul A: Komposisi AKN
+ * Nakhoda — Timja Pengawakan Dit. POA KKP RI
+ */
+var AknView = (function () {
+  'use strict';
+
+  var _currentPeriode = '';
+  var _data = null;
+  var KATEGORIS = ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'];
+
+  function init() {
+    // Tampilkan view di outlet
+    var outlet = document.getElementById('outlet-content');
+    var viewTemplate = document.getElementById('view-komposisi');
+    if (viewTemplate && outlet) {
+      outlet.innerHTML = viewTemplate.outerHTML;
+      var activeView = outlet.querySelector('#view-komposisi');
+      if (activeView) activeView.classList.remove('hidden');
+    }
+
+    _bindEvents();
+    load();
+  }
+
+  function _bindEvents() {
+    var periodInput = document.getElementById('akn-periode-select');
+    var btnRefresh = document.getElementById('btn-akn-refresh');
+    var formMatrix = document.getElementById('form-akn-matrix');
+    var btnNoChange = document.getElementById('btn-akn-confirm-nochange');
+
+    if (btnRefresh) {
+      btnRefresh.onclick = function () {
+        var p = (periodInput && periodInput.value || '').trim();
+        load(p);
+      };
+    }
+
+    if (btnNoChange) {
+      btnNoChange.onclick = function () {
+        _confirmNoChange();
+      };
+    }
+
+    if (formMatrix) {
+      formMatrix.onsubmit = function (e) {
+        e.preventDefault();
+        _submitMatrix();
+      };
+    }
+
+    // Listener interaktif untuk auto-hitung total dan validasi POA <= Keseluruhan
+    var inputs = document.querySelectorAll('.akn-input');
+    inputs.forEach(function (inp) {
+      inp.oninput = function () {
+        _recalcLiveTotals();
+      };
+    });
+
+    // Form modal revisi
+    var formRevisi = document.getElementById('form-akn-revisi');
+    if (formRevisi) {
+      formRevisi.onsubmit = function (e) {
+        e.preventDefault();
+        _submitRevisi();
+      };
+    }
+
+    // Form modal anulir
+    var formAnulir = document.getElementById('form-akn-anulir');
+    if (formAnulir) {
+      formAnulir.onsubmit = function (e) {
+        e.preventDefault();
+        _submitAnulir();
+      };
+    }
+  }
+
+  function load(periode) {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    var targetP = periode || _currentPeriode || _getDefaultPeriode();
+    var periodInput = document.getElementById('akn-periode-select');
+    if (periodInput) periodInput.value = targetP;
+
+    rpc('akn_getPapan', token, targetP)
+      .then(function (res) {
+        _data = res;
+        _currentPeriode = res.periode;
+        _renderPapan(res);
+        _loadTren();
+      })
+      .catch(function (err) {
+        Toast.error('Gagal memuat komposisi AKN: ' + err.message);
+      });
+  }
+
+  function _getDefaultPeriode() {
+    var d = new Date();
+    var yyyy = d.getFullYear();
+    var mm = d.getMonth() + 1;
+    var strMm = mm < 10 ? '0' + mm : String(mm);
+    var day = d.getDate();
+    var week = Math.ceil(day / 7);
+    if (week > 4) week = 4;
+    return yyyy + '-' + strMm + '-W0' + week;
+  }
+
+  function _renderPapan(data) {
+    // 1. Banner status carry-forward
+    var banner = document.getElementById('akn-status-banner');
+    var bannerTitle = document.getElementById('akn-banner-title');
+    var bannerDesc = document.getElementById('akn-banner-desc');
+
+    if (banner) {
+      if (data.isConfirmed) {
+        banner.classList.remove('hidden');
+        banner.style.borderLeftColor = 'var(--success)';
+        if (bannerTitle) bannerTitle.textContent = 'Pernyataan Status Tanpa Mutasi Aktif';
+        if (bannerDesc) bannerDesc.textContent = 'Periode ini telah dikonfirmasi tidak memiliki perubahan mutasi personil (' + (data.konfirmasiCatatan || 'Tetap') + ').';
+        var btnNoChange = document.getElementById('btn-akn-confirm-nochange');
+        if (btnNoChange) btnNoChange.style.display = 'none';
+      } else if (data.isFullyCarried) {
+        banner.classList.remove('hidden');
+        banner.style.borderLeftColor = 'var(--accent)';
+        if (bannerTitle) bannerTitle.textContent = 'Data Diwarisi dari Periode Sebelumnya (Carry-Forward)';
+        if (bannerDesc) bannerDesc.textContent = 'Belum ada pencatatan mutasi baru untuk periode ' + data.periode + '. Anda dapat mengonfirmasi tanpa mutasi atau menyimpan snapshot baru.';
+        var btnNoChange2 = document.getElementById('btn-akn-confirm-nochange');
+        if (btnNoChange2) btnNoChange2.style.display = 'inline-block';
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    // 2. Isi nilai input matriks
+    KATEGORIS.forEach(function (kat) {
+      var inpKes = document.querySelector('.akn-kes[data-kat="' + kat + '"]');
+      var inpPoa = document.querySelector('.akn-poa[data-kat="' + kat + '"]');
+
+      var valKes = data.matrix.AKN_KESELURUHAN && data.matrix.AKN_KESELURUHAN[kat] ? data.matrix.AKN_KESELURUHAN[kat].jumlah : 0;
+      var valPoa = data.matrix.AKN_POA && data.matrix.AKN_POA[kat] ? data.matrix.AKN_POA[kat].jumlah : 0;
+
+      if (inpKes) inpKes.value = valKes;
+      if (inpPoa) inpPoa.value = valPoa;
+    });
+
+    _recalcLiveTotals();
+
+    // 3. Render riwayat transaksi
+    _renderRiwayat(data.riwayat || [], data.userRole);
+  }
+
+  function _recalcLiveTotals() {
+    var totKes = 0;
+    var totPoa = 0;
+
+    KATEGORIS.forEach(function (kat) {
+      var inpKes = document.querySelector('.akn-kes[data-kat="' + kat + '"]');
+      var inpPoa = document.querySelector('.akn-poa[data-kat="' + kat + '"]');
+      var rasioEl = document.getElementById('rasio-' + kat);
+
+      var vKes = parseInt(inpKes ? inpKes.value : 0, 10) || 0;
+      var vPoa = parseInt(inpPoa ? inpPoa.value : 0, 10) || 0;
+
+      totKes += vKes;
+      totPoa += vPoa;
+
+      // Validasi baris: POA tidak boleh melebihi Keseluruhan
+      if (vPoa > vKes) {
+        if (inpPoa) inpPoa.style.borderColor = 'var(--danger)';
+        if (rasioEl) {
+          rasioEl.textContent = '! Over';
+          rasioEl.style.color = 'var(--danger)';
+        }
+      } else {
+        if (inpPoa) inpPoa.style.borderColor = 'var(--border)';
+        if (rasioEl) {
+          var pct = vKes > 0 ? ((vPoa / vKes) * 100).toFixed(1) + '%' : '-';
+          rasioEl.textContent = pct;
+          rasioEl.style.color = 'var(--muted)';
+        }
+      }
+    });
+
+    var totKesEl = document.getElementById('total-keseluruhan-display');
+    var totPoaEl = document.getElementById('total-poa-display');
+    var rasioTotEl = document.getElementById('rasio-TOTAL');
+
+    if (totKesEl) totKesEl.textContent = Format.number(totKes);
+    if (totPoaEl) totPoaEl.textContent = Format.number(totPoa);
+    if (rasioTotEl) {
+      var totPct = totKes > 0 ? ((totPoa / totKes) * 100).toFixed(1) + '%' : '-';
+      rasioTotEl.textContent = totPct;
+      if (totPoa > totKes) {
+        rasioTotEl.style.color = 'var(--danger)';
+      } else {
+        rasioTotEl.style.color = 'var(--accent)';
+      }
+    }
+  }
+
+  function _submitMatrix() {
+    var token = AuthApp.getToken();
+    var periodInput = document.getElementById('akn-periode-select');
+    var periode = (periodInput && periodInput.value || '').trim();
+    var ketInput = document.getElementById('akn-keterangan');
+    var keterangan = (ketInput && ketInput.value || '').trim();
+
+    var matrix = {
+      AKN_KESELURUHAN: {},
+      AKN_POA: {}
+    };
+
+    var hasInvalid = false;
+    KATEGORIS.forEach(function (kat) {
+      var vKes = parseInt((document.querySelector('.akn-kes[data-kat="' + kat + '"]') || {}).value || 0, 10);
+      var vPoa = parseInt((document.querySelector('.akn-poa[data-kat="' + kat + '"]') || {}).value || 0, 10);
+      if (vPoa > vKes) hasInvalid = true;
+      matrix.AKN_KESELURUHAN[kat] = vKes;
+      matrix.AKN_POA[kat] = vPoa;
+    });
+
+    if (hasInvalid) {
+      Toast.error('Validasi gagal: Jumlah Dit. POA tidak boleh melebihi Keseluruhan pada kategori terkait.');
+      return;
+    }
+
+    var btnSubmit = document.getElementById('btn-submit-akn');
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Menyimpan...';
+    }
+
+    rpc('akn_submit', {
+      token: token,
+      periode: periode,
+      matrix: matrix,
+      keterangan: keterangan
+    })
+      .then(function (res) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Simpan Snapshot Komposisi';
+        }
+        Toast.success(res.message || 'Komposisi berhasil disimpan.');
+        if (ketInput) ketInput.value = '';
+        load(periode);
+      })
+      .catch(function (err) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Simpan Snapshot Komposisi';
+        }
+        Toast.error('Gagal menyimpan: ' + err.message);
+      });
+  }
+
+  function _confirmNoChange() {
+    var token = AuthApp.getToken();
+    var periode = _currentPeriode;
+    if (!confirm('Konfirmasi bahwa komposisi personil periode ' + periode + ' tetap dan tidak memiliki mutasi?')) {
+      return;
+    }
+
+    rpc('akn_konfirmasiTanpaMutasi', {
+      token: token,
+      periode: periode,
+      catatan: 'Dikonfirmasi tidak ada mutasi oleh staf'
+    })
+      .then(function (res) {
+        Toast.success(res.message || 'Konfirmasi berhasil disimpan.');
+        load(periode);
+      })
+      .catch(function (err) {
+        Toast.error('Gagal konfirmasi: ' + err.message);
+      });
+  }
+
+  function _renderRiwayat(rows, userRole) {
+    var tbody = document.getElementById('akn-riwayat-tbody');
+    if (!tbody) return;
+
+    if (!rows || rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:20px 0;">Belum ada riwayat transaksi pada periode ini.</td></tr>';
+      return;
+    }
+
+    var html = '';
+    rows.forEach(function (r) {
+      var canAnulir = (userRole === 'KADIV' || userRole === 'SUPERADMIN') && r.status === 'ACTIVE';
+      var canRevisi = r.status === 'ACTIVE';
+
+      var scopeLabel = r.scope === 'AKN_POA' ? 'POA' : 'PSDKP';
+
+      html += '<tr>' +
+        '<td>' + Format.statusBadge(r.status) + '</td>' +
+        '<td>' +
+          '<div style="font-weight:500; font-size:12px;">' + Format.escape(scopeLabel + ' — ' + r.kategori) + '</div>' +
+          (r.keterangan ? '<div style="font-size:11px; color:var(--muted);">' + Format.escape(r.keterangan) + '</div>' : '') +
+        '</td>' +
+        '<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">' + Format.number(r.jumlah) + '</td>' +
+        '<td style="font-size:11px; color:var(--muted);">' + Format.dateTime(r.timestamp) + '</td>' +
+        '<td style="text-align:center;">' +
+          '<div style="display:inline-flex; gap:4px;">' +
+            (canRevisi ? '<button class="btn btn-secondary-sm btn-revisi" data-id="' + r.rowId + '" data-desc="' + r.scope + ' ' + r.kategori + '" data-val="' + r.jumlah + '">Revisi</button>' : '') +
+            (canAnulir ? '<button class="btn btn-danger-sm btn-anulir" data-id="' + r.rowId + '">Anulir</button>' : '') +
+          '</div>' +
+        '</td>' +
+      '</tr>';
+    });
+
+    tbody.innerHTML = html;
+
+    // Pasang click listener tombol revisi
+    tbody.querySelectorAll('.btn-revisi').forEach(function (btn) {
+      btn.onclick = function () {
+        var id = btn.getAttribute('data-id');
+        var desc = btn.getAttribute('data-desc');
+        var val = btn.getAttribute('data-val');
+        _openRevisiModal(id, desc, val);
+      };
+    });
+
+    // Pasang click listener tombol anulir
+    tbody.querySelectorAll('.btn-anulir').forEach(function (btn) {
+      btn.onclick = function () {
+        var id = btn.getAttribute('data-id');
+        _openAnulirModal(id);
+      };
+    });
+  }
+
+  function _openRevisiModal(rowId, desc, val) {
+    document.getElementById('revisi-row-id').value = rowId;
+    document.getElementById('revisi-target-desc').textContent = desc;
+    document.getElementById('revisi-jumlah-baru').value = val;
+    document.getElementById('revisi-alasan').value = '';
+    Modal.open('modal-akn-revisi');
+  }
+
+  function _submitRevisi() {
+    var token = AuthApp.getToken();
+    var rowId = document.getElementById('revisi-row-id').value;
+    var jBaru = document.getElementById('revisi-jumlah-baru').value;
+    var alasan = document.getElementById('revisi-alasan').value.trim();
+
+    rpc('akn_revisi', {
+      token: token,
+      rowId: rowId,
+      jumlahBaru: jBaru,
+      alasanRevisi: alasan
+    })
+      .then(function (res) {
+        Modal.close('modal-akn-revisi');
+        Toast.success(res.message || 'Data berhasil direvisi.');
+        load(_currentPeriode);
+      })
+      .catch(function (err) {
+        Toast.error('Gagal revisi: ' + err.message);
+      });
+  }
+
+  function _openAnulirModal(rowId) {
+    document.getElementById('anulir-row-id').value = rowId;
+    document.getElementById('anulir-alasan').value = '';
+    Modal.open('modal-akn-anulir');
+  }
+
+  function _submitAnulir() {
+    var token = AuthApp.getToken();
+    var rowId = document.getElementById('anulir-row-id').value;
+    var alasan = document.getElementById('anulir-alasan').value.trim();
+
+    rpc('akn_anulir', {
+      token: token,
+      rowId: rowId,
+      alasanAnulir: alasan
+    })
+      .then(function (res) {
+        Modal.close('modal-akn-anulir');
+        Toast.success(res.message || 'Data berhasil dianulir.');
+        load(_currentPeriode);
+      })
+      .catch(function (err) {
+        Toast.error('Gagal anulir: ' + err.message);
+      });
+  }
+
+  function _loadTren() {
+    var token = AuthApp.getToken();
+    var container = document.getElementById('akn-chart-container');
+    if (!container) return;
+
+    rpc('akn_getTren', token, 6)
+      .then(function (trenData) {
+        _renderSvgChart(container, trenData);
+      })
+      .catch(function () {
+        container.innerHTML = '<span style="font-size:12px; color:var(--muted);">Gagal memuat tren.</span>';
+      });
+  }
+
+  function _renderSvgChart(container, data) {
+    if (!data || data.length === 0) {
+      container.innerHTML = '<span style="font-size:12px; color:var(--muted);">Belum ada riwayat tren data.</span>';
+      return;
+    }
+
+    var width = container.clientWidth || 400;
+    var height = 180;
+    var padding = { top: 20, right: 20, bottom: 30, left: 40 };
+
+    var maxVal = 10;
+    data.forEach(function (d) {
+      if (d.totalKeseluruhan > maxVal) maxVal = d.totalKeseluruhan;
+    });
+    maxVal = Math.ceil(maxVal * 1.15); // headroom
+
+    var chartW = width - padding.left - padding.right;
+    var chartH = height - padding.top - padding.bottom;
+    var n = data.length;
+    var groupW = chartW / n;
+    var barW = Math.max(8, Math.min(24, groupW * 0.35));
+
+    var svg = '<svg width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" style="font-family:var(--font-mono); font-size:10px;">';
+
+    // Garis grid horizontal
+    var gridSteps = 3;
+    for (var g = 0; g <= gridSteps; g++) {
+      var val = Math.round((maxVal / gridSteps) * g);
+      var y = padding.top + chartH - (val / maxVal) * chartH;
+      svg += '<line x1="' + padding.left + '" y1="' + y + '" x2="' + (width - padding.right) + '" y2="' + y + '" stroke="var(--border)" stroke-dasharray="2,2" />';
+      svg += '<text x="' + (padding.left - 6) + '" y="' + (y + 3) + '" text-anchor="end" fill="var(--muted)">' + val + '</text>';
+    }
+
+    // Render bar tiap periode
+    data.forEach(function (d, i) {
+      var xCenter = padding.left + i * groupW + groupW / 2;
+      var hKes = (d.totalKeseluruhan / maxVal) * chartH;
+      var hPoa = (d.totalPoa / maxVal) * chartH;
+
+      var xKes = xCenter - barW - 2;
+      var yKes = padding.top + chartH - hKes;
+
+      var xPoa = xCenter + 2;
+      var yPoa = padding.top + chartH - hPoa;
+
+      // Bar Keseluruhan (Tinta Gelap)
+      svg += '<rect x="' + xKes + '" y="' + yKes + '" width="' + barW + '" height="' + hKes + '" fill="#15181B" rx="1">';
+      svg += '<title>' + d.periode + ' Keseluruhan: ' + d.totalKeseluruhan + '</title></rect>';
+
+      // Bar Dit. POA (Oranye Keselamatan)
+      svg += '<rect x="' + xPoa + '" y="' + yPoa + '" width="' + barW + '" height="' + hPoa + '" fill="var(--accent)" rx="1">';
+      svg += '<title>' + d.periode + ' Dit. POA: ' + d.totalPoa + '</title></rect>';
+
+      // Label periode di bawah
+      var shortPeriod = d.periode.length > 8 ? d.periode.substring(5) : d.periode;
+      svg += '<text x="' + xCenter + '" y="' + (height - 10) + '" text-anchor="middle" fill="var(--text)" font-size="9">' + Format.escape(shortPeriod) + '</text>';
+    });
+
+    svg += '</svg>';
+    container.innerHTML = svg;
+  }
+
+  return {
+    init: init,
+    load: load
+  };
+})();
+</script>

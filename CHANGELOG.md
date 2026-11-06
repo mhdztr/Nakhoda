@@ -6,6 +6,18 @@
 
 ---
 
+## [Fase 3 — Sub-Modul A: Komposisi AKN Snapshot & Carry-Forward Engine] — 6 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Mengembangkan modul murni `pure/Carry.js` dengan fungsi `resolveCarryForward()`, `resolveMatrix()`, dan `validateAknMatrix()` yang teruji 100% pada `tests/carry.test.js` (8 test pass).
+- Membangun backend `services/AknService.js` menyediakan RPC `akn_getPapan`, `akn_submit`, `akn_revisi`, `akn_anulir`, `akn_konfirmasiTanpaMutasi`, dan `akn_getTren` dengan proteksi locking `withLock()`.
+- Merancang form matriks 2x5 snapshot total (`html/views/Komposisi.html`) mencakup 2 Scope (Keseluruhan PSDKP & Dit. POA) dan 5 Kategori Kepegawaian (PNS, PPPK Fungsional, PPPK Pelaksana, PPPK Paruh Waktu, PJLP) dengan validasi interaktif `POA <= Keseluruhan`.
+- Mengembangkan controller klien `html/Script_Akn.html` dengan grafik batang deret waktu SVG murni (Oranye Keselamatan `#D9480F` vs Tinta Hitam `#15181B`), banner status carry-forward, modal dialog revisi baris, dan anulir Kadiv/Superadmin.
+- Lolos audit linter mandiri `node lint_ui.js` (4 pass, 0 error).
+
+---
+
 ## [Fase 2 — Otentikasi Terpadu, Open Plane Shell & Runtime Klien] — 6 Nov 2026
 **Status:** Selesai
 
