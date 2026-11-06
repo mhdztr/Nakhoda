@@ -124,15 +124,16 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 ### Fase 6: Sub-Modul D: Register Sertifikasi STCW-F & Mesin Status Kedaluwarsa
 - **Tujuan:** Standarisasi kurikulum kecakapan 9 jabatan awak (114 butir kompetensi), pencatatan sertifikat STCW-F, dan evaluasi masa berlaku otomatis.
 - **Tugas Utama:**
-  - Seeding 114 butir standar kompetensi pada `Master_Standar_Pelatihan` lengkap dengan atribut `MasaBerlakuBulan`.
-  - Implementasi modul murni `pure/Sertifikat.js` untuk evaluasi status kedaluwarsa (`BERLAKU`, `SEGERA_HABIS`, `KEDALUWARSA`, `BELUM_ADA`).
-  - Backend `services/KompetensiService.js` (`kom_getTindakLanjut`, `kom_getMatriks`, `kom_saveSertifikat`).
-  - Antarmuka antrean kerja "Tindak Lanjut Segera Habis" dan matriks kelengkapan kompetensi per kapal/pangkalan.
+  - Seeding 114 butir standar kompetensi pada `Master_Standar_Pelatihan` (`data/SeedStandarPelatihan.js`) lengkap dengan atribut `MasaBerlakuBulan` (60 bulan untuk STCW).
+  - Implementasi modul murni `pure/Sertifikat.js` untuk evaluasi status kedaluwarsa (`BERLAKU`, `SEGERA_HABIS`, `KEDALUWARSA`, `BELUM_ADA`) dan persentase kelaikan awak.
+  - Backend `services/KompetensiService.js` (`kom_getDashboard`, `kom_listAwakKompetensi`, `kom_getAwakMatriks`, `kom_saveSertifikat`).
+  - Antarmuka antrean kerja tindak lanjut segera habis/expired dan matriks kelengkapan kompetensi per personil (`html/views/Kompetensi.html`, `html/Script_Kompetensi.html`).
   - Modal dialog revalidasi cepat sertifikat dengan lampiran pindaian STTPP di Google Drive.
 - **Deliverables & Checklist:**
-  - [ ] Mesin status masa berlaku berjalan 100% server-side dengan ambang batas 90 hari dan 30 hari.
-  - [ ] Perekaman sertifikat baru otomatis menandai sertifikat lama sebagai `SUPERSEDED`.
-  - [ ] Pengambilan daftar tindak lanjut $\le 1.5$ detik untuk ribuan rekaman sertifikat.
+  - [x] Mesin status masa berlaku berjalan 100% server-side dengan ambang batas 90 hari dan 30 hari (22 test pass).
+  - [x] Perekaman sertifikat baru otomatis menandai sertifikat lama sebagai `SUPERSEDED`.
+  - [x] Pengambilan daftar tindak lanjut $\le 1.5$ detik untuk ratusan rekaman sertifikat.
+  - [x] Lolos verifikasi `node lint_ui.js` (4 pass, 0 error).
 
 ---
 

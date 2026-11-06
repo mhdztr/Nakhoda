@@ -635,6 +635,12 @@ var Router = (function () {
       }
     });
 
+    register('kompetensi', function () {
+      if (typeof KompetensiView !== 'undefined' && KompetensiView.init) {
+        KompetensiView.init();
+      }
+    });
+
     // Daftarkan click handler pada menu navigasi sidebar
     var navItems = document.querySelectorAll('#app-sidebar .nav-item');
     navItems.forEach(function (btn) {

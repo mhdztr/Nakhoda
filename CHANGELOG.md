@@ -6,6 +6,18 @@
 
 ---
 
+## [Fase 6 — Sub-Modul D: Register Sertifikasi STCW-F & Mesin Kedaluwarsa] — 6 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Menyediakan katalog standar 114 butir kompetensi kepelautan STCW-F untuk 9 jabatan awak armada PSDKP (`data/SeedStandarPelatihan.js`) lengkap dengan penentuan masa berlaku 60 bulan untuk sertifikat keselamatan laut.
+- Mengembangkan modul murni `pure/Sertifikat.js` (`evaluateSertifikatStatus`, `calculateKelaikanKompetensi`) teruji 100% pada `tests/sertifikat.test.js` (6 test pass, total 22 test pass).
+- Membangun backend `services/KompetensiService.js` (`kom_getDashboard`, `kom_listAwakKompetensi`, `kom_getAwakMatriks`, `kom_saveSertifikat`, `kom_ensureStandarSeeded`) dengan penguncian `withLock()` dan siklus hidup `SUPERSEDED`.
+- Membangun antarmuka `html/views/Kompetensi.html` dan runtime `html/Script_Kompetensi.html` mendukung kartu metrik 4-tier, antrean kerja revalidasi sertifikat kedaluwarsa (&le; 90 hari), matriks checklist kelaikan per personil, dan modal rekam STTPP dengan upload berkas ke Google Drive.
+- Lolos audit linter mandiri `node lint_ui.js` (4 pass, 0 error).
+
+---
+
 ## [Fase 5 — Sub-Modul C: Direktori 396+ Awak Kapal Armada & Pemetaan Kelas] — 6 Nov 2026
 **Status:** Selesai
 

@@ -1,0 +1,231 @@
+<!-- ── SUB-MODUL D: REGISTER SERTIFIKASI STCW-F & KEDALUWARSA ── -->
+<div id="view-kompetensi" class="app-view hidden">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h2 class="page-title">Kompetensi &amp; Sertifikasi STCW-F</h2>
+      <p class="page-subtitle">Standardisasi 114 butir kurikulum kepelautan, register sertifikat STTPP, dan mesin pemantau masa berlaku otomatis.</p>
+    </div>
+    <div class="page-actions">
+      <button id="btn-kom-refresh" class="btn btn-secondary-md">
+        <svg viewBox="0 0 24 24" style="width:14px; height:14px; stroke:currentColor; stroke-width:1.8; fill:none;"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Segarkan
+      </button>
+    </div>
+  </div>
+
+  <!-- Kartu Metrik Utama -->
+  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:20px;">
+    <div class="card" style="padding:16px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--success);">Sertifikat Berlaku</div>
+      <div id="metric-cert-berlaku" style="font-size:24px; font-weight:700; color:var(--success); font-family:var(--font-mono); margin-top:4px;">0</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Memenuhi masa berlaku aman</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--warning);">Segera Habis (&le; 90 Hari)</div>
+      <div id="metric-cert-segera" style="font-size:24px; font-weight:700; color:var(--warning); font-family:var(--font-mono); margin-top:4px;">0</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Perlu jadwal revalidasi diklat</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--danger);">Kedaluwarsa</div>
+      <div id="metric-cert-expired" style="font-size:24px; font-weight:700; color:var(--danger); font-family:var(--font-mono); margin-top:4px;">0</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Masa berlaku STTPP telah habis</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted);">Total Sertifikat Aktif</div>
+      <div id="metric-cert-total" style="font-size:24px; font-weight:700; color:var(--text); font-family:var(--font-mono); margin-top:4px;">0</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Terekam di TX_Pelatihan_Awak</div>
+    </div>
+  </div>
+
+  <!-- Tab Navigasi Sub-Modul -->
+  <div style="display:flex; gap:8px; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px;">
+    <button id="tab-kom-antrean" class="btn btn-primary-md">
+      Antrean Tindak Lanjut Revalidasi
+    </button>
+    <button id="tab-kom-matriks" class="btn btn-secondary-md">
+      Matriks Kelengkapan per Personil
+    </button>
+  </div>
+
+  <!-- PANE 1: ANTREAN TINDAK LANJUT REVALIDASI -->
+  <div id="pane-kom-antrean" class="card">
+    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div class="card-title">Daftar Prioritas Tindak Lanjut Sertifikat</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Sertifikat yang telah habis atau akan habis dalam kurun waktu 90 hari mendatang.</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="table" style="margin:0;">
+        <thead>
+          <tr>
+            <th style="width:120px;">Status Masa</th>
+            <th>Personil Awak Kapal</th>
+            <th>Nama Sertifikat &amp; No. Registrasi</th>
+            <th style="width:140px;">Berlaku Sampai</th>
+            <th style="width:140px; text-align:right;">Sisa Waktu</th>
+            <th style="width:120px; text-align:center;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="kom-antrean-tbody">
+          <tr>
+            <td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat antrean tindak lanjut...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PANE 2: MATRIKS KELENGKAPAN PER AWAK -->
+  <div id="pane-kom-matriks" class="card hidden">
+    <div style="padding:12px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <select id="kom-matriks-filter-jabatan" class="form-control-md" style="width:200px;">
+          <option value="">Semua Kelompok Jabatan</option>
+          <option value="Nahkoda">Nahkoda</option>
+          <option value="Mualim">Mualim</option>
+          <option value="Markonis">Markonis</option>
+          <option value="Serang">Serang</option>
+          <option value="Juru Mudi">Juru Mudi</option>
+          <option value="Kelasi Kapal">Kelasi Kapal</option>
+          <option value="Kepala Kamar Mesin Kapal">Kepala Kamar Mesin (KKM)</option>
+          <option value="Masinis">Masinis</option>
+          <option value="Juru Minyak">Juru Minyak</option>
+        </select>
+        <input type="text" id="kom-matriks-search" class="form-control-md" placeholder="Cari nama atau NIP awak..." style="width:240px;">
+        <button id="btn-kom-matriks-search" class="btn btn-secondary-md">Cari</button>
+      </div>
+      <div>
+        <span id="kom-matriks-total-info" style="font-size:12px; color:var(--muted); font-family:var(--font-mono);">0 personil</span>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="table" style="margin:0;">
+        <thead>
+          <tr>
+            <th style="width:260px;">Personil Awak Kapal</th>
+            <th>Jabatan &amp; Rumpun</th>
+            <th style="width:200px;">Kelaikan Sertifikat Wajib</th>
+            <th style="width:120px; text-align:center;">Status</th>
+            <th style="width:130px; text-align:center;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="kom-matriks-tbody">
+          <tr>
+            <td colspan="5" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat matriks kompetensi awak...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── MODAL REKAM / REVALIDASI SERTIFIKAT ── -->
+<div id="modal-kom-save" class="modal-overlay">
+  <div class="modal-box" style="max-width:560px;">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-kom-title">Rekam / Revalidasi Sertifikat</div>
+      <button class="modal-close" onclick="Modal.close('modal-kom-save')">&times;</button>
+    </div>
+    <form id="form-kom-save">
+      <input type="hidden" id="kom-save-pegawai-id" value="">
+      <input type="hidden" id="kom-save-kode-pelatihan" value="">
+
+      <div class="form-group" style="margin-bottom:12px;">
+        <label class="form-label">Personil Awak Kapal</label>
+        <div id="kom-save-nama-target" style="font-size:13px; font-weight:600; color:var(--text); padding:8px 12px; background:#F8F9FA; border:1px solid var(--border);">-</div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:12px;">
+        <label class="form-label">Standar Pelatihan / Sertifikat</label>
+        <div id="kom-save-pelatihan-target" style="font-size:13px; font-weight:600; color:var(--accent); padding:8px 12px; background:#FAF8F5; border:1px solid var(--border);">-</div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+        <div class="form-group">
+          <label class="form-label" for="kom-save-nomor">Nomor Registrasi Sertifikat <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="kom-save-nomor" class="form-control-md" required placeholder="Contoh: 62.01.2023.001928" style="font-family:var(--font-mono);">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="kom-save-lembaga">Lembaga / Balai Penerbit</label>
+          <input type="text" id="kom-save-lembaga" class="form-control-md" placeholder="Contoh: BPPP Tegal / Poltek AUP">
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+        <div class="form-group">
+          <label class="form-label" for="kom-save-tgl-terbit">Tanggal Terbit</label>
+          <input type="date" id="kom-save-tgl-terbit" class="form-control-md">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="kom-save-tgl-exp">Berlaku Sampai (Kedaluwarsa)</label>
+          <input type="date" id="kom-save-tgl-exp" class="form-control-md">
+        </div>
+      </div>
+
+      <!-- File upload STTPP -->
+      <div class="form-group" style="margin-bottom:20px;">
+        <label class="form-label">Pindaian Berkas Sertifikat (PDF / Foto STTPP)</label>
+        <input type="file" id="kom-save-file" class="form-control-md" accept=".pdf,.jpg,.jpeg,.png">
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">Berkas otomatis diunggah ke Google Drive POA_Evidence_Nakhoda.</div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-kom-save')">Batal</button>
+        <button type="submit" id="btn-submit-kom-save" class="btn btn-primary-md">Simpan Sertifikat</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── MODAL DETAIL MATRIKS AWAK ── -->
+<div id="modal-kom-detail" class="modal-overlay">
+  <div class="modal-box" style="max-width:720px;">
+    <div class="modal-header">
+      <div class="modal-title">Matriks Kelengkapan Sertifikat Awak</div>
+      <button class="modal-close" onclick="Modal.close('modal-kom-detail')">&times;</button>
+    </div>
+    <div style="padding:8px 0;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <div>
+          <h3 id="matriks-detail-nama" style="font-size:16px; font-weight:700; color:var(--text); margin-bottom:2px;">-</h3>
+          <div style="font-size:12px; color:var(--muted);">
+            NIP: <span id="matriks-detail-nip" style="font-family:var(--font-mono); color:var(--text); font-weight:500;">-</span> &bull;
+            Jabatan: <span id="matriks-detail-jabatan" style="color:var(--text); font-weight:500;">-</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div id="matriks-detail-persen" style="font-size:22px; font-weight:700; color:var(--accent); font-family:var(--font-mono);">0%</div>
+          <div style="font-size:11px; color:var(--muted);">Kelaikan Sertifikat Wajib</div>
+        </div>
+      </div>
+
+      <!-- Tabel Checklist Butir Standar -->
+      <div style="max-height:340px; overflow-y:auto; border:1px solid var(--border);">
+        <table class="table" style="margin:0;">
+          <thead>
+            <tr>
+              <th style="width:70px;">Status</th>
+              <th>Nama Standar Pelatihan / Sertifikat</th>
+              <th style="width:140px;">No. Registrasi</th>
+              <th style="width:120px;">Masa Berlaku</th>
+              <th style="width:90px; text-align:center;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="matriks-detail-tbody">
+            <tr>
+              <td colspan="5" style="text-align:center; color:var(--muted); padding:24px 0;">Memuat butir standar...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-kom-detail')">Tutup</button>
+    </div>
+  </div>
+</div>
+
