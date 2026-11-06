@@ -31,11 +31,30 @@
 var _SESSION_PREFIX = 'sess_';
 var _SESSION_TTL_SEC = 21600; // 6 jam
 
-// Marker pencabutan sesi. ScriptCache tidak bisa di-enumerate, jadi saat Admin
-// mengubah akun (status/role/divisi) kita tandai userId-nya; setiap permintaan
-// berikutnya dengan token lama ditolak. TTL > TTL sesi agar tidak ada celah.
 var _REVOKED_PREFIX = 'revoked_';
 var _REVOKED_TTL_SEC = 43200; // 12 jam (> _SESSION_TTL_SEC)
+
+var _LOGIN_ATTEMPTS_PREFIX = 'login_fail_';
+var _LOGIN_MAX_ATTEMPTS = 5;
+var _LOGIN_LOCKOUT_SEC = 900; // 15 menit
+
+/**
+ * Memastikan kolom NIP ada pada sheet Users jika belum ada.
+ */
+function ensureUsersNipColumn() {
+  try {
+    var sheet = openMasterSheet(SHEET_MASTER.USERS);
+    var lastCol = sheet.getLastColumn();
+    if (lastCol === 0) return;
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    if (headers.indexOf('NIP') === -1) {
+      sheet.insertColumnAfter(3); // sesudah Email (kolom 3)
+      sheet.getRange(1, 4).setValue('NIP');
+    }
+  } catch (e) {
+    Logger.log('[ensureUsersNipColumn] ' + e.message);
+  }
+}
 
 // ===========================================================================
 // FUNGSI PUBLIK
@@ -425,13 +444,13 @@ function auth_requestOtp(params) {
     CacheService.getScriptCache().put(_OTP_PREFIX + email, JSON.stringify(payload), _OTP_TTL_SEC);
     CacheService.getScriptCache().put(sendKey, String(Date.now()), _OTP_RESEND_TTL_SEC + _OTP_TTL_SEC);
 
-    var res = _ntfKirimEmail(email, 'Kode Verifikasi Registrasi Nautika',
+    var res = _ntfKirimEmail(email, 'Kode Verifikasi Registrasi Nakhoda',
       'Halo ' + (nama || 'Calon Pengguna') + ',\n\n' +
-      'Kode verifikasi untuk pendaftaran akun Nautika:\n\n' +
+      'Kode verifikasi untuk pendaftaran akun Nakhoda (Timja Pengawakan Armada PSDKP):\n\n' +
       '    ' + code + '\n\n' +
       'Kode berlaku ' + Math.round(_OTP_TTL_SEC / 60) + ' menit dan hanya dapat dipakai sekali.\n' +
       'Jika Anda tidak meminta kode ini, abaikan email ini.\n\n' +
-      '— Sistem Nautika, Direktorat Pengendalian Operasi Armada');
+      '— Sistem Nakhoda, Direktorat Pengendalian Operasi Armada KKP RI');
 
     if (!res.ok) {
       // Jangan simpan kode kalau email gagal terkirim — user tidak akan pernah
@@ -549,33 +568,85 @@ function _otpDropPending(pendingToken) {
 }
 
 /**
- * Login.
+ * Login akun via Email atau NIP.
+ * Proteksi brute-force 5x kegagalan via CacheService.
  *
  * @param {Object} params
- * @param {string} params.email
- * @param {string} params.password  - plaintext
+ * @param {string} [params.identifier] - Email dinas atau NIP
+ * @param {string} [params.email]      - Fallback identifier
+ * @param {string} params.password     - plaintext
  */
 function auth_login(params) {
   try {
-    var email    = (params.email    || '').trim().toLowerCase();
-    var password = params.password  || '';
+    var rawIdent = String(params && (params.identifier || params.email) || '').trim();
+    var password = String(params && params.password || '');
 
-    if (!email || !password) {
-      return { success: false, error: 'Email dan password wajib diisi.' };
+    if (!rawIdent || !password) {
+      return { success: false, error: 'Email/NIP dan kata sandi wajib diisi.' };
     }
 
+    var cache = CacheService.getScriptCache();
+    var failKey = _LOGIN_ATTEMPTS_PREFIX + rawIdent.toLowerCase();
+    var failCount = Number(cache.get(failKey) || 0);
+
+    if (failCount >= _LOGIN_MAX_ATTEMPTS) {
+      return {
+        success: false,
+        error: 'Terlalu banyak percobaan gagal. Akun terkunci sementara selama 15 menit demi keamanan.'
+      };
+    }
+
+    ensureUsersNipColumn();
     var usersSheet = openMasterSheet(SHEET_MASTER.USERS);
-    var found = findRowByField(usersSheet, 'Email', email);
+    var found = null;
+
+    // Deteksi jika identifier berupa NIP murni / nomor
+    var cleanNip = _otpNormalizeNip(rawIdent);
+    if (cleanNip.length >= 8 && /^[0-9]+$/.test(cleanNip)) {
+      found = findRowByField(usersSheet, 'NIP', cleanNip);
+    }
+
+    // Jika belum ketemu atau identifier berupa email, cari via Email
+    if (!found) {
+      var emailQuery = rawIdent.toLowerCase();
+      found = findRowByField(usersSheet, 'Email', emailQuery);
+      if (!found) {
+        // Fallback scan insensitive
+        var allUsers = sheetToObjects(usersSheet);
+        for (var u = 0; u < allUsers.length; u++) {
+          var rowEm = String(allUsers[u]['Email'] || '').trim().toLowerCase();
+          var rowNip = _otpNormalizeNip(allUsers[u]['NIP']);
+          if (rowEm === emailQuery || (cleanNip && rowNip === cleanNip)) {
+            found = { obj: allUsers[u], rowIndex: u + 2 };
+            break;
+          }
+        }
+      }
+    }
+
+    function _recordFailure() {
+      failCount++;
+      cache.put(failKey, String(failCount), _LOGIN_LOCKOUT_SEC);
+      var sisa = _LOGIN_MAX_ATTEMPTS - failCount;
+      if (sisa <= 0) {
+        return 'Email/NIP atau kata sandi salah. Akun Anda dikunci sementara selama 15 menit.';
+      }
+      return 'Email/NIP atau kata sandi salah. Sisa kesempatan mencoba: ' + sisa + '.';
+    }
 
     if (!found) {
-      return { success: false, error: 'Email atau password salah.' };
+      return { success: false, error: _recordFailure() };
     }
 
     var user = found.obj;
 
     if (user['PasswordHash'] !== hashPassword(password)) {
-      return { success: false, error: 'Email atau password salah.' };
+      return { success: false, error: _recordFailure() };
     }
+
+    // Login lolos -> bersihkan counter gagal
+    cache.remove(failKey);
+
     if (user['Status'] === USER_STATUS.NONAKTIF) {
       return { success: false, error: 'Akun telah dinonaktifkan oleh Superadmin. Silakan hubungi pengelola.' };
     }
@@ -589,7 +660,7 @@ function auth_login(params) {
 
     // Audit login hanya untuk akun aktif
     if (user['Status'] === USER_STATUS.APPROVED) {
-      _auditLog(user['UserID'], 'LOGIN', SHEET_MASTER.USERS, user['UserID'], '');
+      _auditLog(user['UserID'], 'LOGIN', SHEET_MASTER.USERS, user['UserID'], 'Login berhasil');
     }
 
     return {

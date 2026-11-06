@@ -51,10 +51,10 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
   - Porting script audit mandiri `lint_ui.js` dengan penegakan Zero-Emoji, 3-Tier Controls, larangan inline height, dan ketiadaan residu kode Nautika.
   - Setup runner pengujian unit mandiri `tests/` dengan mock Google Apps Script.
 - **Deliverables & Checklist:**
-  - [ ] Residu modul Nautika dibersihkan dari direktori `services/`, `html/views/`, dan `html/Script_Main.html`.
-  - [ ] `utils/Constants.js` dan `data/SheetAccess.js` terhubung stabil ke `RadarPOA_Nakhoda_DB`.
-  - [ ] Verifikasi kompilasi sintaksis bebas galat (`node -c`).
-  - [ ] Script linter mandiri `node lint_ui.js` siap dijalankan.
+  - [x] Residu modul Nautika dibersihkan dari direktori `services/`, `html/views/`, dan `html/Script_Main.html`.
+  - [x] `utils/Constants.js` dan `data/SheetAccess.js` terhubung stabil ke `RadarPOA_Nakhoda_DB`.
+  - [x] Verifikasi kompilasi sintaksis bebas galat (`node -c`).
+  - [x] Script linter mandiri `node lint_ui.js` siap dijalankan.
 
 ---
 
@@ -63,12 +63,14 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 - **Tugas Utama:**
   - Pembuatan token warna, tipografi Geist, dan skala kontrol 3-tier pada `html/Style.html`.
   - Shell antarmuka `html/Index.html` dengan logo Panji November dan tanpa topbar mengambang.
-  - Implementasi login via Email / NIP di `services/AuthService.js` (tanpa jalan pintas alias peran).
+  - Implementasi login via Email / NIP di `services/AuthService.js` (tanpa jalan pintas alias peran, brute-force limit 5x).
   - Alur registrasi mandiri staf dengan kode verifikasi OTP dan antrean persetujuan Kadiv/Superadmin.
+  - Runtime klien `html/Script_Format.html` dan `html/Script_Core.html` (RPC Bridge Promise, Router Hash, Modal, Toaster).
 - **Deliverables & Checklist:**
-  - [ ] Halaman login dan form registrasi aktif tanpa emoji grafis.
-  - [ ] Navigasi sidebar responsif dengan pill aktif netral.
-  - [ ] Sistem token sesi login terproteksi via `CacheService` dengan masa kedaluwarsa 6 jam.
+  - [x] Halaman login dan form registrasi aktif tanpa emoji grafis.
+  - [x] Navigasi sidebar responsif dengan pill aktif netral.
+  - [x] Sistem token sesi login terproteksi via `CacheService` dengan masa kedaluwarsa 6 jam.
+  - [x] Runtime script core (RPC Promise, Router, Modal, Toaster) terintegrasi dan lolos `lint_ui.js`.
 
 ---
 

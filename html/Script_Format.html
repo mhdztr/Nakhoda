@@ -1,0 +1,228 @@
+<script>
+/**
+ * html/Script_Format.html
+ * Utilitas pemformatan teks, angka tabular, tanggal Indonesia, dan token UI.
+ * Memenuhi spesifikasi DESIGN.md: Achromatic Ledger, tabular-nums, zero-emoji.
+ */
+var Format = (function () {
+  'use strict';
+
+  var BULAN_ID = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+    'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+  ];
+
+  var BULAN_LENGKAP_ID = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  ];
+
+  /**
+   * Sanitasi string untuk mencegah XSS.
+   */
+  function escape(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  /**
+   * Format integer dengan pemisah ribuan titik (1.250).
+   */
+  function number(val) {
+    if (val === null || val === undefined || val === '') return '0';
+    var n = Number(val);
+    if (isNaN(n)) return '0';
+    return n.toLocaleString('id-ID');
+  }
+
+  /**
+   * Format mata uang Rupiah.
+   */
+  function currency(val) {
+    if (val === null || val === undefined || val === '') return 'Rp 0';
+    var n = Number(val);
+    if (isNaN(n)) return 'Rp 0';
+    return 'Rp ' + n.toLocaleString('id-ID');
+  }
+
+  /**
+   * Parsing objek atau string tanggal menjadi Date yang valid.
+   */
+  function _parseDate(d) {
+    if (!d) return null;
+    if (d instanceof Date) return isNaN(d.getTime()) ? null : d;
+    var parsed = new Date(d);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  /**
+   * Format tanggal ringkas (contoh: 14 Jan 2025).
+   */
+  function date(val) {
+    var d = _parseDate(val);
+    if (!d) return '-';
+    var day = d.getDate();
+    var month = BULAN_ID[d.getMonth()];
+    var year = d.getFullYear();
+    return (day < 10 ? '0' + day : day) + ' ' + month + ' ' + year;
+  }
+
+  /**
+   * Format tanggal panjang (contoh: 14 Januari 2025).
+   */
+  function dateLong(val) {
+    var d = _parseDate(val);
+    if (!d) return '-';
+    var day = d.getDate();
+    var month = BULAN_LENGKAP_ID[d.getMonth()];
+    var year = d.getFullYear();
+    return day + ' ' + month + ' ' + year;
+  }
+
+  /**
+   * Format tanggal & waktu (contoh: 14 Jan 2025, 09:30 WIB).
+   */
+  function dateTime(val) {
+    var d = _parseDate(val);
+    if (!d) return '-';
+    var dt = date(d);
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var hh = h < 10 ? '0' + h : h;
+    var mm = m < 10 ? '0' + m : m;
+    return dt + ', ' + hh + ':' + mm + ' WIB';
+  }
+
+  /**
+   * Format inisial 2 huruf kapital untuk avatar nama.
+   */
+  function initials(name) {
+    if (!name) return '--';
+    var parts = String(name).trim().split(/\s+/);
+    if (parts.length === 1) {
+      return parts[0].substring(0, 2).toUpperCase();
+    }
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  /**
+   * Warna latar deterministik untuk avatar dari nama pengguna.
+   */
+  function avatarBg(name) {
+    if (!name) return '#5C6370';
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    var colors = [
+      '#15181B', // Tinta Hitam
+      '#D9480F', // Oranye Keselamatan
+      '#364FC7', // Biru Baja
+      '#2B8A3E', // Hijau Lumut
+      '#862E9C', // Ungu
+      '#5C6370', // Slate Abu
+      '#E8590C', // Oranye Terang
+      '#0C8599'  // Cyan Laut
+    ];
+    var idx = Math.abs(hash) % colors.length;
+    return colors[idx];
+  }
+
+  /**
+   * Badge Pill HTML untuk status transaksi, sertifikat, atau pendaftaran.
+   */
+  function statusBadge(status) {
+    var s = String(status || '').toUpperCase().trim();
+    var badgeClass = 'badge-muted';
+    var label = s || 'DRAFT';
+
+    switch (s) {
+      case 'ACTIVE':
+      case 'APPROVED':
+      case 'BERLAKU':
+      case 'SELESAI':
+      case 'LENGKAP':
+        badgeClass = 'badge-success';
+        if (s === 'ACTIVE') label = 'Aktif';
+        if (s === 'APPROVED') label = 'Disetujui';
+        if (s === 'BERLAKU') label = 'Berlaku';
+        break;
+
+      case 'PENDING':
+      case 'SEGERA_HABIS':
+      case 'PROSES':
+      case 'MENUNGGU':
+        badgeClass = 'badge-warning';
+        if (s === 'PENDING') label = 'Menunggu';
+        if (s === 'SEGERA_HABIS') label = 'Segera Habis';
+        break;
+
+      case 'REJECTED':
+      case 'KEDALUWARSA':
+      case 'VOID':
+      case 'NONAKTIF':
+      case 'BELUM_LENGKAP':
+        badgeClass = 'badge-danger';
+        if (s === 'REJECTED') label = 'Ditolak';
+        if (s === 'KEDALUWARSA') label = 'Kedaluwarsa';
+        if (s === 'VOID') label = 'Dianulir';
+        if (s === 'NONAKTIF') label = 'Nonaktif';
+        if (s === 'BELUM_LENGKAP') label = 'Belum Lengkap';
+        break;
+
+      case 'SUPERSEDED':
+        badgeClass = 'badge-muted';
+        label = 'Direvisi';
+        break;
+
+      default:
+        badgeClass = 'badge-muted';
+        label = s || '-';
+        break;
+    }
+
+    return '<span class="badge ' + badgeClass + '">' + escape(label) + '</span>';
+  }
+
+  /**
+   * Badge Pill HTML untuk rumpun/kelompok awak (Dek, Mesin, Non-Awak).
+   */
+  function kelompokBadge(kelompok) {
+    var k = String(kelompok || '').toUpperCase().trim();
+    var badgeClass = 'badge-muted';
+    if (k === 'DEK') badgeClass = 'badge-accent';
+    else if (k === 'MESIN') badgeClass = 'badge-navy';
+
+    return '<span class="badge ' + badgeClass + '">' + escape(k || '-') + '</span>';
+  }
+
+  /**
+   * Helper nilai aman dengan fallback strip jika kosong.
+   */
+  function safe(val, fallback) {
+    if (val === null || val === undefined || String(val).trim() === '') {
+      return fallback !== undefined ? fallback : '-';
+    }
+    return escape(String(val));
+  }
+
+  return {
+    escape: escape,
+    number: number,
+    currency: currency,
+    date: date,
+    dateLong: dateLong,
+    dateTime: dateTime,
+    initials: initials,
+    avatarBg: avatarBg,
+    statusBadge: statusBadge,
+    kelompokBadge: kelompokBadge,
+    safe: safe
+  };
+})();
+</script>

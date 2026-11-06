@@ -6,6 +6,32 @@
 
 ---
 
+## [Fase 2 — Otentikasi Terpadu, Open Plane Shell & Runtime Klien] — 6 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Menyusun token warna, tipografi Geist, skala kontrol 3-tier (`LG: 40px`, `MD: 32px`, `SM: 26px`), badge pill status, dan dialog styling pada `html/Style.html` (bebas efek kaca/blur, aksen Oranye Keselamatan `#D9480F`).
+- Membangun antarmuka masuk terpadu `html/Auth.html` mendukung login Email/NIP, alur pendaftaran 3-tahap dengan OTP email 6-digit, dan antrean approval dengan auto-polling status real-time.
+- Membangun shell antarmuka `html/Index.html` (arsitektur Open Plane, sidebar 240px, logo Panji November SVG murni, 8 sub-modul navigasi).
+- Memperbarui `services/AuthService.js`: verifikasi kredensial Email atau NIP dinas, proteksi brute-force (batas 5 kali percobaan gagal terkunci 15 menit), manajemen sesi ScriptCache TTL 6 jam, dan eliminasi alias peran.
+- Mengembangkan pustaka pemformatan `html/Script_Format.html` (angka tabular Indonesia, tanggal id-ID, status badge, inisial avatar deterministik, pencegahan XSS).
+- Mengembangkan runtime klien terpusat `html/Script_Core.html` (RPC bridge Promise wrapper `google.script.run`, client-side hash router, modal controller, toast system).
+- Lolos audit linter mandiri `node lint_ui.js` (4 pass, 0 error).
+
+---
+
+## [Fase 1 — Sanitasi Template Nautika, Setup Constants, DB Self-Healing & Test Suite] — 6 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Membersihkan 12 file service warisan usang Nautika (Operasi, Intelijen, Pemantauan, Perawatan, Logistik, BMN, dll.) dan 14 berkas HTML views non-pengawakan.
+- Mengonfigurasi `utils/Constants.js` khusus satelit Pengawakan (`RadarPOA_Nakhoda_DB`, `DIV-AWAK`, enum `AWAK_*`).
+- Menyediakan self-healing database `openAwakSheet()` dan `ensureAwakSpreadsheet()` pada `data/SheetAccess.js`.
+- Mengimplementasikan modul logika murni `pure/Carry.js` dan unit test suite `tests/carry.test.js` (5 test pass).
+- Memporting script audit `lint_ui.js` untuk penegakan aturan 3-tier controls, zero-emoji, dan validasi satelit.
+
+---
+
 ## [Fase 0 — Penyelarasan Dokumen Inti Proyek & Baseline Keputusan] — 6 Nov 2026
 **Status:** Selesai
 

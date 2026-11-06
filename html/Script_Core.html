@@ -1,0 +1,646 @@
+<script>
+/**
+ * html/Script_Core.html
+ * Pondasi Runtime Klien: RPC Bridge, Autentikasi, Hash Router, Toast, dan Modal.
+ * Nakhoda — Timja Pengawakan Dit. POA KKP RI
+ */
+
+// ===========================================================================
+// 1. TOAST NOTIFICATION CONTROLLER
+// ===========================================================================
+var Toast = (function () {
+  'use strict';
+  var container = null;
+
+  function _ensureContainer() {
+    if (!container) {
+      container = document.getElementById('toaster');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toaster';
+        document.body.appendChild(container);
+      }
+    }
+    return container;
+  }
+
+  function show(message, type, durationMs) {
+    var c = _ensureContainer();
+    var t = type || 'info';
+    var duration = durationMs || 4000;
+
+    var toastEl = document.createElement('div');
+    toastEl.className = 'toast toast-' + t;
+
+    var iconSvg = '';
+    if (t === 'success') {
+      iconSvg = '<svg viewBox="0 0 24 24" class="toast-icon"><path d="M20 6L9 17l-5-5"/></svg>';
+    } else if (t === 'error') {
+      iconSvg = '<svg viewBox="0 0 24 24" class="toast-icon"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+    } else if (t === 'warning') {
+      iconSvg = '<svg viewBox="0 0 24 24" class="toast-icon"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    } else {
+      iconSvg = '<svg viewBox="0 0 24 24" class="toast-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+    }
+
+    toastEl.innerHTML = iconSvg + '<div class="toast-msg">' + Format.escape(message) + '</div>';
+    c.appendChild(toastEl);
+
+    // Animasi masuk
+    requestAnimationFrame(function () {
+      toastEl.classList.add('show');
+    });
+
+    // Auto dismiss
+    setTimeout(function () {
+      toastEl.classList.remove('show');
+      setTimeout(function () {
+        if (toastEl.parentNode) toastEl.parentNode.removeChild(toastEl);
+      }, 200);
+    }, duration);
+  }
+
+  return {
+    show: show,
+    success: function (msg, dur) { show(msg, 'success', dur); },
+    error: function (msg, dur) { show(msg, 'error', dur); },
+    warning: function (msg, dur) { show(msg, 'warning', dur); },
+    info: function (msg, dur) { show(msg, 'info', dur); }
+  };
+})();
+
+// ===========================================================================
+// 2. MODAL CONTROLLER
+// ===========================================================================
+var Modal = (function () {
+  'use strict';
+
+  function open(modalId) {
+    var el = document.getElementById(modalId);
+    if (!el) return;
+    el.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close(modalId) {
+    var el = document.getElementById(modalId);
+    if (!el) return;
+    el.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Listener tombol Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var activeModals = document.querySelectorAll('.modal-overlay.active');
+      activeModals.forEach(function (m) {
+        m.classList.remove('active');
+      });
+      document.body.style.overflow = '';
+    }
+  });
+
+  return {
+    open: open,
+    close: close
+  };
+})();
+
+// ===========================================================================
+// 3. RPC BRIDGE (google.script.run Wrapper)
+// ===========================================================================
+function rpc(funcName, params) {
+  return new Promise(function (resolve, reject) {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) {
+      console.warn('[RPC Mock]', funcName, params);
+      return reject(new Error('google.script.run tidak tersedia di lingkungan ini.'));
+    }
+
+    var runner = google.script.run
+      .withSuccessHandler(function (response) {
+        if (!response) {
+          return reject(new Error('Respon server kosong.'));
+        }
+        if (response.success === false) {
+          var err = response.error || 'Terjadi kesalahan pada server.';
+          if (err.indexOf('UNAUTHORIZED') !== -1) {
+            Toast.error('Sesi Anda telah kedaluwarsa. Silakan masuk kembali.');
+            AuthApp.logout(false);
+          }
+          return reject(new Error(err));
+        }
+        resolve(response.data);
+      })
+      .withFailureHandler(function (err) {
+        var msg = err && err.message ? err.message : String(err);
+        if (msg.indexOf('UNAUTHORIZED') !== -1) {
+          Toast.error('Sesi Anda tidak valid. Silakan masuk kembali.');
+          AuthApp.logout(false);
+        }
+        reject(new Error(msg));
+      });
+
+    if (typeof runner[funcName] !== 'function') {
+      return reject(new Error('Fungsi RPC server "' + funcName + '" tidak ditemukan.'));
+    }
+
+    if (params !== undefined) {
+      runner[funcName](params);
+    } else {
+      runner[funcName]();
+    }
+  });
+}
+
+// ===========================================================================
+// 4. AUTH APP & SESSION CONTROLLER
+// ===========================================================================
+var AuthApp = (function () {
+  'use strict';
+
+  var STORAGE_TOKEN = 'nakhoda_token';
+  var STORAGE_USER = 'nakhoda_user';
+  var _currentUser = null;
+  var _pollingInterval = null;
+
+  function getToken() {
+    return localStorage.getItem(STORAGE_TOKEN) || sessionStorage.getItem(STORAGE_TOKEN);
+  }
+
+  function setSession(token, user, remember) {
+    _currentUser = user;
+    if (remember) {
+      localStorage.setItem(STORAGE_TOKEN, token);
+      localStorage.setItem(STORAGE_USER, JSON.stringify(user));
+    } else {
+      sessionStorage.setItem(STORAGE_TOKEN, token);
+      sessionStorage.setItem(STORAGE_USER, JSON.stringify(user));
+    }
+  }
+
+  function clearSession() {
+    _currentUser = null;
+    localStorage.removeItem(STORAGE_TOKEN);
+    localStorage.removeItem(STORAGE_USER);
+    sessionStorage.removeItem(STORAGE_TOKEN);
+    sessionStorage.removeItem(STORAGE_USER);
+    if (_pollingInterval) {
+      clearInterval(_pollingInterval);
+      _pollingInterval = null;
+    }
+  }
+
+  function getUser() {
+    if (_currentUser) return _currentUser;
+    var raw = localStorage.getItem(STORAGE_USER) || sessionStorage.getItem(STORAGE_USER);
+    if (raw) {
+      try { _currentUser = JSON.parse(raw); } catch (e) {}
+    }
+    return _currentUser;
+  }
+
+  function showAuthScreen() {
+    document.getElementById('auth-root').classList.remove('hidden');
+    document.getElementById('app-shell').classList.add('hidden');
+  }
+
+  function showAppShell() {
+    document.getElementById('auth-root').classList.add('hidden');
+    document.getElementById('app-shell').classList.remove('hidden');
+    _updateShellProfile();
+  }
+
+  function _updateShellProfile() {
+    var u = getUser();
+    if (!u) return;
+    var nameEl = document.getElementById('shell-user-name');
+    var roleEl = document.getElementById('shell-user-role');
+    var avatarEl = document.getElementById('shell-user-avatar');
+
+    if (nameEl) nameEl.textContent = u.nama || u.email || 'Pengguna';
+    if (roleEl) {
+      var rTitle = 'Staf Pengawakan';
+      if (u.role === 'SUPERADMIN') rTitle = 'Super Administrator';
+      else if (u.role === 'DIREKTUR') rTitle = 'Direktur POA';
+      else if (u.role === 'KADIV') rTitle = 'Katimja Pengawakan';
+      roleEl.textContent = rTitle;
+    }
+    if (avatarEl) {
+      avatarEl.textContent = Format.initials(u.nama || u.email);
+      avatarEl.style.backgroundColor = Format.avatarBg(u.nama || u.email);
+    }
+
+    // Role-based UI visibility
+    var adminNavItems = document.querySelectorAll('[data-route="admin-users"], [data-route="admin-audit"]');
+    adminNavItems.forEach(function (el) {
+      if (u.role === 'SUPERADMIN' || u.role === 'KADIV') {
+        el.style.display = 'flex';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  }
+
+  function init() {
+    var token = getToken();
+    if (!token) {
+      showAuthScreen();
+      _initAuthForms();
+      return;
+    }
+
+    // Validasi token ke server
+    rpc('auth_getSessionInfo', token)
+      .then(function (session) {
+        if (!session || !session.userId) {
+          clearSession();
+          showAuthScreen();
+          _initAuthForms();
+          return;
+        }
+        setSession(token, session, true);
+        showAppShell();
+        _initAppEvents();
+        Router.init();
+      })
+      .catch(function () {
+        clearSession();
+        showAuthScreen();
+        _initAuthForms();
+      });
+  }
+
+  function logout(notifyServer) {
+    var token = getToken();
+    if (notifyServer !== false && token) {
+      rpc('auth_logout', token).catch(function () {});
+    }
+    clearSession();
+    window.location.hash = '';
+    showAuthScreen();
+    _initAuthForms();
+    Toast.info('Anda telah keluar dari sistem.');
+  }
+
+  // -------------------------------------------------------------------------
+  // Handlers Formulir Masuk & Registrasi
+  // -------------------------------------------------------------------------
+  var _pendingOtpToken = null;
+  var _regEmail = null;
+
+  function _initAuthForms() {
+    var tabLogin = document.getElementById('tab-login');
+    var tabRegister = document.getElementById('tab-register');
+    var viewLogin = document.getElementById('view-login');
+    var viewRegister = document.getElementById('view-register');
+    var viewApproval = document.getElementById('view-approval');
+
+    if (tabLogin && tabRegister) {
+      tabLogin.onclick = function () {
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+        viewLogin.classList.remove('hidden');
+        viewRegister.classList.add('hidden');
+        viewApproval.classList.add('hidden');
+      };
+      tabRegister.onclick = function () {
+        tabRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+        viewRegister.classList.remove('hidden');
+        viewLogin.classList.add('hidden');
+        viewApproval.classList.add('hidden');
+      };
+    }
+
+    // Form Login Submit
+    var formLogin = document.getElementById('form-login');
+    var btnLogin = document.getElementById('btn-login');
+    var loginErr = document.getElementById('login-error');
+
+    if (formLogin) {
+      formLogin.onsubmit = function (e) {
+        e.preventDefault();
+        loginErr.classList.add('hidden');
+        loginErr.textContent = '';
+
+        var ident = document.getElementById('loginIdentifier').value.trim();
+        var pass = document.getElementById('loginPassword').value;
+
+        if (!ident || !pass) {
+          loginErr.textContent = 'Email/NIP dan kata sandi wajib diisi.';
+          loginErr.classList.remove('hidden');
+          return;
+        }
+
+        btnLogin.disabled = true;
+        btnLogin.textContent = 'Memverifikasi...';
+
+        rpc('auth_login', { identifier: ident, password: pass })
+          .then(function (result) {
+            btnLogin.disabled = false;
+            btnLogin.textContent = 'Masuk ke Sistem';
+
+            if (result.user.status === 'PENDING') {
+              _showApprovalScreen(result.user);
+              return;
+            }
+
+            setSession(result.token, result.user, true);
+            Toast.success('Selamat datang, ' + (result.user.nama || 'Rekan') + '.');
+            showAppShell();
+            _initAppEvents();
+            Router.init();
+          })
+          .catch(function (err) {
+            btnLogin.disabled = false;
+            btnLogin.textContent = 'Masuk ke Sistem';
+            loginErr.textContent = err.message || 'Gagal masuk.';
+            loginErr.classList.remove('hidden');
+          });
+      };
+    }
+
+    // Registrasi Alur 3-Tahap
+    var formReg1 = document.getElementById('form-register-step1');
+    var formReg2 = document.getElementById('form-register-step2');
+    var btnOtp = document.getElementById('btn-request-otp');
+    var btnRegSubmit = document.getElementById('btn-submit-register');
+    var regErr1 = document.getElementById('register-error-1');
+    var regErr2 = document.getElementById('register-error-2');
+
+    if (formReg1) {
+      formReg1.onsubmit = function (e) {
+        e.preventDefault();
+        regErr1.classList.add('hidden');
+        regErr1.textContent = '';
+
+        var nama = document.getElementById('regNama').value.trim();
+        var nip = document.getElementById('regNip').value.trim();
+        var email = document.getElementById('regEmail').value.trim().toLowerCase();
+        var pass = document.getElementById('regPassword').value;
+        var role = document.getElementById('regRole').value;
+
+        if (!nama || !nip || !email || !pass || !role) {
+          regErr1.textContent = 'Seluruh data wajib diisi.';
+          regErr1.classList.remove('hidden');
+          return;
+        }
+
+        btnOtp.disabled = true;
+        btnOtp.textContent = 'Mengirim Kode OTP...';
+
+        rpc('auth_requestOtp', {
+          nama: nama,
+          nip: nip,
+          email: email,
+          password: pass,
+          divisiId: 'DIV-AWAK',
+          roleDilamar: role
+        })
+          .then(function () {
+            btnOtp.disabled = false;
+            btnOtp.textContent = 'Kirim Kode Verifikasi';
+            _regEmail = email;
+            document.getElementById('otp-sent-email').textContent = email;
+            formReg1.classList.add('hidden');
+            formReg2.classList.remove('hidden');
+            Toast.info('Kode verifikasi OTP 6-digit telah dikirim ke ' + email);
+          })
+          .catch(function (err) {
+            btnOtp.disabled = false;
+            btnOtp.textContent = 'Kirim Kode Verifikasi';
+            regErr1.textContent = err.message || 'Gagal mengirim kode OTP.';
+            regErr1.classList.remove('hidden');
+          });
+      };
+    }
+
+    if (formReg2) {
+      formReg2.onsubmit = function (e) {
+        e.preventDefault();
+        regErr2.classList.add('hidden');
+        regErr2.textContent = '';
+
+        var code = document.getElementById('regOtp').value.trim();
+        if (!code || code.length !== 6) {
+          regErr2.textContent = 'Masukkan 6-digit kode verifikasi.';
+          regErr2.classList.remove('hidden');
+          return;
+        }
+
+        btnRegSubmit.disabled = true;
+        btnRegSubmit.textContent = 'Memverifikasi...';
+
+        rpc('auth_verifyOtp', { email: _regEmail, code: code })
+          .then(function (otpResult) {
+            _pendingOtpToken = otpResult.pendingToken;
+            btnRegSubmit.textContent = 'Mendaftarkan Akun...';
+
+            var payload = {
+              nama: document.getElementById('regNama').value.trim(),
+              nip: document.getElementById('regNip').value.trim(),
+              email: _regEmail,
+              password: document.getElementById('regPassword').value,
+              divisiId: 'DIV-AWAK',
+              roleDilamar: document.getElementById('regRole').value,
+              pendingToken: _pendingOtpToken
+            };
+
+            return rpc('auth_register', payload);
+          })
+          .then(function (regResult) {
+            btnRegSubmit.disabled = false;
+            btnRegSubmit.textContent = 'Verifikasi &amp; Daftarkan Akun';
+            Toast.success('Pendaftaran berhasil diajukan.');
+            _showApprovalScreen(regResult);
+          })
+          .catch(function (err) {
+            btnRegSubmit.disabled = false;
+            btnRegSubmit.textContent = 'Verifikasi &amp; Daftarkan Akun';
+            regErr2.textContent = err.message || 'Gagal verifikasi kode OTP.';
+            regErr2.classList.remove('hidden');
+          });
+      };
+
+      var btnBackStep1 = document.getElementById('btn-back-step1');
+      if (btnBackStep1) {
+        btnBackStep1.onclick = function () {
+          formReg2.classList.add('hidden');
+          formReg1.classList.remove('hidden');
+        };
+      }
+    }
+  }
+
+  function _showApprovalScreen(userData) {
+    var viewLogin = document.getElementById('view-login');
+    var viewRegister = document.getElementById('view-register');
+    var viewApproval = document.getElementById('view-approval');
+    var authTabs = document.querySelector('.auth-tabs');
+
+    if (viewLogin) viewLogin.classList.add('hidden');
+    if (viewRegister) viewRegister.classList.add('hidden');
+    if (authTabs) authTabs.style.display = 'none';
+    if (viewApproval) {
+      viewApproval.classList.remove('hidden');
+      var nameEl = document.getElementById('approval-user-name');
+      var emailEl = document.getElementById('approval-user-email');
+      var roleEl = document.getElementById('approval-user-role');
+      if (nameEl) nameEl.textContent = userData.nama || '-';
+      if (emailEl) emailEl.textContent = userData.email || '-';
+      if (roleEl) roleEl.textContent = userData.role || 'Staf Pengawakan';
+
+      // Tombol kembali ke login
+      var btnBackLogin = document.getElementById('btn-back-to-login');
+      if (btnBackLogin) {
+        btnBackLogin.onclick = function () {
+          if (authTabs) authTabs.style.display = 'flex';
+          viewApproval.classList.add('hidden');
+          viewLogin.classList.remove('hidden');
+        };
+      }
+
+      // Auto poll status pendaftaran tiap 8 detik
+      if (_pollingInterval) clearInterval(_pollingInterval);
+      _pollingInterval = setInterval(function () {
+        rpc('auth_checkRegistrationStatus', { email: userData.email, userId: userData.userId })
+          .then(function (st) {
+            if (st && st.status === 'APPROVED') {
+              clearInterval(_pollingInterval);
+              Toast.success('Akun Anda telah disetujui! Silakan masuk.');
+              if (authTabs) authTabs.style.display = 'flex';
+              viewApproval.classList.add('hidden');
+              viewLogin.classList.remove('hidden');
+            } else if (st && st.status === 'REJECTED') {
+              clearInterval(_pollingInterval);
+              Toast.error('Pendaftaran ditolak: ' + (st.alasanReject || 'Tidak memenuhi kualifikasi'));
+            }
+          })
+          .catch(function () {});
+      }, 8000);
+    }
+  }
+
+  function _initAppEvents() {
+    var btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+      btnLogout.onclick = function () {
+        if (confirm('Apakah Anda yakin ingin keluar dari Nakhoda?')) {
+          logout(true);
+        }
+      };
+    }
+  }
+
+  return {
+    init: init,
+    getToken: getToken,
+    getUser: getUser,
+    logout: logout
+  };
+})();
+
+// ===========================================================================
+// 5. CLIENT-SIDE HASH ROUTER
+// ===========================================================================
+var Router = (function () {
+  'use strict';
+
+  var _routes = {};
+  var _currentRoute = null;
+
+  function register(route, handler) {
+    _routes[route] = handler;
+  }
+
+  function navigate(route) {
+    window.location.hash = '#/' + route;
+  }
+
+  function _handleHashChange() {
+    var rawHash = window.location.hash || '#/ringkasan';
+    var cleanRoute = rawHash.replace(/^#\/?/, '').split('?')[0] || 'ringkasan';
+
+    // Highlight nav item di sidebar
+    var navItems = document.querySelectorAll('#app-sidebar .nav-item');
+    navItems.forEach(function (btn) {
+      var btnRoute = btn.getAttribute('data-route');
+      if (btnRoute === cleanRoute) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    _currentRoute = cleanRoute;
+
+    var handler = _routes[cleanRoute];
+    if (typeof handler === 'function') {
+      handler();
+    } else {
+      _renderDefaultPlaceholder(cleanRoute);
+    }
+  }
+
+  function _renderDefaultPlaceholder(route) {
+    var outlet = document.getElementById('outlet-content');
+    if (!outlet) return;
+
+    var titles = {
+      'ringkasan': 'Ringkasan Eksekutif Pengawakan',
+      'komposisi': 'Komposisi Awak Kapal Negara (AKN)',
+      'direktori': 'Direktori & Profil Awak Kapal',
+      'kompetensi': 'Matriks Kualifikasi & Sertifikasi STCW-F',
+      'sijil': 'Papan Sijil & Safe Manning Armada',
+      'kegiatan': 'Log Kegiatan Operasional Pengawakan',
+      'laporan': 'Laporan Terkonsolidasi & Ekspor',
+      'admin-users': 'Pengelolaan Akses Pengguna',
+      'admin-audit': 'Catatan Rekam Jejak Audit'
+    };
+
+    var title = titles[route] || ('Modul ' + route);
+
+    outlet.innerHTML =
+      '<div class="page-header">' +
+        '<div class="page-title-group">' +
+          '<h2 class="page-title">' + Format.escape(title) + '</h2>' +
+          '<p class="page-subtitle">Pembaruan modul ini sedang dimuat oleh sistem runtime.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card" style="padding:48px 24px; text-align:center;">' +
+        '<div style="max-width:400px; margin:0 auto;">' +
+          '<div style="font-size:14px; font-weight:500; color:var(--text); margin-bottom:6px;">Modul Siap Terkoneksi</div>' +
+          '<div style="font-size:12px; color:var(--muted); line-height:1.5;">Layanan satelit Nakhoda telah terhubung ke basis data terpusat RadarPOA_Nakhoda_DB.</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function init() {
+    // Daftarkan click handler pada menu navigasi sidebar
+    var navItems = document.querySelectorAll('#app-sidebar .nav-item');
+    navItems.forEach(function (btn) {
+      btn.onclick = function () {
+        var r = btn.getAttribute('data-route');
+        if (r) navigate(r);
+      };
+    });
+
+    window.addEventListener('hashchange', _handleHashChange);
+    _handleHashChange();
+  }
+
+  return {
+    init: init,
+    register: register,
+    navigate: navigate,
+    getCurrentRoute: function () { return _currentRoute; }
+  };
+})();
+
+// ===========================================================================
+// INITIALIZATION ON DOM READY
+// ===========================================================================
+document.addEventListener('DOMContentLoaded', function () {
+  AuthApp.init();
+});
+</script>
