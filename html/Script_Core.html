@@ -623,6 +623,12 @@ var Router = (function () {
       }
     });
 
+    register('kegiatan', function () {
+      if (typeof KegiatanView !== 'undefined' && KegiatanView.init) {
+        KegiatanView.init();
+      }
+    });
+
     // Daftarkan click handler pada menu navigasi sidebar
     var navItems = document.querySelectorAll('#app-sidebar .nav-item');
     navItems.forEach(function (btn) {

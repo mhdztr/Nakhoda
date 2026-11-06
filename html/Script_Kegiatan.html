@@ -1,0 +1,387 @@
+<script>
+/**
+ * html/Script_Kegiatan.html
+ * Controller Klien Sub-Modul B: Log Kegiatan & Multi-Evidence
+ * Nakhoda — Timja Pengawakan Dit. POA KKP RI
+ */
+var KegiatanView = (function () {
+  'use strict';
+
+  var _stagedFiles = [];
+  var _userRole = '';
+
+  function init() {
+    var outlet = document.getElementById('outlet-content');
+    var viewTemplate = document.getElementById('view-kegiatan');
+    if (viewTemplate && outlet) {
+      outlet.innerHTML = viewTemplate.outerHTML;
+      var activeView = outlet.querySelector('#view-kegiatan');
+      if (activeView) activeView.classList.remove('hidden');
+    }
+
+    _bindEvents();
+    load();
+  }
+
+  function _bindEvents() {
+    var btnTambah = document.getElementById('btn-tambah-kegiatan');
+    var filterJenis = document.getElementById('keg-filter-jenis');
+    var searchInput = document.getElementById('keg-search-input');
+    var btnSearch = document.getElementById('btn-keg-search');
+    var fileInput = document.getElementById('keg-file-input');
+    var formKeg = document.getElementById('form-kegiatan');
+    var formAnulir = document.getElementById('form-keg-anulir');
+
+    if (btnTambah) {
+      btnTambah.onclick = function () {
+        _openCreateModal();
+      };
+    }
+
+    if (filterJenis) {
+      filterJenis.onchange = function () {
+        load();
+      };
+    }
+
+    if (btnSearch) {
+      btnSearch.onclick = function () {
+        load();
+      };
+    }
+
+    if (searchInput) {
+      searchInput.onkeydown = function (e) {
+        if (e.key === 'Enter') load();
+      };
+    }
+
+    if (fileInput) {
+      fileInput.onchange = function (e) {
+        _handleFileSelection(e.target.files);
+      };
+    }
+
+    if (formKeg) {
+      formKeg.onsubmit = function (e) {
+        e.preventDefault();
+        _submitForm();
+      };
+    }
+
+    if (formAnulir) {
+      formAnulir.onsubmit = function (e) {
+        e.preventDefault();
+        _submitAnulir();
+      };
+    }
+  }
+
+  function load() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    var jenis = (document.getElementById('keg-filter-jenis') || {}).value || '';
+    var search = (document.getElementById('keg-search-input') || {}).value || '';
+
+    rpc('keg_list', {
+      token: token,
+      jenis: jenis,
+      search: search,
+      limit: 50,
+      offset: 0
+    })
+      .then(function (res) {
+        _userRole = res.userRole;
+        _renderTable(res.items || [], res.total || 0);
+      })
+      .catch(function (err) {
+        Toast.error('Gagal memuat log kegiatan: ' + err.message);
+      });
+  }
+
+  function _renderTable(items, total) {
+    var tbody = document.getElementById('keg-list-tbody');
+    var infoEl = document.getElementById('keg-total-info');
+    if (infoEl) infoEl.textContent = total + ' kegiatan tercatat';
+
+    if (!tbody) return;
+
+    if (!items || items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Belum ada agenda kegiatan yang tercatat.</td></tr>';
+      return;
+    }
+
+    var html = '';
+    items.forEach(function (k) {
+      var jenisLabel = k.jenisKegiatan.replace(/_/g, ' ');
+      var canRevisi = k.status === 'ACTIVE';
+      var canAnulir = (_userRole === 'KADIV' || _userRole === 'SUPERADMIN') && k.status === 'ACTIVE';
+
+      var jadwalText = Format.date(k.tanggalMulai);
+      if (k.tanggalSelesai && k.tanggalSelesai !== k.tanggalMulai) {
+        jadwalText += ' s.d. ' + Format.date(k.tanggalSelesai);
+      }
+
+      html += '<tr>' +
+        '<td>' + Format.statusBadge(k.status) + '</td>' +
+        '<td>' +
+          '<div style="font-weight:600; color:var(--text); font-size:13px;">' + Format.escape(k.judulKegiatan) + '</div>' +
+          '<div style="font-size:11px; color:var(--muted);">' + Format.escape(k.wilayah || 'Dit. POA') + '</div>' +
+        '</td>' +
+        '<td><span class="badge badge-accent">' + Format.escape(jenisLabel) + '</span></td>' +
+        '<td style="font-size:12px; font-family:var(--font-mono);">' + jadwalText + '</td>' +
+        '<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">' + Format.number(k.jumlahPeserta) + '</td>' +
+        '<td style="text-align:center;">' +
+          (k.evidenceCount > 0 ? '<span class="badge badge-navy">' + k.evidenceCount + ' berkas</span>' : '<span style="color:var(--muted); font-size:11px;">-</span>') +
+        '</td>' +
+        '<td style="text-align:center;">' +
+          '<div style="display:inline-flex; gap:4px;">' +
+            '<button class="btn btn-secondary-sm btn-keg-detail" data-id="' + k.rowId + '">Detail</button>' +
+            (canRevisi ? '<button class="btn btn-secondary-sm btn-keg-revisi" data-id="' + k.rowId + '">Revisi</button>' : '') +
+            (canAnulir ? '<button class="btn btn-danger-sm btn-keg-anulir" data-id="' + k.rowId + '">Anulir</button>' : '') +
+          '</div>' +
+        '</td>' +
+      '</tr>';
+    });
+
+    tbody.innerHTML = html;
+
+    // Pasang listener aksi
+    tbody.querySelectorAll('.btn-keg-detail').forEach(function (btn) {
+      btn.onclick = function () {
+        _openDetailModal(btn.getAttribute('data-id'));
+      };
+    });
+
+    tbody.querySelectorAll('.btn-keg-revisi').forEach(function (btn) {
+      btn.onclick = function () {
+        _openRevisiModal(btn.getAttribute('data-id'));
+      };
+    });
+
+    tbody.querySelectorAll('.btn-keg-anulir').forEach(function (btn) {
+      btn.onclick = function () {
+        _openAnulirModal(btn.getAttribute('data-id'));
+      };
+    });
+  }
+
+  function _openCreateModal() {
+    _stagedFiles = [];
+    _renderStagedFileList();
+
+    document.getElementById('keg-form-mode').value = 'create';
+    document.getElementById('keg-form-rowid').value = '';
+    document.getElementById('modal-keg-title').textContent = 'Catat Agenda Kegiatan Baru';
+    document.getElementById('keg-revisi-reason-group').classList.add('hidden');
+    document.getElementById('keg-alasan-revisi').required = false;
+
+    // Reset fields
+    document.getElementById('keg-judul').value = '';
+    document.getElementById('keg-wilayah').value = '';
+    document.getElementById('keg-peserta-count').value = '1';
+    document.getElementById('keg-deskripsi').value = '';
+    document.getElementById('keg-evidence-url').value = '';
+
+    var today = new Date().toISOString().substring(0, 10);
+    document.getElementById('keg-tgl-mulai').value = today;
+    document.getElementById('keg-tgl-selesai').value = today;
+
+    Modal.open('modal-keg-form');
+  }
+
+  function _openRevisiModal(rowId) {
+    var token = AuthApp.getToken();
+    rpc('keg_getDetail', token, rowId)
+      .then(function (res) {
+        _stagedFiles = [];
+        _renderStagedFileList();
+
+        document.getElementById('keg-form-mode').value = 'revisi';
+        document.getElementById('keg-form-rowid').value = rowId;
+        document.getElementById('modal-keg-title').textContent = 'Revisi Agenda Kegiatan';
+        document.getElementById('keg-revisi-reason-group').classList.remove('hidden');
+        document.getElementById('keg-alasan-revisi').required = true;
+        document.getElementById('keg-alasan-revisi').value = '';
+
+        document.getElementById('keg-judul').value = res.judulKegiatan;
+        document.getElementById('keg-jenis').value = res.jenisKegiatan;
+        document.getElementById('keg-wilayah').value = res.wilayah;
+        document.getElementById('keg-tgl-mulai').value = res.tanggalMulai;
+        document.getElementById('keg-tgl-selesai').value = res.tanggalSelesai;
+        document.getElementById('keg-peserta-count').value = res.jumlahPeserta;
+        document.getElementById('keg-deskripsi').value = res.deskripsi;
+        document.getElementById('keg-evidence-url').value = res.evidenceUrl || '';
+
+        Modal.open('modal-keg-form');
+      })
+      .catch(function (err) {
+        Toast.error('Gagal mengambil data kegiatan: ' + err.message);
+      });
+  }
+
+  function _openDetailModal(rowId) {
+    var token = AuthApp.getToken();
+    rpc('keg_getDetail', token, rowId)
+      .then(function (res) {
+        document.getElementById('detail-keg-status').className = 'badge ' + (res.status === 'ACTIVE' ? 'badge-success' : 'badge-danger');
+        document.getElementById('detail-keg-status').textContent = res.status === 'ACTIVE' ? 'Aktif' : res.status;
+        document.getElementById('detail-keg-jenis').textContent = res.jenisKegiatan.replace(/_/g, ' ');
+        document.getElementById('detail-keg-judul').textContent = res.judulKegiatan;
+        document.getElementById('detail-keg-wilayah').textContent = res.wilayah || 'Dit. POA';
+        document.getElementById('detail-keg-jadwal').textContent = Format.date(res.tanggalMulai) + (res.tanggalSelesai !== res.tanggalMulai ? ' s.d. ' + Format.date(res.tanggalSelesai) : '');
+        document.getElementById('detail-keg-peserta').textContent = res.jumlahPeserta + ' orang';
+        document.getElementById('detail-keg-deskripsi').textContent = res.deskripsi || 'Tidak ada catatan deskripsi.';
+
+        // Render lampiran
+        var evContainer = document.getElementById('detail-keg-evidences');
+        if (evContainer) {
+          if (!res.evidences || res.evidences.length === 0) {
+            evContainer.innerHTML = '<div style="font-size:12px; color:var(--muted);">Tidak ada berkas bukti yang dilampirkan.</div>';
+          } else {
+            var evHtml = '';
+            res.evidences.forEach(function (e) {
+              evHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#F8F9FA; border:1px solid var(--border);">' +
+                '<div style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(e.fileName) + '</div>' +
+                (e.viewUrl ? '<a href="' + e.viewUrl + '" target="_blank" class="btn btn-secondary-sm" style="text-decoration:none;">Buka di Drive</a>' : '') +
+              '</div>';
+            });
+            evContainer.innerHTML = evHtml;
+          }
+        }
+
+        Modal.open('modal-keg-detail');
+      })
+      .catch(function (err) {
+        Toast.error('Gagal mengambil rincian kegiatan: ' + err.message);
+      });
+  }
+
+  function _openAnulirModal(rowId) {
+    document.getElementById('anulir-keg-id').value = rowId;
+    document.getElementById('anulir-keg-alasan').value = '';
+    Modal.open('modal-keg-anulir');
+  }
+
+  function _submitAnulir() {
+    var token = AuthApp.getToken();
+    var rowId = document.getElementById('anulir-keg-id').value;
+    var alasan = document.getElementById('anulir-keg-alasan').value.trim();
+
+    rpc('keg_anulir', {
+      token: token,
+      rowId: rowId,
+      alasanAnulir: alasan
+    })
+      .then(function (res) {
+        Modal.close('modal-keg-anulir');
+        Toast.success(res.message || 'Kegiatan berhasil dibatalkan.');
+        load();
+      })
+      .catch(function (err) {
+        Toast.error('Gagal membatalkan kegiatan: ' + err.message);
+      });
+  }
+
+  function _handleFileSelection(files) {
+    if (!files || files.length === 0) return;
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      if (file.size > 15 * 1024 * 1024) {
+        Toast.error('File "' + file.name + '" melebihi batas 15MB.');
+        continue;
+      }
+      (function (f) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          _stagedFiles.push({
+            fileName: f.name,
+            mimeType: f.type || 'application/octet-stream',
+            dataBase64: e.target.result
+          });
+          _renderStagedFileList();
+        };
+        reader.readAsDataURL(f);
+      })(file);
+    }
+  }
+
+  function _renderStagedFileList() {
+    var container = document.getElementById('keg-file-list');
+    if (!container) return;
+    if (_stagedFiles.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
+    var html = '<div style="font-weight:600; margin-bottom:4px;">Berkas Terpilih (' + _stagedFiles.length + '):</div>';
+    _stagedFiles.forEach(function (f, idx) {
+      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid #ECEEEF;">' +
+        '<span>' + Format.escape(f.fileName) + '</span>' +
+        '<button type="button" class="btn btn-secondary-sm" style="padding:2px 6px; font-size:10px;" onclick="KegiatanView.removeFile(' + idx + ')">Hapus</button>' +
+      '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  function removeFile(idx) {
+    _stagedFiles.splice(idx, 1);
+    _renderStagedFileList();
+  }
+
+  function _submitForm() {
+    var token = AuthApp.getToken();
+    var mode = document.getElementById('keg-form-mode').value;
+    var rowId = document.getElementById('keg-form-rowid').value;
+
+    var payload = {
+      token: token,
+      rowId: rowId,
+      judulKegiatan: document.getElementById('keg-judul').value.trim(),
+      jenisKegiatan: document.getElementById('keg-jenis').value,
+      wilayah: document.getElementById('keg-wilayah').value.trim(),
+      tanggalMulai: document.getElementById('keg-tgl-mulai').value,
+      tanggalSelesai: document.getElementById('keg-tgl-selesai').value,
+      jumlahPeserta: document.getElementById('keg-peserta-count').value,
+      deskripsi: document.getElementById('keg-deskripsi').value.trim(),
+      evidenceUrl: document.getElementById('keg-evidence-url').value.trim(),
+      files: _stagedFiles
+    };
+
+    var btnSubmit = document.getElementById('btn-submit-keg');
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Menyimpan ke Drive...';
+    }
+
+    var rpcName = mode === 'revisi' ? 'keg_revisi' : 'keg_submit';
+    if (mode === 'revisi') {
+      payload.alasanRevisi = document.getElementById('keg-alasan-revisi').value.trim();
+    }
+
+    rpc(rpcName, payload)
+      .then(function (res) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Simpan Kegiatan';
+        }
+        Modal.close('modal-keg-form');
+        Toast.success(res.message || 'Agenda kegiatan berhasil disimpan.');
+        load();
+      })
+      .catch(function (err) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Simpan Kegiatan';
+        }
+        Toast.error('Gagal menyimpan: ' + err.message);
+      });
+  }
+
+  return {
+    init: init,
+    load: load,
+    removeFile: removeFile
+  };
+})();
+</script>

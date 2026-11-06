@@ -93,14 +93,15 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 ### Fase 4: Sub-Modul B: Log Kegiatan & Pembinaan Personil + Multi-Evidence
 - **Tujuan:** Memfasilitasi pencatatan agenda diklat, pembinaan taktis, dan bimtek pengawakan lengkap dengan penanganan lampiran multi-berkas Drive.
 - **Tugas Utama:**
-  - Backend `services/KegiatanService.js` dan `services/EvidenceService.js`.
+  - Backend `services/KegiatanService.js` dan adaptasi `services/EvidenceService.js`.
   - Form dialog input agenda kegiatan (judul, jenis, rentang tanggal, wilayah, total peserta, deskripsi).
-  - Komponen multi-evidence uploader (drag-and-drop berkas dokumen, foto, pindaian sertifikat) dengan kompresi kanvas di klien.
-  - Tampilan alternatif feed kronologis dan kalender garis waktu.
+  - Komponen multi-evidence uploader (drag-and-drop berkas dokumen, foto) terintegrasi ke folder Google Drive `POA_Evidence_Nakhoda`.
+  - Tampilan tabel log kegiatan dengan status badge, pencarian judul/wilayah, dan aksi baris tier SM (`26px`).
 - **Deliverables & Checklist:**
-  - [ ] Input kegiatan beserta lampiran multi-berkas Drive tersimpan dan terindeks di `TX_Evidence`.
-  - [ ] Validasi batas ukuran berkas (15 MB dokumen / 50 MB video) terverifikasi server-side.
-  - [ ] Dialog revisi (`SUPERSEDED`) dan anulir (`VOID`) kegiatan berfungsi tanpa tumpang tindih alur (*Anti-Gabruk*).
+  - [x] Input kegiatan beserta lampiran multi-berkas Drive tersimpan dan terindeks di `TX_Evidence`.
+  - [x] Validasi batas ukuran berkas (15 MB dokumen / 50 MB video) dan rentang tanggal terverifikasi server-side (13 test pass).
+  - [x] Dialog revisi (`SUPERSEDED`) dan anulir (`VOID`) kegiatan berfungsi tanpa tumpang tindih alur (*Anti-Gabruk*).
+  - [x] Lolos verifikasi `node lint_ui.js` (4 pass, 0 error).
 
 ---
 

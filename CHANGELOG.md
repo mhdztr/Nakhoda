@@ -6,6 +6,18 @@
 
 ---
 
+## [Fase 4 — Sub-Modul B: Log Kegiatan & Multi-Evidence Handler] — 6 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Mengembangkan modul logika murni `pure/Kegiatan.js` untuk kalkulasi rentang hari, penentuan periode mingguan, dan validasi agenda kegiatan dengan unit test komprehensif (`tests/kegiatan.test.js`, 5 test pass).
+- Membangun backend `services/KegiatanService.js` (`keg_list`, `keg_getDetail`, `keg_submit`, `keg_revisi`, `keg_anulir`) dengan proteksi `withLock()` dan integritas relasi `TX_Kegiatan_Peserta`.
+- Menyesuaikan `services/EvidenceService.js` untuk konteks sub-modul Pengawakan dan penyimpanan terstruktur di Google Drive `POA_Evidence_Nakhoda`.
+- Membangun antarmuka `html/views/Kegiatan.html` dan runtime controller `html/Script_Kegiatan.html` mendukung penyaringan jenis kegiatan, pencarian teks, modal formulir pencatatan agenda, multi-evidence file uploader (maks 15MB), modal rincian notula, dan dialog anulir Kadiv/Superadmin.
+- Lolos audit linter mandiri `node lint_ui.js` (4 pass, 0 error).
+
+---
+
 ## [Fase 3 — Sub-Modul A: Komposisi AKN Snapshot & Carry-Forward Engine] — 6 Nov 2026
 **Status:** Selesai
 

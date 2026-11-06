@@ -45,16 +45,14 @@ function _evAssertRowScope(session, divisiId) {
  * @returns {{divisiId:string, divisiName:string, ym:string, periode:string, konteks:string}}
  */
 function _evResolveContext(refSheet, refRowId, session) {
-  var sheet = (refSheet === 'TX_BMN_Aset' || (typeof SHEET_TU !== 'undefined' && refSheet === SHEET_TU.BMN_ASET))
-    ? openTuSheet(refSheet)
-    : openTransaksiSheet(refSheet);
+  var sheet = openAwakSheet(refSheet);
   if (!sheet) throw new Error('Sheet tujuan "' + refSheet + '" tidak ditemukan.');
 
   var found = findRowById(sheet, refRowId);
   if (!found) throw new Error('Baris tujuan tidak ditemukan (RowID: ' + refRowId + ').');
 
   var row = found.obj;
-  var divisiId = String(row['DivisiID'] || '');
+  var divisiId = String(row['DivisiID'] || DIVISI_ID.AWAK);
   _evAssertRowScope(session, divisiId);
 
   var periode = String(row['Periode'] || '');
@@ -80,40 +78,21 @@ function _evDivisiFolderName(divisiId) {
       }
     }
   } catch (e) { /* fallback di bawah */ }
-  return _evSanitize(divisiId || 'Lainnya');
+  return _evSanitize(divisiId || 'Pengawakan');
 }
 
-/** Nama konteks folder: `Jenis-Label` (keputusan Fase 9, lihat CHANGELOG). */
+/** Nama konteks folder: `Jenis-Label` untuk Timja Pengawakan. */
 function _evKonteks(refSheet, row) {
-  if (refSheet === SHEET_TX.PERAWATAN_KESIAPAN) {
-    return 'Kesiapan-' + _evKapalLabel(row['KapalID']);
+  if (refSheet === SHEET_AWAK.PENGAWAKAN_KEGIATAN) {
+    return 'Kegiatan-' + _evSlug(String(row['JudulKegiatan'] || row['RowID'] || 'agenda'), 40);
   }
-  if (refSheet === SHEET_TX.PERAWATAN_DOCKING) {
-    return 'Docking-' + _evKapalLabel(row['KapalID']);
-  }
-  if (refSheet === SHEET_TX.PERAWATAN_ITEM) {
-    return 'Item-' + _evSlug(String(row['NamaPekerjaan'] || row['RowID'] || 'item'), 40);
-  }
-  if (refSheet === 'TX_BMN_Aset' || (typeof SHEET_TU !== 'undefined' && refSheet === SHEET_TU.BMN_ASET)) {
-    return 'BMN-' + _evSlug(String(row['KodeBarang'] || row['AsetID'] || 'aset'), 40);
+  if (refSheet === SHEET_AWAK.PELATIHAN_AWAK) {
+    return 'Sertifikat-' + _evSlug(String(row['NamaPelatihan'] || row['KodePelatihan'] || 'diklat'), 40);
   }
   return _evSlug(String(refSheet), 40);
 }
 
-function _evKapalLabel(kapalId) {
-  var id = String(kapalId || '').trim();
-  if (!id) return 'Tanpa-Kapal';
-  try {
-    var rows = sheetToObjects(openMasterSheet(SHEET_MASTER.KAPAL));
-    for (var i = 0; i < rows.length; i++) {
-      if (String(rows[i]['KapalID']) === id) {
-        var nm = String(rows[i]['Nama'] || '').trim();
-        return _evSlug(nm || id, 40);
-      }
-    }
-  } catch (e) { /* fallback */ }
-  return _evSlug(id, 40);
-}
+
 
 /** Bersihkan nama folder/file dari karakter tak aman; spasi → '-'. */
 function _evSanitize(s) {
@@ -503,11 +482,9 @@ function _evReqRows(val, label) {
 
 /** DivisiID sebuah baris tujuan (untuk scope check). */
 function _evRowDivisi(refSheet, refRowId) {
-  var sheet = (refSheet === 'TX_BMN_Aset' || (typeof SHEET_TU !== 'undefined' && refSheet === SHEET_TU.BMN_ASET))
-    ? openTuSheet(refSheet)
-    : openTransaksiSheet(refSheet);
+  var sheet = openAwakSheet(refSheet);
   var found = findRowById(sheet, refRowId);
-  return found ? String(found.obj['DivisiID'] || '') : '';
+  return found ? String(found.obj['DivisiID'] || DIVISI_ID.AWAK) : '';
 }
 
 /**
