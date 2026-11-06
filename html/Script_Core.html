@@ -641,6 +641,12 @@ var Router = (function () {
       }
     });
 
+    register('sijil', function () {
+      if (typeof SijilView !== 'undefined' && SijilView.init) {
+        SijilView.init();
+      }
+    });
+
     // Daftarkan click handler pada menu navigasi sidebar
     var navItems = document.querySelectorAll('#app-sidebar .nav-item');
     navItems.forEach(function (btn) {

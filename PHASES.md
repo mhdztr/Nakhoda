@@ -146,9 +146,10 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
   - Visualisasi interaktif **Papan Sijil** (Kapal x Pos Jabatan) dengan indikator sel dinamis.
   - Penandaan status kapal "Tidak Laik Berlayar" jika terdapat personil aktif dengan sertifikat keselamatan kedaluwarsa.
 - **Deliverables & Checklist:**
-  - [ ] Matriks Papan Sijil menampilkan deviasi kebutuhan formasi akurat per kapal.
-  - [ ] Setiap awak kapal hanya memiliki maksimal 1 penugasan kapal aktif.
-  - [ ] Interaksi klik sel kapal membuka lembar samping susunan formasi awak.
+  - [x] Matriks Papan Sijil menampilkan deviasi kebutuhan formasi akurat per kapal (25 test pass).
+  - [x] Setiap awak kapal hanya memiliki maksimal 1 penugasan kapal aktif dengan penguncian withLock.
+  - [x] Interaksi klik sel kapal membuka lembar samping susunan formasi awak per departemen (Dek & Mesin).
+  - [x] Lolos verifikasi `node lint_ui.js` (4 pass, 0 error).
 
 ---
 

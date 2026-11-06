@@ -1,0 +1,225 @@
+<!-- ── SUB-MODUL E: PENUGASAN KAPAL & PAPAN SIJIL (SAFE MANNING) ── -->
+<div id="view-sijil" class="app-view hidden">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h2 class="page-title">Papan Sijil &amp; Safe Manning Armada</h2>
+      <p class="page-subtitle">Pemantauan formasi penugasan aktif di atas kapal pengawas dan kepatuhan standar kebutuhan awak minimum.</p>
+    </div>
+    <div class="page-actions">
+      <button id="btn-sijil-refresh" class="btn btn-secondary-md">
+        <svg viewBox="0 0 24 24" style="width:14px; height:14px; stroke:currentColor; stroke-width:1.8; fill:none;"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Segarkan
+      </button>
+    </div>
+  </div>
+
+  <!-- Kartu Metrik Armada -->
+  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:20px;">
+    <div class="card" style="padding:16px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--success);">Siap Laik Operasi</div>
+      <div id="metric-sijil-laik" style="font-size:24px; font-weight:700; color:var(--success); font-family:var(--font-mono); margin-top:4px;">0</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Safe manning 100% terpenuhi</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--warning);">Kurang Awak</div>
+      <div id="metric-sijil-kurang" style="font-size:24px; font-weight:700; color:var(--warning); font-family:var(--font-mono); margin-top:4px;">0</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Ada posisi formasi yang kosong</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--accent);">Awak Bertugas di Laut</div>
+      <div id="metric-sijil-awak-laut" style="font-size:24px; font-weight:700; color:var(--accent); font-family:var(--font-mono); margin-top:4px;">0</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Personil aktif naik kapal</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted);">Total Kapal Pengawas</div>
+      <div id="metric-sijil-total-kapal" style="font-size:24px; font-weight:700; color:var(--text); font-family:var(--font-mono); margin-top:4px;">0</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Armada PSDKP Kelas I - V</div>
+    </div>
+  </div>
+
+  <!-- Filter & Pencarian Toolbar -->
+  <div class="card" style="margin-bottom:16px; padding:12px 16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <select id="sijil-filter-kelas" class="form-control-md" style="width:160px;">
+          <option value="">Semua Kelas Kapal</option>
+          <option value="KELAS_I">Kelas I (> 60m)</option>
+          <option value="KELAS_II">Kelas II (40 - 60m)</option>
+          <option value="KELAS_III">Kelas III (28 - 40m)</option>
+          <option value="KELAS_IV">Kelas IV (18 - 28m)</option>
+          <option value="KELAS_V">Kelas V (Speedboat)</option>
+        </select>
+        <select id="sijil-filter-status" class="form-control-md" style="width:160px;">
+          <option value="">Semua Status Operasi</option>
+          <option value="LAIK_OPERASI">Siap Laik Operasi</option>
+          <option value="KURANG_AWAK">Kurang Awak</option>
+        </select>
+        <input type="text" id="sijil-search-input" class="form-control-md" placeholder="Cari nama kapal atau pangkalan..." style="width:250px;">
+        <button id="btn-sijil-search" class="btn btn-secondary-md">Cari</button>
+      </div>
+      <div>
+        <span id="sijil-total-matched" style="font-size:12px; color:var(--muted); font-family:var(--font-mono);">0 kapal</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabel Kelaikan Kapal Armada -->
+  <div class="card">
+    <div style="overflow-x:auto;">
+      <table class="table" style="margin:0;">
+        <thead>
+          <tr>
+            <th style="width:240px;">Kapal Pengawas</th>
+            <th style="width:130px;">Kelas Kapal</th>
+            <th>Pangkalan UPT</th>
+            <th style="width:220px;">Keterisian Formasi Sijil</th>
+            <th style="width:130px; text-align:center;">Status Kelaikan</th>
+            <th style="width:140px; text-align:center;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="sijil-kapal-tbody">
+          <tr>
+            <td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat data papan sijil armada...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── MODAL DETAIL PAPAN SIJIL SATU KAPAL ── -->
+<div id="modal-sijil-detail" class="modal-overlay">
+  <div class="modal-box" style="max-width:760px;">
+    <div class="modal-header">
+      <div class="modal-title">Papan Sijil Awak Kapal</div>
+      <button class="modal-close" onclick="Modal.close('modal-sijil-detail')">&times;</button>
+    </div>
+    
+    <div style="padding:8px 0;">
+      <!-- Header Info Kapal -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <div>
+          <h3 id="sijil-detail-nama-kapal" style="font-size:17px; font-weight:700; color:var(--text); margin-bottom:2px;">-</h3>
+          <div style="font-size:12px; color:var(--muted);">
+            Kelas: <span id="sijil-detail-kelas" style="color:var(--text); font-weight:500;">-</span> &bull;
+            Pangkalan: <span id="sijil-detail-pangkalan" style="color:var(--text); font-weight:500;">-</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div id="sijil-detail-status-badge" class="badge badge-success">Laik Operasi</div>
+          <div id="sijil-detail-ratio" style="font-size:12px; font-family:var(--font-mono); color:var(--muted); margin-top:4px;">0 / 0 Personil Terisi</div>
+        </div>
+      </div>
+
+      <!-- Tab Mini Formasi vs Awak Naik -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="font-size:13px; font-weight:600; color:var(--text);">Daftar Awak Bertugas Aktif di Kapal</div>
+        <button id="btn-sijil-assign-new" class="btn btn-primary-sm">
+          + Tempatkan Awak ke Kapal
+        </button>
+      </div>
+
+      <!-- Tabel Awak Bertugas -->
+      <div style="max-height:220px; overflow-y:auto; border:1px solid var(--border); margin-bottom:20px;">
+        <table class="table" style="margin:0;">
+          <thead>
+            <tr>
+              <th>Personil Awak</th>
+              <th style="width:140px;">Posisi Sijil</th>
+              <th style="width:110px;">Tanggal Naik</th>
+              <th style="width:80px; text-align:center;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="sijil-awak-tbody">
+            <tr>
+              <td colspan="4" style="text-align:center; color:var(--muted); padding:20px 0;">Belum ada awak yang ditempatkan di kapal ini.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tabel Kebutuhan Safe Manning -->
+      <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:6px;">Matriks Standar Safe Manning</div>
+      <div style="max-height:160px; overflow-y:auto; border:1px solid var(--border);">
+        <table class="table" style="margin:0; font-size:12px;">
+          <thead>
+            <tr>
+              <th>Posisi Formasi</th>
+              <th style="width:100px; text-align:right;">Minimum</th>
+              <th style="width:100px; text-align:right;">Terisi</th>
+              <th style="width:110px; text-align:center;">Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="sijil-manning-tbody">
+            <tr>
+              <td colspan="4" style="text-align:center; color:var(--muted); padding:16px 0;">Memuat standar...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-sijil-detail')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL FORM PENEMPATAN AWAK (ASSIGN SIJIL) ── -->
+<div id="modal-sijil-assign" class="modal-overlay">
+  <div class="modal-box" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title">Penempatan Awak pada Papan Sijil</div>
+      <button class="modal-close" onclick="Modal.close('modal-sijil-assign')">&times;</button>
+    </div>
+    <form id="form-sijil-assign">
+      <input type="hidden" id="sijil-assign-kapal-id" value="">
+
+      <div class="form-group" style="margin-bottom:12px;">
+        <label class="form-label" for="sijil-assign-pegawai">Pilih Personil Awak Kapal <span style="color:var(--danger)">*</span></label>
+        <select id="sijil-assign-pegawai" class="form-control-lg" required>
+          <option value="">-- Pilih dari Direktori Awak --</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom:12px;">
+        <label class="form-label" for="sijil-assign-posisi">Posisi Sijil Penugasan <span style="color:var(--danger)">*</span></label>
+        <select id="sijil-assign-posisi" class="form-control-md" required>
+          <option value="NAKHODA">Nahkoda</option>
+          <option value="MUALIM_I">Mualim I</option>
+          <option value="MUALIM_II">Mualim II</option>
+          <option value="MUALIM_III">Mualim III</option>
+          <option value="KKM">Kepala Kamar Mesin (KKM)</option>
+          <option value="MASINIS_I">Masinis I</option>
+          <option value="MASINIS_II">Masinis II</option>
+          <option value="MASINIS_III">Masinis III</option>
+          <option value="MARKONIS">Markonis / Radio</option>
+          <option value="SERANG">Serang</option>
+          <option value="JURU_MUDI">Juru Mudi</option>
+          <option value="JURU_MINYAK">Juru Minyak</option>
+          <option value="KELASI">Kelasi</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom:12px;">
+        <label class="form-label" for="sijil-assign-tgl-naik">Tanggal Mulai Naik Kapal <span style="color:var(--danger)">*</span></label>
+        <input type="date" id="sijil-assign-tgl-naik" class="form-control-md" required>
+      </div>
+
+      <div class="form-group" style="margin-bottom:20px;">
+        <label class="form-label" for="sijil-assign-keterangan">Keterangan / Dasar Penetapan</label>
+        <input type="text" id="sijil-assign-keterangan" class="form-control-md" placeholder="Contoh: SK Direktur POA No. 042/2026">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-sijil-assign')">Batal</button>
+        <button type="submit" id="btn-submit-sijil-assign" class="btn btn-primary-md">Tempatkan ke Kapal</button>
+      </div>
+    </form>
+  </div>
+</div>
+

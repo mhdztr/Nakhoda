@@ -1,0 +1,338 @@
+<script>
+/**
+ * html/Script_Sijil.html
+ * Controller Klien Sub-Modul E: Penugasan Kapal & Papan Sijil (Safe Manning)
+ * Nakhoda — Timja Pengawakan Dit. POA KKP RI
+ */
+var SijilView = (function () {
+  'use strict';
+
+  var _currentKapalId = '';
+  var _userRole = '';
+
+  function init() {
+    var outlet = document.getElementById('outlet-content');
+    var viewTemplate = document.getElementById('view-sijil');
+    if (viewTemplate && outlet) {
+      outlet.innerHTML = viewTemplate.outerHTML;
+      var activeView = outlet.querySelector('#view-sijil');
+      if (activeView) activeView.classList.remove('hidden');
+    }
+
+    _bindEvents();
+    load();
+  }
+
+  function _bindEvents() {
+    var btnRefresh = document.getElementById('btn-sijil-refresh');
+    var filterKelas = document.getElementById('sijil-filter-kelas');
+    var filterStatus = document.getElementById('sijil-filter-status');
+    var searchInput = document.getElementById('sijil-search-input');
+    var btnSearch = document.getElementById('btn-sijil-search');
+    var btnAssignNew = document.getElementById('btn-sijil-assign-new');
+    var formAssign = document.getElementById('form-sijil-assign');
+
+    if (btnRefresh) {
+      btnRefresh.onclick = function () { load(); };
+    }
+    if (filterKelas) filterKelas.onchange = function () { load(); };
+    if (filterStatus) filterStatus.onchange = function () { load(); };
+    if (btnSearch) btnSearch.onclick = function () { load(); };
+    if (searchInput) {
+      searchInput.onkeydown = function (e) {
+        if (e.key === 'Enter') load();
+      };
+    }
+
+    if (btnAssignNew) {
+      btnAssignNew.onclick = function () {
+        _openAssignModal(_currentKapalId);
+      };
+    }
+
+    if (formAssign) {
+      formAssign.onsubmit = function (e) {
+        e.preventDefault();
+        _submitAssign();
+      };
+    }
+  }
+
+  function load() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    rpc('sijil_getPapanArmada', token)
+      .then(function (res) {
+        _userRole = res.userRole;
+
+        // Update Kartu Metrik
+        var mLaik = document.getElementById('metric-sijil-laik');
+        var mKur = document.getElementById('metric-sijil-kurang');
+        var mLaut = document.getElementById('metric-sijil-awak-laut');
+        var mTot = document.getElementById('metric-sijil-total-kapal');
+
+        if (mLaik) mLaik.textContent = Format.number(res.metrics.laikOperasi);
+        if (mKur) mKur.textContent = Format.number(res.metrics.kurangAwak);
+        if (mLaut) mLaut.textContent = Format.number(res.metrics.totalAwakBertugas);
+        if (mTot) mTot.textContent = Format.number(res.metrics.totalKapal);
+
+        _renderKapalTable(res.kapal || []);
+      })
+      .catch(function (err) {
+        Toast.error('Gagal memuat papan sijil armada: ' + err.message);
+      });
+  }
+
+  function _renderKapalTable(kapalList) {
+    var tbody = document.getElementById('sijil-kapal-tbody');
+    if (!tbody) return;
+
+    var filterKls = (document.getElementById('sijil-filter-kelas') || {}).value || '';
+    var filterSts = (document.getElementById('sijil-filter-status') || {}).value || '';
+    var searchStr = (document.getElementById('sijil-search-input') || {}).value || '';
+    searchStr = searchStr.toLowerCase().trim();
+
+    var filtered = kapalList.filter(function (k) {
+      if (filterKls && k.kelasKapal !== filterKls) return false;
+      if (filterSts && k.statusOperasi !== filterSts) return false;
+      if (searchStr) {
+        var n = k.namaKapal.toLowerCase();
+        var p = k.pangkalanId.toLowerCase();
+        if (n.indexOf(searchStr) === -1 && p.indexOf(searchStr) === -1) return false;
+      }
+      return true;
+    });
+
+    var countInfo = document.getElementById('sijil-total-matched');
+    if (countInfo) countInfo.textContent = filtered.length + ' kapal cocok';
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada kapal pengawas yang cocok dengan kriteria pencarian.</td></tr>';
+      return;
+    }
+
+    var html = '';
+    filtered.forEach(function (k) {
+      var isLaik = k.statusOperasi === 'LAIK_OPERASI';
+      var badgeHtml = isLaik
+        ? '<span class="badge badge-success">Siap Laik</span>'
+        : '<span class="badge badge-danger">Kurang Awak</span>';
+
+      var pct = k.persenTerisi;
+      var barColor = isLaik ? 'var(--success)' : (pct >= 70 ? 'var(--warning)' : 'var(--danger)');
+
+      html += '<tr>' +
+        '<td>' +
+          '<div style="font-weight:600; font-size:13px; color:var(--text);">' + Format.escape(k.namaKapal) + '</div>' +
+          '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">' + k.kapalId + '</div>' +
+        '</td>' +
+        '<td><span class="badge badge-muted">' + Format.escape(k.kelasKapal.replace(/_/g, ' ')) + '</span></td>' +
+        '<td style="font-size:12px; color:var(--text);">' + Format.escape(k.pangkalanId) + '</td>' +
+        '<td>' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<div style="flex:1; height:6px; background:#ECEEEF; overflow:hidden;">' +
+              '<div style="width:' + Math.min(100, pct) + '%; height:100%; background-color:' + barColor + ';"></div>' +
+            '</div>' +
+            '<span style="font-size:12px; font-weight:700; font-family:var(--font-mono); color:' + barColor + ';">' + k.jumlahAwakBertugas + ' / ' + k.kebutuhanMinimum + '</span>' +
+          '</div>' +
+          (k.evaluasi.defisitPosisi.length > 0
+            ? '<div style="font-size:11px; color:var(--danger); margin-top:2px;">Posisi kurang: ' + Format.escape(k.evaluasi.defisitPosisi.slice(0, 2).join(', ')) + '</div>'
+            : '<div style="font-size:11px; color:var(--success); margin-top:2px;">Formasi lengkap sesuai Safe Manning</div>') +
+        '</td>' +
+        '<td style="text-align:center;">' + badgeHtml + '</td>' +
+        '<td style="text-align:center;">' +
+          '<button class="btn btn-secondary-sm btn-sijil-detail" data-id="' + k.kapalId + '">Papan Sijil</button>' +
+        '</td>' +
+      '</tr>';
+    });
+
+    tbody.innerHTML = html;
+
+    tbody.querySelectorAll('.btn-sijil-detail').forEach(function (btn) {
+      btn.onclick = function () {
+        _openDetailModal(btn.getAttribute('data-id'));
+      };
+    });
+  }
+
+  function _openDetailModal(kapalId) {
+    _currentKapalId = kapalId;
+    var token = AuthApp.getToken();
+
+    rpc('sijil_getDetailKapal', token, kapalId)
+      .then(function (res) {
+        document.getElementById('sijil-detail-nama-kapal').textContent = res.namaKapal;
+        document.getElementById('sijil-detail-kelas').textContent = res.kelasKapal.replace(/_/g, ' ');
+        document.getElementById('sijil-detail-pangkalan').textContent = res.pangkalanId;
+
+        var stBadge = document.getElementById('sijil-detail-status-badge');
+        if (stBadge) {
+          stBadge.className = 'badge ' + (res.evaluasi.isLaikOperasi ? 'badge-success' : 'badge-danger');
+          stBadge.textContent = res.evaluasi.isLaikOperasi ? 'Siap Laik Operasi' : 'Kurang Awak';
+        }
+
+        var ratioEl = document.getElementById('sijil-detail-ratio');
+        if (ratioEl) {
+          ratioEl.textContent = res.evaluasi.totalTerisi + ' / ' + res.evaluasi.totalKebutuhan + ' Personil Terisi (' + res.evaluasi.persenTerisi + '%)';
+        }
+
+        // Render awak bertugas
+        var awakTbody = document.getElementById('sijil-awak-tbody');
+        if (awakTbody) {
+          if (!res.awakBertugas || res.awakBertugas.length === 0) {
+            awakTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted); padding:20px 0;">Belum ada personil yang ditempatkan di atas kapal ini.</td></tr>';
+          } else {
+            var aHtml = '';
+            res.awakBertugas.forEach(function (a) {
+              aHtml += '<tr>' +
+                '<td>' +
+                  '<div style="font-weight:600; font-size:12px; color:var(--text);">' + Format.escape(a.nama) + '</div>' +
+                  '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">' + a.nipDisplay + '</div>' +
+                '</td>' +
+                '<td><span class="badge badge-accent">' + Format.escape(a.posSijilLabel) + '</span></td>' +
+                '<td style="font-size:11px; font-family:var(--font-mono);">' + Format.date(a.tanggalNaik) + '</td>' +
+                '<td style="text-align:center;">' +
+                  '<button class="btn btn-secondary-sm btn-unassign-awak" data-row-id="' + a.rowId + '" data-peg-id="' + a.pegawaiId + '" data-nama="' + Format.escape(a.nama) + '">Turunkan</button>' +
+                '</td>' +
+              '</tr>';
+            });
+            awakTbody.innerHTML = aHtml;
+
+            awakTbody.querySelectorAll('.btn-unassign-awak').forEach(function (btn) {
+              btn.onclick = function () {
+                var rId = btn.getAttribute('data-row-id');
+                var pId = btn.getAttribute('data-peg-id');
+                var nm = btn.getAttribute('data-nama');
+                _unassignAwak(rId, pId, nm);
+              };
+            });
+          }
+        }
+
+        // Render kebutuhan Safe Manning
+        var manTbody = document.getElementById('sijil-manning-tbody');
+        if (manTbody) {
+          var mHtml = '';
+          res.evaluasi.posisiRincian.forEach(function (pr) {
+            var isOk = pr.status === 'TERPENUHI';
+            mHtml += '<tr>' +
+              '<td style="font-weight:500;">' + Format.escape(pr.posSijil.replace(/_/g, ' ')) + '</td>' +
+              '<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">' + pr.minimum + '</td>' +
+              '<td style="text-align:right; font-family:var(--font-mono); font-weight:600; color:' + (isOk ? 'var(--text)' : 'var(--danger)') + ';">' + pr.terisi + '</td>' +
+              '<td style="text-align:center;">' +
+                (isOk ? '<span class="badge badge-success">Terpenuhi</span>' : '<span class="badge badge-danger">Kurang ' + pr.kurang + '</span>') +
+              '</td>' +
+            '</tr>';
+          });
+          manTbody.innerHTML = mHtml;
+        }
+
+        Modal.open('modal-sijil-detail');
+      })
+      .catch(function (err) {
+        Toast.error('Gagal memuat detail papan sijil: ' + err.message);
+      });
+  }
+
+  function _openAssignModal(kapalId) {
+    document.getElementById('sijil-assign-kapal-id').value = kapalId;
+    document.getElementById('sijil-assign-tgl-naik').value = new Date().toISOString().substring(0, 10);
+    document.getElementById('sijil-assign-keterangan').value = '';
+
+    // Ambil daftar awak dari direktori untuk isi dropdown
+    var token = AuthApp.getToken();
+    var selectAwak = document.getElementById('sijil-assign-pegawai');
+    selectAwak.innerHTML = '<option value="">Memuat direktori awak...</option>';
+
+    rpc('dir_list', { token: token, limit: 400, offset: 0 })
+      .then(function (res) {
+        var optHtml = '<option value="">-- Pilih dari Direktori Awak (' + (res.items || []).length + ' Personil) --</option>';
+        (res.items || []).forEach(function (a) {
+          var statusKapal = a.kapalId && a.kapalId !== '-' ? ' [di ' + a.kapalId + ']' : '';
+          optHtml += '<option value="' + a.pegawaiId + '">' + Format.escape(a.nama) + ' (' + a.kelompokJabatan + ')' + statusKapal + '</option>';
+        });
+        selectAwak.innerHTML = optHtml;
+        Modal.open('modal-sijil-assign');
+      })
+      .catch(function () {
+        selectAwak.innerHTML = '<option value="">Gagal memuat awak.</option>';
+      });
+  }
+
+  function _submitAssign() {
+    var token = AuthApp.getToken();
+    var kapalId = document.getElementById('sijil-assign-kapal-id').value;
+    var pegId = document.getElementById('sijil-assign-pegawai').value;
+    var posisi = document.getElementById('sijil-assign-posisi').value;
+    var tglNaik = document.getElementById('sijil-assign-tgl-naik').value;
+    var ket = document.getElementById('sijil-assign-keterangan').value.trim();
+
+    if (!pegId) {
+      Toast.error('Pilih personil awak kapal terlebih dahulu.');
+      return;
+    }
+
+    var btnSubmit = document.getElementById('btn-submit-sijil-assign');
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Menempatkan...';
+    }
+
+    rpc('sijil_assignAwak', {
+      token: token,
+      kapalId: kapalId,
+      pegawaiId: pegId,
+      posSijil: posisi,
+      tanggalNaik: tglNaik,
+      keterangan: ket
+    })
+      .then(function (res) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Tempatkan ke Kapal';
+        }
+        Modal.close('modal-sijil-assign');
+        Toast.success(res.message || 'Personil berhasil ditempatkan ke kapal.');
+        _openDetailModal(kapalId);
+        load();
+      })
+      .catch(function (err) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Tempatkan ke Kapal';
+        }
+        Toast.error('Gagal menempatkan awak: ' + err.message);
+      });
+  }
+
+  function _unassignAwak(rowId, pegId, nama) {
+    if (!confirm('Apakah Anda yakin ingin menurunkan ' + nama + ' dari kapal ini?')) {
+      return;
+    }
+
+    var token = AuthApp.getToken();
+    var todayStr = new Date().toISOString().substring(0, 10);
+
+    rpc('sijil_unassignAwak', {
+      token: token,
+      rowId: rowId,
+      pegawaiId: pegId,
+      tanggalTurun: todayStr
+    })
+      .then(function (res) {
+        Toast.success(res.message || 'Awak kapal berhasil diturunkan.');
+        _openDetailModal(_currentKapalId);
+        load();
+      })
+      .catch(function (err) {
+        Toast.error('Gagal menurunkan awak: ' + err.message);
+      });
+  }
+
+  return {
+    init: init,
+    load: load
+  };
+})();
+</script>

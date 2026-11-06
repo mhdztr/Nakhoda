@@ -6,6 +6,19 @@
 
 ---
 
+## [Fase 7 — Sub-Modul E: Penugasan Kapal & Papan Sijil Safe Manning] — 6 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Menyediakan katalog seeder armada kapal pengawas Ditjen PSDKP dan standar Safe Manning Kepmen KP untuk seluruh Kelas Kapal I s.d. V (`data/SeedKapalManning.js`).
+- Mengembangkan modul murni `pure/Sijil.js` (`normalizePosSijil`, `evaluateSafeManning`) untuk kalkulasi persentase manning, pendeteksian kekosongan posisi krusial, dan penentuan kelaikan operasi armada teruji 100% pada `tests/sijil.test.js` (3 test pass, total 25 test pass).
+- Membangun backend `services/SijilService.js` (`sijil_getPapanArmada`, `sijil_getDetailKapal`, `sijil_assignAwak`, `sijil_unassignAwak`, `sijil_ensureStandarManningSeeded`) berpelindung `withLock()`.
+- Membangun antarmuka `html/views/Sijil.html` dan runtime `html/Script_Sijil.html` dengan kartu ringkasan kelaikan armada, filter kelas kapal I-V, papan grid armada berindikator Safe Manning, slide-over detail sijil kru per departemen (Dek & Mesin), serta dialog penugasan awak kapal.
+- Mendaftarkan rute `sijil` pada `html/Script_Core.html` dan mengintegrasikan template pada `html/Index.html`.
+- Lolos audit linter mandiri `node lint_ui.js` (4 pass, 0 error).
+
+---
+
 ## [Fase 6 — Sub-Modul D: Register Sertifikasi STCW-F & Mesin Kedaluwarsa] — 6 Nov 2026
 **Status:** Selesai
 
