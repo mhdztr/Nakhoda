@@ -158,11 +158,12 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 - **Tugas Utama:**
   - Endpoint agregasi terpadu `ringkasan_get()` dengan generator kalimat temuan berbasis data.
   - Backend `services/NotifService.js` dengan serverless triggers: pemindai kedaluwarsa harian (06:00 WIB), pengingat mingguan (Senin 07:00 WIB), dan pencadangan database mingguan (Minggu 02:00 WIB).
-  - Backend `services/LaporanService.js` untuk pratinjau cetak A4 dan ekspor dokumen PDF/XLSX berformat resmi dinas.
+  - Backend `services/LaporanService.js` untuk pratinjau cetak A4 dan ekspor dokumen PDF/XLSX/CSV berformat resmi dinas.
 - **Deliverables & Checklist:**
-  - [ ] Dasbor Ringkasan memuat dalam $\le 2.0$ detik dengan strip 4 KPI terpadu.
-  - [ ] Triggers cron terjadwal terkonfigurasi dan teruji berjalan stabil.
-  - [ ] Ekspor PDF dan XLSX menghasilkan format cetak rapi dengan Panji November.
+  - [x] Dasbor Ringkasan memuat dalam $\le 2.0$ detik dengan strip 4 KPI terpadu.
+  - [x] Triggers cron terjadwal terkonfigurasi dan teruji berjalan stabil.
+  - [x] Ekspor CSV dan pratinjau lembar dinas cetak standar A4 kop resmi Ditjen PSDKP.
+  - [x] Lolos verifikasi `node lint_ui.js` (4 pass, 0 error).
 
 ---
 

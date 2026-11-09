@@ -1,0 +1,185 @@
+<!-- html/Script_Laporan.html -->
+<script>
+/**
+ * Controller Laporan Konsolidasi & Ekspor Data Nakhoda.
+ */
+var LaporanView = (function () {
+  'use strict';
+
+  var _previewData = null;
+
+  function init() {
+    var outlet = document.getElementById('outlet-content');
+    var tpl = document.getElementById('view-laporan');
+    if (!outlet || !tpl) return;
+
+    outlet.innerHTML = '';
+    outlet.appendChild(tpl.cloneNode(true));
+
+    _bindEvents();
+    loadPreview();
+  }
+
+  function _bindEvents() {
+    var btnPrint = document.getElementById('btn-lap-print');
+    if (btnPrint) {
+      btnPrint.onclick = function () {
+        window.print();
+      };
+    }
+
+    var btnExpDir = document.getElementById('btn-lap-export-direktori');
+    if (btnExpDir) {
+      btnExpDir.onclick = function () {
+        _exportData('DIREKTORI');
+      };
+    }
+
+    var btnExpSijil = document.getElementById('btn-lap-export-sijil');
+    if (btnExpSijil) {
+      btnExpSijil.onclick = function () {
+        _exportData('SIJIL');
+      };
+    }
+  }
+
+  function loadPreview() {
+    var token = Auth.getToken();
+    if (!token) return;
+
+    rpc('lap_getPreviewData', { token: token, params: { jenisLaporan: 'KOMPREHENSIF' } })
+      .then(function (res) {
+        if (!res || !res.success) {
+          Toast.error(res ? res.error : 'Gagal memuat pratinjau laporan');
+          return;
+        }
+        _previewData = res.data;
+        _render();
+      })
+      .catch(function (err) {
+        Toast.error(err.message || 'Galat memuat pratinjau laporan');
+      });
+  }
+
+  function _render() {
+    if (!_previewData) return;
+
+    var r = _previewData.ringkasan || {};
+    var metaEl = document.getElementById('lap-meta-info');
+    if (metaEl) {
+      metaEl.textContent = 'Nomor: ' + _previewData.nomorDokumen + ' · Tanggal: ' + Format.date(_previewData.tanggalCetak);
+    }
+
+    var tglSurat = document.getElementById('lap-tgl-surat');
+    if (tglSurat) tglSurat.textContent = Format.date(_previewData.tanggalCetak);
+
+    var penyusunEl = document.getElementById('lap-nama-penyusun');
+    if (penyusunEl && _previewData.pencetak) penyusunEl.textContent = _previewData.pencetak;
+
+    // Metrik 4-Box
+    var totAwak = document.getElementById('lap-total-awak');
+    var totKapal = document.getElementById('lap-total-kapal');
+    var kapalLaik = document.getElementById('lap-kapal-laik');
+    var kelaikanSert = document.getElementById('lap-kelaikan-sertifikat');
+
+    if (totAwak && r.kpi) totAwak.textContent = Format.number(r.kpi.totalAwak);
+    if (totKapal && r.kpi) totKapal.textContent = Format.number(r.kpi.totalKapal);
+    if (kapalLaik && r.sijilSummary) kapalLaik.textContent = r.sijilSummary.laikOperasi + ' Unit';
+    if (kelaikanSert && r.kpi) kelaikanSert.textContent = (r.kpi.kelaikanPersen || 0) + '%';
+
+    // Narasi Temuan
+    var narasiEl = document.getElementById('lap-narasi-temuan');
+    if (narasiEl) {
+      if (r.narasiTemuan && r.narasiTemuan.length > 0) {
+        narasiEl.innerHTML = r.narasiTemuan.map(function (n) {
+          return '<span style="display:block; margin-bottom:4px;">&bull; ' + Format.escape(n) + '</span>';
+        }).join('');
+      } else {
+        narasiEl.textContent = 'Seluruh armada kapal pengawas dan personil berada dalam kondisi kelaikan operasi normal.';
+      }
+    }
+
+    // Tabel Komposisi AKN
+    var tbodyAkn = document.querySelector('#lap-table-akn tbody');
+    if (tbodyAkn && r.aknTerbaru) {
+      var m = r.aknTerbaru;
+      var labels = {
+        'PNS': 'Pegawai Negeri Sipil (PNS)',
+        'PPPK': 'PPPK',
+        'PPNPN': 'PPNPN',
+        'OUTSOURCING': 'Tenaga Alih Daya',
+        'KONTRAK': 'Kontrak / PJLP'
+      };
+      var rowsHtml = '';
+      ['PNS', 'PPPK', 'PPNPN', 'OUTSOURCING', 'KONTRAK'].forEach(function (k) {
+        var poa = (m.poa && m.poa[k]) || 0;
+        var tot = (m.keseluruhan && m.keseluruhan[k]) || 0;
+        rowsHtml +=
+          '<tr style="border-bottom:1px solid #EAECF0;">' +
+            '<td style="padding:6px 8px;">' + (labels[k] || k) + '</td>' +
+            '<td style="padding:6px 8px; text-align:right; font-weight:600;">' + Format.number(poa) + '</td>' +
+            '<td style="padding:6px 8px; text-align:right; font-weight:600;">' + Format.number(tot) + '</td>' +
+          '</tr>';
+      });
+      tbodyAkn.innerHTML = rowsHtml;
+    }
+
+    // Tabel Armada Kapal
+    var tbodyArmada = document.querySelector('#lap-table-armada tbody');
+    if (tbodyArmada) {
+      var kapalList = _previewData.armada || [];
+      if (kapalList.length === 0) {
+        tbodyArmada.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:10px; color:#595E65;">Tidak ada data kapal.</td></tr>';
+      } else {
+        tbodyArmada.innerHTML = kapalList.map(function (k) {
+          var statusStyle = k.statusManning === 'LAIK_OPERASI'
+            ? 'color:#2B8A3E; font-weight:600;'
+            : (k.statusManning === 'KRITIS' ? 'color:#D9480F; font-weight:700;' : 'color:#E67700; font-weight:600;');
+          var devLabel = k.deviasiKekurangan > 0 ? '-' + k.deviasiKekurangan : '0';
+          return (
+            '<tr style="border-bottom:1px solid #EAECF0;">' +
+              '<td style="padding:6px 8px; font-weight:500;">' + Format.escape(k.namaKapal) + '</td>' +
+              '<td style="padding:6px 8px;">' + Format.escape(k.kelasKapal) + '</td>' +
+              '<td style="padding:6px 8px; text-align:center;">' + k.kebutuhanMinimum + '</td>' +
+              '<td style="padding:6px 8px; text-align:center; font-weight:600;">' + k.totalTerisi + '</td>' +
+              '<td style="padding:6px 8px; text-align:center;">' + devLabel + '</td>' +
+              '<td style="padding:6px 8px; text-align:center; ' + statusStyle + '">' + Format.escape(k.statusManning) + '</td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+    }
+  }
+
+  function _exportData(modul) {
+    var token = Auth.getToken();
+    if (!token) return;
+
+    Toast.info('Menyiapkan berkas ekspor CSV ' + modul + '...');
+    rpc('lap_exportData', { token: token, params: { modul: modul } })
+      .then(function (res) {
+        if (!res || !res.success) {
+          Toast.error(res ? res.error : 'Gagal mengekspor data');
+          return;
+        }
+        var blob = new Blob([res.data.csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', res.data.filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        Toast.success('Berkas ' + res.data.filename + ' berhasil diunduh.');
+      })
+      .catch(function (err) {
+        Toast.error(err.message || 'Galat ekspor CSV');
+      });
+  }
+
+  return {
+    init: init,
+    loadPreview: loadPreview
+  };
+})();
+</script>
+

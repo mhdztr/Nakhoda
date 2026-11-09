@@ -1,0 +1,195 @@
+<!-- html/Script_Ringkasan.html -->
+<script>
+/**
+ * Controller Dasbor Ringkasan Eksekutif Nakhoda.
+ */
+var RingkasanView = (function () {
+  'use strict';
+
+  var _data = null;
+
+  function init() {
+    var outlet = document.getElementById('outlet-content');
+    var tpl = document.getElementById('view-ringkasan');
+    if (!outlet || !tpl) return;
+
+    outlet.innerHTML = '';
+    outlet.appendChild(tpl.cloneNode(true));
+
+    _bindEvents();
+    loadData();
+  }
+
+  function _bindEvents() {
+    var btnRefresh = document.getElementById('btn-ringkasan-refresh');
+    if (btnRefresh) {
+      btnRefresh.onclick = function () {
+        loadData();
+      };
+    }
+
+    var btnLap = document.getElementById('btn-ringkasan-ke-laporan');
+    if (btnLap) {
+      btnLap.onclick = function () {
+        Router.navigate('laporan');
+      };
+    }
+  }
+
+  function loadData() {
+    var token = Auth.getToken();
+    if (!token) return;
+
+    rpc('ringkasan_get', { token: token, filter: {} })
+      .then(function (res) {
+        if (!res || !res.success) {
+          Toast.error(res ? res.error : 'Gagal memuat ringkasan');
+          return;
+        }
+        _data = res.data;
+        _render();
+      })
+      .catch(function (err) {
+        Toast.error(err.message || 'Galat memuat ringkasan');
+      });
+  }
+
+  function _render() {
+    if (!_data) return;
+
+    // 1. Narasi Temuan
+    var narasiEl = document.getElementById('ringkasan-narasi-list');
+    if (narasiEl) {
+      if (_data.narasiTemuan && _data.narasiTemuan.length > 0) {
+        narasiEl.innerHTML = _data.narasiTemuan.map(function (n) {
+          return '<div style="margin-bottom:4px;">&bull; ' + Format.escape(n) + '</div>';
+        }).join('');
+      } else {
+        narasiEl.textContent = 'Situasi pengawakan terpantau normal dan sesuai standar operasional Ditjen PSDKP.';
+      }
+    }
+
+    // 2. Metrik KPI 4-Strip
+    var kpiAwak = document.getElementById('kpi-total-awak');
+    var kpiSubAwak = document.getElementById('kpi-sub-awak');
+    if (kpiAwak) kpiAwak.textContent = Format.number(_data.kpi.totalAwak);
+    if (kpiSubAwak) {
+      kpiSubAwak.textContent = _data.demografi.dek + ' Dek · ' + _data.demografi.mesin + ' Mesin (' +
+        _data.demografi.pns + ' PNS, ' + _data.demografi.pppk + ' PPPK)';
+    }
+
+    var kpiKapal = document.getElementById('kpi-kapal-laik');
+    var kpiSubKapal = document.getElementById('kpi-sub-kapal');
+    if (kpiKapal) {
+      kpiKapal.textContent = _data.sijilSummary.laikOperasi + ' / ' + _data.sijilSummary.totalKapal;
+    }
+    if (kpiSubKapal) {
+      kpiSubKapal.textContent = _data.kpi.kurangAwakKapal > 0
+        ? _data.kpi.kurangAwakKapal + ' kapal kurang awak'
+        : '100% kapal siap operasi';
+    }
+
+    var kpiSertifikat = document.getElementById('kpi-kelaikan-sertifikat');
+    var kpiSubSertifikat = document.getElementById('kpi-sub-sertifikat');
+    if (kpiSertifikat) kpiSertifikat.textContent = (_data.kpi.kelaikanPersen || 0) + '%';
+    if (kpiSubSertifikat) {
+      kpiSubSertifikat.textContent = _data.kpi.sertifikatExpired + ' kedaluwarsa · ' + _data.kpi.sertifikatSegeraHabis + ' <= 90 hari';
+    }
+
+    var kpiDilengkapi = document.getElementById('kpi-perlu-dilengkapi');
+    if (kpiDilengkapi) kpiDilengkapi.textContent = Format.number(_data.kpi.perluDilengkapi);
+
+    // 3. Komposisi AKN Table
+    var badgePeriode = document.getElementById('badge-akn-periode');
+    if (badgePeriode && _data.aknMeta) {
+      badgePeriode.textContent = 'Periode ' + (_data.aknMeta.periode || '--') + (_data.aknMeta.carried ? ' (Carry)' : '');
+    }
+
+    var tbodyAkn = document.querySelector('#table-ringkasan-akn tbody');
+    if (tbodyAkn && _data.aknTerbaru) {
+      var m = _data.aknTerbaru;
+      var labels = {
+        'PNS': 'Pegawai Negeri Sipil (PNS)',
+        'PPPK': 'PPPK',
+        'PPNPN': 'PPNPN',
+        'OUTSOURCING': 'Tenaga Alih Daya',
+        'KONTRAK': 'Kontrak / PJLP'
+      };
+      var rowsHtml = '';
+      ['PNS', 'PPPK', 'PPNPN', 'OUTSOURCING', 'KONTRAK'].forEach(function (k) {
+        var poa = (m.poa && m.poa[k]) || 0;
+        var tot = (m.keseluruhan && m.keseluruhan[k]) || 0;
+        rowsHtml +=
+          '<tr>' +
+            '<td>' + (labels[k] || k) + '</td>' +
+            '<td style="text-align:right; font-weight:600;">' + Format.number(poa) + '</td>' +
+            '<td style="text-align:right; font-weight:600;">' + Format.number(tot) + '</td>' +
+          '</tr>';
+      });
+      tbodyAkn.innerHTML = rowsHtml;
+    }
+
+    // 4. Statistik Safe Manning
+    var stLaik = document.getElementById('stat-sijil-laik');
+    var stKurang = document.getElementById('stat-sijil-kurang');
+    var stKritis = document.getElementById('stat-sijil-kritis');
+    if (stLaik) stLaik.textContent = _data.sijilSummary.laikOperasi;
+    if (stKurang) stKurang.textContent = _data.sijilSummary.kurangAwak;
+    if (stKritis) stKritis.textContent = _data.sijilSummary.kritis;
+
+    // 5. Antrean Sertifikat Mendesak Table
+    var tbodySertifikat = document.querySelector('#table-ringkasan-sertifikat tbody');
+    if (tbodySertifikat) {
+      var antrean = _data.antreanSertifikatUrgent || [];
+      if (antrean.length === 0) {
+        tbodySertifikat.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted); padding:20px;">Tidak ada sertifikat kedaluwarsa atau segera habis.</td></tr>';
+      } else {
+        tbodySertifikat.innerHTML = antrean.map(function (it) {
+          var bClass = it.status === 'KEDALUWARSA' ? 'badge-danger' : 'badge-warning';
+          return (
+            '<tr>' +
+              '<td>' +
+                '<div style="font-weight:500;">' + Format.escape(it.nama) + '</div>' +
+                '<div style="font-size:11px; color:var(--muted);">' + Format.escape(it.jabatan || '--') + '</div>' +
+              '</td>' +
+              '<td>' + Format.escape(it.namaStandar || it.kodeStandar) + '</td>' +
+              '<td>' +
+                '<div>' + Format.date(it.berlakuSampai) + '</div>' +
+                '<div style="font-size:11px; color:var(--muted);">' + (it.sisaHari < 0 ? 'Lewat ' + Math.abs(it.sisaHari) + ' hari' : it.sisaHari + ' hari lagi') + '</div>' +
+              '</td>' +
+              '<td style="text-align:center;"><span class="badge ' + bClass + '">' + Format.escape(it.status) + '</span></td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+    }
+
+    // 6. Log Kegiatan Terkini List
+    var kegListEl = document.getElementById('ringkasan-kegiatan-list');
+    if (kegListEl) {
+      var kegiatan = _data.kegiatanTerbaru || [];
+      if (kegiatan.length === 0) {
+        kegListEl.innerHTML = '<div style="color:var(--muted); font-size:12px; padding:10px 0;">Belum ada log agenda kegiatan.</div>';
+      } else {
+        kegListEl.innerHTML = kegiatan.map(function (k) {
+          return (
+            '<div style="border-bottom:1px solid var(--border); padding-bottom:8px;">' +
+              '<div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:2px;">' +
+                '<span>' + Format.date(k.tanggalMulai) + '</span>' +
+                '<span>' + Format.escape(k.jenisKegiatan) + '</span>' +
+              '</div>' +
+              '<div style="font-size:12px; font-weight:500; color:var(--text); line-height:1.4;">' + Format.escape(k.namaKegiatan) + '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+    }
+  }
+
+  return {
+    init: init,
+    loadData: loadData
+  };
+})();
+</script>
+

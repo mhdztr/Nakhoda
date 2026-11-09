@@ -1,0 +1,126 @@
+<!-- html/views/Laporan.html -->
+<!-- Tampilan Laporan Dinas & Ekspor Terkonsolidasi Nakhoda -->
+<div id="view-laporan" class="view-panel">
+  <!-- Header Halaman -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h2 class="page-title">Laporan Konsolidasi &amp; Ekspor</h2>
+      <p class="page-subtitle">Pratinjau lembar dinas resmi Ditjen PSDKP dan pengunduhan berkas tabular data pengawakan.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-secondary btn-control-md" id="btn-lap-print">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>Cetak A4</span>
+      </button>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-primary btn-control-md" id="btn-lap-export-direktori">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Ekspor CSV Awak</span>
+        </button>
+        <button class="btn btn-secondary btn-control-md" id="btn-lap-export-sijil">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Ekspor CSV Armada</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pratinjau Lembar Dinas Cetak A4 -->
+  <div class="card" style="max-width:840px; margin:0 auto; padding:40px; background:#FFFFFF; color:#15181B; box-shadow:0 4px 12px rgba(0,0,0,0.06); font-family:var(--font-sans);" id="lembar-cetak-dinas">
+    <!-- Kop Surat Resmi -->
+    <div style="border-bottom:2px solid #15181B; padding-bottom:16px; margin-bottom:24px; text-align:center;">
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#595E65;">Kementerian Kelautan dan Perikanan Republik Indonesia</div>
+      <div style="font-size:14px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:#15181B; margin:2px 0;">Direktorat Jenderal Pengawasan Sumber Daya Kelautan dan Perikanan</div>
+      <div style="font-size:13px; font-weight:600; text-transform:uppercase; color:#D9480F;">Direktorat Pemantauan dan Operasi Armada · Tim Kerja Pengawakan</div>
+      <div style="font-size:10px; color:#7E848D; margin-top:4px;">Gedung Mina Bahari IV Lt. 10, Jl. Medan Merdeka Timur No. 16, Jakarta Pusat</div>
+    </div>
+
+    <!-- Judul Dokumen -->
+    <div style="text-align:center; margin-bottom:24px;">
+      <h3 style="font-size:16px; font-weight:700; text-transform:uppercase; margin:0 0 4px 0; color:#15181B;">Laporan Konsolidasi Situasi Pengawakan Armada</h3>
+      <div style="font-size:11px; color:#595E65;" id="lap-meta-info">Nomor: ND.AWAK/2026/KONSOLIDASI · Tanggal: --</div>
+    </div>
+
+    <!-- Bagian 1: Ringkasan Eksekutif & Kelaikan Safe Manning -->
+    <div style="margin-bottom:24px;">
+      <h4 style="font-size:13px; font-weight:700; text-transform:uppercase; border-bottom:1px solid #D0D5DD; padding-bottom:4px; margin-bottom:10px;">I. Status Formasi Safe Manning Armada</h4>
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:14px; text-align:center;">
+        <div style="border:1px solid #E4E7EC; padding:8px; border-radius:4px;">
+          <div style="font-size:10px; color:#595E65;">Total Awak Kapal</div>
+          <div style="font-size:16px; font-weight:700;" id="lap-total-awak">--</div>
+        </div>
+        <div style="border:1px solid #E4E7EC; padding:8px; border-radius:4px;">
+          <div style="font-size:10px; color:#595E65;">Total Armada Kapal</div>
+          <div style="font-size:16px; font-weight:700;" id="lap-total-kapal">--</div>
+        </div>
+        <div style="border:1px solid #E4E7EC; padding:8px; border-radius:4px;">
+          <div style="font-size:10px; color:#595E65;">Kapal Laik Operasi</div>
+          <div style="font-size:16px; font-weight:700;" id="lap-kapal-laik">--</div>
+        </div>
+        <div style="border:1px solid #E4E7EC; padding:8px; border-radius:4px;">
+          <div style="font-size:10px; color:#595E65;">Kepatuhan Sertifikat</div>
+          <div style="font-size:16px; font-weight:700; color:#D9480F;" id="lap-kelaikan-sertifikat">--%</div>
+        </div>
+      </div>
+      <p style="font-size:12px; line-height:1.6; color:#344054; margin:0;" id="lap-narasi-temuan">
+        Memuat analisis data situasi pengawakan armada...
+      </p>
+    </div>
+
+    <!-- Bagian 2: Matriks Komposisi Pegawai (AKN) -->
+    <div style="margin-bottom:24px;">
+      <h4 style="font-size:13px; font-weight:700; text-transform:uppercase; border-bottom:1px solid #D0D5DD; padding-bottom:4px; margin-bottom:10px;">II. Komposisi Awak Kapal Negara Terkini</h4>
+      <table style="width:100%; border-collapse:collapse; font-size:11px;" id="lap-table-akn">
+        <thead>
+          <tr style="background:#F2F4F7; border-bottom:1px solid #D0D5DD;">
+            <th style="padding:6px 8px; text-align:left;">Status Kepegawaian</th>
+            <th style="padding:6px 8px; text-align:right;">Pusat (POA)</th>
+            <th style="padding:6px 8px; text-align:right;">Keseluruhan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="3" style="text-align:center; padding:10px; color:#595E65;">Memuat matriks...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bagian 3: Tabel Kelaikan Kapal Pengawas Armada -->
+    <div style="margin-bottom:32px;">
+      <h4 style="font-size:13px; font-weight:700; text-transform:uppercase; border-bottom:1px solid #D0D5DD; padding-bottom:4px; margin-bottom:10px;">III. Matriks Kelaikan Formasi Armada Kapal</h4>
+      <table style="width:100%; border-collapse:collapse; font-size:11px;" id="lap-table-armada">
+        <thead>
+          <tr style="background:#F2F4F7; border-bottom:1px solid #D0D5DD;">
+            <th style="padding:6px 8px; text-align:left;">Nama Kapal</th>
+            <th style="padding:6px 8px; text-align:left;">Kelas</th>
+            <th style="padding:6px 8px; text-align:center;">Kebutuhan</th>
+            <th style="padding:6px 8px; text-align:center;">Terisi</th>
+            <th style="padding:6px 8px; text-align:center;">Kekurangan</th>
+            <th style="padding:6px 8px; text-align:center;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="6" style="text-align:center; padding:10px; color:#595E65;">Memuat daftar kapal...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bagian Tanda Tangan Resmi -->
+    <div style="display:flex; justify-content:space-between; margin-top:40px; page-break-inside:avoid; font-size:11px;">
+      <div style="width:240px; text-align:center;">
+        <div>Mengetahui,</div>
+        <div style="font-weight:700; margin-top:2px;">Ketua Tim Kerja Pengawakan</div>
+        <div style="height:55px;"></div>
+        <div style="font-weight:700; text-decoration:underline;">Ir. H. Syarifuddin, M.Si</div>
+        <div style="color:#595E65;">NIP. 198207152006041002</div>
+      </div>
+      <div style="width:240px; text-align:center;">
+        <div>Jakarta, <span id="lap-tgl-surat">--</span></div>
+        <div style="font-weight:700; margin-top:2px;">Penyusun Laporan</div>
+        <div style="height:55px;"></div>
+        <div style="font-weight:700; text-decoration:underline;" id="lap-nama-penyusun">Staf Pengawakan Dit. POA</div>
+        <div style="color:#595E65;">Dit. Pemantauan &amp; Operasi Armada</div>
+      </div>
+    </div>
+  </div>
+</div>
+

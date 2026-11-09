@@ -617,6 +617,12 @@ var Router = (function () {
 
   function init() {
     // Daftarkan handler modul
+    register('ringkasan', function () {
+      if (typeof RingkasanView !== 'undefined' && RingkasanView.init) {
+        RingkasanView.init();
+      }
+    });
+
     register('komposisi', function () {
       if (typeof AknView !== 'undefined' && AknView.init) {
         AknView.init();
@@ -644,6 +650,12 @@ var Router = (function () {
     register('sijil', function () {
       if (typeof SijilView !== 'undefined' && SijilView.init) {
         SijilView.init();
+      }
+    });
+
+    register('laporan', function () {
+      if (typeof LaporanView !== 'undefined' && LaporanView.init) {
+        LaporanView.init();
       }
     });
 

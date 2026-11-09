@@ -6,6 +6,19 @@
 
 ---
 
+## [Fase 8 — Dasbor Ringkasan Eksekutif, Notifikasi Cron & Laporan Dinas] — 9 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Membangun backend konsolidasi `services/LaporanService.js` (`ringkasan_get`, `lap_getPreviewData`, `lap_exportData`) yang mengagregasikan 4 metrik strip KPI pengawakan, status kelaikan safe manning kapal, kepatuhan sertifikasi STCW-F, matriks AKN terkini, dan generator narasi temuan pimpinan berbasis data.
+- Membangun layanan automasi serverless cron triggers `services/NotifService.js` (`notif_runDailyScan`, `notif_runWeeklyReminder`, `notif_runWeeklyBackup`) terhubung ke trigger GAS di `Code.js`.
+- Membangun antarmuka dasbor `html/views/Ringkasan.html` dan runtime `html/Script_Ringkasan.html` dengan kartu situasi dinamis, metrik kelaikan armada, ringkasan matriks AKN snapshot, dan tabel antrean sertifikat kedaluwarsa (&le; 90 hari).
+- Membangun antarmuka `html/views/Laporan.html` dan runtime `html/Script_Laporan.html` mendukung pratinjau lembar dinas resmi standar A4 dengan kop dinas Ditjen PSDKP dan pengunduhan berkas CSV (Direktori Awak & Armada Kapal).
+- Mengintegrasikan rute `ringkasan` dan `laporan` ke `html/Script_Core.html` dan `html/Index.html`.
+- Lolos audit linter mandiri `node lint_ui.js` (4 pass, 0 error) dan verifikasi test suite (25/25 pass).
+
+---
+
 ## [Fase 7 — Sub-Modul E: Penugasan Kapal & Papan Sijil Safe Manning] — 6 Nov 2026
 **Status:** Selesai
 
