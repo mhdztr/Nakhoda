@@ -1,11 +1,15 @@
 <style>
 /**
- * html/Style.html — Design System Nakhoda
- * Sesuai DESIGN.md: Achromatic Ledger, Oranye Keselamatan (#D9480F), Kontrol 3-Tier
+ * html/Style.html — Sistem Desain Nakhoda (Achromatic Ledger)
+ * Sesuai DESIGN.md, PRD.md, dan AGENTS.md:
+ * - Palet Akromatik Hangat + Oranye Keselamatan Laut (#D9480F)
+ * - Skala Geometri Kontrol 3-Tier Tunggal (LG: 40px, MD: 32px, SM: 26px)
+ * - Kapitalisasi Kalimat (Tanpa text-transform: uppercase)
+ * - Angka Tabular Wajib (tabular-nums)
  */
 
 :root {
-  /* ── 1. Palet Warna (Light Mode) ── */
+  /* ── 1. Token Permukaan & Tinta (Achromatic Ledger — Light Mode) ── */
   --ground:            #F4F5F6;
   --surface:           #FFFFFF;
   --raised:            #ECEEF0;
@@ -13,18 +17,22 @@
   --border:            #E3E5E8;
   --rule:              #EEF0F2;
   --control:           #CDD1D6;
+
   --text:              #0F1214;
+  --ink-secondary:     #2C3137;
   --muted:             #5B626A;
   --faint:             #66707A;
+
   --primary:           #15181B;
   --primary-hover:     #25292D;
 
-  /* Warna Data Utama (Oranye Keselamatan) */
+  /* ── 2. Warna Data Utama (Oranye Keselamatan Laut / International Safety Orange) ── */
   --accent:            #D9480F;
   --accent-ink:        #B53A06;
+  --accent-soft:       #FFF0EB;
   --chart-2:           #7B838B;
 
-  /* Warna Semantik Perubahan & Status */
+  /* ── 3. Warna Semantik Perubahan & Status ── */
   --positive:          #247B50;
   --negative:          #C4242A;
   --warning:           #6B4B00;
@@ -40,40 +48,37 @@
   --pill-neutral-bg:   #ECEEF0;
   --pill-neutral-ink:  #3D4348;
 
-  /* ── 2. Skala Geometri Kontrol 3-Tier (Aturan Keras AGENTS.md) ── */
-  --ctl-h-lg:          40px;
-  --ctl-px-lg:         14px;
-  --ctl-fs-lg:         14px;
+  /* ── 4. Skala Geometri Kontrol 3-Tier (Aturan Keras AGENTS.md) ── */
+  --ctl-h-lg: 40px;
+  --ctl-px-lg: 14px;
+  --ctl-fs-lg: 14px;
 
-  --ctl-h-md:          32px;
-  --ctl-px-md:         12px;
-  --ctl-fs-md:         13px;
+  --ctl-h-md: 32px;
+  --ctl-px-md: 12px;
+  --ctl-fs-md: 13px;
 
-  --ctl-h-sm:          26px;
-  --ctl-px-sm:         10px;
-  --ctl-fs-sm:         12px;
+  --ctl-h-sm: 26px;
+  --ctl-px-sm: 10px;
+  --ctl-fs-sm: 12px;
 
-  /* Radius & Elevasi */
+  /* ── 5. Radius, Jarak, & Tipografi ── */
   --radius-card:       8px;
   --radius-control:    6px;
   --radius-chip:       4px;
   --radius-pill:       9999px;
 
-  /* Jarak & Gutter */
   --gap:               12px;
   --pad:               24px;
   --card-pad:          20px;
   --sidebar-w:         240px;
 
-  /* Tipografi */
   --font-main:         'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono:         'Geist Mono', monospace;
+  --font-mono:         'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Durasi Transisi Taktikal */
   --dur-press:         90ms;
   --dur-ui:            160ms;
-  --dur-sheet:         240ms;
-  --ease-out:          cubic-bezier(0.2, 0, 0, 1);
+  --dur-sheet:         220ms;
+  --ease-out:          cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ── Reset Dasar ── */
@@ -83,7 +88,8 @@
   padding: 0;
 }
 
-body {
+html, body {
+  min-height: 100%;
   font-family: var(--font-main);
   background-color: var(--ground);
   color: var(--text);
@@ -93,21 +99,38 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Angka Tabular (Tabular Figures) ── */
+/* ── Angka Tabular Wajib (DESIGN.md §3.3) ── */
 .tnum,
 .tabular-nums,
+.mono,
 table td,
+table th,
 .kpi-value,
-.badge-count {
+.kpi-value-lead,
+.kpi-delta,
+.sijil-cell,
+.nav-badge,
+.badge-count,
+input[type="number"] {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
 
-/* ── Shell: Open Plane Architecture ── */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ── Arsitektur Bidang Terbuka (Open-Plane Shell — DESIGN.md §4.1) ── */
 #app-shell {
   display: flex;
   min-height: 100vh;
   width: 100%;
+  background-color: var(--ground);
 }
 
 #app-sidebar {
@@ -117,33 +140,56 @@ table td,
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  padding: 20px 14px;
+  padding: 20px 12px;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  z-index: 50;
 }
 
 #app-main {
   flex: 1;
   min-width: 0;
-  padding: 32px var(--pad);
+  padding: 28px var(--pad) 48px var(--pad);
   max-width: 1440px;
 }
 
-/* ── Header Sidebar & Panji November ── */
+#mobile-topbar {
+  display: none;
+  height: 48px;
+  padding: 0 16px;
+  background-color: var(--ground);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 45;
+}
+
+#sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 18, 20, 0.32);
+  z-index: 48;
+}
+
+/* ── Puncak Sidebar & Panji November ── */
 .brand-box {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 8px 18px 8px;
+  padding: 0 8px 16px 8px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .brand-flag {
   width: 24px;
   height: 24px;
+  border-radius: 3px;
   flex-shrink: 0;
 }
 
@@ -152,38 +198,46 @@ table td,
   font-weight: 600;
   color: var(--text);
   line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .brand-text p {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
+  line-height: 1.3;
 }
 
-/* ── Navigasi Sidebar ── */
+/* ── Navigasi Sidebar (Sentence Case, Tanpa Huruf Kapital Berjarak) ── */
 .nav-group-title {
   font-size: 12px;
   color: var(--muted);
-  font-weight: 500;
-  padding: 16px 8px 6px 8px;
+  font-weight: 400;
+  padding: 14px 10px 6px 10px;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 32px;
+  height: var(--ctl-h-md);
   padding: 0 10px;
   border-radius: var(--radius-control);
   color: var(--muted);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   cursor: pointer;
-  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out);
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
   width: 100%;
   text-align: left;
+  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out);
 }
 
 .nav-item:hover {
@@ -216,25 +270,40 @@ table td,
   font-weight: 500;
 }
 
+/* ── Dasar Sidebar (Profil Staf & Keluar) ── */
 .sidebar-footer {
   margin-top: auto;
-  padding-top: 16px;
+  padding: 14px 8px 0 8px;
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* ── User Avatar Inisial ── */
-.user-avatar {
+.user-avatar,
+.avatar-sm {
   width: 28px;
   height: 28px;
   border-radius: var(--radius-pill);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: var(--raised);
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.avatar-lg {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
   background-color: var(--raised);
   color: var(--text);
   flex-shrink: 0;
@@ -259,82 +328,66 @@ table td,
   color: var(--muted);
 }
 
-/* ── Baris Judul Layar & Temuan Data ── */
+/* ── View Containers & Baris Judul Layar (DESIGN.md §5.1) ── */
+.app-view,
+.view-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: viewFadeIn 140ms var(--ease-out);
+}
+
+@keyframes viewFadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-header,
 .screen-header {
-  margin-bottom: 24px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
 
-.screen-title-wrap h2 {
+.page-title-group,
+.screen-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.page-title,
+.screen-title-wrap h2,
+.page-header h1 {
   font-size: 24px;
   font-weight: 600;
   color: var(--text);
-  letter-spacing: -0.01em;
-  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 
+.page-subtitle,
 .screen-finding {
   font-size: 14px;
   color: var(--muted);
+  line-height: 1.45;
+  max-width: 72ch;
 }
 
+.page-actions,
 .screen-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
-/* ── Kontainer Kontrol 3-Tier ── */
-.ctl-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.ctl-fill {
-  width: 100%;
-}
-
-/* Tier LG (40px) */
-.ctl-lg button,
-.ctl-lg input,
-.ctl-lg select,
-button.btn-lg,
-input.input-lg,
-select.select-lg {
-  height: var(--ctl-h-lg);
-  padding: 0 var(--ctl-px-lg);
-  font-size: var(--ctl-fs-lg);
-  border-radius: var(--radius-control);
-}
-
-/* Tier MD (32px) */
-.ctl-md button,
-.ctl-md input,
-.ctl-md select,
-button.btn-md,
-input.input-md,
-select.select-md {
-  height: var(--ctl-h-md);
-  padding: 0 var(--ctl-px-md);
-  font-size: var(--ctl-fs-md);
-  border-radius: var(--radius-control);
-}
-
-/* Tier SM (26px) */
-.ctl-sm button,
-button.btn-sm {
-  height: var(--ctl-h-sm);
-  padding: 0 var(--ctl-px-sm);
-  font-size: var(--ctl-fs-sm);
-  border-radius: var(--radius-control);
-}
-
-/* ── Gaya Tombol (Buttons) ── */
-button {
+/* ── Sistem Geometri Kontrol 3-Tier Tunggal (LG: 40px, MD: 32px, SM: 26px) ── */
+button,
+.btn {
   font-family: inherit;
   display: inline-flex;
   align-items: center;
@@ -342,43 +395,141 @@ button {
   gap: 6px;
   font-weight: 500;
   border: 1px solid transparent;
+  border-radius: var(--radius-control);
   cursor: pointer;
   background: transparent;
   color: var(--text);
-  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-ui) var(--ease-out);
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out);
 }
 
-button:active {
+button:active,
+.btn:active {
   transform: scale(0.98);
 }
 
-.btn-primary {
+button:disabled,
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button svg,
+.btn svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  fill: none;
+  flex-shrink: 0;
+}
+
+/* Tier LG: 40px */
+.ctl-lg button,
+.ctl-lg input,
+.ctl-lg select,
+.btn-lg,
+.btn-control-lg,
+.btn-primary-lg,
+.btn-secondary-lg,
+.btn-danger-lg,
+.input-lg,
+.select-lg,
+.form-control-lg,
+.input-control-lg {
+  height: var(--ctl-h-lg);
+  padding: 0 var(--ctl-px-lg);
+  font-size: var(--ctl-fs-lg);
+  border-radius: var(--radius-control);
+}
+
+/* Tier MD: 32px */
+.ctl-md button,
+.ctl-md input,
+.ctl-md select,
+.btn-md,
+.btn-control-md,
+.btn-primary-md,
+.btn-secondary-md,
+.btn-danger-md,
+.input-md,
+.select-md,
+.form-control-md,
+.input-control-md {
+  height: var(--ctl-h-md);
+  padding: 0 var(--ctl-px-md);
+  font-size: var(--ctl-fs-md);
+  border-radius: var(--radius-control);
+}
+
+/* Tier SM: 26px */
+.ctl-sm button,
+.ctl-sm input,
+.ctl-sm select,
+.btn-sm,
+.btn-control-sm,
+.btn-primary-sm,
+.btn-secondary-sm,
+.btn-danger-sm,
+.input-sm,
+.select-sm,
+.form-control-sm,
+.input-control-sm {
+  height: var(--ctl-h-sm);
+  padding: 0 var(--ctl-px-sm);
+  font-size: var(--ctl-fs-sm);
+  border-radius: var(--radius-control);
+}
+
+/* Varian Warna Tombol */
+.btn-primary,
+.btn-primary-lg,
+.btn-primary-md,
+.btn-primary-sm {
   background-color: var(--primary);
   color: #FFFFFF;
   border-color: var(--primary);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary-lg:hover,
+.btn-primary-md:hover,
+.btn-primary-sm:hover {
   background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
-.btn-secondary {
+.btn-secondary,
+.btn-secondary-lg,
+.btn-secondary-md,
+.btn-secondary-sm {
   background-color: var(--surface);
   color: var(--text);
   border-color: var(--control);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-secondary-lg:hover,
+.btn-secondary-md:hover,
+.btn-secondary-sm:hover {
   background-color: var(--raised);
 }
 
-.btn-danger {
-  background-color: transparent;
+.btn-danger,
+.btn-danger-lg,
+.btn-danger-md,
+.btn-danger-sm {
+  background-color: var(--surface);
   color: var(--negative);
   border-color: var(--control);
 }
 
-.btn-danger:hover {
+.btn-danger:hover,
+.btn-danger-lg:hover,
+.btn-danger-md:hover,
+.btn-danger-sm:hover {
   background-color: var(--pill-negative-bg);
   border-color: var(--negative);
 }
@@ -389,25 +540,50 @@ button:active {
   border-color: var(--negative);
 }
 
-/* ── Gaya Input Form ── */
+.ctl-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ctl-fill {
+  width: 100%;
+}
+
+/* ── Input, Select, Textarea & Form Group ── */
 input[type="text"],
 input[type="password"],
+input[type="email"],
 input[type="number"],
 input[type="date"],
+input[type="search"],
 select,
 textarea {
   font-family: inherit;
   background-color: var(--surface);
   color: var(--text);
   border: 1px solid var(--control);
+  border-radius: var(--radius-control);
   outline: none;
-  transition: border-color var(--dur-ui) var(--ease-out);
+  transition: border-color var(--dur-ui) var(--ease-out), box-shadow var(--dur-ui) var(--ease-out);
+}
+
+textarea.form-control-md,
+textarea.form-control-lg,
+textarea {
+  height: auto;
+  min-height: 76px;
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  width: 100%;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--focus);
+  box-shadow: 0 0 0 2px rgba(15, 18, 20, 0.08);
 }
 
 input::placeholder,
@@ -415,42 +591,53 @@ textarea::placeholder {
   color: var(--faint);
 }
 
-/* ── Kartu Permukaan Datar (Cards) ── */
-.card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  padding: var(--card-pad);
-  margin-bottom: 24px;
-}
-
-.card-hd {
+.form-group {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
 }
 
-.card-title {
-  font-size: 16px;
+.form-label {
+  font-size: 12px;
   font-weight: 500;
-  color: var(--text);
+  color: var(--ink-secondary);
 }
 
-/* ── Strip KPI Satu Kontainer ── */
+.form-hint {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* ── Strip KPI Satu Kontainer (DESIGN.md §5.3) ── */
 .kpi-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
-  margin-bottom: 24px;
   overflow: hidden;
 }
 
 .kpi-col {
   padding: 18px 20px;
   border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
 }
 
 .kpi-col:last-child {
@@ -459,29 +646,200 @@ textarea::placeholder {
 
 .kpi-label {
   font-size: 12px;
+  font-weight: 400;
   color: var(--muted);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .kpi-value {
   font-size: 24px;
   font-weight: 400;
   color: var(--text);
-  line-height: 1.1;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .kpi-value-lead {
   font-size: 30px;
   font-weight: 500;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
 }
 
 .kpi-delta {
   font-size: 12px;
   color: var(--muted);
-  margin-top: 4px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-/* ── Tabel Tanpa Zebra ── */
+.delta-up { color: var(--positive); font-weight: 500; }
+.delta-down { color: var(--negative); font-weight: 500; }
+.delta-warn { color: var(--warning); font-weight: 500; }
+
+/* ── Kartu Permukaan Datar & Tata Letak Grid (DESIGN.md §4.3 & §5.4) ── */
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: var(--card-pad);
+}
+
+.card-flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-header,
+.card-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card-flush > .card-header,
+.card-flush > .card-hd {
+  padding: 16px 20px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.grid-2fr-1fr {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--gap);
+}
+
+/* ── Bilah Tab Garis Bawah & Bilah Saring (DESIGN.md §5.2) ── */
+.tab-strip {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+  padding: 0 4px;
+}
+
+.tab-btn {
+  height: 36px;
+  padding: 0 2px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+}
+
+.tab-btn.active {
+  color: var(--text);
+  font-weight: 500;
+  border-bottom-color: var(--text);
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 12px 16px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+/* ── Bilah Proporsi Horizontal (Proportional Track Bars — DESIGN.md §7.2 & §8.0) ── */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.track-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.track-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.track-label {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.track-numbers {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.track-numbers strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.track-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--raised);
+  border-radius: var(--radius-chip);
+  overflow: hidden;
+  position: relative;
+}
+
+.track-fill {
+  height: 100%;
+  background-color: var(--accent);
+  border-radius: var(--radius-chip);
+  transition: width 220ms var(--ease-out);
+}
+
+/* ── Tabel Data Tanpa Zebra (DESIGN.md §5.5) ── */
 .table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -490,14 +848,21 @@ textarea::placeholder {
   background-color: var(--surface);
 }
 
-table {
+.card-flush .table-wrap {
+  border: none;
+  border-radius: 0;
+}
+
+table,
+.table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
   text-align: left;
 }
 
-thead th {
+thead th,
+.table thead th {
   height: 36px;
   padding: 0 14px;
   font-size: 12px;
@@ -508,37 +873,129 @@ thead th {
   white-space: nowrap;
 }
 
-tbody tr {
+tbody tr,
+.table tbody tr {
   height: 44px;
   border-bottom: 1px solid var(--rule);
   transition: background-color var(--dur-ui) var(--ease-out);
 }
 
-tbody tr:last-child {
+tbody tr:last-child,
+.table tbody tr:last-child {
   border-bottom: none;
 }
 
-tbody tr:hover {
+tbody tr:hover,
+.table tbody tr:hover {
   background-color: var(--raised);
 }
 
-tbody tr.selected {
+tbody tr.clickable,
+.table tbody tr.clickable {
+  cursor: pointer;
+}
+
+tbody tr.selected,
+.table tbody tr.selected {
   background-color: var(--active);
 }
 
-td {
-  padding: 0 14px;
+td,
+.table td {
+  padding: 8px 14px;
   color: var(--text);
   vertical-align: middle;
 }
 
+.text-right,
 td.text-right,
 th.text-right {
   text-align: right;
 }
 
-/* ── Pills Status ── */
-.pill {
+.text-center,
+td.text-center,
+th.text-center {
+  text-align: center;
+}
+
+.cell-primary {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.cell-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── Elemen Tanda Tangan: Matriks 2D Papan Sijil (DESIGN.md §2.3 & §8.1) ── */
+.sijil-matrix th,
+.sijil-matrix td {
+  padding: 6px 8px;
+}
+
+.sijil-group-row td {
+  background-color: var(--ground);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  height: 32px;
+  padding: 0 14px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.sijil-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: var(--radius-chip);
+  font-size: 12px;
+  border: 1px solid var(--rule);
+}
+
+.sijil-cell-ok {
+  background-color: var(--surface);
+  color: var(--ink-secondary);
+  font-weight: 400;
+}
+
+.sijil-cell-plus {
+  background-color: var(--pill-positive-bg);
+  color: var(--pill-positive-ink);
+  border-color: transparent;
+  font-weight: 500;
+}
+
+.sijil-cell-warn {
+  background-color: var(--pill-negative-bg);
+  color: var(--negative);
+  border-color: transparent;
+  font-weight: 500;
+}
+
+.sijil-cell-crit {
+  background-color: var(--negative);
+  color: #FFFFFF;
+  border-color: var(--negative);
+  font-weight: 600;
+}
+
+.sijil-cell-na {
+  background-color: transparent;
+  color: var(--control);
+  border-color: transparent;
+}
+
+/* ── Pil Status (Status Pills — DESIGN.md §5.6) ── */
+.pill,
+.badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -556,65 +1013,144 @@ th.text-right {
   height: 6px;
   border-radius: var(--radius-pill);
   background-color: currentColor;
+  flex-shrink: 0;
 }
 
-.pill-positive {
+.pill-positive,
+.badge-positive,
+.badge-success {
   background-color: var(--pill-positive-bg);
   color: var(--pill-positive-ink);
 }
 
-.pill-negative {
+.pill-negative,
+.badge-negative,
+.badge-danger {
   background-color: var(--pill-negative-bg);
   color: var(--pill-negative-ink);
 }
 
-.pill-warning {
+.pill-warning,
+.badge-warning {
   background-color: var(--pill-warning-bg);
   color: var(--pill-warning-ink);
 }
 
-.pill-neutral {
+.pill-neutral,
+.badge-neutral,
+.badge-muted {
   background-color: var(--pill-neutral-bg);
   color: var(--pill-neutral-ink);
 }
 
-/* ── Dialog Modal Datar ── */
+.badge-accent {
+  background-color: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+/* ── Dialog Modal Datar (DESIGN.md §6.4) ── */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(15, 18, 20, 0.45);
-  display: flex;
+  background-color: rgba(15, 18, 20, 0.36);
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 16px;
 }
 
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-box,
 .modal-dialog {
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   width: 100%;
   max-width: 560px;
-  padding: 24px;
-  box-shadow: 0 8px 24px rgba(15, 18, 20, 0.12);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalEnter 160ms var(--ease-out);
 }
 
+.modal-box-lg {
+  max-width: 680px;
+}
+
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header,
 .modal-hd {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modal-title {
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 16px;
+  color: var(--text);
 }
 
+.modal-close {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: var(--radius-control);
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background-color: var(--raised);
+  color: var(--text);
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer,
 .modal-actions {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  background-color: var(--ground);
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 24px;
 }
 
-/* ── Lembar Samping (Slide-over Sheet) ── */
+/* ── Lembar Samping (Slide-Over Sheet 480px — DESIGN.md §6.3) ── */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 18, 20, 0.28);
+  display: none;
+  z-index: 950;
+}
+
+.sheet-overlay.active {
+  display: block;
+}
+
 .sheet-panel {
   position: fixed;
   top: 0;
@@ -624,31 +1160,111 @@ th.text-right {
   height: 100vh;
   background-color: var(--surface);
   border-left: 1px solid var(--border);
-  z-index: 999;
-  box-shadow: -4px 0 24px rgba(15, 18, 20, 0.08);
+  z-index: 960;
   display: flex;
   flex-direction: column;
+  animation: sheetSlideIn var(--dur-sheet) var(--ease-out);
 }
 
+@keyframes sheetSlideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.sheet-header,
 .sheet-hd {
-  padding: 20px 24px;
+  padding: 18px 20px;
   border-bottom: 1px solid var(--border);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .sheet-body {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: 20px;
 }
 
-/* ── Toaster Toast ── */
+.sheet-footer,
+.sheet-ft {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  background-color: var(--ground);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ── Area Unggah Multi-Evidence (DESIGN.md §5.8) ── */
+.dropzone-box {
+  border: 1px dashed var(--control);
+  border-radius: var(--radius-control);
+  background-color: var(--ground);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--dur-ui) var(--ease-out), background-color var(--dur-ui) var(--ease-out);
+}
+
+.dropzone-box:hover {
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
+}
+
+/* ── Garis Waktu Horizontal Kegiatan (DESIGN.md §8.2) ── */
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 240px 1fr 110px;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  background-color: var(--surface);
+}
+
+.timeline-track {
+  height: 10px;
+  background-color: var(--raised);
+  border-radius: var(--radius-chip);
+  position: relative;
+  overflow: hidden;
+}
+
+.timeline-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: var(--accent);
+  border-radius: var(--radius-chip);
+  min-width: 8%;
+}
+
+/* ── Lembar Pratinjau Cetak A4 (DESIGN.md §8.3) ── */
+.print-paper {
+  background-color: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 48px;
+  color: #0F1214;
+}
+
+/* ── Toaster Notification ── */
 #toaster {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 20px;
+  right: 20px;
   z-index: 2000;
   display: flex;
   flex-direction: column;
@@ -661,9 +1277,10 @@ th.text-right {
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-control);
-  padding: 12px 16px;
+  padding: 10px 14px;
   font-size: 13px;
-  box-shadow: 0 4px 16px rgba(15, 18, 20, 0.10);
+  color: var(--text);
+  box-shadow: 0 4px 12px rgba(15, 18, 20, 0.08);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -671,10 +1288,103 @@ th.text-right {
   max-width: 400px;
 }
 
-.toast-positive { border-left: 3px solid var(--positive); }
-.toast-negative { border-left: 3px solid var(--negative); }
-.toast-warning  { border-left: 3px solid var(--warning); }
+.toast-icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  flex-shrink: 0;
+}
 
-/* ── Utilitas ── */
-.hidden { display: none !important; }
+.toast-msg {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.toast-success, .toast-positive { border-left: 3px solid var(--positive); }
+.toast-error, .toast-negative   { border-left: 3px solid var(--negative); }
+.toast-warning                  { border-left: 3px solid var(--warning); }
+.toast-info                     { border-left: 3px solid var(--primary); }
+
+/* ── Responsif Mobile (<= 768px — DESIGN.md §4.4) ── */
+@media (max-width: 960px) {
+  .kpi-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .kpi-col:nth-child(2) {
+    border-right: none;
+  }
+  .kpi-col:nth-child(1),
+  .kpi-col:nth-child(2) {
+    border-bottom: 1px solid var(--border);
+  }
+  .grid-2col,
+  .grid-2fr-1fr {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  #app-shell {
+    flex-direction: column;
+  }
+  #mobile-topbar {
+    display: flex;
+  }
+  #app-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    transition: transform var(--dur-sheet) var(--ease-out);
+  }
+  #app-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  #sidebar-backdrop.mobile-open {
+    display: block;
+  }
+  #app-main {
+    padding: 20px 16px 40px 16px;
+  }
+  .page-header,
+  .screen-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .form-grid-2,
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .timeline-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+/* ── Mode Cetak A4 Resmi ── */
+@media print {
+  body {
+    background: #FFFFFF !important;
+  }
+  #app-sidebar,
+  #mobile-topbar,
+  .no-print,
+  .page-header,
+  .filter-bar,
+  #toaster {
+    display: none !important;
+  }
+  #app-main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  .print-paper {
+    border: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+}
 </style>

@@ -1,67 +1,92 @@
 <script>
 /**
  * html/Script_Kegiatan.html
- * Controller Klien Sub-Modul B: Log Kegiatan & Multi-Evidence
- * Nakhoda — Timja Pengawakan Dit. POA KKP RI
+ * Controller Klien Sub-Modul B: Log Kegiatan & Multi-Evidence Pelatihan Personil
+ * Nakhoda — Timja Pengawakan Dit. POA KKP RI (Achromatic Ledger)
  */
 var KegiatanView = (function () {
   'use strict';
 
+  var _items = [];
   var _stagedFiles = [];
   var _userRole = '';
+  var _activeTab = 'daftar'; // 'daftar' | 'timeline'
+  var _eventsBound = false;
+
+  var JENIS_LABELS = {
+    'PELATIHAN_TEKNIS': 'Pelatihan teknis',
+    'SERTIFIKASI_LAUT': 'Sertifikasi laut (STCW-F)',
+    'PENYEGARAN_TAKTIK': 'Penyegaran taktik',
+    'PEMBINAAN_DISIPLIN': 'Pembinaan disiplin'
+  };
 
   function init() {
-    var outlet = document.getElementById('outlet-content');
-    var viewTemplate = document.getElementById('view-kegiatan');
-    if (viewTemplate && outlet) {
-      outlet.innerHTML = viewTemplate.outerHTML;
-      var activeView = outlet.querySelector('#view-kegiatan');
-      if (activeView) activeView.classList.remove('hidden');
-    }
-
     _bindEvents();
     load();
   }
 
   function _bindEvents() {
-    var btnTambah = document.getElementById('btn-tambah-kegiatan');
-    var filterJenis = document.getElementById('keg-filter-jenis');
-    var searchInput = document.getElementById('keg-search-input');
-    var btnSearch = document.getElementById('btn-keg-search');
-    var fileInput = document.getElementById('keg-file-input');
-    var formKeg = document.getElementById('form-kegiatan');
-    var formAnulir = document.getElementById('form-keg-anulir');
+    if (_eventsBound) return;
+    _eventsBound = true;
 
+    // Tab switcher
+    var tabDaftar = document.getElementById('tab-keg-daftar');
+    var tabTimeline = document.getElementById('tab-keg-timeline');
+    if (tabDaftar && tabTimeline) {
+      tabDaftar.onclick = function () {
+        _switchTab('daftar');
+      };
+      tabTimeline.onclick = function () {
+        _switchTab('timeline');
+      };
+    }
+
+    var btnRefresh = document.getElementById('btn-keg-refresh');
+    if (btnRefresh) {
+      btnRefresh.onclick = function () {
+        load();
+      };
+    }
+
+    var btnTambah = document.getElementById('btn-tambah-kegiatan');
     if (btnTambah) {
       btnTambah.onclick = function () {
         _openCreateModal();
       };
     }
 
+    var filterJenis = document.getElementById('keg-filter-jenis');
     if (filterJenis) {
       filterJenis.onchange = function () {
         load();
       };
     }
 
+    var btnSearch = document.getElementById('btn-keg-search');
     if (btnSearch) {
       btnSearch.onclick = function () {
         load();
       };
     }
 
+    var searchInput = document.getElementById('keg-search-input');
     if (searchInput) {
       searchInput.onkeydown = function (e) {
-        if (e.key === 'Enter') load();
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          load();
+        }
       };
     }
 
+    var fileInput = document.getElementById('keg-file-input');
     if (fileInput) {
       fileInput.onchange = function (e) {
         _handleFileSelection(e.target.files);
       };
     }
 
+    var formKeg = document.getElementById('form-kegiatan');
     if (formKeg) {
       formKeg.onsubmit = function (e) {
         e.preventDefault();
@@ -69,6 +94,7 @@ var KegiatanView = (function () {
       };
     }
 
+    var formAnulir = document.getElementById('form-keg-anulir');
     if (formAnulir) {
       formAnulir.onsubmit = function (e) {
         e.preventDefault();
@@ -77,9 +103,36 @@ var KegiatanView = (function () {
     }
   }
 
+  function _switchTab(tab) {
+    _activeTab = tab;
+    var tabDaftar = document.getElementById('tab-keg-daftar');
+    var tabTimeline = document.getElementById('tab-keg-timeline');
+    var paneDaftar = document.getElementById('keg-pane-daftar');
+    var paneTimeline = document.getElementById('keg-pane-timeline');
+
+    if (tab === 'daftar') {
+      if (tabDaftar) tabDaftar.classList.add('active');
+      if (tabTimeline) tabTimeline.classList.remove('active');
+      if (paneDaftar) paneDaftar.classList.remove('hidden');
+      if (paneTimeline) paneTimeline.classList.add('hidden');
+    } else {
+      if (tabDaftar) tabDaftar.classList.remove('active');
+      if (tabTimeline) tabTimeline.classList.add('active');
+      if (paneDaftar) paneDaftar.classList.add('hidden');
+      if (paneTimeline) paneTimeline.classList.remove('hidden');
+      _renderTimeline();
+    }
+  }
+
   function load() {
     var token = AuthApp.getToken();
     if (!token) return;
+
+    var btnRefresh = document.getElementById('btn-keg-refresh');
+    if (btnRefresh) {
+      btnRefresh.disabled = true;
+      btnRefresh.classList.add('loading');
+    }
 
     var jenis = (document.getElementById('keg-filter-jenis') || {}).value || '';
     var search = (document.getElementById('keg-search-input') || {}).value || '';
@@ -92,296 +145,513 @@ var KegiatanView = (function () {
       offset: 0
     })
       .then(function (res) {
-        _userRole = res.userRole;
-        _renderTable(res.items || [], res.total || 0);
+        if (btnRefresh) {
+          btnRefresh.disabled = false;
+          btnRefresh.classList.remove('loading');
+        }
+        if (!res) {
+          Toast.error('Respon data log kegiatan kosong.');
+          return;
+        }
+
+        _items = res.items || [];
+        _userRole = res.userRole || '';
+
+        // Kalimat Temuan Subtitle
+        var subEl = document.getElementById('kegiatan-finding-sub');
+        if (subEl) {
+          subEl.textContent = res.findingSubtitle || (_items.length + ' agenda kegiatan pembinaan tercatat dalam sistem.');
+        }
+
+        // Metrik Strip 4-Kolom
+        var m = res.metrics || {};
+        var kpiTotal = document.getElementById('kpi-keg-total');
+        var kpiPeserta = document.getElementById('kpi-keg-peserta');
+        var kpiLampiran = document.getElementById('kpi-keg-lampiran');
+        var kpiBulanIni = document.getElementById('kpi-keg-bulan-ini');
+
+        if (kpiTotal) kpiTotal.textContent = Format.number(m.totalKegiatan || _items.length);
+        if (kpiPeserta) kpiPeserta.textContent = Format.number(m.totalPeserta || 0);
+        if (kpiLampiran) kpiLampiran.textContent = Format.number(m.totalLampiran || 0);
+        if (kpiBulanIni) kpiBulanIni.textContent = Format.number(m.kegiatanBulanIni || 0);
+
+        var totalInfo = document.getElementById('keg-total-info');
+        if (totalInfo) totalInfo.textContent = Format.number(res.total || _items.length) + ' agenda';
+
+        _renderTable();
+        if (_activeTab === 'timeline') {
+          _renderTimeline();
+        }
       })
       .catch(function (err) {
-        Toast.error('Gagal memuat log kegiatan: ' + err.message);
+        if (btnRefresh) {
+          btnRefresh.disabled = false;
+          btnRefresh.classList.remove('loading');
+        }
+        Toast.error(err.message || 'Gagal memuat log kegiatan.');
       });
   }
 
-  function _renderTable(items, total) {
+  function _renderTable() {
     var tbody = document.getElementById('keg-list-tbody');
-    var infoEl = document.getElementById('keg-total-info');
-    if (infoEl) infoEl.textContent = total + ' kegiatan tercatat';
-
     if (!tbody) return;
 
-    if (!items || items.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Belum ada agenda kegiatan yang tercatat.</td></tr>';
+    if (_items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada agenda kegiatan yang cocok dengan filter.</td></tr>';
       return;
     }
 
     var html = '';
-    items.forEach(function (k) {
-      var jenisLabel = k.jenisKegiatan.replace(/_/g, ' ');
-      var canRevisi = k.status === 'ACTIVE';
-      var canAnulir = (_userRole === 'KADIV' || _userRole === 'SUPERADMIN') && k.status === 'ACTIVE';
+    _items.forEach(function (keg) {
+      var isVoid = String(keg.status || '').toUpperCase() === 'VOID';
+      var statusBadgeHtml = isVoid
+        ? Format.statusBadge('Dianulir', 'negative')
+        : Format.statusBadge('Aktif', 'positive');
 
-      var jadwalText = Format.date(k.tanggalMulai);
-      if (k.tanggalSelesai && k.tanggalSelesai !== k.tanggalMulai) {
-        jadwalText += ' s.d. ' + Format.date(k.tanggalSelesai);
+      var dateDisplay = Format.date(keg.tanggalMulai);
+      if (keg.tanggalSelesai && keg.tanggalSelesai !== keg.tanggalMulai) {
+        dateDisplay += ' &ndash; ' + Format.date(keg.tanggalSelesai);
       }
 
-      html += '<tr>' +
-        '<td>' + Format.statusBadge(k.status) + '</td>' +
+      var jenisLabel = JENIS_LABELS[keg.jenisKegiatan] || keg.jenisKegiatan;
+      var wilayahPill = keg.wilayah
+        ? '<span style="display:inline-block; font-size:11px; padding:1px 6px; background:var(--surface); border:1px solid var(--border); border-radius:3px; color:var(--muted);">' + Format.escape(keg.wilayah) + '</span>'
+        : '';
+
+      var deskSnippet = keg.deskripsi
+        ? '<div style="font-size:11px; color:var(--muted); line-height:1.4; margin-top:2px; max-width:440px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + Format.escape(keg.deskripsi) + '</div>'
+        : '';
+
+      var evidenceHtml = '--';
+      if (keg.evidenceCount > 0) {
+        evidenceHtml = '<span class="badge-neutral mono tnum" style="display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:2px 6px;">' +
+          '<svg viewBox="0 0 24 24" style="width:11px; height:11px; stroke:currentColor; stroke-width:2; fill:none;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>' +
+          keg.evidenceCount +
+          '</span>';
+      }
+
+      var isPrivileged = (_userRole === 'KADIV' || _userRole === 'SUPERADMIN' || _userRole === 'DIREKTUR');
+      var actions = '<div style="display:flex; justify-content:flex-end; gap:6px;">' +
+        '<button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.openDetailSheet(\'' + keg.rowId + '\')">Detail</button>';
+
+      if (!isVoid) {
+        actions += '<button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.openEditModal(\'' + keg.rowId + '\')">Revisi</button>';
+        if (isPrivileged) {
+          actions += '<button type="button" class="btn btn-negative-sm" onclick="KegiatanView.openAnulirModal(\'' + keg.rowId + '\')">Anulir</button>';
+        }
+      }
+      actions += '</div>';
+
+      html += '<tr style="' + (isVoid ? 'opacity:0.6;' : '') + '">' +
+        '<td>' + statusBadgeHtml + '</td>' +
         '<td>' +
-          '<div style="font-weight:600; color:var(--text); font-size:13px;">' + Format.escape(k.judulKegiatan) + '</div>' +
-          '<div style="font-size:11px; color:var(--muted);">' + Format.escape(k.wilayah || 'Dit. POA') + '</div>' +
-        '</td>' +
-        '<td><span class="badge badge-accent">' + Format.escape(jenisLabel) + '</span></td>' +
-        '<td style="font-size:12px; font-family:var(--font-mono);">' + jadwalText + '</td>' +
-        '<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">' + Format.number(k.jumlahPeserta) + '</td>' +
-        '<td style="text-align:center;">' +
-          (k.evidenceCount > 0 ? '<span class="badge badge-navy">' + k.evidenceCount + ' berkas</span>' : '<span style="color:var(--muted); font-size:11px;">-</span>') +
-        '</td>' +
-        '<td style="text-align:center;">' +
-          '<div style="display:inline-flex; gap:4px;">' +
-            '<button class="btn btn-secondary-sm btn-keg-detail" data-id="' + k.rowId + '">Detail</button>' +
-            (canRevisi ? '<button class="btn btn-secondary-sm btn-keg-revisi" data-id="' + k.rowId + '">Revisi</button>' : '') +
-            (canAnulir ? '<button class="btn btn-danger-sm btn-keg-anulir" data-id="' + k.rowId + '">Anulir</button>' : '') +
+          '<div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">' +
+            '<span class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.date(keg.tanggalMulai) + '</span>' +
+            wilayahPill +
           '</div>' +
+          '<div class="cell-primary" style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(keg.judulKegiatan) + '</div>' +
+          deskSnippet +
         '</td>' +
+        '<td><span style="font-size:12px; color:var(--text);">' + Format.escape(jenisLabel) + '</span></td>' +
+        '<td><span class="mono tnum" style="font-size:12px; color:var(--text);">' + dateDisplay + '</span></td>' +
+        '<td style="text-align:right;"><span class="mono tnum" style="font-size:13px; font-weight:600; color:var(--text);">' + Format.number(keg.jumlahPeserta) + '</span> <span style="font-size:11px; color:var(--muted);">org</span></td>' +
+        '<td style="text-align:center;">' + evidenceHtml + '</td>' +
+        '<td style="text-align:right;">' + actions + '</td>' +
       '</tr>';
     });
 
     tbody.innerHTML = html;
+  }
 
-    // Pasang listener aksi
-    tbody.querySelectorAll('.btn-keg-detail').forEach(function (btn) {
-      btn.onclick = function () {
-        _openDetailModal(btn.getAttribute('data-id'));
-      };
+  function _renderTimeline() {
+    var container = document.getElementById('keg-timeline-container');
+    if (!container) return;
+
+    if (_items.length === 0) {
+      container.innerHTML = '<div style="text-align:center; color:var(--muted); padding:32px 0;">Belum ada agenda kegiatan untuk ditampilkan pada garis waktu.</div>';
+      return;
+    }
+
+    var activeItems = _items.filter(function (it) {
+      return String(it.status || '').toUpperCase() !== 'VOID';
     });
 
-    tbody.querySelectorAll('.btn-keg-revisi').forEach(function (btn) {
-      btn.onclick = function () {
-        _openRevisiModal(btn.getAttribute('data-id'));
-      };
+    var html = '<div style="position:relative; padding-left:24px; border-left:2px solid var(--border); display:flex; flex-direction:column; gap:24px; margin-left:12px;">';
+
+    activeItems.forEach(function (keg) {
+      var jenisLabel = JENIS_LABELS[keg.jenisKegiatan] || keg.jenisKegiatan;
+      var dateRange = Format.date(keg.tanggalMulai);
+      if (keg.tanggalSelesai && keg.tanggalSelesai !== keg.tanggalMulai) {
+        dateRange += ' &ndash; ' + Format.date(keg.tanggalSelesai);
+      }
+
+      html += '<div style="position:relative;">' +
+        // Bullet titik orange pada garis waktu
+        '<div style="position:absolute; left:-31px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--accent); border:2px solid var(--bg);"></div>' +
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">' +
+          '<div>' +
+            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">' +
+              '<span class="mono tnum" style="font-size:11px; font-weight:600; color:var(--accent);">' + dateRange + '</span>' +
+              (keg.wilayah ? '<span style="font-size:11px; padding:1px 6px; background:var(--surface); border:1px solid var(--border); border-radius:3px; color:var(--muted);">' + Format.escape(keg.wilayah) + '</span>' : '') +
+              '<span style="font-size:11px; color:var(--muted);">· ' + Format.escape(jenisLabel) + '</span>' +
+            '</div>' +
+            '<div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px;">' + Format.escape(keg.judulKegiatan) + '</div>' +
+            (keg.deskripsi ? '<p style="font-size:12px; color:var(--text-secondary); line-height:1.5; margin:0 0 6px 0; max-width:680px;">' + Format.escape(keg.deskripsi) + '</p>' : '') +
+            '<div style="display:flex; align-items:center; gap:12px; font-size:11px; color:var(--muted);">' +
+              '<span><strong>' + Format.number(keg.jumlahPeserta) + '</strong> personil peserta</span>' +
+              (keg.evidenceCount > 0 ? '<span>· <strong>' + keg.evidenceCount + '</strong> berkas lampiran</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.openDetailSheet(\'' + keg.rowId + '\')">Detail</button>' +
+        '</div>' +
+      '</div>';
     });
 
-    tbody.querySelectorAll('.btn-keg-anulir').forEach(function (btn) {
-      btn.onclick = function () {
-        _openAnulirModal(btn.getAttribute('data-id'));
-      };
-    });
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  function openDetailSheet(rowId) {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    Sheet.open('sheet-keg-detail', 'sheet-keg-overlay');
+    var body = document.getElementById('sheet-keg-body');
+    if (body) {
+      body.innerHTML = '<div style="text-align:center; color:var(--muted); padding:32px 0;">Memuat rincian kegiatan...</div>';
+    }
+
+    rpc('keg_getDetail', token, rowId)
+      .then(function (data) {
+        if (!data || !data.kegiatan) {
+          if (body) body.innerHTML = '<div style="text-align:center; color:var(--negative); padding:32px 0;">Rincian kegiatan tidak ditemukan.</div>';
+          return;
+        }
+
+        var k = data.kegiatan;
+        var jenisLabel = JENIS_LABELS[k.JenisKegiatan] || k.JenisKegiatan;
+        var isVoid = String(k.Status || '').toUpperCase() === 'VOID';
+
+        var titleEl = document.getElementById('sheet-keg-title');
+        if (titleEl) titleEl.textContent = k.JudulKegiatan || 'Detail kegiatan';
+
+        var subtitleEl = document.getElementById('sheet-keg-subtitle');
+        if (subtitleEl) subtitleEl.textContent = 'Wilayah: ' + (k.Wilayah || 'Seluruh Satuan Operasi Ditjen PSDKP');
+
+        var filesHtml = '<div style="font-size:12px; color:var(--muted); padding:8px 0;">Belum ada dokumen bukti yang terlampir.</div>';
+        if (Array.isArray(data.evidence) && data.evidence.length > 0) {
+          filesHtml = '<div style="display:flex; flex-direction:column; gap:8px;">';
+          data.evidence.forEach(function (ev) {
+            filesHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);">' +
+              '<div style="display:flex; align-items:center; gap:8px; overflow:hidden;">' +
+                '<svg viewBox="0 0 24 24" style="width:16px; height:16px; stroke:var(--accent); stroke-width:2; fill:none; flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+                '<div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
+                  '<div style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(ev.JudulFile || 'Dokumen Bukti') + '</div>' +
+                  '<div style="font-size:10px; color:var(--muted);">' + Format.date(ev.Timestamp) + '</div>' +
+                '</div>' +
+              '</div>' +
+              (ev.FileUrl ? '<a href="' + ev.FileUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-sm" style="flex-shrink:0;">Buka berkas</a>' : '') +
+            '</div>';
+          });
+          filesHtml += '</div>';
+        }
+
+        var voidInfo = '';
+        if (isVoid) {
+          voidInfo = '<div style="padding:12px; background:var(--negative-bg); border:1px solid var(--negative-border); border-radius:var(--radius-sm); margin-bottom:16px; font-size:12px; color:var(--negative);">' +
+            '<strong>Agenda ini telah dianulir.</strong><br>' +
+            'Alasan: ' + Format.escape(k.VoidReason || 'Tidak ada catatan alasan.') + '<br>' +
+            '<span style="font-size:11px; color:var(--muted);">' + Format.date(k.VoidedAt) + '</span>' +
+          '</div>';
+        }
+
+        var bHtml = voidInfo +
+          '<div style="display:flex; flex-direction:column; gap:16px;">' +
+            '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);">' +
+              '<div>' +
+                '<div style="font-size:11px; color:var(--muted);">Jenis pembinaan</div>' +
+                '<div style="font-size:12px; font-weight:600; color:var(--text);">' + Format.escape(jenisLabel) + '</div>' +
+              '</div>' +
+              '<div>' +
+                '<div style="font-size:11px; color:var(--muted);">Wilayah pangkalan</div>' +
+                '<div style="font-size:12px; font-weight:600; color:var(--text);">' + (Format.escape(k.Wilayah) || '—') + '</div>' +
+              '</div>' +
+              '<div>' +
+                '<div style="font-size:11px; color:var(--muted);">Jadwal pelaksanaan</div>' +
+                '<div class="mono tnum" style="font-size:12px; font-weight:600; color:var(--text);">' + Format.date(k.TanggalMulai) + (k.TanggalSelesai && k.TanggalSelesai !== k.TanggalMulai ? ' &ndash; ' + Format.date(k.TanggalSelesai) : '') + '</div>' +
+              '</div>' +
+              '<div>' +
+                '<div style="font-size:11px; color:var(--muted);">Jumlah peserta</div>' +
+                '<div class="mono tnum" style="font-size:12px; font-weight:600; color:var(--text);">' + Format.number(k.JumlahPeserta) + ' personil</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div>' +
+              '<div style="font-size:12px; font-weight:600; color:var(--text); margin-bottom:6px;">Ringkasan notula &amp; pembahasan</div>' +
+              '<div style="font-size:12px; line-height:1.6; color:var(--text); padding:12px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); white-space:pre-wrap;">' +
+                (Format.escape(k.Deskripsi) || 'Tidak ada notula terlampir.') +
+              '</div>' +
+            '</div>' +
+
+            '<div>' +
+              '<div style="font-size:12px; font-weight:600; color:var(--text); margin-bottom:6px;">Dokumen bukti tersimpan</div>' +
+              filesHtml +
+            '</div>' +
+
+            '<div style="font-size:11px; color:var(--muted); border-top:1px solid var(--border); padding-top:12px;">' +
+              'Perekam: ' + Format.escape(k.SubmittedBy || '—') + ' · Dicatat pada ' + Format.date(k.Timestamp) +
+            '</div>' +
+          '</div>';
+
+        if (body) body.innerHTML = bHtml;
+      })
+      .catch(function (err) {
+        if (body) body.innerHTML = '<div style="text-align:center; color:var(--negative); padding:32px 0;">Galat: ' + err.message + '</div>';
+      });
+  }
+
+  function closeDetailSheet() {
+    Sheet.close('sheet-keg-detail', 'sheet-keg-overlay');
   }
 
   function _openCreateModal() {
+    var modeInput = document.getElementById('keg-form-mode');
+    var rowIdInput = document.getElementById('keg-form-rowid');
+    var modalTitle = document.getElementById('modal-keg-title');
+    var form = document.getElementById('form-kegiatan');
+
+    if (modeInput) modeInput.value = 'create';
+    if (rowIdInput) rowIdInput.value = '';
+    if (modalTitle) modalTitle.textContent = 'Catat agenda kegiatan baru';
+    if (form) form.reset();
+
     _stagedFiles = [];
-    _renderStagedFileList();
-
-    document.getElementById('keg-form-mode').value = 'create';
-    document.getElementById('keg-form-rowid').value = '';
-    document.getElementById('modal-keg-title').textContent = 'Catat Agenda Kegiatan Baru';
-    document.getElementById('keg-revisi-reason-group').classList.add('hidden');
-    document.getElementById('keg-alasan-revisi').required = false;
-
-    // Reset fields
-    document.getElementById('keg-judul').value = '';
-    document.getElementById('keg-wilayah').value = '';
-    document.getElementById('keg-peserta-count').value = '1';
-    document.getElementById('keg-deskripsi').value = '';
-    document.getElementById('keg-evidence-url').value = '';
-
-    var today = new Date().toISOString().substring(0, 10);
-    document.getElementById('keg-tgl-mulai').value = today;
-    document.getElementById('keg-tgl-selesai').value = today;
-
+    _renderStagedFiles();
     Modal.open('modal-keg-form');
   }
 
-  function _openRevisiModal(rowId) {
-    var token = AuthApp.getToken();
-    rpc('keg_getDetail', token, rowId)
-      .then(function (res) {
-        _stagedFiles = [];
-        _renderStagedFileList();
+  function openEditModal(rowId) {
+    var item = _items.find(function (it) { return it.rowId === rowId; });
+    if (!item) return;
 
-        document.getElementById('keg-form-mode').value = 'revisi';
-        document.getElementById('keg-form-rowid').value = rowId;
-        document.getElementById('modal-keg-title').textContent = 'Revisi Agenda Kegiatan';
-        document.getElementById('keg-revisi-reason-group').classList.remove('hidden');
-        document.getElementById('keg-alasan-revisi').required = true;
-        document.getElementById('keg-alasan-revisi').value = '';
+    var modeInput = document.getElementById('keg-form-mode');
+    var rowIdInput = document.getElementById('keg-form-rowid');
+    var modalTitle = document.getElementById('modal-keg-title');
 
-        document.getElementById('keg-judul').value = res.judulKegiatan;
-        document.getElementById('keg-jenis').value = res.jenisKegiatan;
-        document.getElementById('keg-wilayah').value = res.wilayah;
-        document.getElementById('keg-tgl-mulai').value = res.tanggalMulai;
-        document.getElementById('keg-tgl-selesai').value = res.tanggalSelesai;
-        document.getElementById('keg-peserta-count').value = res.jumlahPeserta;
-        document.getElementById('keg-deskripsi').value = res.deskripsi;
-        document.getElementById('keg-evidence-url').value = res.evidenceUrl || '';
+    if (modeInput) modeInput.value = 'update';
+    if (rowIdInput) rowIdInput.value = rowId;
+    if (modalTitle) modalTitle.textContent = 'Revisi agenda kegiatan';
 
-        Modal.open('modal-keg-form');
-      })
-      .catch(function (err) {
-        Toast.error('Gagal mengambil data kegiatan: ' + err.message);
-      });
+    var fJudul = document.getElementById('keg-judul');
+    var fJenis = document.getElementById('keg-jenis');
+    var fWilayah = document.getElementById('keg-wilayah');
+    var fMulai = document.getElementById('keg-tgl-mulai');
+    var fSelesai = document.getElementById('keg-tgl-selesai');
+    var fPeserta = document.getElementById('keg-peserta');
+    var fDesk = document.getElementById('keg-deskripsi');
+
+    if (fJudul) fJudul.value = item.judulKegiatan || '';
+    if (fJenis) fJenis.value = item.jenisKegiatan || 'PELATIHAN_TEKNIS';
+    if (fWilayah) fWilayah.value = item.wilayah || '';
+    if (fMulai) fMulai.value = item.tanggalMulai || '';
+    if (fSelesai) fSelesai.value = item.tanggalSelesai || '';
+    if (fPeserta) fPeserta.value = item.jumlahPeserta || 0;
+    if (fDesk) fDesk.value = item.deskripsi || '';
+
+    _stagedFiles = [];
+    _renderStagedFiles();
+    Modal.open('modal-keg-form');
   }
 
-  function _openDetailModal(rowId) {
-    var token = AuthApp.getToken();
-    rpc('keg_getDetail', token, rowId)
-      .then(function (res) {
-        document.getElementById('detail-keg-status').className = 'badge ' + (res.status === 'ACTIVE' ? 'badge-success' : 'badge-danger');
-        document.getElementById('detail-keg-status').textContent = res.status === 'ACTIVE' ? 'Aktif' : res.status;
-        document.getElementById('detail-keg-jenis').textContent = res.jenisKegiatan.replace(/_/g, ' ');
-        document.getElementById('detail-keg-judul').textContent = res.judulKegiatan;
-        document.getElementById('detail-keg-wilayah').textContent = res.wilayah || 'Dit. POA';
-        document.getElementById('detail-keg-jadwal').textContent = Format.date(res.tanggalMulai) + (res.tanggalSelesai !== res.tanggalMulai ? ' s.d. ' + Format.date(res.tanggalSelesai) : '');
-        document.getElementById('detail-keg-peserta').textContent = res.jumlahPeserta + ' orang';
-        document.getElementById('detail-keg-deskripsi').textContent = res.deskripsi || 'Tidak ada catatan deskripsi.';
+  function openAnulirModal(rowId) {
+    var item = _items.find(function (it) { return it.rowId === rowId; });
+    if (!item) return;
 
-        // Render lampiran
-        var evContainer = document.getElementById('detail-keg-evidences');
-        if (evContainer) {
-          if (!res.evidences || res.evidences.length === 0) {
-            evContainer.innerHTML = '<div style="font-size:12px; color:var(--muted);">Tidak ada berkas bukti yang dilampirkan.</div>';
-          } else {
-            var evHtml = '';
-            res.evidences.forEach(function (e) {
-              evHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#F8F9FA; border:1px solid var(--border);">' +
-                '<div style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(e.fileName) + '</div>' +
-                (e.viewUrl ? '<a href="' + e.viewUrl + '" target="_blank" class="btn btn-secondary-sm" style="text-decoration:none;">Buka di Drive</a>' : '') +
-              '</div>';
-            });
-            evContainer.innerHTML = evHtml;
-          }
-        }
+    var idEl = document.getElementById('anulir-keg-rowid');
+    var judulEl = document.getElementById('anulir-keg-judul');
+    var alasanEl = document.getElementById('anulir-keg-alasan');
 
-        Modal.open('modal-keg-detail');
-      })
-      .catch(function (err) {
-        Toast.error('Gagal mengambil rincian kegiatan: ' + err.message);
-      });
-  }
+    if (idEl) idEl.value = rowId;
+    if (judulEl) judulEl.textContent = item.judulKegiatan;
+    if (alasanEl) alasanEl.value = '';
 
-  function _openAnulirModal(rowId) {
-    document.getElementById('anulir-keg-id').value = rowId;
-    document.getElementById('anulir-keg-alasan').value = '';
     Modal.open('modal-keg-anulir');
   }
 
-  function _submitAnulir() {
-    var token = AuthApp.getToken();
-    var rowId = document.getElementById('anulir-keg-id').value;
-    var alasan = document.getElementById('anulir-keg-alasan').value.trim();
-
-    rpc('keg_anulir', {
-      token: token,
-      rowId: rowId,
-      alasanAnulir: alasan
-    })
-      .then(function (res) {
-        Modal.close('modal-keg-anulir');
-        Toast.success(res.message || 'Kegiatan berhasil dibatalkan.');
-        load();
-      })
-      .catch(function (err) {
-        Toast.error('Gagal membatalkan kegiatan: ' + err.message);
-      });
-  }
-
-  function _handleFileSelection(files) {
-    if (!files || files.length === 0) return;
-    for (var i = 0; i < files.length; i++) {
-      var file = files[i];
+  function _handleFileSelection(fileList) {
+    if (!fileList || fileList.length === 0) return;
+    for (var i = 0; i < fileList.length; i++) {
+      var file = fileList[i];
       if (file.size > 15 * 1024 * 1024) {
-        Toast.error('File "' + file.name + '" melebihi batas 15MB.');
+        Toast.error('Berkas "' + file.name + '" melebihi batas 15 MB.');
         continue;
       }
       (function (f) {
         var reader = new FileReader();
         reader.onload = function (e) {
           _stagedFiles.push({
-            fileName: f.name,
+            name: f.name,
             mimeType: f.type || 'application/octet-stream',
-            dataBase64: e.target.result
+            size: f.size,
+            dataUrl: e.target.result
           });
-          _renderStagedFileList();
+          _renderStagedFiles();
         };
         reader.readAsDataURL(f);
       })(file);
     }
   }
 
-  function _renderStagedFileList() {
-    var container = document.getElementById('keg-file-list');
+  function _renderStagedFiles() {
+    var container = document.getElementById('keg-staged-files');
     if (!container) return;
+
     if (_stagedFiles.length === 0) {
       container.innerHTML = '';
       return;
     }
-    var html = '<div style="font-weight:600; margin-bottom:4px;">Berkas Terpilih (' + _stagedFiles.length + '):</div>';
+
+    var html = '';
     _stagedFiles.forEach(function (f, idx) {
-      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid #ECEEEF;">' +
-        '<span>' + Format.escape(f.fileName) + '</span>' +
-        '<button type="button" class="btn btn-secondary-sm" style="padding:2px 6px; font-size:10px;" onclick="KegiatanView.removeFile(' + idx + ')">Hapus</button>' +
+      var sizeKb = Math.round(f.size / 1024);
+      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:11px;">' +
+        '<div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:380px;">' +
+          '<strong>' + Format.escape(f.name) + '</strong> (' + sizeKb + ' KB)' +
+        '</div>' +
+        '<button type="button" class="btn btn-secondary-sm" style="padding:2px 6px; font-size:11px;" onclick="KegiatanView.removeStagedFile(' + idx + ')">Hapus</button>' +
       '</div>';
     });
+
     container.innerHTML = html;
   }
 
-  function removeFile(idx) {
+  function removeStagedFile(idx) {
     _stagedFiles.splice(idx, 1);
-    _renderStagedFileList();
+    _renderStagedFiles();
   }
 
   function _submitForm() {
     var token = AuthApp.getToken();
-    var mode = document.getElementById('keg-form-mode').value;
-    var rowId = document.getElementById('keg-form-rowid').value;
+    if (!token) return;
+
+    var mode = (document.getElementById('keg-form-mode') || {}).value || 'create';
+    var rowId = (document.getElementById('keg-form-rowid') || {}).value || '';
+    var judul = (document.getElementById('keg-judul') || {}).value || '';
+    var jenis = (document.getElementById('keg-jenis') || {}).value || '';
+    var wilayah = (document.getElementById('keg-wilayah') || {}).value || '';
+    var tglMulai = (document.getElementById('keg-tgl-mulai') || {}).value || '';
+    var tglSelesai = (document.getElementById('keg-tgl-selesai') || {}).value || '';
+    var peserta = parseInt((document.getElementById('keg-peserta') || {}).value, 10) || 0;
+    var deskripsi = (document.getElementById('keg-deskripsi') || {}).value || '';
+
+    if (!judul.trim()) {
+      Toast.error('Nama agenda kegiatan wajib diisi.');
+      return;
+    }
+    if (!tglMulai) {
+      Toast.error('Tanggal mulai wajib diisi.');
+      return;
+    }
+
+    var btnSubmit = document.getElementById('btn-keg-submit');
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.classList.add('loading');
+    }
 
     var payload = {
       token: token,
-      rowId: rowId,
-      judulKegiatan: document.getElementById('keg-judul').value.trim(),
-      jenisKegiatan: document.getElementById('keg-jenis').value,
-      wilayah: document.getElementById('keg-wilayah').value.trim(),
-      tanggalMulai: document.getElementById('keg-tgl-mulai').value,
-      tanggalSelesai: document.getElementById('keg-tgl-selesai').value,
-      jumlahPeserta: document.getElementById('keg-peserta-count').value,
-      deskripsi: document.getElementById('keg-deskripsi').value.trim(),
-      evidenceUrl: document.getElementById('keg-evidence-url').value.trim(),
-      files: _stagedFiles
+      judulKegiatan: judul,
+      jenisKegiatan: jenis,
+      wilayah: wilayah,
+      tanggalMulai: tglMulai,
+      tanggalSelesai: tglSelesai || tglMulai,
+      jumlahPeserta: peserta,
+      deskripsi: deskripsi,
+      files: _stagedFiles.map(function (f) {
+        return {
+          filename: f.name,
+          mimeType: f.mimeType,
+          dataBase64: f.dataUrl ? f.dataUrl.split(',')[1] : ''
+        };
+      })
     };
 
-    var btnSubmit = document.getElementById('btn-submit-keg');
-    if (btnSubmit) {
-      btnSubmit.disabled = true;
-      btnSubmit.textContent = 'Menyimpan ke Drive...';
-    }
-
-    var rpcName = mode === 'revisi' ? 'keg_revisi' : 'keg_submit';
-    if (mode === 'revisi') {
-      payload.alasanRevisi = document.getElementById('keg-alasan-revisi').value.trim();
+    var rpcName = 'keg_submit';
+    if (mode === 'update') {
+      rpcName = 'keg_revisi';
+      payload.rowId = rowId;
+      payload.alasanRevisi = 'Revisi data via antarmuka Nakhoda';
     }
 
     rpc(rpcName, payload)
-      .then(function (res) {
+      .then(function () {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan Kegiatan';
+          btnSubmit.classList.remove('loading');
         }
         Modal.close('modal-keg-form');
-        Toast.success(res.message || 'Agenda kegiatan berhasil disimpan.');
+        Toast.success(mode === 'update' ? 'Agenda kegiatan berhasil direvisi.' : 'Agenda kegiatan baru berhasil dicatat.');
         load();
       })
       .catch(function (err) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan Kegiatan';
+          btnSubmit.classList.remove('loading');
         }
-        Toast.error('Gagal menyimpan: ' + err.message);
+        Toast.error(err.message || 'Gagal menyimpan agenda kegiatan.');
+      });
+  }
+
+  function _submitAnulir() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    var rowId = (document.getElementById('anulir-keg-rowid') || {}).value || '';
+    var alasan = (document.getElementById('anulir-keg-alasan') || {}).value || '';
+
+    if (!alasan.trim()) {
+      Toast.error('Alasan pembatalan wajib diisi.');
+      return;
+    }
+
+    var btn = document.getElementById('btn-keg-anulir-submit');
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add('loading');
+    }
+
+    rpc('keg_anulir', {
+      token: token,
+      rowId: rowId,
+      alasanAnulir: alasan
+    })
+      .then(function () {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Modal.close('modal-keg-anulir');
+        Toast.success('Agenda kegiatan berhasil dianulir.');
+        load();
+      })
+      .catch(function (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Toast.error(err.message || 'Gagal menganulir agenda.');
       });
   }
 
   return {
     init: init,
     load: load,
-    removeFile: removeFile
+    openDetailSheet: openDetailSheet,
+    closeDetailSheet: closeDetailSheet,
+    openEditModal: openEditModal,
+    openAnulirModal: openAnulirModal,
+    removeStagedFile: removeStagedFile
   };
 })();
 </script>

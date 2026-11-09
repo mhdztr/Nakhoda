@@ -186,7 +186,7 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 - **Tugas Utama:**
   - Sanitasi injeksi formula spreadsheet (karakter `=`, `+`, `-`, `@` otomatis diawali apostrof `'`).
   - Audit hak akses RBAC menyeluruh pada seluruh fungsi RPC server-side.
-  - Eksekusi linter visual `node lint_ui.js` dan inspeksi `lint.mjs --app` untuk verifikasi Zero-Emoji, 3-Tier Controls, dan kepatuhan desain.
+  - Eksekusi linter visual `node lint_ui.js` dan inspeksi skill `consistency.mjs` untuk verifikasi Zero-Emoji, 3-Tier Controls, dan kepatuhan desain.
   - Pelaksanaan skenario pengujian UAT fungsional bersama tim kerja Pengawakan.
   - Penyusunan dokumentasi runbook operasional sistem dan pencadangan akhir.
 - **Deliverables & Checklist:**
@@ -203,5 +203,5 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 | **Audit Linter UI & Proyek** | Zero-Emoji, Skala 3-Tier, Larangan Inline Height, Anti-Gabruk, Kalkulasi Server-Side | `node lint_ui.js` | **100% PASS (0 Errors)** |
 | **Pemeriksaan Sintaksis JS** | Validasi kompilasi seluruh file JavaScript backend & utils | `node -c Code.js services/*.js utils/*.js data/*.js pure/*.js` | **0 Syntax Errors** |
 | **Unit Test Logika Murni** | Carry-forward, mesin status sertifikat, kalkulasi Papan Sijil, parser kelas | `node --test tests/*.test.js` | **100% Tests Pass** |
-| **Inspeksi Skill Desain** | Aturan app screen (Achromatic Ledger), pangsa warna < 3%, tipografi Geist | `node .agents/skills/design-taste-frontend/scripts/lint.mjs --app` | **0 Violations** |
-| **Inspeksi Visual Multi-Resolusi** | Tampilan antarmuka pada lebar 1440px, 768px, dan 390px | `node .agents/skills/design-taste-frontend/scripts/inspect.mjs --app` | **0 FAIL** |
+| **Inspeksi Skill Desain** | Aturan halaman software (Achromatic Ledger), pangsa warna < 3%, tipografi Geist | `node .agents/skills/design-taste-frontend/scripts/consistency.mjs html/Index.html --page software --profile .taste-skill/chrome` | **0 FAIL** |
+| **Inspeksi Visual Multi-Resolusi** | Tampilan antarmuka pada lebar 1440px, 1024px, 820px, 768px, dan 390px | `node .agents/skills/design-taste-frontend/assets/layout/check.mjs --url html/Index.html --sizes 1440x900,1024x768,820x1180,768x1024,390x844` | **0 FAIL** |

@@ -31,7 +31,7 @@
 function admin_getUsers(token) {
   try {
     var session = _requireSession(token);
-    assertScope(session, [ROLE.SUPERADMIN], null);
+    assertScope(session, [ROLE.SUPERADMIN, ROLE.DIREKTUR, ROLE.KADIV], null);
 
     var usersSheet  = openMasterSheet(SHEET_MASTER.USERS);
     var divisiSheet = openMasterSheet(SHEET_MASTER.DIVISI);
@@ -266,7 +266,7 @@ function admin_resetPassword(token, params) {
 function admin_getAuditLog(token, params) {
   try {
     var session = _requireSession(token);
-    assertScope(session, [ROLE.SUPERADMIN], null);
+    assertScope(session, [ROLE.SUPERADMIN, ROLE.DIREKTUR, ROLE.KADIV], null);
 
     params = params || {};
     var limit = parseInt(params.limit, 10);

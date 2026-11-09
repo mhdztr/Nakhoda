@@ -1,33 +1,34 @@
 <script>
 /**
  * html/Script_Kompetensi.html
- * Controller Klien Sub-Modul D: Register Sertifikasi STCW-F & Mesin Masa Berlaku
+ * Controller Klien Sub-Modul D: Register Sertifikasi STCW-F & Mesin Status Kedaluwarsa (Achromatic Ledger).
  * Nakhoda — Timja Pengawakan Dit. POA KKP RI
  */
 var KompetensiView = (function () {
   'use strict';
 
-  var _activeTab = 'antrean'; // 'antrean' | 'matriks'
-  var _userRole = '';
+  var _activeTab = 'antrean';
   var _stagedCertFile = null;
+  var _eventsBound = false;
+  var _dashboardData = null;
 
   function init() {
-    var outlet = document.getElementById('outlet-content');
-    var viewTemplate = document.getElementById('view-kompetensi');
-    if (viewTemplate && outlet) {
-      outlet.innerHTML = viewTemplate.outerHTML;
-      var activeView = outlet.querySelector('#view-kompetensi');
-      if (activeView) activeView.classList.remove('hidden');
-    }
-
     _bindEvents();
-    loadDashboard();
+    if (_activeTab === 'antrean') {
+      loadDashboard();
+    } else {
+      loadMatriks();
+    }
   }
 
   function _bindEvents() {
+    if (_eventsBound) return;
+    _eventsBound = true;
+
     var btnRefresh = document.getElementById('btn-kom-refresh');
     var tabAntrean = document.getElementById('tab-kom-antrean');
     var tabMatriks = document.getElementById('tab-kom-matriks');
+    var btnOpenNew = document.getElementById('btn-kom-open-catat-new');
     var filterJab = document.getElementById('kom-matriks-filter-jabatan');
     var searchMatriks = document.getElementById('kom-matriks-search');
     var btnSearchMatriks = document.getElementById('btn-kom-matriks-search');
@@ -41,11 +42,17 @@ var KompetensiView = (function () {
       };
     }
 
+    if (btnOpenNew) {
+      btnOpenNew.onclick = function () {
+        openModalCatat('', '', 'TRN-NKH-02', 'Basic Safety Training Fisheries (BST / BST-F)');
+      };
+    }
+
     if (tabAntrean && tabMatriks) {
       tabAntrean.onclick = function () {
         _activeTab = 'antrean';
-        tabAntrean.className = 'btn btn-primary-md';
-        tabMatriks.className = 'btn btn-secondary-md';
+        tabAntrean.classList.add('active');
+        tabMatriks.classList.remove('active');
         document.getElementById('pane-kom-antrean').classList.remove('hidden');
         document.getElementById('pane-kom-matriks').classList.add('hidden');
         loadDashboard();
@@ -53,8 +60,8 @@ var KompetensiView = (function () {
 
       tabMatriks.onclick = function () {
         _activeTab = 'matriks';
-        tabMatriks.className = 'btn btn-primary-md';
-        tabAntrean.className = 'btn btn-secondary-md';
+        tabMatriks.classList.add('active');
+        tabAntrean.classList.remove('active');
         document.getElementById('pane-kom-matriks').classList.remove('hidden');
         document.getElementById('pane-kom-antrean').classList.add('hidden');
         loadMatriks();
@@ -72,16 +79,20 @@ var KompetensiView = (function () {
     if (fileInput) {
       fileInput.onchange = function (e) {
         var file = e.target.files[0];
+        var lbl = document.getElementById('kom-save-file-label');
         if (!file) {
           _stagedCertFile = null;
+          if (lbl) lbl.textContent = 'Pilih file dokumen atau seret ke sini';
           return;
         }
         if (file.size > 15 * 1024 * 1024) {
-          Toast.error('Ukuran file pindaian melebihi 15MB.');
+          Toast.error('Ukuran berkas melebihi batas 15 MB.');
           e.target.value = '';
           _stagedCertFile = null;
+          if (lbl) lbl.textContent = 'Pilih file dokumen atau seret ke sini';
           return;
         }
+        if (lbl) lbl.textContent = file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)';
         var reader = new FileReader();
         reader.onload = function (evt) {
           _stagedCertFile = {
@@ -108,69 +119,98 @@ var KompetensiView = (function () {
 
     rpc('kom_getDashboard', token)
       .then(function (res) {
-        _userRole = res.userRole;
+        _dashboardData = res;
 
-        // Update Kartu Metrik
+        // 1. Update KPI Strip
+        var mTot = document.getElementById('metric-cert-total');
         var mBer = document.getElementById('metric-cert-berlaku');
         var mSeg = document.getElementById('metric-cert-segera');
         var mExp = document.getElementById('metric-cert-expired');
-        var mTot = document.getElementById('metric-cert-total');
+        var mBerSub = document.getElementById('metric-cert-berlaku-sub');
+        var countBadge = document.getElementById('kom-antrean-count-badge');
+        var findingEl = document.getElementById('kom-finding-sub');
 
+        if (mTot) mTot.textContent = Format.number(res.metrics.totalTercatat);
         if (mBer) mBer.textContent = Format.number(res.metrics.berlaku);
         if (mSeg) mSeg.textContent = Format.number(res.metrics.segeraHabis);
         if (mExp) mExp.textContent = Format.number(res.metrics.kedaluwarsa);
-        if (mTot) mTot.textContent = Format.number(res.metrics.totalTercatat);
 
-        _renderAntrean(res.antrean || []);
+        if (mBerSub) {
+          mBerSub.innerHTML = '<span class="mono">' + (res.metrics.kelaikanPersen || 100) + '% kelaikan STCW-F armada</span>';
+        }
+        if (countBadge) {
+          countBadge.textContent = Format.number((res.metrics.segeraHabis || 0) + (res.metrics.kedaluwarsa || 0)) + ' sertifikat';
+        }
+
+        if (findingEl) {
+          var urgent = (res.metrics.segeraHabis || 0) + (res.metrics.kedaluwarsa || 0);
+          findingEl.textContent = urgent > 0
+            ? ('Ditemukan ' + urgent + ' sertifikat kepelautan yang memerlukan tindakan (' + res.metrics.kedaluwarsa + ' kedaluwarsa, ' + res.metrics.segeraHabis + ' habis <= 90 hari). ' + res.metrics.awakLengkap + ' awak memenuhi kurikulum lengkap.')
+            : 'Seluruh sertifikat kepelautan personil aktif dan berlaku sesuai standar.';
+        }
+
+        // 2. Render Antrean Tindak Lanjut Table
+        _renderAntreanTable(res.antrean || []);
       })
       .catch(function (err) {
-        Toast.error('Gagal memuat ringkasan kompetensi: ' + err.message);
+        Toast.error('Gagal memuat dasbor kompetensi: ' + err.message);
       });
   }
 
-  function _renderAntrean(items) {
+  function _renderAntreanTable(antrean) {
     var tbody = document.getElementById('kom-antrean-tbody');
     if (!tbody) return;
 
-    if (!items || items.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada sertifikat dalam antrean tindak lanjut (seluruh sertifikat aman dan berlaku).</td></tr>';
+    if (!antrean || antrean.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada sertifikat dalam antrean tindak lanjut. Seluruh dokumen berlaku aman.</td></tr>';
       return;
     }
 
     var html = '';
-    items.forEach(function (s) {
-      var badgeClass = s.status === 'KEDALUWARSA' ? 'badge-danger' : 'badge-warning';
-      var sisaStr = s.sisaHari < 0
-        ? '<span style="color:var(--danger); font-weight:700;">' + Math.abs(s.sisaHari) + ' hari lalu</span>'
-        : '<span style="color:var(--warning); font-weight:700;">' + s.sisaHari + ' hari lagi</span>';
+    antrean.forEach(function (it) {
+      var bg = Format.avatarBg(it.namaAwak);
+      var inis = Format.initials(it.namaAwak);
+      var sisaHtml = (it.sisaHari < 0)
+        ? '<span class="delta-down mono">Lewat ' + Math.abs(it.sisaHari) + ' hari</span>'
+        : '<span class="delta-warn mono">' + it.sisaHari + ' hari lagi</span>';
 
-      html += '<tr>' +
-        '<td><span class="badge ' + badgeClass + '">' + Format.escape(s.status === 'KEDALUWARSA' ? 'Kedaluwarsa' : 'Segera Habis') + '</span></td>' +
-        '<td>' +
-          '<div style="font-weight:600; color:var(--text); font-size:13px;">' + Format.escape(s.namaAwak) + '</div>' +
-          '<div style="font-size:11px; color:var(--muted);">' + Format.escape(s.jabatan) + '</div>' +
-        '</td>' +
-        '<td>' +
-          '<div style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(s.namaPelatihan) + '</div>' +
-          '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">No: ' + Format.escape(s.nomorSertifikat) + '</div>' +
-        '</td>' +
-        '<td style="font-size:12px; font-family:var(--font-mono);">' + (s.berlakuSampai ? Format.date(s.berlakuSampai) : '-') + '</td>' +
-        '<td style="text-align:right; font-size:12px; font-family:var(--font-mono);">' + sisaStr + '</td>' +
-        '<td style="text-align:center;">' +
-          '<button class="btn btn-secondary-sm btn-revalidasi" data-peg-id="' + s.pegawaiId + '" data-nama="' + Format.escape(s.namaAwak) + '" data-kode="' + s.kodePelatihan + '" data-pelatihan="' + Format.escape(s.namaPelatihan) + '">Revalidasi</button>' +
-        '</td>' +
-      '</tr>';
+      html +=
+        '<tr>' +
+          '<td>' + Format.statusBadge(it.status) + '</td>' +
+          '<td>' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
+              '<div>' +
+                '<div class="cell-primary">' + Format.escape(it.namaAwak) + '</div>' +
+                '<div class="cell-sub">' + Format.escape(it.jabatan) + '</div>' +
+              '</div>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div class="cell-primary">' + Format.escape(it.namaPelatihan) + '</div>' +
+            '<div class="cell-sub mono">No: ' + Format.escape(it.nomorSertifikat) + '</div>' +
+          '</td>' +
+          '<td class="mono tnum">' + Format.date(it.berlakuSampai) + '</td>' +
+          '<td class="text-right">' + sisaHtml + '</td>' +
+          '<td class="text-center">' +
+            '<button type="button" class="btn btn-secondary-sm btn-reval" ' +
+              'data-peg="' + it.pegawaiId + '" ' +
+              'data-nama="' + Format.escape(it.namaAwak) + '" ' +
+              'data-kd="' + it.kodePelatihan + '" ' +
+              'data-pel="' + Format.escape(it.namaPelatihan) + '">Revalidasi</button>' +
+          '</td>' +
+        '</tr>';
     });
 
     tbody.innerHTML = html;
 
-    tbody.querySelectorAll('.btn-revalidasi').forEach(function (btn) {
+    tbody.querySelectorAll('.btn-reval').forEach(function (btn) {
       btn.onclick = function () {
-        var pegId = btn.getAttribute('data-peg-id');
+        var pegId = btn.getAttribute('data-peg');
         var nama = btn.getAttribute('data-nama');
-        var kode = btn.getAttribute('data-kode');
-        var pelatihan = btn.getAttribute('data-pelatihan');
-        _openSaveModal(pegId, nama, kode, pelatihan);
+        var kd = btn.getAttribute('data-kd');
+        var pel = btn.getAttribute('data-pel');
+        openModalCatat(pegId, nama, kd, pel);
       };
     });
   }
@@ -179,122 +219,306 @@ var KompetensiView = (function () {
     var token = AuthApp.getToken();
     if (!token) return;
 
-    var jab = (document.getElementById('kom-matriks-filter-jabatan') || {}).value || '';
+    var filterJab = (document.getElementById('kom-matriks-filter-jabatan') || {}).value || '';
     var search = (document.getElementById('kom-matriks-search') || {}).value || '';
 
     rpc('kom_listAwakKompetensi', {
       token: token,
-      kelompokJabatan: jab,
+      kelompokJabatan: filterJab,
       search: search,
-      limit: 50,
+      limit: 60,
       offset: 0
     })
       .then(function (res) {
-        var info = document.getElementById('kom-matriks-total-info');
-        if (info) info.textContent = res.total + ' personil tercatat';
-        _renderMatriksList(res.items || []);
+        var totalInfo = document.getElementById('kom-matriks-total-info');
+        if (totalInfo) totalInfo.textContent = Format.number(res.total) + ' personil';
+
+        var tbody = document.getElementById('kom-matriks-tbody');
+        if (!tbody) return;
+
+        var items = res.items || [];
+        if (items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada personil yang sesuai dengan filter kelompok jabatan.</td></tr>';
+          return;
+        }
+
+        var html = '';
+        items.forEach(function (a) {
+          var k = a.kelaikan || { persen: 100, terpenuhi: 0, totalWajib: 0, isLaik: true };
+          var bg = Format.avatarBg(a.nama);
+          var inis = Format.initials(a.nama);
+
+          html +=
+            '<tr>' +
+              '<td>' +
+                '<div style="display:flex; align-items:center; gap:10px;">' +
+                  '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
+                  '<div>' +
+                    '<div class="cell-primary">' + Format.escape(a.nama) + '</div>' +
+                    '<div class="cell-sub mono">NIP: ' + Format.escape(a.nipDisplay) + '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</td>' +
+              '<td>' +
+                '<div class="cell-primary">' + Format.escape(a.kelompokJabatan) + '</div>' +
+                '<div class="cell-sub">' + Format.kelompokBadge(a.rumpun) + ' · ' + Format.escape(String(a.kelasKapal).replace('_', ' ')) + '</div>' +
+              '</td>' +
+              '<td>' +
+                '<div style="display:flex; align-items:center; gap:8px;">' +
+                  '<div class="track-bar" style="flex:1;">' +
+                    '<div class="track-fill" style="width:' + k.persen + '%;"></div>' +
+                  '</div>' +
+                  '<span class="mono tnum" style="font-size:11px; width:65px; text-align:right;">' +
+                    k.terpenuhi + ' / ' + k.totalWajib + ' (' + k.persen + '%)' +
+                  '</span>' +
+                '</div>' +
+              '</td>' +
+              '<td class="text-center">' +
+                (k.isLaik ? '<span class="pill pill-positive"><span class="pill-dot"></span>Lengkap</span>' : '<span class="pill pill-warning"><span class="pill-dot"></span>Belum lengkap</span>') +
+              '</td>' +
+              '<td class="text-center">' +
+                '<button type="button" class="btn btn-secondary-sm btn-matriks-detail" data-id="' + a.pegawaiId + '">Matriks</button>' +
+              '</td>' +
+            '</tr>';
+        });
+
+        tbody.innerHTML = html;
+
+        tbody.querySelectorAll('.btn-matriks-detail').forEach(function (btn) {
+          btn.onclick = function () {
+            var id = btn.getAttribute('data-id');
+            openAwakMatriksSheet(id);
+          };
+        });
       })
       .catch(function (err) {
-        Toast.error('Gagal memuat matriks kelengkapan: ' + err.message);
+        Toast.error('Gagal memuat matriks kompetensi: ' + err.message);
       });
   }
 
-  function _renderMatriksList(items) {
-    var tbody = document.getElementById('kom-matriks-tbody');
-    if (!tbody) return;
+  function openAwakMatriksSheet(pegawaiId) {
+    var token = AuthApp.getToken();
+    if (!token) return;
 
-    if (!items || items.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada personil yang sesuai dengan kriteria pencarian.</td></tr>';
-      return;
-    }
+    Sheet.open('sheet-kom-panel', 'sheet-kom-overlay');
 
-    var html = '';
-    items.forEach(function (a) {
-      var k = a.kelaikan;
-      var persenColor = k.persen >= 100 ? 'var(--success)' : (k.persen >= 70 ? 'var(--warning)' : 'var(--danger)');
-      var statusBadge = k.isLaik
-        ? '<span class="badge badge-success">Laik Layar</span>'
-        : (k.kedaluwarsa > 0 ? '<span class="badge badge-danger">' + k.kedaluwarsa + ' Kedaluwarsa</span>' : '<span class="badge badge-warning">Belum Lengkap</span>');
+    var nameEl = document.getElementById('sheet-kom-nama');
+    if (nameEl) nameEl.textContent = 'Memuat matriks personil...';
 
-      html += '<tr>' +
-        '<td>' +
-          '<div style="font-weight:600; color:var(--text); font-size:13px;">' + Format.escape(a.nama) + '</div>' +
-          '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">' + a.nipDisplay + '</div>' +
-        '</td>' +
-        '<td>' +
-          '<div style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(a.jabatanLengkap || a.kelompokJabatan) + '</div>' +
-          '<div>' + Format.kelompokBadge(a.rumpun) + '</div>' +
-        '</td>' +
-        '<td>' +
-          '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<div style="flex:1; height:6px; background:#ECEEEF; overflow:hidden;">' +
-              '<div style="width:' + k.persen + '%; height:100%; background-color:' + persenColor + ';"></div>' +
-            '</div>' +
-            '<span style="font-size:12px; font-weight:700; font-family:var(--font-mono); color:' + persenColor + ';">' + k.persen + '%</span>' +
-          '</div>' +
-          '<div style="font-size:11px; color:var(--muted); margin-top:2px;">' + k.terpenuhi + ' dari ' + k.totalWajib + ' standar wajib terpenuhi</div>' +
-        '</td>' +
-        '<td style="text-align:center;">' + statusBadge + '</td>' +
-        '<td style="text-align:center;">' +
-          '<button class="btn btn-secondary-sm btn-matriks-detail" data-id="' + a.pegawaiId + '">Buka Matriks</button>' +
-        '</td>' +
-      '</tr>';
-    });
-
-    tbody.innerHTML = html;
-
-    tbody.querySelectorAll('.btn-matriks-detail').forEach(function (btn) {
-      btn.onclick = function () {
-        _openMatriksDetailModal(btn.getAttribute('data-id'));
-      };
-    });
+    rpc('kom_getAwakMatriks', token, pegawaiId)
+      .then(function (res) {
+        _renderSheetAwakMatriks(res);
+      })
+      .catch(function (err) {
+        Toast.error('Gagal memuat matriks sertifikat: ' + err.message);
+      });
   }
 
-  function _openSaveModal(pegawaiId, namaAwak, kodePelatihan, namaPelatihan) {
-    document.getElementById('kom-save-pegawai-id').value = pegawaiId;
-    document.getElementById('kom-save-kode-pelatihan').value = kodePelatihan;
-    document.getElementById('kom-save-nama-target').textContent = namaAwak;
-    document.getElementById('kom-save-pelatihan-target').textContent = kodePelatihan + ' — ' + namaPelatihan;
+  function _renderSheetAwakMatriks(d) {
+    if (!d) return;
+
+    var nameEl = document.getElementById('sheet-kom-nama');
+    var jabEl = document.getElementById('sheet-kom-jabatan');
+    var nipEl = document.getElementById('sheet-kom-nip');
+    var klsEl = document.getElementById('sheet-kom-kelas');
+    var pctText = document.getElementById('sheet-kom-persen-text');
+    var pctBar = document.getElementById('sheet-kom-persen-bar');
+    var listEl = document.getElementById('sheet-kom-items-list');
+
+    if (nameEl) nameEl.textContent = d.nama || '-';
+    if (jabEl) jabEl.textContent = d.jabatanLengkap || d.kelompokJabatan || '-';
+    if (nipEl) nipEl.textContent = d.nipDisplay || '-';
+    if (klsEl) klsEl.textContent = String(d.kelasKapal || 'Kelas II').replace('_', ' ');
+
+    var k = d.kelaikan || { persen: 100, terpenuhi: 0, totalWajib: 0 };
+    if (pctText) pctText.textContent = k.persen + '% (' + k.terpenuhi + ' / ' + k.totalWajib + ' terpenuhi)';
+    if (pctBar) pctBar.style.width = k.persen + '%';
+
+    if (listEl) {
+      var items = d.matriks || [];
+      if (items.length === 0) {
+        listEl.innerHTML = '<div style="padding:18px; text-align:center; color:var(--muted); font-size:12px;">Tidak ada standar wajib terkonfigurasi untuk jabatan ini.</div>';
+      } else {
+        listEl.innerHTML = items.map(function (m) {
+          var borderLeft = m.hasCert
+            ? (m.status === 'BERLAKU' ? '3px solid var(--positive)' : (m.status === 'SEGERA_HABIS' ? '3px solid var(--warning)' : '3px solid var(--negative)'))
+            : '3px solid var(--border)';
+
+          return (
+            '<div style="padding:10px 12px; border:1px solid var(--border); border-left:' + borderLeft + '; border-radius:var(--radius-control); background-color:var(--surface);">' +
+              '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
+                '<div>' +
+                  '<div style="font-size:13px; font-weight:500; color:var(--text);">' + Format.escape(m.namaPelatihan) + '</div>' +
+                  '<div class="mono" style="font-size:11px; color:var(--muted); margin-top:2px;">' + Format.escape(m.kodePelatihan) + (m.wajib ? ' · Wajib STCW-F' : ' · Kompetensi Tambahan') + '</div>' +
+                '</div>' +
+                '<div>' + Format.statusBadge(m.status) + '</div>' +
+              '</div>' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:11px; color:var(--muted);">' +
+                '<span class="mono">' + (m.hasCert ? ('No: ' + Format.escape(m.nomorSertifikat) + (m.berlakuSampai ? ' · s.d ' + Format.date(m.berlakuSampai) : ' · Permanen')) : 'Belum memiliki sertifikat') + '</span>' +
+                '<button type="button" class="btn btn-secondary-sm btn-sheet-catat-cert" ' +
+                  'data-peg="' + d.pegawaiId + '" ' +
+                  'data-nama="' + Format.escape(d.nama) + '" ' +
+                  'data-kd="' + m.kodePelatihan + '" ' +
+                  'data-pel="' + Format.escape(m.namaPelatihan) + '">' + (m.hasCert ? 'Perbarui' : 'Catat') + '</button>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+
+        listEl.querySelectorAll('.btn-sheet-catat-cert').forEach(function (btn) {
+          btn.onclick = function () {
+            var peg = btn.getAttribute('data-peg');
+            var nama = btn.getAttribute('data-nama');
+            var kd = btn.getAttribute('data-kd');
+            var pel = btn.getAttribute('data-pel');
+            Sheet.close('sheet-kom-panel', 'sheet-kom-overlay');
+            openModalCatat(peg, nama, kd, pel);
+          };
+        });
+      }
+    }
+  }
+
+  function openModalCatat(pegawaiId, namaAwak, kodePelatihan, namaPelatihan) {
+    document.getElementById('kom-save-pegawai-id').value = pegawaiId || '';
+    document.getElementById('kom-save-kode-pelatihan').value = kodePelatihan || '';
+
+    var targetNamaEl = document.getElementById('kom-save-nama-target');
+    var targetPelEl = document.getElementById('kom-save-pelatihan-target');
+    var selectPersonil = document.getElementById('kom-save-select-personil');
+    var selectStandar = document.getElementById('kom-save-select-standar');
+
+    if (pegawaiId && namaAwak) {
+      if (targetNamaEl) {
+        targetNamaEl.textContent = namaAwak + ' (' + pegawaiId + ')';
+        targetNamaEl.classList.remove('hidden');
+      }
+      if (selectPersonil) selectPersonil.classList.add('hidden');
+    } else {
+      if (targetNamaEl) targetNamaEl.classList.add('hidden');
+      if (selectPersonil) {
+        selectPersonil.classList.remove('hidden');
+        _populatePersonilDropdown(selectPersonil);
+      }
+    }
+
+    if (kodePelatihan && namaPelatihan) {
+      if (targetPelEl) {
+        targetPelEl.textContent = namaPelatihan + ' (' + kodePelatihan + ')';
+        targetPelEl.classList.remove('hidden');
+      }
+      if (selectStandar) selectStandar.classList.add('hidden');
+    } else {
+      if (targetPelEl) targetPelEl.classList.add('hidden');
+      if (selectStandar) {
+        selectStandar.classList.remove('hidden');
+        _populateStandarDropdown(selectStandar);
+      }
+    }
 
     document.getElementById('kom-save-nomor').value = '';
-    document.getElementById('kom-save-lembaga').value = '';
+    document.getElementById('kom-save-lembaga').value = 'BP3IP / BPPP Tegal KKP';
     document.getElementById('kom-save-tgl-terbit').value = '';
-    document.getElementById('kom-save-tgl-exp').value = '';
+    document.getElementById('kom-save-berlaku-sampai').value = '';
     document.getElementById('kom-save-file').value = '';
+    document.getElementById('kom-save-file-label').textContent = 'Pilih file dokumen atau seret ke sini';
     _stagedCertFile = null;
 
     Modal.open('modal-kom-save');
   }
 
+  function _populatePersonilDropdown(sel) {
+    var token = AuthApp.getToken();
+    rpc('dir_list', { token: token, limit: 100 })
+      .then(function (res) {
+        var items = res.items || [];
+        sel.innerHTML = '<option value="">-- Pilih Personil Awak --</option>' + items.map(function (it) {
+          return '<option value="' + it.pegawaiId + '" data-nama="' + Format.escape(it.nama) + '">' + Format.escape(it.nama) + ' (' + it.kelompokJabatan + ')</option>';
+        }).join('');
+      })
+      .catch(function () {});
+  }
+
+  function _populateStandarDropdown(sel) {
+    var standards = [
+      { kd: 'TRN-NKH-01', nm: 'Sertifikat Keahlian Pelaut Nautika (ANKAPIN / ANT)' },
+      { kd: 'TRN-NKH-02', nm: 'Basic Safety Training Fisheries (BST / BST-F)' },
+      { kd: 'TRN-NKH-03', nm: 'Advanced Fire Fighting (AFF)' },
+      { kd: 'TRN-NKH-04', nm: 'Survival Craft and Rescue Boats (SCRB)' },
+      { kd: 'TRN-NKH-05', nm: 'Medical First Aid (MFA) / Medical Care' },
+      { kd: 'TRN-NKH-06', nm: 'Radar Simulator & Automatic Radar Plotting Aid (ARPA)' },
+      { kd: 'TRN-NKH-07', nm: 'Electronic Chart Display and Information System (ECDIS)' },
+      { kd: 'TRN-NKH-08', nm: 'Sertifikat Operator Radio Umum GMDSS (ORU / GOC)' },
+      { kd: 'TRN-KKM-01', nm: 'Sertifikat Keahlian Pelaut Teknika (ATKAPIN / ATT)' }
+    ];
+    sel.innerHTML = '<option value="">-- Pilih Standar Pelatihan --</option>' + standards.map(function (s) {
+      return '<option value="' + s.kd + '" data-nama="' + Format.escape(s.nm) + '">' + Format.escape(s.nm) + ' (' + s.kd + ')</option>';
+    }).join('');
+  }
+
   function _submitSaveSertifikat() {
     var token = AuthApp.getToken();
     var pId = document.getElementById('kom-save-pegawai-id').value;
+    var selPeg = document.getElementById('kom-save-select-personil');
+    if (!pId && selPeg && !selPeg.classList.contains('hidden')) {
+      pId = selPeg.value;
+    }
+
     var kd = document.getElementById('kom-save-kode-pelatihan').value;
-    var pelName = document.getElementById('kom-save-pelatihan-target').textContent.split(' — ')[1] || '';
+    var selStd = document.getElementById('kom-save-select-standar');
+    var namaPel = '';
+    if (!kd && selStd && !selStd.classList.contains('hidden')) {
+      kd = selStd.value;
+      var opt = selStd.options[selStd.selectedIndex];
+      if (opt) namaPel = opt.getAttribute('data-nama');
+    }
+    if (!namaPel) {
+      namaPel = (document.getElementById('kom-save-pelatihan-target').textContent || '').split(' (')[0];
+    }
 
-    var payload = {
-      token: token,
-      pegawaiId: pId,
-      kodePelatihan: kd,
-      namaPelatihan: pelName,
-      nomorSertifikat: document.getElementById('kom-save-nomor').value.trim(),
-      penerbitLembaga: document.getElementById('kom-save-lembaga').value.trim(),
-      tanggalTerbit: document.getElementById('kom-save-tgl-terbit').value,
-      berlakuSampai: document.getElementById('kom-save-tgl-exp').value,
-      fileData: _stagedCertFile
-    };
+    var noSert = document.getElementById('kom-save-nomor').value.trim();
+    var lembaga = document.getElementById('kom-save-lembaga').value.trim();
+    var tglTerbit = document.getElementById('kom-save-tgl-terbit').value;
+    var tglExp = document.getElementById('kom-save-berlaku-sampai').value;
 
-    var btnSubmit = document.getElementById('btn-submit-kom-save');
+    if (!pId) {
+      Toast.error('Pilih personil awak kapal.');
+      return;
+    }
+    if (!kd) {
+      Toast.error('Pilih standar pelatihan.');
+      return;
+    }
+    if (!noSert) {
+      Toast.error('Nomor sertifikat wajib diisi.');
+      return;
+    }
+    if (!tglTerbit) {
+      Toast.error('Tanggal terbit wajib diisi.');
+      return;
+    }
+
+    var btnSubmit = document.getElementById('btn-submit-save-sertifikat');
     if (btnSubmit) {
       btnSubmit.disabled = true;
       btnSubmit.textContent = 'Menyimpan...';
     }
 
-    rpc('kom_saveSertifikat', payload)
+    rpc('kom_saveSertifikat', {
+      token: token,
+      pegawaiId: pId,
+      kodePelatihan: kd,
+      namaPelatihan: namaPel,
+      nomorSertifikat: noSert,
+      penerbitLembaga: lembaga,
+      tanggalTerbit: tglTerbit,
+      berlakuSampai: tglExp,
+      fileData: _stagedCertFile
+    })
       .then(function (res) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan Sertifikat';
+          btnSubmit.textContent = 'Simpan sertifikat';
         }
         Modal.close('modal-kom-save');
         Toast.success(res.message || 'Sertifikat berhasil direkam.');
@@ -304,72 +528,17 @@ var KompetensiView = (function () {
       .catch(function (err) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan Sertifikat';
+          btnSubmit.textContent = 'Simpan sertifikat';
         }
-        Toast.error('Gagal menyimpan: ' + err.message);
-      });
-  }
-
-  function _openMatriksDetailModal(pegawaiId) {
-    var token = AuthApp.getToken();
-    rpc('kom_getAwakMatriks', token, pegawaiId)
-      .then(function (res) {
-        document.getElementById('matriks-detail-nama').textContent = res.nama;
-        document.getElementById('matriks-detail-nip').textContent = res.nipDisplay;
-        document.getElementById('matriks-detail-jabatan').textContent = res.jabatanLengkap || res.kelompokJabatan;
-        document.getElementById('matriks-detail-persen').textContent = res.kelaikan.persen + '%';
-
-        var tbody = document.getElementById('matriks-detail-tbody');
-        if (!tbody) return;
-
-        if (!res.matriks || res.matriks.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:24px 0;">Belum ada standar kompetensi yang dipetakan untuk jabatan ini.</td></tr>';
-        } else {
-          var html = '';
-          res.matriks.forEach(function (m) {
-            var badgeClass = 'badge-muted';
-            if (m.status === 'BERLAKU') badgeClass = 'badge-success';
-            else if (m.status === 'SEGERA_HABIS') badgeClass = 'badge-warning';
-            else if (m.status === 'KEDALUWARSA') badgeClass = 'badge-danger';
-
-            html += '<tr>' +
-              '<td><span class="badge ' + badgeClass + '">' + Format.escape(m.status === 'BELUM_ADA' ? 'Belum' : m.status) + '</span></td>' +
-              '<td>' +
-                '<div style="font-weight:600; font-size:12px; color:var(--text);">' + Format.escape(m.namaPelatihan) + '</div>' +
-                '<div style="font-size:11px; color:var(--muted);">' + (m.wajib ? '<span style="color:var(--danger)">Wajib</span>' : 'Opsional') + ' &bull; ' + m.kodePelatihan + '</div>' +
-              '</td>' +
-              '<td style="font-family:var(--font-mono); font-size:12px;">' + Format.escape(m.nomorSertifikat) + '</td>' +
-              '<td style="font-family:var(--font-mono); font-size:12px;">' + (m.berlakuSampai ? Format.date(m.berlakuSampai) : (m.hasCert ? 'Permanen' : '-')) + '</td>' +
-              '<td style="text-align:center;">' +
-                '<button class="btn btn-secondary-sm btn-modal-reval" data-peg-id="' + res.pegawaiId + '" data-nama="' + Format.escape(res.nama) + '" data-kode="' + m.kodePelatihan + '" data-pelatihan="' + Format.escape(m.namaPelatihan) + '">Revisi</button>' +
-              '</td>' +
-            '</tr>';
-          });
-          tbody.innerHTML = html;
-
-          tbody.querySelectorAll('.btn-modal-reval').forEach(function (btn) {
-            btn.onclick = function () {
-              var pId = btn.getAttribute('data-peg-id');
-              var n = btn.getAttribute('data-nama');
-              var kd = btn.getAttribute('data-kode');
-              var pel = btn.getAttribute('data-pelatihan');
-              Modal.close('modal-kom-detail');
-              _openSaveModal(pId, n, kd, pel);
-            };
-          });
-        }
-
-        Modal.open('modal-kom-detail');
-      })
-      .catch(function (err) {
-        Toast.error('Gagal mengambil detail matriks: ' + err.message);
+        Toast.error('Gagal merekam sertifikat: ' + err.message);
       });
   }
 
   return {
     init: init,
     loadDashboard: loadDashboard,
-    loadMatriks: loadMatriks
+    loadMatriks: loadMatriks,
+    openModalCatat: openModalCatat
   };
 })();
 </script>

@@ -79,8 +79,10 @@ node -c Code.js services/*.js utils/*.js data/*.js pure/*.js
 # 3. Eksekusi unit test modul murni
 node --test tests/*.test.js
 
-# 4. Audit aturan desain antarmuka
-node .agents/skills/design-taste-frontend/scripts/lint.mjs --app
+# 4. Audit skill desain untuk halaman publik (butuh Node 22+ dan Chrome/Chromium)
+node .agents/skills/design-taste-frontend/scripts/consistency.mjs html/Index.html \
+  --page software --profile .taste-skill/chrome \
+  --category "<jenis layanan>" --primary "<aksi utama>"
 ```
 
 ---

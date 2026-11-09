@@ -1,0 +1,317 @@
+<!-- html/views/Admin.html — Pengelolaan Pengguna, Persetujuan Akun, & Catatan Audit (Achromatic Ledger) -->
+<div id="view-admin" class="app-view hidden">
+
+  <!-- Baris Judul & Temuan Data (DESIGN.md §5.1) -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h1 class="page-title">Pengelolaan sistem &amp; catatan audit</h1>
+      <p class="page-subtitle" id="admin-finding-sub">
+        Manajemen hak akses RBAC, antrean persetujuan pengguna baru, dan jejak integritas data audit trail Ditjen PSDKP.
+      </p>
+    </div>
+    <div class="page-actions">
+      <button type="button" id="btn-admin-refresh" class="btn btn-secondary-md">
+        <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Segarkan</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Strip KPI Satu Kontainer (DESIGN.md §5.3) -->
+  <div class="kpi-container">
+    <div class="kpi-col">
+      <div class="kpi-label">Total pengguna terdaftar</div>
+      <div class="kpi-value-lead mono tnum" id="kpi-admin-total">--</div>
+      <div class="kpi-delta">
+        <span class="mono">Akun di master DB</span>
+      </div>
+    </div>
+
+    <div class="kpi-col">
+      <div class="kpi-label">Menunggu persetujuan</div>
+      <div class="kpi-value mono tnum" id="kpi-admin-pending" style="color:var(--accent);">--</div>
+      <div class="kpi-delta">
+        <span>Antrean verifikasi pimpinan</span>
+      </div>
+    </div>
+
+    <div class="kpi-col">
+      <div class="kpi-label">Akun aktif terverifikasi</div>
+      <div class="kpi-value mono tnum" id="kpi-admin-approved" style="color:var(--positive);">--</div>
+      <div class="kpi-delta">
+        <span>Dapat mengakses sistem</span>
+      </div>
+    </div>
+
+    <div class="kpi-col">
+      <div class="kpi-label">Pimpinan &amp; administrator</div>
+      <div class="kpi-value mono tnum" id="kpi-admin-privileged" style="color:var(--text);">--</div>
+      <div class="kpi-delta">
+        <span>Superadmin, Direktur &amp; Katimja</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Garis Bawah Navigasi Sub-Modul (DESIGN.md §5.2) -->
+  <div class="tab-strip" style="margin-bottom:16px;">
+    <button type="button" class="tab-item active" id="tab-admin-users">Pengguna &amp; hak akses</button>
+    <button type="button" class="tab-item" id="tab-admin-audit">Catatan audit integritas</button>
+  </div>
+
+  <!-- Panel 1: Pengguna & Hak Akses -->
+  <div id="admin-pane-users">
+
+    <!-- Antrean Persetujuan Pengguna Baru (Muncul jika ada pending) -->
+    <div id="admin-approval-section" class="card" style="margin-bottom:20px; border-left:3px solid var(--accent); padding:16px 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <h2 style="font-size:14px; font-weight:700; color:var(--text); margin:0;">Antrean persetujuan pendaftaran akun</h2>
+          <span id="badge-admin-pending-count" class="badge-neutral mono tnum" style="background:var(--accent-subtle); color:var(--accent); font-weight:600; padding:2px 8px; border-radius:12px; font-size:11px;">0</span>
+        </div>
+        <span style="font-size:12px; color:var(--muted);">Kewenangan persetujuan: Direktur &amp; Katimja Awak</span>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="data-table" style="margin:0;">
+          <thead>
+            <tr>
+              <th style="width:130px;">Waktu daftar</th>
+              <th>Nama &amp; NIP pemohon</th>
+              <th>Email kedinasan</th>
+              <th style="width:180px;">Usulan peran &amp; divisi</th>
+              <th style="width:150px; text-align:right;">Keputusan</th>
+            </tr>
+          </thead>
+          <tbody id="admin-pending-tbody">
+            <tr>
+              <td colspan="5" style="text-align:center; color:var(--muted); padding:20px 0;">Memuat antrean persetujuan...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Filter & Toolbar Pengguna -->
+    <div class="filter-bar">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
+        <input type="text" id="admin-user-search" class="form-control-md" placeholder="Cari nama, NIP, atau email..." style="width:260px;">
+        <select id="admin-user-filter-role" class="form-control-md" style="width:180px;">
+          <option value="">Semua peran (Role)</option>
+          <option value="SUPERADMIN">Super Administrator</option>
+          <option value="DIREKTUR">Direktur Armada</option>
+          <option value="KADIV">Katimja Awak</option>
+          <option value="STAF">Staf Pengawakan</option>
+        </select>
+        <select id="admin-user-filter-status" class="form-control-md" style="width:160px;">
+          <option value="">Semua status</option>
+          <option value="APPROVED">Aktif (Approved)</option>
+          <option value="PENDING">Menunggu</option>
+          <option value="REJECTED">Ditolak</option>
+          <option value="NONAKTIF">Nonaktif</option>
+        </select>
+      </div>
+      <div>
+        <span id="admin-user-total-info" class="mono tnum" style="font-size:12px; color:var(--muted);">0 pengguna</span>
+      </div>
+    </div>
+
+    <!-- Tabel Daftar Pengguna -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:80px;">Status</th>
+              <th>Nama personil</th>
+              <th>NIP</th>
+              <th>Email</th>
+              <th style="width:150px;">Peran sistem</th>
+              <th style="width:180px;">Divisi / unit</th>
+              <th style="width:150px; text-align:right;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="admin-user-tbody">
+            <tr>
+              <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat daftar pengguna...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Panel 2: Catatan Audit Integritas -->
+  <div id="admin-pane-audit" class="hidden">
+    <!-- Filter & Toolbar Audit -->
+    <div class="filter-bar">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
+        <input type="text" id="admin-audit-search" class="form-control-md" placeholder="Cari ID pengguna, tabel target, atau kata kunci..." style="width:300px;">
+        <select id="admin-audit-filter-aksi" class="form-control-md" style="width:160px;">
+          <option value="">Semua aksi</option>
+          <option value="INSERT">INSERT (Tambah)</option>
+          <option value="UPDATE">UPDATE (Ubah)</option>
+          <option value="DELETE">DELETE (Hapus)</option>
+          <option value="LOGIN">LOGIN</option>
+          <option value="APPROVE">APPROVE</option>
+          <option value="REJECT">REJECT</option>
+        </select>
+        <select id="admin-audit-limit" class="form-control-md" style="width:140px;">
+          <option value="100">100 baris</option>
+          <option value="300" selected>300 baris</option>
+          <option value="500">500 baris</option>
+        </select>
+      </div>
+      <div>
+        <span id="admin-audit-total-info" class="mono tnum" style="font-size:12px; color:var(--muted);">0 catatan</span>
+      </div>
+    </div>
+
+    <!-- Tabel Catatan Audit -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:110px;">Log ID</th>
+              <th style="width:150px;">Waktu pencatatan</th>
+              <th style="width:180px;">Pelaku aksi</th>
+              <th style="width:90px; text-align:center;">Aksi</th>
+              <th style="width:180px;">Tabel &amp; ID target</th>
+              <th>Keterangan / rincian mutasi</th>
+            </tr>
+          </thead>
+          <tbody id="admin-audit-tbody">
+            <tr>
+              <td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat catatan audit...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── MODAL FORM UBAH PERAN & STATUS PENGGUNA (DESIGN.md §6.4) ── -->
+<div id="modal-admin-user-edit" class="modal-overlay">
+  <div class="modal-box" style="max-width:480px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Ubah hak akses &amp; status pengguna</h3>
+      <button type="button" class="modal-close" onclick="Modal.close('modal-admin-user-edit')" aria-label="Tutup modal">&times;</button>
+    </div>
+    <form id="form-admin-user-edit">
+      <input type="hidden" id="edit-user-id" value="">
+
+      <!-- Info ringkas pengguna -->
+      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:16px;">
+        <div class="avatar mono" id="edit-user-avatar" style="width:36px; height:36px; font-size:13px;">--</div>
+        <div style="overflow:hidden;">
+          <div style="font-size:13px; font-weight:600; color:var(--text);" id="edit-user-name">--</div>
+          <div class="mono tnum" style="font-size:11px; color:var(--muted);" id="edit-user-nip">--</div>
+          <div style="font-size:11px; color:var(--muted);" id="edit-user-email">--</div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:12px;">
+        <label class="form-label" for="edit-user-role">Peran sistem (Role) <span style="color:var(--negative)">*</span></label>
+        <select id="edit-user-role" class="form-control-md" required>
+          <option value="SUPERADMIN">Super Administrator (Akses Penuh)</option>
+          <option value="DIREKTUR">Direktur Armada (Persetujuan &amp; Laporan)</option>
+          <option value="KADIV">Katimja Awak (Manajerial &amp; Persetujuan)</option>
+          <option value="STAF">Staf Pengawakan (Perekaman Operasional)</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom:12px;">
+        <label class="form-label" for="edit-user-divisi">Unit kerja / Divisi</label>
+        <select id="edit-user-divisi" class="form-control-md">
+          <option value="DIV-AWAK">Tim Kerja Pengawakan (Dit. POA)</option>
+          <option value="DIV-OPERASI">Tim Kerja Operasi Armada</option>
+          <option value="DIV-SARANA">Tim Kerja Sarana &amp; Prasarana</option>
+          <option value="DITJEN-PSDKP">Ditjen PSDKP Pusat</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label" for="edit-user-status">Status akun <span style="color:var(--negative)">*</span></label>
+        <select id="edit-user-status" class="form-control-md" required>
+          <option value="APPROVED">Aktif (Approved)</option>
+          <option value="REJECTED">Ditolak (Rejected)</option>
+          <option value="NONAKTIF">Dinonaktifkan</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-admin-user-edit')">Batal</button>
+        <button type="submit" id="btn-admin-user-submit" class="btn btn-primary-md">Simpan perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── MODAL RESET PASSWORD PENGGUNA ── -->
+<div id="modal-admin-reset-pwd" class="modal-overlay">
+  <div class="modal-box" style="max-width:440px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Reset password pengguna</h3>
+      <button type="button" class="modal-close" onclick="Modal.close('modal-admin-reset-pwd')" aria-label="Tutup modal">&times;</button>
+    </div>
+    <form id="form-admin-reset-pwd">
+      <input type="hidden" id="reset-pwd-user-id" value="">
+
+      <div style="font-size:13px; color:var(--text); margin-bottom:12px;">
+        Atur kata sandi baru untuk pengguna: <strong id="reset-pwd-user-name">--</strong>
+      </div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label" for="reset-pwd-new">Password baru (Minimal 8 karakter) <span style="color:var(--negative)">*</span></label>
+        <input type="password" id="reset-pwd-new" class="form-control-md" minlength="8" required placeholder="Masukkan kata sandi baru">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-admin-reset-pwd')">Batal</button>
+        <button type="submit" id="btn-admin-reset-submit" class="btn btn-negative-md">Perbarui kata sandi</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── MODAL KEPUTUSAN PERSETUJUAN PENDAFTARAN ── -->
+<div id="modal-admin-decide" class="modal-overlay">
+  <div class="modal-box" style="max-width:480px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="decide-modal-title">Keputusan persetujuan akun</h3>
+      <button type="button" class="modal-close" onclick="Modal.close('modal-admin-decide')" aria-label="Tutup modal">&times;</button>
+    </div>
+    <form id="form-admin-decide">
+      <input type="hidden" id="decide-user-id" value="">
+      <input type="hidden" id="decide-action" value="APPROVED">
+
+      <div style="font-size:13px; color:var(--text); margin-bottom:12px;" id="decide-prompt-text">
+        --
+      </div>
+
+      <div id="decide-role-group" class="form-group" style="margin-bottom:12px;">
+        <label class="form-label" for="decide-role">Penetapan peran (Role)</label>
+        <select id="decide-role" class="form-control-md">
+          <option value="STAF">Staf Pengawakan</option>
+          <option value="KADIV">Katimja Awak</option>
+          <option value="DIREKTUR">Direktur Armada</option>
+          <option value="SUPERADMIN">Super Administrator</option>
+        </select>
+      </div>
+
+      <div id="decide-reason-group" class="form-group hidden" style="margin-bottom:16px;">
+        <label class="form-label" for="decide-reason">Alasan penolakan <span style="color:var(--negative)">*</span></label>
+        <textarea id="decide-reason" class="form-control-md" rows="3" placeholder="Contoh: NIP tidak sesuai data BKN atau bukan personil Ditjen PSDKP..."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-admin-decide')">Batal</button>
+        <button type="submit" id="btn-admin-decide-submit" class="btn btn-primary-md">Konfirmasi keputusan</button>
+      </div>
+    </form>
+  </div>
+</div>
+

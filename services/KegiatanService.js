@@ -18,9 +18,39 @@ function keg_list(params) {
   try {
     var p = params || {};
     var session = _requireSession(p.token);
+    keg_ensureSeeded();
 
     var sheetKeg = openAwakSheet(SHEET_AWAK.PENGAWAKAN_KEGIATAN);
     var rowsKeg = sheetToObjects(sheetKeg);
+
+    // Ambil lampiran evidence count per baris
+    var sheetEv = openAwakSheet(SHEET_AWAK.EVIDENCE);
+    var rowsEv = sheetToObjects(sheetEv);
+    var evCountMap = {};
+    rowsEv.forEach(function (ev) {
+      if (String(ev.RefSheet) === SHEET_AWAK.PENGAWAKAN_KEGIATAN) {
+        var rId = String(ev.RefRowID || '');
+        evCountMap[rId] = (evCountMap[rId] || 0) + 1;
+      }
+    });
+
+    // Hitung metrik keseluruhan baris ACTIVE
+    var activeKeg = rowsKeg.filter(function (r) {
+      return String(r.Status || 'ACTIVE').toUpperCase() === ROW_STATUS.ACTIVE;
+    });
+    var sumPeserta = 0;
+    var sumLampiran = 0;
+    var currentMonthPrefix = Utilities.formatDate(new Date(), 'GMT+7', 'yyyy-MM');
+    var countBulanIni = 0;
+
+    activeKeg.forEach(function (r) {
+      var rId = String(r.RowID || '');
+      sumPeserta += (parseInt(r.JumlahPeserta, 10) || 0);
+      sumLampiran += (evCountMap[rId] || (r.EvidenceUrl ? 1 : 0));
+      if (String(r.TanggalMulai || '').indexOf(currentMonthPrefix) === 0) {
+        countBulanIni++;
+      }
+    });
 
     var jenisFilter = String(p.jenis || '').trim();
     var searchStr = String(p.search || '').trim().toLowerCase();
@@ -42,7 +72,7 @@ function keg_list(params) {
     // Urutkan berdasarkan TanggalMulai DESC
     filtered.sort(function (a, b) {
       var dA = String(a.TanggalMulai || '');
-      var dB = String(b.TanggalSelesai || '');
+      var dB = String(b.TanggalMulai || '');
       if (dA !== dB) return dB.localeCompare(dA);
       var tA = a.Timestamp ? new Date(a.Timestamp).getTime() : 0;
       var tB = b.Timestamp ? new Date(b.Timestamp).getTime() : 0;
@@ -53,17 +83,6 @@ function keg_list(params) {
     var limit = p.limit || 50;
     var offset = p.offset || 0;
     var paged = filtered.slice(offset, offset + limit);
-
-    // Ambil lampiran evidence count per baris
-    var sheetEv = openAwakSheet(SHEET_AWAK.EVIDENCE);
-    var rowsEv = sheetToObjects(sheetEv);
-    var evCountMap = {};
-    rowsEv.forEach(function (ev) {
-      if (String(ev.RefSheet) === SHEET_AWAK.PENGAWAKAN_KEGIATAN) {
-        var rId = String(ev.RefRowID || '');
-        evCountMap[rId] = (evCountMap[rId] || 0) + 1;
-      }
-    });
 
     var items = paged.map(function (r) {
       var rowId = String(r.RowID || '');
@@ -78,7 +97,7 @@ function keg_list(params) {
         jumlahPeserta: parseInt(r.JumlahPeserta, 10) || 0,
         deskripsi: String(r.Deskripsi || ''),
         status: String(r.Status || 'ACTIVE'),
-        evidenceCount: evCountMap[rowId] || 0,
+        evidenceCount: evCountMap[rowId] || (r.EvidenceUrl ? 1 : 0),
         evidenceUrl: String(r.EvidenceUrl || ''),
         submittedBy: String(r.SubmittedBy || ''),
         timestamp: r.Timestamp instanceof Date ? r.Timestamp.toISOString() : String(r.Timestamp || '')
@@ -90,6 +109,12 @@ function keg_list(params) {
       data: {
         items: items,
         total: total,
+        stats: {
+          totalKegiatan: activeKeg.length,
+          totalPeserta: sumPeserta,
+          totalLampiran: sumLampiran,
+          bulanBerjalan: countBulanIni
+        },
         userRole: session.role
       }
     };
@@ -416,6 +441,105 @@ function keg_anulir(params) {
   } catch (e) {
     Logger.log('[keg_anulir] ' + e.message);
     return { success: false, error: e.message };
+  }
+}
+
+/**
+ * Seeding otomatis 5 agenda kegiatan awal ke TX_Pengawakan_Kegiatan jika kosong.
+ */
+function keg_ensureSeeded() {
+  try {
+    var sheetKeg = openAwakSheet(SHEET_AWAK.PENGAWAKAN_KEGIATAN);
+    if (sheetKeg.getLastRow() > 1) return;
+
+    var now = new Date();
+    var seedItems = [
+      {
+        rowId: 'AWAK-KEG-SEED-01',
+        periode: '2026-W44',
+        judul: 'Revalidasi Basic Safety Training Fisheries (BST-F) Gelombang IV',
+        jenis: 'Pelatihan & Sertifikasi',
+        mulai: '2026-11-02',
+        selesai: '2026-11-06',
+        wilayah: 'BPPP Tegal, Jawa Tengah',
+        peserta: 28,
+        deskripsi: 'Pelaksanaan penyegaran dan revalidasi sertifikat keselamatan dasar STCW-F bagi awak kapal pengawas Kelas I dan Kelas II.',
+        url: 'https://drive.google.com/drive/folders/stcw-bstf-2026'
+      },
+      {
+        rowId: 'AWAK-KEG-SEED-02',
+        periode: '2026-W43',
+        judul: 'Uji Kompetensi Kenaikan Kelas Jabatan Mualim & Masinis Kapal Pengawas',
+        jenis: 'Uji Kompetensi & Assessment',
+        mulai: '2026-10-20',
+        selesai: '2026-10-23',
+        wilayah: 'Pangkalan PSDKP Jakarta',
+        peserta: 19,
+        deskripsi: 'Asesmen teknis navigasi radar ARPA dan manajemen kamar mesin untuk pemetaan formasi kapal Kelas I.',
+        url: 'https://drive.google.com/drive/folders/ukom-awak-2026'
+      },
+      {
+        rowId: 'AWAK-KEG-SEED-03',
+        periode: '2026-W41',
+        judul: 'Rapat Koordinasi Evaluasi Formasi Safe Manning Armada Wilayah Barat',
+        jenis: 'Rapat Koordinasi Pengawakan',
+        mulai: '2026-10-07',
+        selesai: '2026-10-09',
+        wilayah: 'Pangkalan PSDKP Batam',
+        peserta: 34,
+        deskripsi: 'Penyelarasan penempatan sijil awak kapal pengawas KP. Orca dan KP. Hiu pada pangkalan wilayah barat.',
+        url: 'https://drive.google.com/drive/folders/rakor-manning-barat'
+      },
+      {
+        rowId: 'AWAK-KEG-SEED-04',
+        periode: '2026-W39',
+        judul: 'Diklat Teknis Penanganan Taktis dan Keselamatan Awak Kapal Patroli',
+        jenis: 'Pembinaan Fisik & Mental',
+        mulai: '2026-09-22',
+        selesai: '2026-09-26',
+        wilayah: 'Pangkalan PSDKP Bitung',
+        peserta: 42,
+        deskripsi: 'Pembinaan ketangkasan pemeriksaan di laut (boarding officer) dan prosedur penyelamatan darurat.',
+        url: 'https://drive.google.com/drive/folders/diklat-taktis-bitung'
+      },
+      {
+        rowId: 'AWAK-KEG-SEED-05',
+        periode: '2026-W37',
+        judul: 'Rotasi Terpadu Penugasan Nakhoda dan KKM Armada Timur',
+        jenis: 'Mutasi & Penempatan Awak',
+        mulai: '2026-09-08',
+        selesai: '2026-09-10',
+        wilayah: 'Pangkalan PSDKP Tual & Benoa',
+        peserta: 16,
+        deskripsi: 'Serah terima komando Nakhoda dan Kepala Kamar Mesin untuk penyegaran masa penugasan laut.',
+        url: 'https://drive.google.com/drive/folders/sk-rotasi-timur'
+      }
+    ];
+
+    seedItems.forEach(function (it) {
+      appendRowData(sheetKeg, {
+        'RowID': it.rowId,
+        'DivisiID': DIVISI_ID.AWAK,
+        'Periode': it.periode,
+        'SubmittedBy': 'USR-KATIMJA-AWAK-001',
+        'Timestamp': now,
+        'Status': ROW_STATUS.ACTIVE,
+        'SupersedesRowID': '',
+        'VoidReason': '',
+        'VoidedBy': '',
+        'VoidedAt': '',
+        'JudulKegiatan': it.judul,
+        'JenisKegiatan': it.jenis,
+        'TanggalMulai': it.mulai,
+        'TanggalSelesai': it.selesai,
+        'Wilayah': it.wilayah,
+        'JumlahPeserta': it.peserta,
+        'Deskripsi': it.deskripsi,
+        'EvidenceUrl': it.url
+      });
+    });
+  } catch (e) {
+    Logger.log('[keg_ensureSeeded] ' + e.message);
   }
 }
 

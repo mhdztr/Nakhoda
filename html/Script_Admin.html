@@ -1,0 +1,628 @@
+<script>
+/**
+ * html/Script_Admin.html
+ * Controller Klien Modul Admin: Pengguna, Akses, Persetujuan, & Audit Trail
+ * Nakhoda — Timja Pengawakan Dit. POA KKP RI (Achromatic Ledger)
+ */
+var AdminView = (function () {
+  'use strict';
+
+  var _users = [];
+  var _pendingUsers = [];
+  var _auditRows = [];
+  var _activeTab = 'users'; // 'users' | 'audit'
+  var _eventsBound = false;
+
+  var ROLE_LABELS = {
+    'SUPERADMIN': 'Super Administrator',
+    'DIREKTUR': 'Direktur Armada',
+    'KADIV': 'Katimja Awak',
+    'STAF': 'Staf Pengawakan'
+  };
+
+  function init(initialTab) {
+    _bindEvents();
+    if (initialTab === 'audit') {
+      _switchTab('audit');
+    } else {
+      _switchTab('users');
+    }
+  }
+
+  function _bindEvents() {
+    if (_eventsBound) return;
+    _eventsBound = true;
+
+    var tabUsers = document.getElementById('tab-admin-users');
+    var tabAudit = document.getElementById('tab-admin-audit');
+    if (tabUsers && tabAudit) {
+      tabUsers.onclick = function () { _switchTab('users'); };
+      tabAudit.onclick = function () { _switchTab('audit'); };
+    }
+
+    var btnRefresh = document.getElementById('btn-admin-refresh');
+    if (btnRefresh) {
+      btnRefresh.onclick = function () {
+        if (_activeTab === 'users') loadUsers();
+        else loadAudit();
+      };
+    }
+
+    // User filters
+    var searchUser = document.getElementById('admin-user-search');
+    var filterRole = document.getElementById('admin-user-filter-role');
+    var filterStatus = document.getElementById('admin-user-filter-status');
+
+    if (searchUser) {
+      searchUser.oninput = function () { _renderUserTable(); };
+    }
+    if (filterRole) {
+      filterRole.onchange = function () { _renderUserTable(); };
+    }
+    if (filterStatus) {
+      filterStatus.onchange = function () { _renderUserTable(); };
+    }
+
+    // Audit filters
+    var searchAudit = document.getElementById('admin-audit-search');
+    var filterAksi = document.getElementById('admin-audit-filter-aksi');
+    var limitAudit = document.getElementById('admin-audit-limit');
+
+    if (searchAudit) {
+      searchAudit.oninput = function () { _renderAuditTable(); };
+    }
+    if (filterAksi) {
+      filterAksi.onchange = function () { _renderAuditTable(); };
+    }
+    if (limitAudit) {
+      limitAudit.onchange = function () { loadAudit(); };
+    }
+
+    // Forms
+    var formEdit = document.getElementById('form-admin-user-edit');
+    if (formEdit) {
+      formEdit.onsubmit = function (e) {
+        e.preventDefault();
+        _submitUserEdit();
+      };
+    }
+
+    var formReset = document.getElementById('form-admin-reset-pwd');
+    if (formReset) {
+      formReset.onsubmit = function (e) {
+        e.preventDefault();
+        _submitResetPwd();
+      };
+    }
+
+    var formDecide = document.getElementById('form-admin-decide');
+    if (formDecide) {
+      formDecide.onsubmit = function (e) {
+        e.preventDefault();
+        _submitApprovalDecide();
+      };
+    }
+  }
+
+  function _switchTab(tab) {
+    _activeTab = tab;
+    var tabUsers = document.getElementById('tab-admin-users');
+    var tabAudit = document.getElementById('tab-admin-audit');
+    var paneUsers = document.getElementById('admin-pane-users');
+    var paneAudit = document.getElementById('admin-pane-audit');
+
+    if (tab === 'users') {
+      if (tabUsers) tabUsers.classList.add('active');
+      if (tabAudit) tabAudit.classList.remove('active');
+      if (paneUsers) paneUsers.classList.remove('hidden');
+      if (paneAudit) paneAudit.classList.add('hidden');
+      loadUsers();
+    } else {
+      if (tabUsers) tabUsers.classList.remove('active');
+      if (tabAudit) tabAudit.classList.add('active');
+      if (paneUsers) paneUsers.classList.add('hidden');
+      if (paneAudit) paneAudit.classList.remove('hidden');
+      loadAudit();
+    }
+  }
+
+  function loadUsers() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    var btnRefresh = document.getElementById('btn-admin-refresh');
+    if (btnRefresh) {
+      btnRefresh.disabled = true;
+      btnRefresh.classList.add('loading');
+    }
+
+    // Ambil data users dan antrean pending approvals secara paralel
+    Promise.all([
+      rpc('admin_getUsers', token).catch(function () { return []; }),
+      rpc('auth_getPendingApprovals', token).catch(function () { return []; })
+    ]).then(function (results) {
+      if (btnRefresh) {
+        btnRefresh.disabled = false;
+        btnRefresh.classList.remove('loading');
+      }
+
+      _users = Array.isArray(results[0]) ? results[0] : [];
+      _pendingUsers = Array.isArray(results[1]) ? results[1] : [];
+
+      // Hitung metrik
+      var total = _users.length;
+      var pendingCount = _pendingUsers.length;
+      var approvedCount = 0;
+      var privilegedCount = 0;
+
+      _users.forEach(function (u) {
+        var st = String(u.status || '').toUpperCase();
+        var rl = String(u.role || '').toUpperCase();
+        if (st === 'APPROVED') approvedCount++;
+        if (rl === 'SUPERADMIN' || rl === 'DIREKTUR' || rl === 'KADIV') privilegedCount++;
+      });
+
+      // Update badge sidebar
+      var navBadgeUsers = document.getElementById('nav-badge-users');
+      if (navBadgeUsers) {
+        if (pendingCount > 0) {
+          navBadgeUsers.textContent = pendingCount;
+          navBadgeUsers.classList.remove('hidden');
+        } else {
+          navBadgeUsers.classList.add('hidden');
+        }
+      }
+
+      // Kalimat Temuan Subtitle
+      var subEl = document.getElementById('admin-finding-sub');
+      if (subEl) {
+        subEl.textContent = total + ' pengguna terdaftar di sistem' +
+          (pendingCount > 0 ? ' · ' + pendingCount + ' permohonan pendaftaran menunggu persetujuan pimpinan.' : ' · seluruh akun pendaftaran telah diverifikasi.');
+      }
+
+      // KPI Strip
+      var kpiTot = document.getElementById('kpi-admin-total');
+      var kpiPen = document.getElementById('kpi-admin-pending');
+      var kpiApp = document.getElementById('kpi-admin-approved');
+      var kpiPri = document.getElementById('kpi-admin-privileged');
+
+      if (kpiTot) kpiTot.textContent = Format.number(total);
+      if (kpiPen) kpiPen.textContent = Format.number(pendingCount);
+      if (kpiApp) kpiApp.textContent = Format.number(approvedCount);
+      if (kpiPri) kpiPri.textContent = Format.number(privilegedCount);
+
+      // Section pending
+      var badgePending = document.getElementById('badge-admin-pending-count');
+      if (badgePending) badgePending.textContent = pendingCount;
+
+      _renderPendingTable();
+      _renderUserTable();
+    }).catch(function (err) {
+      if (btnRefresh) {
+        btnRefresh.disabled = false;
+        btnRefresh.classList.remove('loading');
+      }
+      Toast.error(err.message || 'Galat memuat data pengguna.');
+    });
+  }
+
+  function _renderPendingTable() {
+    var section = document.getElementById('admin-approval-section');
+    var tbody = document.getElementById('admin-pending-tbody');
+    if (!tbody) return;
+
+    if (_pendingUsers.length === 0) {
+      if (section) section.style.display = 'none';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:16px 0;">Tidak ada permohonan pendaftaran yang menunggu persetujuan.</td></tr>';
+      return;
+    }
+
+    if (section) section.style.display = '';
+
+    var html = '';
+    _pendingUsers.forEach(function (u) {
+      var initials = Format.initials(u.nama);
+      var avatarBg = Format.avatarBg(u.nama);
+
+      html += '<tr>' +
+        '<td class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.date(u.registeredAt) + '</td>' +
+        '<td>' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<div class="avatar mono" style="background:' + avatarBg + '; width:28px; height:28px; font-size:11px;">' + initials + '</div>' +
+            '<div>' +
+              '<div style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(u.nama) + '</div>' +
+              '<div class="mono tnum" style="font-size:11px; color:var(--muted);">' + (u.nip || '—') + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</td>' +
+        '<td><span class="mono" style="font-size:12px; color:var(--text);">' + Format.escape(u.email) + '</span></td>' +
+        '<td>' +
+          '<div style="font-size:12px; font-weight:600; color:var(--text);">' + Format.escape(ROLE_LABELS[u.role] || u.role) + '</div>' +
+          '<div style="font-size:11px; color:var(--muted);">' + Format.escape(u.namaDivisi || u.divisiId || '—') + '</div>' +
+        '</td>' +
+        '<td style="text-align:right;">' +
+          '<div style="display:flex; justify-content:flex-end; gap:6px;">' +
+            '<button type="button" class="btn btn-primary-sm" onclick="AdminView.openApprovalModal(\'' + u.userId + '\', \'APPROVED\')">Setujui</button>' +
+            '<button type="button" class="btn btn-negative-sm" onclick="AdminView.openApprovalModal(\'' + u.userId + '\', \'REJECTED\')">Tolak</button>' +
+          '</div>' +
+        '</td>' +
+      '</tr>';
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  function _renderUserTable() {
+    var tbody = document.getElementById('admin-user-tbody');
+    if (!tbody) return;
+
+    var search = (document.getElementById('admin-user-search') || {}).value || '';
+    var filterRole = (document.getElementById('admin-user-filter-role') || {}).value || '';
+    var filterStatus = (document.getElementById('admin-user-filter-status') || {}).value || '';
+
+    var searchLower = search.trim().toLowerCase();
+
+    var filtered = _users.filter(function (u) {
+      if (filterRole && String(u.role).toUpperCase() !== filterRole) return false;
+      if (filterStatus && String(u.status).toUpperCase() !== filterStatus) return false;
+      if (searchLower) {
+        var n = String(u.nama || '').toLowerCase();
+        var nip = String(u.nip || '').toLowerCase();
+        var em = String(u.email || '').toLowerCase();
+        if (n.indexOf(searchLower) === -1 && nip.indexOf(searchLower) === -1 && em.indexOf(searchLower) === -1) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    var countInfo = document.getElementById('admin-user-total-info');
+    if (countInfo) countInfo.textContent = Format.number(filtered.length) + ' pengguna';
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada pengguna yang cocok dengan filter.</td></tr>';
+      return;
+    }
+
+    var html = '';
+    filtered.forEach(function (u) {
+      var st = String(u.status || '').toUpperCase();
+      var badgeStatus = Format.statusBadge(
+        st === 'APPROVED' ? 'Aktif' : (st === 'PENDING' ? 'Menunggu' : (st === 'REJECTED' ? 'Ditolak' : 'Nonaktif')),
+        st === 'APPROVED' ? 'positive' : (st === 'PENDING' ? 'warning' : 'negative')
+      );
+
+      var initials = Format.initials(u.nama);
+      var avatarBg = Format.avatarBg(u.nama);
+      var roleName = ROLE_LABELS[u.role] || u.role;
+
+      html += '<tr>' +
+        '<td>' + badgeStatus + '</td>' +
+        '<td>' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<div class="avatar mono" style="background:' + avatarBg + '; width:28px; height:28px; font-size:11px;">' + initials + '</div>' +
+            '<div class="cell-primary" style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(u.nama) + '</div>' +
+          '</div>' +
+        '</td>' +
+        '<td><span class="mono tnum" style="font-size:12px; color:var(--muted);">' + (u.nip || '—') + '</span></td>' +
+        '<td><span class="mono" style="font-size:12px; color:var(--text);">' + Format.escape(u.email) + '</span></td>' +
+        '<td><span style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(roleName) + '</span></td>' +
+        '<td><span style="font-size:12px; color:var(--muted);">' + Format.escape(u.namaDivisi || u.divisiId || '—') + '</span></td>' +
+        '<td style="text-align:right;">' +
+          '<div style="display:flex; justify-content:flex-end; gap:6px;">' +
+            '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openEditUserModal(\'' + u.userId + '\')">Ubah</button>' +
+            '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openResetPwdModal(\'' + u.userId + '\')">Reset sandi</button>' +
+          '</div>' +
+        '</td>' +
+      '</tr>';
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  function loadAudit() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    var btnRefresh = document.getElementById('btn-admin-refresh');
+    if (btnRefresh) {
+      btnRefresh.disabled = true;
+      btnRefresh.classList.add('loading');
+    }
+
+    var limit = parseInt((document.getElementById('admin-audit-limit') || {}).value, 10) || 300;
+
+    rpc('admin_getAuditLog', token, { limit: limit })
+      .then(function (rows) {
+        if (btnRefresh) {
+          btnRefresh.disabled = false;
+          btnRefresh.classList.remove('loading');
+        }
+        _auditRows = Array.isArray(rows) ? rows : [];
+
+        var subEl = document.getElementById('admin-finding-sub');
+        if (subEl) {
+          subEl.textContent = _auditRows.length + ' rekam jejak audit terbaru tersimpan di master log Ditjen PSDKP.';
+        }
+
+        _renderAuditTable();
+      })
+      .catch(function (err) {
+        if (btnRefresh) {
+          btnRefresh.disabled = false;
+          btnRefresh.classList.remove('loading');
+        }
+        Toast.error(err.message || 'Galat memuat catatan audit.');
+      });
+  }
+
+  function _renderAuditTable() {
+    var tbody = document.getElementById('admin-audit-tbody');
+    if (!tbody) return;
+
+    var search = (document.getElementById('admin-audit-search') || {}).value || '';
+    var filterAksi = (document.getElementById('admin-audit-filter-aksi') || {}).value || '';
+    var searchLower = search.trim().toLowerCase();
+
+    var filtered = _auditRows.filter(function (row) {
+      if (filterAksi && String(row.aksi).toUpperCase() !== filterAksi) return false;
+      if (searchLower) {
+        var txt = (row.logId + ' ' + row.userId + ' ' + row.userName + ' ' + row.sheetTarget + ' ' + row.rowIdTarget + ' ' + row.alasan).toLowerCase();
+        if (txt.indexOf(searchLower) === -1) return false;
+      }
+      return true;
+    });
+
+    var countInfo = document.getElementById('admin-audit-total-info');
+    if (countInfo) countInfo.textContent = Format.number(filtered.length) + ' catatan';
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada catatan audit yang cocok dengan filter.</td></tr>';
+      return;
+    }
+
+    var html = '';
+    filtered.forEach(function (r) {
+      var ak = String(r.aksi || '').toUpperCase();
+      var badgeType = 'neutral';
+      if (ak === 'INSERT') badgeType = 'positive';
+      else if (ak === 'UPDATE' || ak === 'APPROVE') badgeType = 'warning';
+      else if (ak === 'DELETE' || ak === 'REJECT') badgeType = 'negative';
+
+      var aksiBadge = '<span class="status-badge" style="display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:2px 8px; border-radius:12px; font-weight:600; font-family:var(--font-mono);">' +
+        Format.escape(ak) +
+      '</span>';
+
+      html += '<tr>' +
+        '<td><span class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.escape(r.logId) + '</span></td>' +
+        '<td><span class="mono tnum" style="font-size:12px; color:var(--text);">' + Format.date(r.timestamp) + '</span></td>' +
+        '<td>' +
+          '<div style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(r.userName || r.userId) + '</div>' +
+          '<div class="mono" style="font-size:11px; color:var(--muted);">' + Format.escape(r.userRole || '') + '</div>' +
+        '</td>' +
+        '<td style="text-align:center;">' + aksiBadge + '</td>' +
+        '<td>' +
+          '<div class="mono" style="font-size:12px; font-weight:600; color:var(--text);">' + Format.escape(r.sheetTarget) + '</div>' +
+          '<div class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.escape(r.rowIdTarget || '—') + '</div>' +
+        '</td>' +
+        '<td><span style="font-size:12px; color:var(--text); line-height:1.4;">' + Format.escape(r.alasan || '—') + '</span></td>' +
+      '</tr>';
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  function openEditUserModal(userId) {
+    var u = _users.find(function (item) { return item.userId === userId; });
+    if (!u) return;
+
+    var fId = document.getElementById('edit-user-id');
+    var fName = document.getElementById('edit-user-name');
+    var fNip = document.getElementById('edit-user-nip');
+    var fEmail = document.getElementById('edit-user-email');
+    var fAvatar = document.getElementById('edit-user-avatar');
+    var fRole = document.getElementById('edit-user-role');
+    var fDivisi = document.getElementById('edit-user-divisi');
+    var fStatus = document.getElementById('edit-user-status');
+
+    if (fId) fId.value = u.userId;
+    if (fName) fName.textContent = u.nama;
+    if (fNip) fNip.textContent = u.nip || 'NIP belum terdaftar';
+    if (fEmail) fEmail.textContent = u.email;
+    if (fAvatar) {
+      fAvatar.textContent = Format.initials(u.nama);
+      fAvatar.style.background = Format.avatarBg(u.nama);
+    }
+
+    if (fRole) fRole.value = u.role || 'STAF';
+    if (fDivisi) fDivisi.value = u.divisiId || 'DIV-AWAK';
+    if (fStatus) fStatus.value = u.status || 'APPROVED';
+
+    Modal.open('modal-admin-user-edit');
+  }
+
+  function _submitUserEdit() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    var userId = (document.getElementById('edit-user-id') || {}).value;
+    var role = (document.getElementById('edit-user-role') || {}).value;
+    var divisiId = (document.getElementById('edit-user-divisi') || {}).value;
+    var status = (document.getElementById('edit-user-status') || {}).value;
+
+    var btn = document.getElementById('btn-admin-user-submit');
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add('loading');
+    }
+
+    rpc('admin_updateUser', token, {
+      userId: userId,
+      role: role,
+      divisiId: divisiId,
+      status: status
+    })
+      .then(function () {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Modal.close('modal-admin-user-edit');
+        Toast.success('Hak akses pengguna berhasil diperbarui.');
+        loadUsers();
+      })
+      .catch(function (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Toast.error(err.message || 'Gagal memperbarui pengguna.');
+      });
+  }
+
+  function openResetPwdModal(userId) {
+    var u = _users.find(function (item) { return item.userId === userId; });
+    if (!u) return;
+
+    var fId = document.getElementById('reset-pwd-user-id');
+    var fName = document.getElementById('reset-pwd-user-name');
+    var fPwd = document.getElementById('reset-pwd-new');
+
+    if (fId) fId.value = u.userId;
+    if (fName) fName.textContent = u.nama + ' (' + u.email + ')';
+    if (fPwd) fPwd.value = '';
+
+    Modal.open('modal-admin-reset-pwd');
+  }
+
+  function _submitResetPwd() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    var userId = (document.getElementById('reset-pwd-user-id') || {}).value;
+    var newPwd = (document.getElementById('reset-pwd-new') || {}).value;
+
+    if (!newPwd || newPwd.length < 8) {
+      Toast.error('Password minimal 8 karakter.');
+      return;
+    }
+
+    var btn = document.getElementById('btn-admin-reset-submit');
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add('loading');
+    }
+
+    rpc('admin_resetPassword', token, {
+      userId: userId,
+      newPassword: newPwd
+    })
+      .then(function () {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Modal.close('modal-admin-reset-pwd');
+        Toast.success('Password pengguna berhasil direset.');
+      })
+      .catch(function (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Toast.error(err.message || 'Gagal mereset password.');
+      });
+  }
+
+  function openApprovalModal(userId, action) {
+    var u = _pendingUsers.find(function (item) { return item.userId === userId; });
+    if (!u) return;
+
+    var fId = document.getElementById('decide-user-id');
+    var fAction = document.getElementById('decide-action');
+    var promptEl = document.getElementById('decide-prompt-text');
+    var roleGrp = document.getElementById('decide-role-group');
+    var reasonGrp = document.getElementById('decide-reason-group');
+    var btn = document.getElementById('btn-admin-decide-submit');
+
+    if (fId) fId.value = userId;
+    if (fAction) fAction.value = action;
+
+    if (action === 'APPROVED') {
+      if (promptEl) promptEl.innerHTML = 'Konfirmasi persetujuan pendaftaran akun untuk <strong>' + Format.escape(u.nama) + '</strong> (' + Format.escape(u.email) + ').';
+      if (roleGrp) roleGrp.classList.remove('hidden');
+      if (reasonGrp) reasonGrp.classList.add('hidden');
+      if (btn) {
+        btn.textContent = 'Setujui akun';
+        btn.className = 'btn btn-primary-md';
+      }
+    } else {
+      if (promptEl) promptEl.innerHTML = 'Konfirmasi penolakan pendaftaran akun untuk <strong>' + Format.escape(u.nama) + '</strong> (' + Format.escape(u.email) + '). Masukkan alasan penolakan:';
+      if (roleGrp) roleGrp.classList.add('hidden');
+      if (reasonGrp) reasonGrp.classList.remove('hidden');
+      if (btn) {
+        btn.textContent = 'Tolak pendaftaran';
+        btn.className = 'btn btn-negative-md';
+      }
+    }
+
+    Modal.open('modal-admin-decide');
+  }
+
+  function _submitApprovalDecide() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    var userId = (document.getElementById('decide-user-id') || {}).value;
+    var action = (document.getElementById('decide-action') || {}).value;
+    var role = (document.getElementById('decide-role') || {}).value;
+    var reason = (document.getElementById('decide-reason') || {}).value;
+
+    if (action === 'REJECTED' && !reason.trim()) {
+      Toast.error('Alasan penolakan wajib diisi.');
+      return;
+    }
+
+    var btn = document.getElementById('btn-admin-decide-submit');
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add('loading');
+    }
+
+    rpc('auth_decideApproval', {
+      token: token,
+      targetUserId: userId,
+      decision: action,
+      role: role,
+      divisiId: 'DIV-AWAK',
+      reason: reason
+    })
+      .then(function () {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Modal.close('modal-admin-decide');
+        Toast.success(action === 'APPROVED' ? 'Pendaftaran berhasil disetujui.' : 'Pendaftaran berhasil ditolak.');
+        loadUsers();
+      })
+      .catch(function (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Toast.error(err.message || 'Gagal memproses keputusan.');
+      });
+  }
+
+  return {
+    init: init,
+    loadUsers: loadUsers,
+    loadAudit: loadAudit,
+    openEditUserModal: openEditUserModal,
+    openResetPwdModal: openResetPwdModal,
+    openApprovalModal: openApprovalModal
+  };
+})();
+</script>
+

@@ -1,163 +1,186 @@
-<!-- html/views/Ringkasan.html -->
-<!-- Tampilan Dasbor Ringkasan Eksekutif Pengawakan (Open Plane / Achromatic Ledger) -->
-<div id="view-ringkasan" class="view-panel">
-  <!-- Header Halaman -->
+<!-- html/views/Ringkasan.html — Dasbor Ringkasan Eksekutif Pengawakan (Open-Plane / Achromatic Ledger) -->
+<div id="view-ringkasan" class="app-view">
+  
+  <!-- Baris Judul & Temuan Berbasis Data (DESIGN.md §1.2 & §5.1) -->
   <div class="page-header">
     <div class="page-title-group">
-      <h2 class="page-title">Ringkasan Eksekutif Pengawakan</h2>
-      <p class="page-subtitle">Pemantauan terpadu komposisi AKN, kelaikan safe manning kapal, dan kepatuhan sertifikasi STCW-F Ditjen PSDKP.</p>
+      <h1 class="page-title">Ringkasan eksekutif pengawakan</h1>
+      <p class="page-subtitle" id="ringkasan-finding-sub">
+        Memuat analisis situasi terkini komposisi AKN, safe manning armada, dan revalidasi sertifikasi...
+      </p>
     </div>
     <div class="page-actions">
-      <button class="btn btn-secondary btn-control-md" id="btn-ringkasan-refresh">
-        <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        <span>Segarkan Data</span>
+      <button type="button" class="btn btn-secondary-md" id="btn-ringkasan-refresh">
+        <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Segarkan data</span>
       </button>
-      <button class="btn btn-primary btn-control-md" id="btn-ringkasan-ke-laporan">
-        <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <span>Buka Laporan Dinas</span>
+      <button type="button" class="btn btn-primary-md" id="btn-ringkasan-ke-laporan">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>Buka laporan dinas</span>
       </button>
     </div>
   </div>
 
-  <!-- Strip Catatan Temuan Pimpinan (Data-driven Insights) -->
-  <div class="card" style="margin-bottom:20px; border-left:3px solid var(--accent); background:var(--panel);">
-    <div style="padding:16px 20px;">
-      <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--accent); margin-bottom:6px;">
-        Sorotan Situasi Pengawakan Hari Ini
+  <!-- Strip KPI Satu Kontainer (DESIGN.md §5.3) -->
+  <div class="kpi-container">
+    <!-- KPI 1: Kekuatan Personil AKN (Lead Metric 30px) -->
+    <div class="kpi-col">
+      <div class="kpi-label">Total personil AKN</div>
+      <div class="kpi-value-lead mono tnum" id="kpi-total-akn">--</div>
+      <div class="kpi-delta" id="kpi-delta-akn">
+        <span class="mono">--</span>
       </div>
-      <div id="ringkasan-narasi-list" style="font-size:13px; color:var(--text); line-height:1.6;">
-        Memuat analisis situasi armada...
+    </div>
+
+    <!-- KPI 2: Kepatuhan Standar STCW-F (24px) -->
+    <div class="kpi-col">
+      <div class="kpi-label">Awak berkualifikasi lengkap</div>
+      <div class="kpi-value mono tnum" id="kpi-awak-lengkap">--</div>
+      <div class="kpi-delta" id="kpi-sub-kompetensi">
+        <span class="mono">Memuat persentase...</span>
+      </div>
+    </div>
+
+    <!-- KPI 3: Revalidasi Sertifikat Mendesak (24px) -->
+    <div class="kpi-col">
+      <div class="kpi-label">Sertifikat habis &le; 90 hari</div>
+      <div class="kpi-value mono tnum" id="kpi-sertifikat-urgent">--</div>
+      <div class="kpi-delta" id="kpi-sub-sertifikat">
+        <span class="mono">Memuat antrean diklat...</span>
+      </div>
+    </div>
+
+    <!-- KPI 4: Kelaikan Safe Manning Kapal (24px) -->
+    <div class="kpi-col">
+      <div class="kpi-label">Kelaikan safe manning armada</div>
+      <div class="kpi-value mono tnum" id="kpi-kapal-laik">--</div>
+      <div class="kpi-delta" id="kpi-sub-kapal">
+        <span class="mono">Memuat formasi...</span>
       </div>
     </div>
   </div>
 
-  <!-- Strip Metrik KPI 4-Kolom -->
-  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:24px;">
-    <!-- KPI 1: Personil Terdaftar -->
-    <div class="card stat-card">
-      <div class="stat-label">Total Awak Kapal Terdaftar</div>
-      <div class="stat-value" id="kpi-total-awak">--</div>
-      <div class="stat-sub" id="kpi-sub-awak">Memuat distribusi rumpun...</div>
-    </div>
-
-    <!-- KPI 2: Kelaikan Safe Manning Armada -->
-    <div class="card stat-card">
-      <div class="stat-label">Kelaikan Operasi Armada</div>
-      <div class="stat-value" id="kpi-kapal-laik">--</div>
-      <div class="stat-sub" id="kpi-sub-kapal">Memuat status kapal...</div>
-    </div>
-
-    <!-- KPI 3: Kelaikan Sertifikasi STCW-F -->
-    <div class="card stat-card">
-      <div class="stat-label">Kepatuhan Sertifikasi STCW-F</div>
-      <div class="stat-value" id="kpi-kelaikan-sertifikat">--%</div>
-      <div class="stat-sub" id="kpi-sub-sertifikat">Memuat revalidasi...</div>
-    </div>
-
-    <!-- KPI 4: Kualitas Data Profil -->
-    <div class="card stat-card">
-      <div class="stat-label">Data Belum Lengkap</div>
-      <div class="stat-value" id="kpi-perlu-dilengkapi">--</div>
-      <div class="stat-sub" id="kpi-sub-dilengkapi">NIP / Kategori / Kelas Kapal</div>
-    </div>
-  </div>
-
-  <!-- Konten Grid 2 Kolom: Ringkasan Komposisi AKN & Status Safe Manning -->
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px;">
-    <!-- Kolom Kiri: Komposisi AKN Snapshot -->
-    <div class="card" style="padding:20px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="font-size:14px; font-weight:600; margin:0;">Komposisi Awak Kapal Negara (AKN)</h3>
-        <span class="badge badge-neutral" id="badge-akn-periode">Periode --</span>
+  <!-- Grid 2 Kolom: Bilah Proporsi AKN & Antrean Sertifikat Mendesak -->
+  <div class="grid-2col">
+    
+    <!-- Kolom Kiri: Distribusi Kekuatan AKN (Track Bar Oranye Keselamatan) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Komposisi awak kapal negara (AKN)</h2>
+          <div class="card-subtitle" id="label-ringkasan-akn-periode">Periode berjalan</div>
+        </div>
+        <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('komposisi')">
+          <span>Kelola komposisi &rarr;</span>
+        </button>
       </div>
-      <div style="overflow-x:auto;">
-        <table class="data-table" id="table-ringkasan-akn" style="font-size:12px;">
+
+      <!-- Daftar 5 Kategori Kepegawaian dengan Bilah Proporsi -->
+      <div class="track-list" id="ringkasan-track-list">
+        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat distribusi komposisi AKN...</div>
+      </div>
+
+      <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--muted);">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:10px; height:10px; background-color:var(--accent); border-radius:2px;"></div>
+            <span>Pusat (Dit. POA)</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:10px; height:10px; background-color:var(--raised); border:1px solid var(--control); border-radius:2px;"></div>
+            <span>Keseluruhan PSDKP</span>
+          </div>
+        </div>
+        <div id="ringkasan-total-rasio" class="mono" style="font-weight:600; color:var(--text);">--</div>
+      </div>
+    </div>
+
+    <!-- Kolom Kanan: Antrean Tindak Lanjut Sertifikasi (<= 90 Hari) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Antrean tindak lanjut sertifikasi</h2>
+          <div class="card-subtitle">&le; 90 hari &amp; kedaluwarsa</div>
+        </div>
+        <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('kompetensi')">
+          <span>Semua sertifikat &rarr;</span>
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
           <thead>
             <tr>
-              <th>Status Pegawai</th>
-              <th style="text-align:right;">Pusat (POA)</th>
-              <th style="text-align:right;">Keseluruhan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td colspan="3" style="text-align:center; color:var(--muted); padding:20px;">Memuat data komposisi...</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="margin-top:14px; text-align:right;">
-        <button class="btn btn-secondary btn-control-sm" onclick="Router.navigate('komposisi')">
-          <span>Kelola Komposisi &amp; Mutasi &rarr;</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Kolom Kanan: Papan Safe Manning Armada -->
-    <div class="card" style="padding:20px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="font-size:14px; font-weight:600; margin:0;">Status Safe Manning Armada</h3>
-        <button class="btn btn-secondary btn-control-sm" onclick="Router.navigate('sijil')">
-          <span>Buka Papan Sijil &rarr;</span>
-        </button>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:16px;">
-        <div style="border:1px solid var(--border); padding:12px; border-radius:4px; text-align:center;">
-          <div style="font-size:11px; color:var(--muted);">Laik Operasi</div>
-          <div style="font-size:18px; font-weight:700; color:var(--text);" id="stat-sijil-laik">0</div>
-        </div>
-        <div style="border:1px solid var(--border); padding:12px; border-radius:4px; text-align:center;">
-          <div style="font-size:11px; color:var(--muted);">Kurang Awak</div>
-          <div style="font-size:18px; font-weight:700; color:var(--text);" id="stat-sijil-kurang">0</div>
-        </div>
-        <div style="border:1px solid var(--border); padding:12px; border-radius:4px; text-align:center;">
-          <div style="font-size:11px; color:var(--muted);">Kritis (&le; -2)</div>
-          <div style="font-size:18px; font-weight:700; color:var(--accent);" id="stat-sijil-kritis">0</div>
-        </div>
-      </div>
-      <div style="font-size:12px; color:var(--muted); line-height:1.5;">
-        Kebutuhan minimum personil mengacu pada formasi Safe Manning Kepmen KP untuk 5 kelas kapal pengawas.
-      </div>
-    </div>
-  </div>
-
-  <!-- Baris Bawah: Antrean Sertifikat Mendesak & Log Kegiatan Terkini -->
-  <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:20px;">
-    <!-- Antrean Sertifikat Segera Habis / Expired -->
-    <div class="card" style="padding:20px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="font-size:14px; font-weight:600; margin:0;">Antrean Tindak Lanjut Sertifikasi (&le; 90 Hari)</h3>
-        <button class="btn btn-secondary btn-control-sm" onclick="Router.navigate('kompetensi')">
-          <span>Semua Sertifikat &rarr;</span>
-        </button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="data-table" id="table-ringkasan-sertifikat" style="font-size:12px;">
-          <thead>
-            <tr>
-              <th>Nama Personil</th>
+              <th>Personil</th>
               <th>Sertifikat</th>
-              <th>Masa Berlaku</th>
-              <th style="text-align:center;">Status</th>
+              <th>Masa berlaku</th>
+              <th class="text-center">Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr><td colspan="4" style="text-align:center; color:var(--muted); padding:20px;">Memuat antrean...</td></tr>
+          <tbody id="tbody-ringkasan-sertifikat">
+            <tr>
+              <td colspan="4" style="text-align:center; padding:24px; color:var(--muted);">Memuat antrean sertifikat...</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Agenda Kegiatan Pengawakan Terakhir -->
-    <div class="card" style="padding:20px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="font-size:14px; font-weight:600; margin:0;">Agenda Kegiatan Terkini</h3>
-        <button class="btn btn-secondary btn-control-sm" onclick="Router.navigate('kegiatan')">
-          <span>Lihat Log &rarr;</span>
+  </div>
+
+  <!-- Grid 2fr : 1fr — Papan Sijil Ringkas & Agenda Terkini -->
+  <div class="grid-2fr-1fr">
+    
+    <!-- Kolom Kiri: Papan Sijil Ringkas Armada -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Kesiapan formasi safe manning armada</h2>
+          <div class="card-subtitle">Prioritas kapal dengan kekurangan formasi awak</div>
+        </div>
+        <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('sijil')">
+          <span>Buka papan sijil 2D &rarr;</span>
         </button>
       </div>
-      <div id="ringkasan-kegiatan-list" style="display:flex; flex-direction:column; gap:10px;">
-        <div style="color:var(--muted); font-size:12px; padding:10px 0;">Memuat log kegiatan...</div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nama kapal pengawas</th>
+              <th>Kelas</th>
+              <th class="text-right">Kebutuhan</th>
+              <th class="text-right">Terisi</th>
+              <th class="text-right">Defisit</th>
+              <th class="text-center">Kelaikan</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-ringkasan-sijil">
+            <tr>
+              <td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Memuat data kapal...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-  </div>
-</div>
 
+    <!-- Kolom Kanan: Agenda Kegiatan Operasional Terkini -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Agenda kegiatan terkini</h2>
+          <div class="card-subtitle">Pelatihan &amp; pembinaan awak</div>
+        </div>
+        <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('kegiatan')">
+          <span>Lihat log &rarr;</span>
+        </button>
+      </div>
+
+      <div id="ringkasan-kegiatan-container" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat agenda kegiatan...</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

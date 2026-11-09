@@ -1,277 +1,334 @@
-<!-- ── SUB-MODUL C: DIREKTORI AWAK KAPAL ARMADA & PEMETAAN KELAS ── -->
+<!-- html/views/Direktori.html — Sub-Modul C: Direktori 396+ Awak Kapal Armada PSDKP -->
 <div id="view-direktori" class="app-view hidden">
-
-  <!-- Page Header -->
+  
+  <!-- Baris Judul Layar & Temuan Data (DESIGN.md §5.1) -->
   <div class="page-header">
     <div class="page-title-group">
-      <h2 class="page-title">Direktori Awak Kapal Armada PSDKP</h2>
-      <p class="page-subtitle">Basis data terpadu 396+ personil awak kapal pengawas (Dek &amp; Mesin), formatur jabatan, dan kelas kapal.</p>
+      <h1 class="page-title">Direktori awak kapal armada</h1>
+      <p class="page-subtitle" id="dir-finding-sub">
+        Basis data 396 personil awak kapal pengawas (rumpun Dek dan Mesin), jenjang jabatan, dan pemetaan kelaikan armada.
+      </p>
     </div>
-    <div class="page-actions" style="display:flex; gap:8px;">
-      <button id="btn-batch-assign" class="btn btn-secondary-md hidden">
-        Penugasan Kategori Massal (<span id="selected-count-badge">0</span>)
+    <div class="page-actions">
+      <button type="button" id="btn-batch-assign" class="btn btn-secondary-md hidden">
+        <span>Penugasan massal</span>
+        <span class="badge badge-accent mono" id="selected-count-badge">0</span>
       </button>
-      <button id="btn-tambah-awak" class="btn btn-primary-md">
-        <svg viewBox="0 0 24 24" style="width:14px; height:14px; stroke:currentColor; stroke-width:2; fill:none;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tambah Personil Baru
+      <button type="button" id="btn-tambah-awak" class="btn btn-primary-md">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Tambah personil baru</span>
       </button>
     </div>
   </div>
 
-  <!-- Statistik Ringkas (Stat Cards) -->
-  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:20px;">
-    <div class="card" style="padding:16px;">
-      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted);">Total Awak Kapal</div>
-      <div id="stat-total-awak" style="font-size:24px; font-weight:700; color:var(--text); font-family:var(--font-mono); margin-top:4px;">0</div>
-      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Armada Pengawas PSDKP</div>
-    </div>
-    <div class="card" style="padding:16px;">
-      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--accent);">Rumpun Dek</div>
-      <div id="stat-dek-awak" style="font-size:24px; font-weight:700; color:var(--accent); font-family:var(--font-mono); margin-top:4px;">0</div>
-      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Nahkoda, Mualim, Juru Mudi, dll</div>
-    </div>
-    <div class="card" style="padding:16px;">
-      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:#364FC7;">Rumpun Mesin</div>
-      <div id="stat-mesin-awak" style="font-size:24px; font-weight:700; color:#364FC7; font-family:var(--font-mono); margin-top:4px;">0</div>
-      <div style="font-size:11px; color:var(--muted); margin-top:2px;">KKM, Masinis, Juru Minyak</div>
-    </div>
-    <div class="card" style="padding:16px; cursor:pointer;" id="card-filter-perlu" title="Klik untuk saring antrean ini">
-      <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--warning);">Perlu Dilengkapi</div>
-      <div id="stat-perlu-awak" style="font-size:24px; font-weight:700; color:var(--warning); font-family:var(--font-mono); margin-top:4px;">0</div>
-      <div style="font-size:11px; color:var(--muted); margin-top:2px;">Kategori / Buku Pelaut kosong</div>
-    </div>
-  </div>
-
-  <!-- Filter & Pencarian Toolbar -->
-  <div class="card" style="margin-bottom:16px; padding:12px 16px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-        <select id="dir-filter-rumpun" class="form-control-md" style="width:140px;">
-          <option value="">Semua Rumpun</option>
-          <option value="DEK">Rumpun Dek</option>
-          <option value="MESIN">Rumpun Mesin</option>
-        </select>
-        <select id="dir-filter-kelas" class="form-control-md" style="width:150px;">
-          <option value="">Semua Kelas Kapal</option>
-          <option value="KELAS_I">Kelas I</option>
-          <option value="KELAS_II">Kelas II</option>
-          <option value="KELAS_III">Kelas III</option>
-          <option value="KELAS_IV">Kelas IV</option>
-          <option value="KELAS_V">Kelas V</option>
-        </select>
-        <input type="text" id="dir-search-input" class="form-control-md" placeholder="Cari nama, NIP, atau jabatan..." style="width:240px;">
-        <button id="btn-dir-search" class="btn btn-secondary-md">Cari</button>
+  <!-- Strip KPI Satu Kontainer (DESIGN.md §5.3) -->
+  <div class="kpi-container">
+    <div class="kpi-col">
+      <div class="kpi-label">Total personil terdaftar</div>
+      <div class="kpi-value-lead mono tnum" id="stat-total-awak">--</div>
+      <div class="kpi-delta">
+        <span class="mono">Armada Pengawas PSDKP</span>
       </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <button id="btn-toggle-perlu" class="btn btn-secondary-md">Semua Personil</button>
-        <span id="dir-total-matched" style="font-size:12px; color:var(--muted); font-family:var(--font-mono);">0 personil</span>
+    </div>
+
+    <div class="kpi-col">
+      <div class="kpi-label">Awak rumpun dek</div>
+      <div class="kpi-value mono tnum" id="stat-dek-awak" style="color:var(--accent);">--</div>
+      <div class="kpi-delta">
+        <span>Nahkoda, mualim, juru mudi, kelasi</span>
+      </div>
+    </div>
+
+    <div class="kpi-col">
+      <div class="kpi-label">Awak rumpun mesin</div>
+      <div class="kpi-value mono tnum" id="stat-mesin-awak">--</div>
+      <div class="kpi-delta">
+        <span>KKM, masinis, juru minyak</span>
+      </div>
+    </div>
+
+    <div class="kpi-col" style="cursor:pointer;" id="card-filter-perlu" title="Saring personil yang belum lengkap">
+      <div class="kpi-label">Antrean belum lengkap</div>
+      <div class="kpi-value mono tnum" id="stat-perlu-awak" style="color:var(--warning);">--</div>
+      <div class="kpi-delta">
+        <span style="color:var(--warning);">Buku pelaut / kategori kosong &rarr;</span>
       </div>
     </div>
   </div>
 
-  <!-- Tabel Direktori Awak -->
-  <div class="card">
-    <div style="overflow-x:auto;">
-      <table class="table" style="margin:0;">
+  <!-- Bilah Filter & Pencarian MD (DESIGN.md §5.2) -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <select id="dir-filter-rumpun" class="form-control-md" style="width:140px;">
+        <option value="">Semua rumpun</option>
+        <option value="DEK">Rumpun dek</option>
+        <option value="MESIN">Rumpun mesin</option>
+      </select>
+      <select id="dir-filter-kelas" class="form-control-md" style="width:140px;">
+        <option value="">Semua kelas kapal</option>
+        <option value="KELAS_I">Kelas I</option>
+        <option value="KELAS_II">Kelas II</option>
+        <option value="KELAS_III">Kelas III</option>
+        <option value="KELAS_IV">Kelas IV</option>
+        <option value="KELAS_V">Kelas V</option>
+      </select>
+      <input type="search" id="dir-search-input" class="form-control-md" placeholder="Cari nama personil, NIP, atau jabatan..." style="width:260px;">
+      <button type="button" id="btn-dir-search" class="btn btn-secondary-md">Cari</button>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button type="button" id="btn-toggle-perlu" class="btn btn-secondary-md">Semua personil</button>
+      <span id="dir-total-matched" class="mono" style="font-size:12px; color:var(--muted);">0 personil</span>
+    </div>
+  </div>
+
+  <!-- Tabel Data Direktori (Tanpa Zebra — DESIGN.md §5.5) -->
+  <div class="card card-flush">
+    <div class="table-wrap">
+      <table class="table">
         <thead>
           <tr>
             <th style="width:36px; text-align:center;">
-              <input type="checkbox" id="check-select-all" title="Pilih Semua">
+              <input type="checkbox" id="check-select-all" title="Pilih semua">
             </th>
-            <th style="width:260px;">Personil Awak Kapal</th>
-            <th>Jabatan &amp; Formatur</th>
-            <th style="width:120px;">Kelas Kapal</th>
-            <th style="width:100px;">Rumpun</th>
+            <th style="min-width:240px;">Personil awak kapal</th>
+            <th>Jabatan &amp; formatur</th>
+            <th style="width:110px;">Kelas kapal</th>
+            <th style="width:90px;">Rumpun</th>
             <th style="width:130px;">Kategori</th>
-            <th style="width:130px;">Buku Pelaut</th>
-            <th style="width:120px; text-align:center;">Aksi</th>
+            <th style="width:130px;">Buku pelaut</th>
+            <th style="width:80px; text-align:center;">Aksi</th>
           </tr>
         </thead>
         <tbody id="dir-list-tbody">
           <tr>
-            <td colspan="8" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat direktori awak kapal...</td>
+            <td colspan="8" style="text-align:center; padding:32px 0; color:var(--muted);">Memuat direktori awak kapal...</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <!-- Paginasi Tabel -->
-    <div style="padding:12px 16px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--muted);">
-      <div id="dir-page-info">Menampilkan 0 dari 0 data</div>
+    <div style="padding:12px 18px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--muted);">
+      <div id="dir-page-info" class="mono">Menampilkan 0 dari 0 data</div>
       <div style="display:flex; gap:6px;">
-        <button id="btn-dir-prev" class="btn btn-secondary-sm" disabled>&larr; Sebelumnya</button>
-        <button id="btn-dir-next" class="btn btn-secondary-sm" disabled>Berikutnya &rarr;</button>
+        <button type="button" id="btn-dir-prev" class="btn btn-secondary-sm" disabled>&larr; Sebelumnya</button>
+        <button type="button" id="btn-dir-next" class="btn btn-secondary-sm" disabled>Berikutnya &rarr;</button>
       </div>
     </div>
   </div>
 
+  <!-- ── LEMBAR SAMPING (SLIDE-OVER SHEET 480PX — DESIGN.md §6.3) ── -->
+  <div id="sheet-dir-overlay" class="sheet-overlay" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')"></div>
+  <aside id="sheet-dir-panel" class="sheet-panel hidden">
+    <div class="sheet-header">
+      <div>
+        <div style="font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;">Detail Profil Awak</div>
+        <h2 id="sheet-dir-nama" style="font-size:18px; font-weight:600; color:var(--text); margin-top:2px;">-</h2>
+      </div>
+      <button type="button" class="modal-close" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')">&times;</button>
+    </div>
+
+    <!-- Tab Garis Bawah Lembar Samping -->
+    <div class="tab-strip" style="padding:0 20px; background-color:var(--ground);">
+      <button type="button" class="tab-btn active" id="tab-dir-btn-profil" onclick="DirektoriView.switchSheetTab('profil')">Profil lengkap</button>
+      <button type="button" class="tab-btn" id="tab-dir-btn-sertifikat" onclick="DirektoriView.switchSheetTab('sertifikat')">Sertifikat (&amp; STCW-F)</button>
+      <button type="button" class="tab-btn" id="tab-dir-btn-penugasan" onclick="DirektoriView.switchSheetTab('penugasan')">Riwayat penugasan</button>
+    </div>
+
+    <div class="sheet-body">
+      <!-- Tab 1: Profil -->
+      <div id="sheet-tab-profil">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--rule);">
+          <div id="sheet-dir-avatar" class="avatar-lg">--</div>
+          <div>
+            <div id="sheet-dir-nip-display" class="mono" style="font-size:13px; font-weight:500; color:var(--text);">-</div>
+            <div id="sheet-dir-id-display" class="mono" style="font-size:11px; color:var(--muted); margin-top:2px;">-</div>
+            <div style="display:flex; gap:6px; margin-top:6px;">
+              <span id="sheet-dir-badge-rumpun" class="badge badge-accent">Dek</span>
+              <span id="sheet-dir-badge-kelas" class="badge badge-neutral">Kelas I</span>
+              <span id="sheet-dir-badge-status" class="pill pill-positive">Aktif</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+          <div>
+            <div style="font-size:11px; color:var(--muted);">Jabatan fungsional / pelaksana</div>
+            <div id="sheet-dir-jabatan" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+          </div>
+          <div class="form-grid-2">
+            <div>
+              <div style="font-size:11px; color:var(--muted);">Kategori kepegawaian</div>
+              <div id="sheet-dir-kategori" class="mono" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--muted);">Nomor buku pelaut</div>
+              <div id="sheet-dir-buku" class="mono" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div>
+              <div style="font-size:11px; color:var(--muted);">Penempatan kapal</div>
+              <div id="sheet-dir-kapal" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--muted);">Pangkalan / stasiun</div>
+              <div id="sheet-dir-pangkalan" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Sertifikat -->
+      <div id="sheet-tab-sertifikat" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <span style="font-size:12px; font-weight:500; color:var(--muted);">Register sertifikat keselamatan &amp; keahlian</span>
+          <button type="button" class="btn btn-secondary-sm" onclick="DirektoriView.openCatatSertifikatFromSheet()">+ Catat sertifikat</button>
+        </div>
+        <div id="sheet-dir-sertifikat-list" style="display:flex; flex-direction:column; gap:8px;">
+          <div style="padding:18px; text-align:center; color:var(--muted); font-size:12px;">Belum ada sertifikat tercatat.</div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Riwayat Penugasan Sijil -->
+      <div id="sheet-tab-penugasan" class="hidden">
+        <div style="font-size:12px; font-weight:500; color:var(--muted); margin-bottom:12px;">Riwayat naik &amp; turun kapal pengawas</div>
+        <div id="sheet-dir-penugasan-list" style="display:flex; flex-direction:column; gap:8px;">
+          <div style="padding:18px; text-align:center; color:var(--muted); font-size:12px;">Belum ada riwayat penugasan kapal.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <button type="button" class="btn btn-secondary-md" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')">Tutup</button>
+      <button type="button" id="btn-sheet-edit-awak" class="btn btn-primary-md">Edit profil personil</button>
+    </div>
+  </aside>
+
 </div>
 
-<!-- ── SLIDE-OVER SHEET / MODAL DETAIL PROFIL AWAK ── -->
-<div id="modal-dir-detail" class="modal-overlay">
-  <div class="modal-box" style="max-width:680px;">
+<!-- ── MODAL FORM TAMBAH / EDIT PROFIL AWAK ── -->
+<div id="modal-dir-awak" class="modal-overlay">
+  <div class="modal-box modal-box-lg">
     <div class="modal-header">
-      <div class="modal-title">Profil &amp; Riwayat Awak Kapal</div>
-      <button class="modal-close" onclick="Modal.close('modal-dir-detail')">&times;</button>
-    </div>
-    
-    <div style="padding:8px 0;">
-      <!-- Profil Atas -->
-      <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border);">
-        <div id="detail-dir-avatar" class="user-avatar" style="width:48px; height:48px; font-size:18px;">--</div>
-        <div>
-          <h3 id="detail-dir-nama" style="font-size:17px; font-weight:700; color:var(--text); margin-bottom:2px;">-</h3>
-          <div style="font-size:12px; color:var(--muted);">
-            NIP: <span id="detail-dir-nip" style="font-family:var(--font-mono); color:var(--text); font-weight:500;">-</span> &bull;
-            PegawaiID: <span id="detail-dir-id" style="font-family:var(--font-mono);">-</span>
-          </div>
-          <div style="display:flex; gap:6px; margin-top:6px;">
-            <span id="detail-dir-rumpun-badge" class="badge badge-accent">Dek</span>
-            <span id="detail-dir-kelas-badge" class="badge badge-muted">Kelas I</span>
-            <span id="detail-dir-status-badge" class="badge badge-success">Aktif</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab Mini Rincian -->
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; font-size:12px;">
-        <div style="padding:10px; background:#F8F9FA; border:1px solid var(--border);">
-          <div style="color:var(--muted); margin-bottom:2px;">Jabatan Lengkap:</div>
-          <div id="detail-dir-jabatan" style="font-weight:600; color:var(--text);">-</div>
-        </div>
-        <div style="padding:10px; background:#F8F9FA; border:1px solid var(--border);">
-          <div style="color:var(--muted); margin-bottom:2px;">Kategori Kepegawaian:</div>
-          <div id="detail-dir-kategori" style="font-weight:600; color:var(--text);">-</div>
-        </div>
-        <div style="padding:10px; background:#F8F9FA; border:1px solid var(--border);">
-          <div style="color:var(--muted); margin-bottom:2px;">Nomor Buku Pelaut (Seaman Book):</div>
-          <div id="detail-dir-buku" style="font-weight:600; color:var(--text); font-family:var(--font-mono);">-</div>
-        </div>
-        <div style="padding:10px; background:#F8F9FA; border:1px solid var(--border);">
-          <div style="color:var(--muted); margin-bottom:2px;">Kapal &amp; Pangkalan:</div>
-          <div id="detail-dir-penempatan" style="font-weight:600; color:var(--text);">-</div>
-        </div>
-      </div>
-
-      <!-- Riwayat Sertifikat Kompetensi -->
-      <div style="margin-bottom:16px;">
-        <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Sertifikasi &amp; Diklat Kepelautan</div>
-        <div id="detail-dir-sertifikat-list" style="border:1px solid var(--border); max-height:160px; overflow-y:auto; font-size:12px;">
-          <div style="padding:12px; text-align:center; color:var(--muted);">Belum ada catatan sertifikat yang terdaftar.</div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-dir-detail')">Tutup</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── MODAL FORM TAMBAH / EDIT AWAK KAPAL ── -->
-<div id="modal-dir-form" class="modal-overlay">
-  <div class="modal-box" style="max-width:600px;">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-dir-form-title">Pembaruan Profil Awak Kapal</div>
-      <button class="modal-close" onclick="Modal.close('modal-dir-form')">&times;</button>
+      <div class="modal-title" id="modal-awak-title">Tambah personil baru</div>
+      <button type="button" class="modal-close" onclick="Modal.close('modal-dir-awak')">&times;</button>
     </div>
     <form id="form-dir-awak">
-      <input type="hidden" id="dir-form-pegawai-id" value="">
+      <input type="hidden" id="awak-input-id">
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="awak-input-nama">Nama lengkap (beserta gelar)</label>
+            <input type="text" id="awak-input-nama" class="form-control-md" required placeholder="Contoh: Rijal Arif Fadhli, S.St.Pi">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awak-input-nip">NIP (18 digit angka)</label>
+            <input type="text" id="awak-input-nip" class="form-control-md mono" maxlength="18" placeholder="19xxxxxxxxxxxxxxxx">
+          </div>
+        </div>
 
-      <div class="form-group" style="margin-bottom:12px;">
-        <label class="form-label" for="dir-form-nama">Nama Lengkap Personil <span style="color:var(--danger)">*</span></label>
-        <input type="text" id="dir-form-nama" class="form-control-lg" required placeholder="Contoh: Capt. Budi Santoso">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="awak-input-jabatan-lengkap">Jabatan lengkap</label>
+            <input type="text" id="awak-input-jabatan-lengkap" class="form-control-md" required placeholder="Contoh: Juru Mudi Kapal Kelas I">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awak-input-kelompok">Kelompok jabatan</label>
+            <select id="awak-input-kelompok" class="form-control-md" required>
+              <option value="Nahkoda">Nahkoda</option>
+              <option value="Mualim">Mualim</option>
+              <option value="Kepala Kamar Mesin Kapal">KKM (Kepala Kamar Mesin)</option>
+              <option value="Masinis">Masinis</option>
+              <option value="Markonis">Markonis</option>
+              <option value="Serang">Serang</option>
+              <option value="Juru Mudi">Juru Mudi</option>
+              <option value="Kelasi Kapal">Kelasi</option>
+              <option value="Juru Minyak">Juru Minyak</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label" for="awak-input-rumpun">Rumpun</label>
+            <select id="awak-input-rumpun" class="form-control-md" required>
+              <option value="DEK">Rumpun Dek</option>
+              <option value="MESIN">Rumpun Mesin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awak-input-kelas">Kelas kapal</label>
+            <select id="awak-input-kelas" class="form-control-md" required>
+              <option value="KELAS_I">Kelas I</option>
+              <option value="KELAS_II">Kelas II</option>
+              <option value="KELAS_III">Kelas III</option>
+              <option value="KELAS_IV">Kelas IV</option>
+              <option value="KELAS_V">Kelas V</option>
+              <option value="NON_KAPAL">Non Kapal (Darat)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awak-input-kategori">Kategori status</label>
+            <select id="awak-input-kategori" class="form-control-md" required>
+              <option value="PNS">PNS</option>
+              <option value="PPPK_FUNGSIONAL">PPPK Fungsional</option>
+              <option value="PPPK_PELAKSANA">PPPK Pelaksana</option>
+              <option value="PPPK_PARUH_WAKTU">PPPK Paruh Waktu</option>
+              <option value="PJLP">PJLP / Kontrak</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="awak-input-buku">Nomor buku pelaut (seaman book)</label>
+            <input type="text" id="awak-input-buku" class="form-control-md mono" placeholder="Contoh: B.123456">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awak-input-status-aktif">Status dinas</label>
+            <select id="awak-input-status-aktif" class="form-control-md">
+              <option value="AKTIF">Aktif</option>
+              <option value="NONAKTIF">Nonaktif / Purna Tugas</option>
+            </select>
+          </div>
+        </div>
       </div>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label" for="dir-form-nip">NIP (18 Digit)</label>
-          <input type="text" id="dir-form-nip" class="form-control-md" placeholder="Contoh: 198501012010011001" style="font-family:var(--font-mono);">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="dir-form-buku">Nomor Buku Pelaut</label>
-          <input type="text" id="dir-form-buku" class="form-control-md" placeholder="Contoh: C.092819" style="font-family:var(--font-mono);">
-        </div>
-      </div>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label" for="dir-form-jabatan">Kelompok Jabatan</label>
-          <input type="text" id="dir-form-jabatan" class="form-control-md" placeholder="Contoh: Nahkoda / Mualim / KKM">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="dir-form-rumpun">Rumpun</label>
-          <select id="dir-form-rumpun" class="form-control-md">
-            <option value="DEK">Rumpun Dek</option>
-            <option value="MESIN">Rumpun Mesin</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label" for="dir-form-kelas">Kelas Kapal</label>
-          <select id="dir-form-kelas" class="form-control-md">
-            <option value="KELAS_I">Kelas I</option>
-            <option value="KELAS_II">Kelas II</option>
-            <option value="KELAS_III">Kelas III</option>
-            <option value="KELAS_IV">Kelas IV</option>
-            <option value="KELAS_V">Kelas V</option>
-            <option value="NON_KAPAL">Non-Kapal / Pangkalan</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="dir-form-kategori">Kategori Kepegawaian</label>
-          <select id="dir-form-kategori" class="form-control-md">
-            <option value="PNS">PNS</option>
-            <option value="PPPK_FUNGSIONAL">PPPK Fungsional</option>
-            <option value="PPPK_PELAKSANA">PPPK Pelaksana</option>
-            <option value="PPPK_PARUH_WAKTU">PPPK Paruh Waktu</option>
-            <option value="PJLP">PJLP / Lapangan</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group" style="margin-bottom:20px;">
-        <label class="form-label" for="dir-form-jabatan-lengkap">Formatur Jabatan Lengkap</label>
-        <input type="text" id="dir-form-jabatan-lengkap" class="form-control-md" placeholder="Contoh: Nahkoda Kapal Pengawas Kelas I Kelautan dan Perikanan">
-      </div>
-
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-dir-form')">Batal</button>
-        <button type="submit" id="btn-submit-dir" class="btn btn-primary-md">Simpan Data</button>
+        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-dir-awak')">Batal</button>
+        <button type="submit" id="btn-submit-awak" class="btn btn-primary-md">Simpan profil personil</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- ── MODAL PENUGASAN MASSAL (BATCH ASSIGN) ── -->
+<!-- ── MODAL PENUGASAN MASSAL KATEGORI ── -->
 <div id="modal-dir-batch" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-title">Penugasan Kategori Kepegawaian Massal</div>
-      <button class="modal-close" onclick="Modal.close('modal-dir-batch')">&times;</button>
+      <div class="modal-title">Penugasan kategori kepegawaian massal</div>
+      <button type="button" class="modal-close" onclick="Modal.close('modal-dir-batch')">&times;</button>
     </div>
     <form id="form-dir-batch">
-      <div style="font-size:13px; color:var(--text); margin-bottom:12px;">
-        Anda memilih <strong id="batch-selected-count">0</strong> personil awak kapal. Tentukan kategori kepegawaian baru untuk seluruh personil terpilih:
-      </div>
-      <div class="form-group" style="margin-bottom:20px;">
-        <label class="form-label" for="batch-kategori-select">Kategori Kepegawaian <span style="color:var(--danger)">*</span></label>
-        <select id="batch-kategori-select" class="form-control-lg" required>
-          <option value="PNS">PNS</option>
-          <option value="PPPK_FUNGSIONAL">PPPK Fungsional</option>
-          <option value="PPPK_PELAKSANA">PPPK Pelaksana</option>
-          <option value="PPPK_PARUH_WAKTU">PPPK Paruh Waktu</option>
-          <option value="PJLP">PJLP / Tenaga Lapangan</option>
-        </select>
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--text); margin-bottom:14px; line-height:1.5;">
+          Perbarui kategori kepegawaian untuk <strong id="modal-batch-count">0</strong> personil yang dipilih:
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="batch-input-kategori">Kategori tujuan</label>
+          <select id="batch-input-kategori" class="form-control-md" required>
+            <option value="PNS">PNS (Pegawai Negeri Sipil)</option>
+            <option value="PPPK_FUNGSIONAL">PPPK Tenaga Fungsional</option>
+            <option value="PPPK_PELAKSANA">PPPK Tenaga Pelaksana</option>
+            <option value="PPPK_PARUH_WAKTU">PPPK Paruh Waktu</option>
+            <option value="PJLP">PJLP / Tenaga Kontrak</option>
+          </select>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-dir-batch')">Batal</button>
-        <button type="submit" id="btn-submit-batch" class="btn btn-primary-md">Terapkan Perubahan</button>
+        <button type="submit" id="btn-submit-batch" class="btn btn-primary-md">Terapkan kategori</button>
       </div>
     </form>
   </div>
 </div>
-

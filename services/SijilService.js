@@ -12,7 +12,9 @@
 function sijil_getPapanArmada(token) {
   try {
     var session = _requireSession(token);
+    if (typeof dir_ensureSeeded === 'function') dir_ensureSeeded();
     sijil_ensureStandarManningSeeded();
+    sijil_ensurePenugasanSeeded();
 
     var sheetKapal = openMasterSheet(SHEET_MASTER.KAPAL);
     var rowsKapal = sheetToObjects(sheetKapal);
@@ -48,7 +50,9 @@ function sijil_getPapanArmada(token) {
 
     var countLaik = 0;
     var countKurang = 0;
+    var countKritis = 0;
     var totalAwakBertugas = 0;
+    var totalKekuranganKursi = 0;
 
     var kapalEvaluasi = rowsKapal.map(function (k) {
       var kId = String(k.KapalID || '');
@@ -57,9 +61,59 @@ function sijil_getPapanArmada(token) {
       var stds = manningByKelas[kls] || [];
 
       var evalRes = evaluateSafeManning(stds, activeTgs);
-      if (evalRes.isLaikOperasi) countLaik++;
-      else countKurang++;
+      var mapRincian = {};
+      (evalRes.posisiRincian || []).forEach(function (r) {
+        mapRincian[r.posSijil] = r;
+      });
+
+      function aggregateGroup(tokens) {
+        var min = 0;
+        var terisi = 0;
+        tokens.forEach(function (tk) {
+          if (mapRincian[tk]) {
+            min += mapRincian[tk].minimum;
+            terisi += mapRincian[tk].terisi;
+          }
+        });
+        return {
+          min: min,
+          terisi: terisi,
+          selisih: terisi - min,
+          kurang: Math.max(0, min - terisi)
+        };
+      }
+
+      var matrixCols = {
+        nakhoda: aggregateGroup(['NAKHODA']),
+        mualim: aggregateGroup(['MUALIM_I', 'MUALIM_II', 'MUALIM_III']),
+        kkm: aggregateGroup(['KKM']),
+        masinis: aggregateGroup(['MASINIS_I', 'MASINIS_II', 'MASINIS_III']),
+        markonis: aggregateGroup(['MARKONIS']),
+        serang: aggregateGroup(['SERANG']),
+        juruMudi: aggregateGroup(['JURU_MUDI']),
+        kelasi: aggregateGroup(['KELASI']),
+        juruMinyak: aggregateGroup(['JURU_MINYAK'])
+      };
+
+      var kurangKapal = 0;
+      var hasCriticalCol = false;
+      Object.keys(matrixCols).forEach(function (colKey) {
+        var c = matrixCols[colKey];
+        if (c.selisih < 0) kurangKapal += Math.abs(c.selisih);
+        if (c.selisih <= -2) hasCriticalCol = true;
+      });
+
+      totalKekuranganKursi += kurangKapal;
       totalAwakBertugas += evalRes.totalTerisi;
+
+      if (evalRes.isLaikOperasi && kurangKapal === 0) {
+        countLaik++;
+      } else {
+        countKurang++;
+        if (hasCriticalCol || kurangKapal >= 2) {
+          countKritis++;
+        }
+      }
 
       return {
         kapalId: kId,
@@ -68,10 +122,12 @@ function sijil_getPapanArmada(token) {
         kelasKapal: kls,
         pangkalanId: String(k.PangkalanID || '-'),
         evaluasi: evalRes,
+        matrixCols: matrixCols,
         jumlahAwakBertugas: evalRes.totalTerisi,
         kebutuhanMinimum: evalRes.totalKebutuhan,
+        kekuranganKursi: kurangKapal,
         persenTerisi: evalRes.persenTerisi,
-        statusOperasi: evalRes.statusOperasi
+        statusOperasi: (evalRes.isLaikOperasi && kurangKapal === 0) ? 'LAIK_OPERASI' : 'KURANG_AWAK'
       };
     });
 
@@ -82,7 +138,9 @@ function sijil_getPapanArmada(token) {
           totalKapal: rowsKapal.length,
           laikOperasi: countLaik,
           kurangAwak: countKurang,
-          totalAwakBertugas: totalAwakBertugas
+          kritis: countKritis,
+          totalAwakBertugas: totalAwakBertugas,
+          totalKekuranganKursi: totalKekuranganKursi
         },
         kapal: kapalEvaluasi,
         userRole: session.role
@@ -368,6 +426,97 @@ function sijil_ensureStandarManningSeeded() {
     }
   } catch (e) {
     Logger.log('[sijil_ensureStandarManningSeeded] ' + e.message);
+  }
+}
+
+/**
+ * Seeding otomatis penugasan sijil awal ke TX_Penugasan_Kapal jika kosong.
+ */
+function sijil_ensurePenugasanSeeded() {
+  try {
+    var sheetTgs = openAwakSheet(SHEET_AWAK.PENUGASAN_KAPAL);
+    if (sheetTgs.getLastRow() > 1) return;
+
+    var sheetKapal = openMasterSheet(SHEET_MASTER.KAPAL);
+    var rowsKapal = sheetToObjects(sheetKapal);
+    var sheetManning = openAwakSheet(SHEET_AWAK.MASTER_SAFE_MANNING);
+    var rowsManning = sheetToObjects(sheetManning);
+    var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+    var rowsAwak = sheetToObjects(sheetAwak);
+
+    if (rowsKapal.length === 0 || rowsManning.length === 0 || rowsAwak.length === 0) return;
+
+    var manningByKelas = {};
+    rowsManning.forEach(function (m) {
+      var kls = String(m.KelasKapal || '').toUpperCase();
+      if (!manningByKelas[kls]) manningByKelas[kls] = [];
+      manningByKelas[kls].push(m);
+    });
+
+    // Defisit sengaja pada 4 kapal untuk simulasi operasional nyata:
+    // KP-ORCA-04: kurang 1 MASINIS_II, kurang 2 JURU_MUDI (-2 kritis)
+    // KP-HIU-02: kurang 1 MUALIM_II, kurang 1 JURU_MINYAK
+    // KP-HIU-14: kurang 2 JURU_MUDI (-2 kritis)
+    // KP-PAUS-01: kurang 1 MASINIS_I
+    var deficitRules = {
+      'KP-ORCA-04': { 'MASINIS_II': 1, 'JURU_MUDI': 2 },
+      'KP-HIU-02':  { 'MUALIM_II': 1, 'JURU_MINYAK': 1 },
+      'KP-HIU-14':  { 'JURU_MUDI': 2 },
+      'KP-PAUS-01': { 'MASINIS_I': 1 }
+    };
+
+    var now = new Date();
+    var periode = getCurrentPeriode();
+    var awakCursor = 0;
+    var toInsert = [];
+
+    rowsKapal.forEach(function (k, kIdx) {
+      var kId = String(k.KapalID || '');
+      var kls = String(k.KelasKapal || 'KELAS_II').toUpperCase();
+      var stds = manningByKelas[kls] || [];
+      var defMap = deficitRules[kId] || {};
+
+      stds.forEach(function (std) {
+        var pos = String(std.PosSijil || '');
+        var minCount = parseInt(std.Minimum, 10) || 0;
+        var reduceBy = defMap[pos] || 0;
+        var fillCount = Math.max(0, minCount - reduceBy);
+
+        for (var c = 0; c < fillCount; c++) {
+          var awk = rowsAwak[awakCursor % rowsAwak.length];
+          awakCursor++;
+          var pId = String(awk.PegawaiID || '');
+          var rId = 'AWAK-TGS-SEED-' + String(kIdx + 1) + '-' + pos + '-' + String(c + 1);
+
+          toInsert.push([
+            rId,
+            DIVISI_ID.AWAK,
+            periode,
+            'SYSTEM_SEED',
+            now,
+            ROW_STATUS.ACTIVE,
+            '',
+            '',
+            '',
+            '',
+            pId,
+            kId,
+            pos,
+            '2026-01-15',
+            '',
+            'Penugasan Sijil Awal Armada'
+          ]);
+        }
+      });
+    });
+
+    if (toInsert.length > 0) {
+      var startRow = sheetTgs.getLastRow() + 1;
+      sheetTgs.getRange(startRow, 1, toInsert.length, toInsert[0].length).setValues(toInsert);
+      Logger.log('[sijil_ensurePenugasanSeeded] Berhasil men-seed ' + toInsert.length + ' penugasan kapal.');
+    }
+  } catch (e) {
+    Logger.log('[sijil_ensurePenugasanSeeded] ' + e.message);
   }
 }
 

@@ -1,17 +1,17 @@
 <!-- html/Auth.html — Layar Masuk, Registrasi, & Persetujuan Akun Nakhoda -->
 <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; background-color:var(--ground);">
-  <div style="width:100%; max-width:360px; background-color:var(--surface); border:1px solid var(--border); border-radius:var(--radius-card); padding:32px 24px; box-shadow:0 4px 16px rgba(15,18,20,0.06);">
+  <div style="width:100%; max-width:380px; background-color:var(--surface); border:1px solid var(--border); border-radius:var(--radius-card); padding:32px 24px; box-shadow:0 4px 16px rgba(15,18,20,0.06);">
     
     <!-- Kop & Brand Panji November -->
-    <div style="display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:28px;">
+    <div style="display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:24px;">
       <svg viewBox="0 0 24 24" fill="none" style="width:36px; height:36px; margin-bottom:12px;">
         <rect x="0" y="0" width="12" height="12" fill="#D9480F"/>
         <rect x="12" y="0" width="12" height="12" fill="#15181B"/>
         <rect x="0" y="12" width="12" height="12" fill="#15181B"/>
         <rect x="12" y="12" width="12" height="12" fill="#D9480F"/>
       </svg>
-      <h2 style="font-size:20px; font-weight:600; color:var(--text); letter-spacing:-0.01em;">Nakhoda</h2>
-      <p style="font-size:12px; color:var(--muted); margin-top:2px;">Sistem Informasi Pengawakan Armada Dit. POA</p>
+      <h2 style="font-size:20px; font-weight:600; color:var(--text); letter-spacing:-0.01em; margin:0;">Nakhoda</h2>
+      <p style="font-size:12px; color:var(--muted); margin-top:3px; margin-bottom:0;">Sistem Informasi Pengawakan Armada Dit. POA</p>
     </div>
 
     <!-- Alert Notifikasi Auth -->
@@ -32,24 +32,19 @@
       </div>
 
       <div class="ctl-row ctl-lg ctl-fill">
-        <button type="submit" id="btn-submit-login" class="btn-primary ctl-fill">Masuk ke Sistem</button>
+        <button type="submit" id="btn-submit-login" class="btn btn-primary ctl-fill btn-control-lg">Masuk ke Sistem</button>
       </div>
 
       <div style="margin-top:20px; text-align:center; font-size:12px; color:var(--muted);">
-        Belum memiliki akun? <a href="javascript:void(0)" onclick="AuthApp.showRegister()" style="color:var(--accent-ink); text-decoration:none; font-weight:500;">Daftar Akun Staf</a>
+        Belum memiliki akun? <a href="javascript:void(0)" onclick="AuthApp.showRegister()" style="color:var(--accent); text-decoration:none; font-weight:500;">Daftar Akun Staf</a>
       </div>
     </form>
 
-    <!-- Form 2: Registrasi Staf -->
-    <form id="form-register" class="hidden" onsubmit="event.preventDefault(); AuthApp.submitRegister();">
+    <!-- Form 2: Registrasi Staf Tahap 1 (Data & Request OTP) -->
+    <form id="form-register-step1" class="hidden" onsubmit="event.preventDefault(); AuthApp.submitRegisterStep1();">
       <div style="margin-bottom:14px;">
         <label for="reg-nama" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Nama Lengkap</label>
         <input type="text" id="reg-nama" class="input-lg ctl-fill" placeholder="Nama beserta gelar" required>
-      </div>
-
-      <div style="margin-bottom:14px;">
-        <label for="reg-email" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Email Dinas / Pribadi</label>
-        <input type="text" id="reg-email" class="input-lg ctl-fill" placeholder="email@kkp.go.id" required>
       </div>
 
       <div style="margin-bottom:14px;">
@@ -57,27 +52,64 @@
         <input type="text" id="reg-nip" class="input-lg ctl-fill" placeholder="19xxxxxxxxxxxxxxxx" required>
       </div>
 
+      <div style="margin-bottom:14px;">
+        <label for="reg-email" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Email Dinas / Pribadi</label>
+        <input type="email" id="reg-email" class="input-lg ctl-fill" placeholder="email@kkp.go.id" required>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label for="reg-role" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Peran Diajukan</label>
+        <select id="reg-role" class="input-lg ctl-fill" required>
+          <option value="STAF">Staf Pengawakan Armada</option>
+          <option value="KADIV">Ketua Tim Kerja Pengawakan</option>
+        </select>
+      </div>
+
       <div style="margin-bottom:20px;">
         <label for="reg-password" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Kata Sandi Baru</label>
         <input type="password" id="reg-password" class="input-lg ctl-fill" placeholder="Minimal 8 karakter" required>
       </div>
 
-      <div class="ctl-row ctl-lg ctl-fill" style="margin-bottom:12px;">
-        <button type="submit" id="btn-submit-reg" class="btn-primary ctl-fill">Kirim Pendaftaran</button>
+      <div class="ctl-row ctl-lg ctl-fill" style="margin-bottom:10px;">
+        <button type="submit" id="btn-request-otp" class="btn btn-primary ctl-fill btn-control-lg">Kirim Kode Verifikasi</button>
       </div>
       <div class="ctl-row ctl-lg ctl-fill">
-        <button type="button" class="btn-secondary ctl-fill" onclick="AuthApp.showLogin()">Kembali ke Halaman Masuk</button>
+        <button type="button" class="btn btn-secondary ctl-fill btn-control-md" onclick="AuthApp.showLogin()">Kembali ke Halaman Masuk</button>
       </div>
     </form>
 
-    <!-- Layar 3: Antrean Persetujuan (Pending Approval) -->
+    <!-- Form 3: Registrasi Staf Tahap 2 (Verifikasi OTP 6-Digit) -->
+    <form id="form-register-step2" class="hidden" onsubmit="event.preventDefault(); AuthApp.submitRegisterStep2();">
+      <div style="text-align:center; margin-bottom:18px;">
+        <div style="font-size:14px; font-weight:600; color:var(--text);">Verifikasi Kode Keamanan</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px; line-height:1.4;">
+          Kode 6-digit OTP telah dikirimkan ke <strong id="otp-sent-email">email Anda</strong>.
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label for="reg-otp" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Kode Verifikasi (OTP)</label>
+        <input type="text" id="reg-otp" class="input-lg ctl-fill" placeholder="6-digit angka" maxlength="6" pattern="[0-9]{6}" style="text-align:center; font-size:18px; letter-spacing:0.25em; font-family:var(--font-mono);" required>
+      </div>
+
+      <div class="ctl-row ctl-lg ctl-fill" style="margin-bottom:10px;">
+        <button type="submit" id="btn-submit-register" class="btn btn-primary ctl-fill btn-control-lg">Verifikasi &amp; Daftarkan Akun</button>
+      </div>
+      <div class="ctl-row ctl-lg ctl-fill">
+        <button type="button" class="btn btn-secondary ctl-fill btn-control-md" onclick="AuthApp.showRegisterStep1()">Kembali ke Formulir</button>
+      </div>
+    </form>
+
+    <!-- Layar 4: Antrean Persetujuan (Pending Approval) -->
     <div id="view-pending" class="hidden" style="text-align:center; padding:12px 0;">
-      <div style="width:40px; height:40px; border-radius:var(--radius-pill); background-color:var(--pill-warning-bg); color:var(--pill-warning-ink); display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto;">
-        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <div style="width:44px; height:44px; border-radius:50%; background-color:#FFF4E6; color:#D9480F; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto;">
+        <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
       <h3 style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px;">Menunggu Persetujuan Akun</h3>
-      <p style="font-size:13px; color:var(--muted); line-height:1.45; margin-bottom:20px;">Pendaftaran Anda telah berhasil dicatat. Silakan hubungi Kepala Timja Pengawakan atau Superadmin untuk verifikasi dan aktivasi akses akun.</p>
-      <button type="button" class="btn-secondary ctl-fill btn-lg" onclick="AuthApp.showLogin()">Kembali ke Halaman Masuk</button>
+      <div style="font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:16px;">
+        Pendaftaran akun atas nama <strong id="pending-user-name" style="color:var(--text);">-</strong> telah tercatat. Silakan hubungi Ketua Timja Pengawakan atau Superadmin untuk aktivasi akses.
+      </div>
+      <button type="button" class="btn btn-secondary ctl-fill btn-control-md" onclick="AuthApp.showLogin()">Kembali ke Halaman Masuk</button>
     </div>
 
   </div>

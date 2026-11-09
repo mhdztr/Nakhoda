@@ -1,26 +1,31 @@
-<!-- html/Script_Ringkasan.html -->
 <script>
 /**
- * Controller Dasbor Ringkasan Eksekutif Nakhoda.
+ * html/Script_Ringkasan.html
+ * Controller Dasbor Ringkasan Eksekutif Nakhoda (Achromatic Ledger).
  */
 var RingkasanView = (function () {
   'use strict';
 
   var _data = null;
+  var _eventsBound = false;
+
+  var KATEGORI_LABELS = {
+    'PNS': 'Pegawai negeri sipil (PNS)',
+    'PPPK_FUNGSIONAL': 'PPPK tenaga fungsional',
+    'PPPK_PELAKSANA': 'PPPK tenaga pelaksana',
+    'PPPK_PARUH_WAKTU': 'PPPK paruh waktu',
+    'PJLP': 'PJLP / pegawai non-ASN'
+  };
 
   function init() {
-    var outlet = document.getElementById('outlet-content');
-    var tpl = document.getElementById('view-ringkasan');
-    if (!outlet || !tpl) return;
-
-    outlet.innerHTML = '';
-    outlet.appendChild(tpl.cloneNode(true));
-
     _bindEvents();
     loadData();
   }
 
   function _bindEvents() {
+    if (_eventsBound) return;
+    _eventsBound = true;
+
     var btnRefresh = document.getElementById('btn-ringkasan-refresh');
     if (btnRefresh) {
       btnRefresh.onclick = function () {
@@ -37,148 +42,241 @@ var RingkasanView = (function () {
   }
 
   function loadData() {
-    var token = Auth.getToken();
+    var token = AuthApp.getToken();
     if (!token) return;
 
-    rpc('ringkasan_get', { token: token, filter: {} })
-      .then(function (res) {
-        if (!res || !res.success) {
-          Toast.error(res ? res.error : 'Gagal memuat ringkasan');
+    var btnRefresh = document.getElementById('btn-ringkasan-refresh');
+    if (btnRefresh) {
+      btnRefresh.disabled = true;
+      btnRefresh.classList.add('loading');
+    }
+
+    rpc('ringkasan_get', token, {})
+      .then(function (data) {
+        if (btnRefresh) {
+          btnRefresh.disabled = false;
+          btnRefresh.classList.remove('loading');
+        }
+        if (!data) {
+          Toast.error('Data ringkasan tidak ditemukan.');
           return;
         }
-        _data = res.data;
+        _data = data;
         _render();
       })
       .catch(function (err) {
-        Toast.error(err.message || 'Galat memuat ringkasan');
+        if (btnRefresh) {
+          btnRefresh.disabled = false;
+          btnRefresh.classList.remove('loading');
+        }
+        Toast.error(err.message || 'Gagal memuat ringkasan eksekutif.');
       });
   }
 
   function _render() {
     if (!_data) return;
 
-    // 1. Narasi Temuan
-    var narasiEl = document.getElementById('ringkasan-narasi-list');
-    if (narasiEl) {
-      if (_data.narasiTemuan && _data.narasiTemuan.length > 0) {
-        narasiEl.innerHTML = _data.narasiTemuan.map(function (n) {
-          return '<div style="margin-bottom:4px;">&bull; ' + Format.escape(n) + '</div>';
-        }).join('');
+    // 1. Kalimat Temuan Berbasis Data Langsung di Subtitle (DESIGN.md §1.2 & §5.1)
+    var findingEl = document.getElementById('ringkasan-finding-sub');
+    if (findingEl) {
+      findingEl.textContent = _data.findingSubtitle || 'Data situasi pengawakan terpantau normal dan sesuai formasi.';
+    }
+
+    // 2. Strip KPI Satu Kontainer (DESIGN.md §5.3)
+    var kpiTotalAkn = document.getElementById('kpi-total-akn');
+    var kpiDeltaAkn = document.getElementById('kpi-delta-akn');
+    if (kpiTotalAkn) kpiTotalAkn.textContent = Format.number(_data.kpi.totalAknKeseluruhan);
+    if (kpiDeltaAkn) {
+      var dVal = _data.kpi.deltaAkn || 0;
+      var pPoa = _data.kpi.totalAknPoa || 0;
+      var pKes = _data.kpi.totalAknKeseluruhan || 1;
+      var pctPoa = ((pPoa / pKes) * 100).toFixed(1);
+      kpiDeltaAkn.innerHTML =
+        Format.deltaText(dVal, 'vs minggu lalu') +
+        ' <span style="color:var(--muted);">· ' + Format.number(pPoa) + ' Dit. POA (' + pctPoa + '%)</span>';
+    }
+
+    var kpiAwakLengkap = document.getElementById('kpi-awak-lengkap');
+    var kpiSubKompetensi = document.getElementById('kpi-sub-kompetensi');
+    if (kpiAwakLengkap) {
+      var nLengkap = _data.kpi.awakKompetensiLengkap !== undefined ? _data.kpi.awakKompetensiLengkap : (_data.kpi.awakLengkap || 0);
+      var nTotal = _data.kpi.totalAwak || _data.kpi.totalAknKeseluruhan || 0;
+      kpiAwakLengkap.textContent = Format.number(nLengkap) + ' / ' + Format.number(nTotal);
+    }
+    if (kpiSubKompetensi) {
+      var pctK = _data.kpi.kelaikanPersen || _data.kpi.pctAwakLengkap || 100;
+      kpiSubKompetensi.innerHTML =
+        '<span style="font-weight:600; color:var(--text);">' + pctK + '%</span>' +
+        ' <span style="color:var(--muted);">memenuhi standar wajib STCW-F</span>';
+    }
+
+    var kpiSertifikatUrgent = document.getElementById('kpi-sertifikat-urgent');
+    var kpiSubSertifikat = document.getElementById('kpi-sub-sertifikat');
+    if (kpiSertifikatUrgent) {
+      var nUrg = _data.kpi.sertifikatUrgentTotal !== undefined ? _data.kpi.sertifikatUrgentTotal : (_data.kpi.sertifikatUrgent || 0);
+      kpiSertifikatUrgent.textContent = Format.number(nUrg);
+    }
+    if (kpiSubSertifikat) {
+      var nExp = _data.kpi.sertifikatExpired !== undefined ? _data.kpi.sertifikatExpired : (_data.kpi.expired || 0);
+      var nSeg = _data.kpi.sertifikatSegeraHabis !== undefined ? _data.kpi.sertifikatSegeraHabis : (_data.kpi.segeraHabis || 0);
+      kpiSubSertifikat.innerHTML =
+        '<span style="color:var(--negative); font-weight:500;">' + nExp + ' kedaluwarsa</span>' +
+        ' <span style="color:var(--muted);">· ' + nSeg + ' &le; 90 hari</span>';
+    }
+
+    var kpiKapalLaik = document.getElementById('kpi-kapal-laik');
+    var kpiSubKapal = document.getElementById('kpi-sub-kapal');
+    if (kpiKapalLaik && _data.sijilSummary) {
+      kpiKapalLaik.textContent = (_data.sijilSummary.laikOperasi || 0) + ' / ' + (_data.sijilSummary.totalKapal || 0);
+    }
+    if (kpiSubKapal && _data.sijilSummary) {
+      var nKurang = _data.sijilSummary.kurangAwak || 0;
+      var nKursi = _data.sijilSummary.totalKekuranganKursi !== undefined ? _data.sijilSummary.totalKekuranganKursi : nKurang;
+      if (nKurang > 0) {
+        kpiSubKapal.innerHTML =
+          '<span style="color:var(--negative); font-weight:500;">' + nKurang + ' kapal kurang awak</span>' +
+          ' <span style="color:var(--muted);">(' + nKursi + ' kursi kosong)</span>';
       } else {
-        narasiEl.textContent = 'Situasi pengawakan terpantau normal dan sesuai standar operasional Ditjen PSDKP.';
+        kpiSubKapal.innerHTML = '<span style="color:var(--positive); font-weight:500;">100% kapal siap laut</span>';
       }
     }
 
-    // 2. Metrik KPI 4-Strip
-    var kpiAwak = document.getElementById('kpi-total-awak');
-    var kpiSubAwak = document.getElementById('kpi-sub-awak');
-    if (kpiAwak) kpiAwak.textContent = Format.number(_data.kpi.totalAwak);
-    if (kpiSubAwak) {
-      kpiSubAwak.textContent = _data.demografi.dek + ' Dek · ' + _data.demografi.mesin + ' Mesin (' +
-        _data.demografi.pns + ' PNS, ' + _data.demografi.pppk + ' PPPK)';
+    // 3. Bilah Proporsi AKN (DESIGN.md §7.2 & §8.0)
+    var lblPeriode = document.getElementById('label-ringkasan-akn-periode');
+    if (lblPeriode && _data.aknMeta) {
+      lblPeriode.textContent = 'Periode ' + (_data.aknMeta.periode || '--') + (_data.aknMeta.isCarried ? ' (Diwarisi / Carry)' : '');
     }
 
-    var kpiKapal = document.getElementById('kpi-kapal-laik');
-    var kpiSubKapal = document.getElementById('kpi-sub-kapal');
-    if (kpiKapal) {
-      kpiKapal.textContent = _data.sijilSummary.laikOperasi + ' / ' + _data.sijilSummary.totalKapal;
-    }
-    if (kpiSubKapal) {
-      kpiSubKapal.textContent = _data.kpi.kurangAwakKapal > 0
-        ? _data.kpi.kurangAwakKapal + ' kapal kurang awak'
-        : '100% kapal siap operasi';
-    }
+    var trackListEl = document.getElementById('ringkasan-track-list');
+    if (trackListEl) {
+      var categories = ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'];
+      var trackHtml = '';
 
-    var kpiSertifikat = document.getElementById('kpi-kelaikan-sertifikat');
-    var kpiSubSertifikat = document.getElementById('kpi-sub-sertifikat');
-    if (kpiSertifikat) kpiSertifikat.textContent = (_data.kpi.kelaikanPersen || 0) + '%';
-    if (kpiSubSertifikat) {
-      kpiSubSertifikat.textContent = _data.kpi.sertifikatExpired + ' kedaluwarsa · ' + _data.kpi.sertifikatSegeraHabis + ' <= 90 hari';
-    }
+      categories.forEach(function (cat) {
+        var catObj = (_data.aknTerbaru && _data.aknTerbaru[cat]) ? _data.aknTerbaru[cat] : {};
+        var valPoa = catObj.AKN_POA !== undefined ? catObj.AKN_POA : (catObj.jumlah || 0);
+        var valKes = catObj.AKN_KESELURUHAN !== undefined ? catObj.AKN_KESELURUHAN : (catObj.total || 0);
+        var pct = valKes > 0 ? Math.round((valPoa / valKes) * 100) : 0;
+        if (pct > 100) pct = 100;
 
-    var kpiDilengkapi = document.getElementById('kpi-perlu-dilengkapi');
-    if (kpiDilengkapi) kpiDilengkapi.textContent = Format.number(_data.kpi.perluDilengkapi);
-
-    // 3. Komposisi AKN Table
-    var badgePeriode = document.getElementById('badge-akn-periode');
-    if (badgePeriode && _data.aknMeta) {
-      badgePeriode.textContent = 'Periode ' + (_data.aknMeta.periode || '--') + (_data.aknMeta.carried ? ' (Carry)' : '');
-    }
-
-    var tbodyAkn = document.querySelector('#table-ringkasan-akn tbody');
-    if (tbodyAkn && _data.aknTerbaru) {
-      var m = _data.aknTerbaru;
-      var labels = {
-        'PNS': 'Pegawai Negeri Sipil (PNS)',
-        'PPPK': 'PPPK',
-        'PPNPN': 'PPNPN',
-        'OUTSOURCING': 'Tenaga Alih Daya',
-        'KONTRAK': 'Kontrak / PJLP'
-      };
-      var rowsHtml = '';
-      ['PNS', 'PPPK', 'PPNPN', 'OUTSOURCING', 'KONTRAK'].forEach(function (k) {
-        var poa = (m.poa && m.poa[k]) || 0;
-        var tot = (m.keseluruhan && m.keseluruhan[k]) || 0;
-        rowsHtml +=
-          '<tr>' +
-            '<td>' + (labels[k] || k) + '</td>' +
-            '<td style="text-align:right; font-weight:600;">' + Format.number(poa) + '</td>' +
-            '<td style="text-align:right; font-weight:600;">' + Format.number(tot) + '</td>' +
-          '</tr>';
+        trackHtml +=
+          '<div class="track-row">' +
+            '<div class="track-head">' +
+              '<span class="track-label">' + (KATEGORI_LABELS[cat] || cat) + '</span>' +
+              '<span class="track-numbers mono tnum">' +
+                '<strong>' + Format.number(valPoa) + '</strong> / ' + Format.number(valKes) + ' (' + pct + '%)' +
+              '</span>' +
+            '</div>' +
+            '<div class="track-bar">' +
+              '<div class="track-fill" style="width:' + pct + '%;"></div>' +
+            '</div>' +
+          '</div>';
       });
-      tbodyAkn.innerHTML = rowsHtml;
+
+      trackListEl.innerHTML = trackHtml;
     }
 
-    // 4. Statistik Safe Manning
-    var stLaik = document.getElementById('stat-sijil-laik');
-    var stKurang = document.getElementById('stat-sijil-kurang');
-    var stKritis = document.getElementById('stat-sijil-kritis');
-    if (stLaik) stLaik.textContent = _data.sijilSummary.laikOperasi;
-    if (stKurang) stKurang.textContent = _data.sijilSummary.kurangAwak;
-    if (stKritis) stKritis.textContent = _data.sijilSummary.kritis;
+    var rasioTotalEl = document.getElementById('ringkasan-total-rasio');
+    if (rasioTotalEl) {
+      var totPoa = _data.kpi.totalAknPoa || 0;
+      var totKes = _data.kpi.totalAknKeseluruhan || 1;
+      var totalPct = ((totPoa / totKes) * 100).toFixed(1);
+      rasioTotalEl.textContent = 'Pusat ' + totalPct + '% (' + Format.number(totPoa) + ' personil)';
+    }
 
-    // 5. Antrean Sertifikat Mendesak Table
-    var tbodySertifikat = document.querySelector('#table-ringkasan-sertifikat tbody');
+    // 4. Antrean Tindak Lanjut Sertifikasi Table
+    var tbodySertifikat = document.getElementById('tbody-ringkasan-sertifikat');
     if (tbodySertifikat) {
       var antrean = _data.antreanSertifikatUrgent || [];
       if (antrean.length === 0) {
-        tbodySertifikat.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted); padding:20px;">Tidak ada sertifikat kedaluwarsa atau segera habis.</td></tr>';
+        tbodySertifikat.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:24px; color:var(--muted);">Seluruh sertifikat kepelautan personil aktif dan berlaku.</td></tr>';
       } else {
-        tbodySertifikat.innerHTML = antrean.map(function (it) {
-          var bClass = it.status === 'KEDALUWARSA' ? 'badge-danger' : 'badge-warning';
+        tbodySertifikat.innerHTML = antrean.map(function (s) {
+          var nama = s.namaAwak || s.nama || 'Awak Kapal';
+          var bg = Format.avatarBg(nama);
+          var inis = Format.initials(nama);
+          var namaPel = s.namaPelatihan || s.jenisSertifikat || 'Sertifikat STCW-F';
+          var tgl = s.berlakuSampai || s.tanggalBerlaku || '';
+          var st = s.status || s.statusBerlaku || 'SEGERA_HABIS';
+
           return (
             '<tr>' +
               '<td>' +
-                '<div style="font-weight:500;">' + Format.escape(it.nama) + '</div>' +
-                '<div style="font-size:11px; color:var(--muted);">' + Format.escape(it.jabatan || '--') + '</div>' +
+                '<div style="display:flex; align-items:center; gap:8px;">' +
+                  '<div class="avatar mono" style="background-color:' + bg + '; width:28px; height:28px; font-size:11px;">' + inis + '</div>' +
+                  '<div>' +
+                    '<div class="cell-primary" style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(nama) + '</div>' +
+                    '<div style="font-size:11px; color:var(--muted);">' + Format.escape(s.jabatan || s.namaKapal || '-') + '</div>' +
+                  '</div>' +
+                '</div>' +
               '</td>' +
-              '<td>' + Format.escape(it.namaStandar || it.kodeStandar) + '</td>' +
               '<td>' +
-                '<div>' + Format.date(it.berlakuSampai) + '</div>' +
-                '<div style="font-size:11px; color:var(--muted);">' + (it.sisaHari < 0 ? 'Lewat ' + Math.abs(it.sisaHari) + ' hari' : it.sisaHari + ' hari lagi') + '</div>' +
+                '<div class="cell-primary" style="font-size:13px; font-weight:500; color:var(--text);">' + Format.escape(namaPel) + '</div>' +
+                '<div class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.escape(s.nomorSertifikat || s.sertifikatId || '-') + '</div>' +
               '</td>' +
-              '<td style="text-align:center;"><span class="badge ' + bClass + '">' + Format.escape(it.status) + '</span></td>' +
+              '<td>' +
+                '<div class="mono tnum" style="font-size:12px; color:var(--text);">' + Format.date(tgl) + '</div>' +
+                '<div style="font-size:11px;">' +
+                  (s.sisaHari < 0 ? '<span style="color:var(--negative); font-weight:500;">Lewat ' + Math.abs(s.sisaHari) + ' hari</span>' : '<span style="color:var(--warning); font-weight:500;">' + s.sisaHari + ' hari lagi</span>') +
+                '</div>' +
+              '</td>' +
+              '<td style="text-align:center;">' + Format.statusBadge(st === 'KEDALUWARSA' ? 'Kedaluwarsa' : 'Segera habis', st === 'KEDALUWARSA' ? 'negative' : 'warning') + '</td>' +
             '</tr>'
           );
         }).join('');
       }
     }
 
-    // 6. Log Kegiatan Terkini List
-    var kegListEl = document.getElementById('ringkasan-kegiatan-list');
-    if (kegListEl) {
+    // 5. Papan Sijil Ringkas Armada Table
+    var tbodySijil = document.getElementById('tbody-ringkasan-sijil');
+    if (tbodySijil) {
+      var kapalList = _data.sijilKapalRingkas || [];
+      if (kapalList.length === 0) {
+        tbodySijil.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Data kapal armada belum tersedia.</td></tr>';
+      } else {
+        tbodySijil.innerHTML = kapalList.map(function (k) {
+          var klsLabel = String(k.kelasKapal || '').replace('_', ' ');
+          var defisitHtml = (k.kekuranganKursi > 0)
+            ? '<span class="delta-down mono">-' + k.kekuranganKursi + ' kursi</span>'
+            : '<span style="color:var(--muted);" class="mono">0</span>';
+
+          return (
+            '<tr class="clickable" onclick="Router.navigate(\'sijil\')">' +
+              '<td>' +
+                '<div class="cell-primary">' + Format.escape(k.namaKapal) + '</div>' +
+                '<div class="cell-sub">' + Format.escape(k.pangkalanId) + '</div>' +
+              '</td>' +
+              '<td><span class="badge badge-neutral">' + Format.escape(klsLabel) + '</span></td>' +
+              '<td class="text-right mono tnum">' + (k.kebutuhanMinimum || 0) + '</td>' +
+              '<td class="text-right mono tnum"><strong>' + (k.jumlahAwakBertugas || 0) + '</strong></td>' +
+              '<td class="text-right">' + defisitHtml + '</td>' +
+              '<td class="text-center">' + Format.statusBadge(k.statusOperasi) + '</td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+    }
+
+    // 6. Agenda Kegiatan Terkini Container
+    var kegContainer = document.getElementById('ringkasan-kegiatan-container');
+    if (kegContainer) {
       var kegiatan = _data.kegiatanTerbaru || [];
       if (kegiatan.length === 0) {
-        kegListEl.innerHTML = '<div style="color:var(--muted); font-size:12px; padding:10px 0;">Belum ada log agenda kegiatan.</div>';
+        kegContainer.innerHTML = '<div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Belum ada agenda kegiatan pengawakan tercatat.</div>';
       } else {
-        kegListEl.innerHTML = kegiatan.map(function (k) {
+        kegContainer.innerHTML = kegiatan.map(function (kg) {
           return (
-            '<div style="border-bottom:1px solid var(--border); padding-bottom:8px;">' +
-              '<div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:2px;">' +
-                '<span>' + Format.date(k.tanggalMulai) + '</span>' +
-                '<span>' + Format.escape(k.jenisKegiatan) + '</span>' +
+            '<div style="padding:10px 12px; border:1px solid var(--rule); border-radius:var(--radius-control); background-color:var(--ground);">' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:11px; color:var(--muted);">' +
+                '<span class="mono tnum">' + Format.date(kg.tanggalMulai) + '</span>' +
+                '<span class="badge badge-neutral">' + Format.escape(kg.jenisKegiatan) + '</span>' +
               '</div>' +
-              '<div style="font-size:12px; font-weight:500; color:var(--text); line-height:1.4;">' + Format.escape(k.namaKegiatan) + '</div>' +
+              '<div style="font-size:13px; font-weight:500; color:var(--text); line-height:1.4;">' +
+                Format.escape(kg.judulKegiatan) +
+              '</div>' +
+              '<div style="font-size:11px; color:var(--muted); margin-top:4px;">' +
+                Format.escape(kg.wilayah) + ' · ' + Format.number(kg.jumlahPeserta) + ' peserta' +
+              '</div>' +
             '</div>'
           );
         }).join('');
@@ -192,4 +290,3 @@ var RingkasanView = (function () {
   };
 })();
 </script>
-

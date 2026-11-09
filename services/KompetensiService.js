@@ -12,12 +12,16 @@
 function kom_getDashboard(token) {
   try {
     var session = _requireSession(token);
+    if (typeof dir_ensureSeeded === 'function') dir_ensureSeeded();
     kom_ensureStandarSeeded();
+    kom_ensureSertifikatSeeded();
 
     var sheetSrt = openAwakSheet(SHEET_AWAK.PELATIHAN_AWAK);
     var rowsSrt = sheetToObjects(sheetSrt);
     var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
     var rowsAwak = sheetToObjects(sheetAwak);
+    var sheetStd = openAwakSheet(SHEET_AWAK.MASTER_STANDAR_PELATIHAN);
+    var rowsStd = sheetToObjects(sheetStd);
 
     var awakMap = {};
     rowsAwak.forEach(function (a) {
@@ -28,14 +32,20 @@ function kom_getDashboard(token) {
     var countSegeraHabis = 0;
     var countKedaluwarsa = 0;
     var antrean = [];
+    var certByPegawai = {};
 
     var now = new Date();
 
     rowsSrt.forEach(function (s) {
       if (String(s.Status || '').toUpperCase() !== ROW_STATUS.ACTIVE) return;
 
+      var pegId = String(s.PegawaiID || '');
+      var kd = String(s.KodePelatihan || '');
+      if (!certByPegawai[pegId]) certByPegawai[pegId] = {};
+      certByPegawai[pegId][kd] = s;
+
       var evalRes = evaluateSertifikatStatus(s, now);
-      var peg = awakMap[String(s.PegawaiID || '')] || {};
+      var peg = awakMap[pegId] || {};
 
       if (evalRes.status === CERT_STATUS.BERLAKU) {
         countBerlaku++;
@@ -44,10 +54,11 @@ function kom_getDashboard(token) {
         countBerlaku++;
         antrean.push({
           rowId: String(s.RowID || ''),
-          pegawaiId: String(s.PegawaiID || ''),
-          namaAwak: String(peg.Nama || s.PegawaiID),
+          pegawaiId: pegId,
+          namaAwak: String(peg.Nama || pegId),
           jabatan: String(peg.JabatanLengkap || peg.KelompokJabatan || '-'),
-          kodePelatihan: String(s.KodePelatihan || ''),
+          kelompokJabatan: String(peg.KelompokJabatan || '-'),
+          kodePelatihan: kd,
           namaPelatihan: String(s.NamaPelatihan || ''),
           nomorSertifikat: String(s.NomorSertifikat || '-'),
           berlakuSampai: String(s.BerlakuSampai || ''),
@@ -60,10 +71,11 @@ function kom_getDashboard(token) {
         countKedaluwarsa++;
         antrean.push({
           rowId: String(s.RowID || ''),
-          pegawaiId: String(s.PegawaiID || ''),
-          namaAwak: String(peg.Nama || s.PegawaiID),
+          pegawaiId: pegId,
+          namaAwak: String(peg.Nama || pegId),
           jabatan: String(peg.JabatanLengkap || peg.KelompokJabatan || '-'),
-          kodePelatihan: String(s.KodePelatihan || ''),
+          kelompokJabatan: String(peg.KelompokJabatan || '-'),
+          kodePelatihan: kd,
           namaPelatihan: String(s.NamaPelatihan || ''),
           nomorSertifikat: String(s.NomorSertifikat || '-'),
           berlakuSampai: String(s.BerlakuSampai || ''),
@@ -75,19 +87,47 @@ function kom_getDashboard(token) {
       }
     });
 
+    // Hitung jumlah awak yang wajib kompetensinya 100% lengkap
+    var stdByJabatan = {};
+    rowsStd.forEach(function (std) {
+      var jab = String(std.KelompokJabatan || '');
+      if (!stdByJabatan[jab]) stdByJabatan[jab] = [];
+      if (std.Wajib === true || String(std.Wajib).toLowerCase() === 'true') {
+        stdByJabatan[jab].push(std);
+      }
+    });
+
+    var awakLengkap = 0;
+    rowsAwak.forEach(function (a) {
+      var pegId = String(a.PegawaiID || '');
+      var matchedJab = _normalizeJabatanStandar(String(a.KelompokJabatan || ''));
+      var stds = stdByJabatan[matchedJab] || [];
+      var sMap = certByPegawai[pegId] || {};
+      var kelaikan = calculateKelaikanKompetensi(stds, sMap, now);
+      if (kelaikan.isLaik && stds.length > 0) {
+        awakLengkap++;
+      }
+    });
+
     // Urutkan antrean tindak lanjut: sisaHari terkecil (paling mendesak/expired) di atas
     antrean.sort(function (a, b) {
       return (a.sisaHari || 0) - (b.sisaHari || 0);
     });
 
+    var totalActive = rowsSrt.filter(function (s) { return String(s.Status || '').toUpperCase() === ROW_STATUS.ACTIVE; }).length;
+    var kelaikanPersen = totalActive > 0 ? Math.round((countBerlaku / totalActive) * 100) : 100;
+
     return {
       success: true,
       data: {
         metrics: {
-          totalTercatat: rowsSrt.filter(function (s) { return String(s.Status || '').toUpperCase() === ROW_STATUS.ACTIVE; }).length,
+          totalTercatat: totalActive,
           berlaku: countBerlaku,
           segeraHabis: countSegeraHabis,
-          kedaluwarsa: countKedaluwarsa
+          kedaluwarsa: countKedaluwarsa,
+          awakLengkap: awakLengkap,
+          totalAwak: rowsAwak.length,
+          kelaikanPersen: kelaikanPersen
         },
         antrean: antrean.slice(0, 50),
         userRole: session.role
@@ -113,7 +153,9 @@ function kom_listAwakKompetensi(params) {
   try {
     var p = params || {};
     var session = _requireSession(p.token);
+    if (typeof dir_ensureSeeded === 'function') dir_ensureSeeded();
     kom_ensureStandarSeeded();
+    kom_ensureSertifikatSeeded();
 
     var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
     var rowsAwak = sheetToObjects(sheetAwak);
@@ -441,6 +483,89 @@ function kom_ensureStandarSeeded() {
     }
   } catch (e) {
     Logger.log('[kom_ensureStandarSeeded] ' + e.message);
+  }
+}
+
+/**
+ * Seeding otomatis rekaman awal sertifikat STCW-F ke TX_Pelatihan_Awak jika kosong.
+ */
+function kom_ensureSertifikatSeeded() {
+  try {
+    var sheetSrt = openAwakSheet(SHEET_AWAK.PELATIHAN_AWAK);
+    if (sheetSrt.getLastRow() > 1) return;
+
+    var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+    var rowsAwak = sheetToObjects(sheetAwak);
+    if (rowsAwak.length === 0) return;
+
+    var sheetStd = openAwakSheet(SHEET_AWAK.MASTER_STANDAR_PELATIHAN);
+    var rowsStd = sheetToObjects(sheetStd);
+    if (rowsStd.length === 0) return;
+
+    var stdByJab = {};
+    rowsStd.forEach(function (s) {
+      var jab = String(s.KelompokJabatan || '');
+      if (!stdByJab[jab]) stdByJab[jab] = [];
+      if (s.Wajib === true || String(s.Wajib).toLowerCase() === 'true') {
+        stdByJab[jab].push(s);
+      }
+    });
+
+    var now = new Date();
+    var periode = getCurrentPeriode();
+    var sampleAwak = rowsAwak.slice(0, 18);
+    var urgentOffsets = [-34, -18, -9, -4, 12, 21, 28, 39, 47, 56, 64, 72, 81, 88];
+    var uIdx = 0;
+
+    sampleAwak.forEach(function (awk, idx) {
+      var pegId = String(awk.PegawaiID || '');
+      var jab = _normalizeJabatanStandar(String(awk.KelompokJabatan || ''));
+      var wajibList = stdByJab[jab] || [];
+
+      // 6 personil pertama memiliki seluruh sertifikat wajib lengkap & berlaku
+      var listToSeed = idx < 6 ? wajibList : wajibList.slice(0, Math.min(3, wajibList.length));
+
+      listToSeed.forEach(function (std, sIdx) {
+        var expDays = 620 + (idx * 17) + (sIdx * 30);
+        if (idx >= 6 && sIdx === 0 && uIdx < urgentOffsets.length) {
+          expDays = urgentOffsets[uIdx++];
+        }
+        var expDate = new Date(now.getTime() + expDays * 86400000);
+        var issDate = new Date(expDate.getTime() - (5 * 365 * 86400000));
+        var tglTerbit = Utilities.formatDate(issDate, 'GMT+7', 'yyyy-MM-dd');
+        var tglExp = Utilities.formatDate(expDate, 'GMT+7', 'yyyy-MM-dd');
+        var masaBln = parseInt(std.MasaBerlakuBulan, 10) || 0;
+        if (masaBln === 0) tglExp = '';
+
+        var rId = 'AWAK-SRT-SEED-' + String(idx + 1) + '-' + String(sIdx + 1);
+        var noSert = '620/' + String(1000 + idx * 10 + sIdx) + '/STCW-F/KKP/2023';
+
+        appendRowData(sheetSrt, {
+          'RowID': rId,
+          'DivisiID': DIVISI_ID.AWAK,
+          'Periode': periode,
+          'SubmittedBy': 'SYSTEM_SEED',
+          'Timestamp': now,
+          'Status': ROW_STATUS.ACTIVE,
+          'SupersedesRowID': '',
+          'VoidReason': '',
+          'VoidedBy': '',
+          'VoidedAt': '',
+          'PegawaiID': pegId,
+          'KodePelatihan': String(std.KodePelatihan || ''),
+          'NamaPelatihan': String(std.NamaPelatihan || ''),
+          'StatusKelulusan': 'SUDAH_LULUS',
+          'NomorSertifikat': noSert,
+          'TahunPelatihan': parseInt(tglTerbit.substring(0, 4), 10) || 2023,
+          'TanggalTerbit': tglTerbit,
+          'BerlakuSampai': tglExp,
+          'PenerbitLembaga': 'BP3IP / BPPP Tegal KKP',
+          'EvidenceID': ''
+        });
+      });
+    });
+  } catch (e) {
+    Logger.log('[kom_ensureSertifikatSeeded] ' + e.message);
   }
 }
 

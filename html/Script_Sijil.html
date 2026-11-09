@@ -1,52 +1,63 @@
 <script>
 /**
  * html/Script_Sijil.html
- * Controller Klien Sub-Modul E: Penugasan Kapal & Papan Sijil (Safe Manning)
+ * Controller Klien Sub-Modul E: Penugasan Kapal & Matriks Papan Sijil 2D Safe Manning (DESIGN.md §8.1).
  * Nakhoda — Timja Pengawakan Dit. POA KKP RI
  */
 var SijilView = (function () {
   'use strict';
 
   var _currentKapalId = '';
-  var _userRole = '';
+  var _data = null;
+  var _eventsBound = false;
+
+  var KELAS_GROUPS = [
+    { key: 'KELAS_I', label: 'Kapal Pengawas Kelas I (Panjang > 60 meter / ZEE)' },
+    { key: 'KELAS_II', label: 'Kapal Pengawas Kelas II (Panjang 40 - 60 meter)' },
+    { key: 'KELAS_III', label: 'Kapal Pengawas Kelas III (Panjang 28 - 40 meter)' },
+    { key: 'KELAS_IV', label: 'Kapal Pengawas Kelas IV (Panjang 18 - 28 meter)' },
+    { key: 'KELAS_V', label: 'Speedboat Pengawas Kelas V (Reaksi Cepat)' }
+  ];
 
   function init() {
-    var outlet = document.getElementById('outlet-content');
-    var viewTemplate = document.getElementById('view-sijil');
-    if (viewTemplate && outlet) {
-      outlet.innerHTML = viewTemplate.outerHTML;
-      var activeView = outlet.querySelector('#view-sijil');
-      if (activeView) activeView.classList.remove('hidden');
-    }
-
     _bindEvents();
     load();
   }
 
   function _bindEvents() {
+    if (_eventsBound) return;
+    _eventsBound = true;
+
     var btnRefresh = document.getElementById('btn-sijil-refresh');
     var filterKelas = document.getElementById('sijil-filter-kelas');
     var filterStatus = document.getElementById('sijil-filter-status');
     var searchInput = document.getElementById('sijil-search-input');
     var btnSearch = document.getElementById('btn-sijil-search');
-    var btnAssignNew = document.getElementById('btn-sijil-assign-new');
+    var btnQuickAssign = document.getElementById('btn-sijil-quick-assign');
+    var btnSheetAdd = document.getElementById('btn-sheet-add-awak');
     var formAssign = document.getElementById('form-sijil-assign');
 
     if (btnRefresh) {
       btnRefresh.onclick = function () { load(); };
     }
-    if (filterKelas) filterKelas.onchange = function () { load(); };
-    if (filterStatus) filterStatus.onchange = function () { load(); };
-    if (btnSearch) btnSearch.onclick = function () { load(); };
+    if (filterKelas) filterKelas.onchange = function () { _renderMatrixTable(); };
+    if (filterStatus) filterStatus.onchange = function () { _renderMatrixTable(); };
+    if (btnSearch) btnSearch.onclick = function () { _renderMatrixTable(); };
     if (searchInput) {
       searchInput.onkeydown = function (e) {
-        if (e.key === 'Enter') load();
+        if (e.key === 'Enter') _renderMatrixTable();
       };
     }
 
-    if (btnAssignNew) {
-      btnAssignNew.onclick = function () {
-        _openAssignModal(_currentKapalId);
+    if (btnQuickAssign) {
+      btnQuickAssign.onclick = function () {
+        openAssignModal('');
+      };
+    }
+
+    if (btnSheetAdd) {
+      btnSheetAdd.onclick = function () {
+        openAssignModal(_currentKapalId);
       };
     }
 
@@ -64,28 +75,73 @@ var SijilView = (function () {
 
     rpc('sijil_getPapanArmada', token)
       .then(function (res) {
-        _userRole = res.userRole;
+        _data = res;
 
-        // Update Kartu Metrik
+        // 1. Update KPI Strip
+        var mTot = document.getElementById('metric-sijil-total-kapal');
         var mLaik = document.getElementById('metric-sijil-laik');
         var mKur = document.getElementById('metric-sijil-kurang');
-        var mLaut = document.getElementById('metric-sijil-awak-laut');
-        var mTot = document.getElementById('metric-sijil-total-kapal');
+        var mDef = document.getElementById('metric-sijil-defisit-kursi');
+        var mKurSub = document.getElementById('metric-sijil-kurang-sub');
+        var mAwakSub = document.getElementById('metric-sijil-awak-laut-sub');
+        var findingEl = document.getElementById('sijil-finding-sub');
 
-        if (mLaik) mLaik.textContent = Format.number(res.metrics.laikOperasi);
-        if (mKur) mKur.textContent = Format.number(res.metrics.kurangAwak);
-        if (mLaut) mLaut.textContent = Format.number(res.metrics.totalAwakBertugas);
-        if (mTot) mTot.textContent = Format.number(res.metrics.totalKapal);
+        var totKapal = res.metrics.totalKapal || 0;
+        var laik = res.metrics.laikOperasi || 0;
+        var kurang = res.metrics.kurangAwak || 0;
+        var defisit = res.metrics.totalKekuranganKursi || 0;
+        var bertugas = res.metrics.totalAwakBertugas || 0;
 
-        _renderKapalTable(res.kapal || []);
+        if (mTot) mTot.textContent = Format.number(totKapal);
+        if (mLaik) mLaik.textContent = Format.number(laik);
+        if (mKur) mKur.textContent = Format.number(kurang);
+        if (mDef) mDef.textContent = Format.number(defisit);
+
+        if (mKurSub) {
+          mKurSub.textContent = kurang > 0 ? (res.metrics.kritis + ' kapal berstatus kritis <= -2') : 'Seluruh kapal siap operasi';
+        }
+        if (mAwakSub) {
+          mAwakSub.textContent = 'Awak bertugas di laut: ' + Format.number(bertugas) + ' personil';
+        }
+
+        if (findingEl) {
+          findingEl.textContent = kurang > 0
+            ? ('Terdapat ' + kurang + ' kapal pengawas dengan kekurangan formasi (' + defisit + ' kursi kosong dari standar Safe Manning Kepmen KP); ' + laik + ' kapal memenuhi formasi siap laik operasi.')
+            : ('Seluruh ' + totKapal + ' kapal pengawas armada Ditjen PSDKP memenuhi standar formasi Safe Manning Kepmen KP.');
+        }
+
+        // 2. Render Matriks 2D Table
+        _renderMatrixTable();
       })
       .catch(function (err) {
         Toast.error('Gagal memuat papan sijil armada: ' + err.message);
       });
   }
 
-  function _renderKapalTable(kapalList) {
-    var tbody = document.getElementById('sijil-kapal-tbody');
+  function _renderDevCell(colObj) {
+    if (!colObj) {
+      return '<span class="sijil-cell sijil-cell-na mono">-</span>';
+    }
+    var min = colObj.min !== undefined ? colObj.min : colObj.req;
+    if (min === 0) {
+      return '<span class="sijil-cell sijil-cell-na mono">-</span>';
+    }
+    var sel = colObj.selisih !== undefined ? colObj.selisih : (colObj.dev !== undefined ? colObj.dev : 0);
+    if (sel <= -2) {
+      return '<span class="sijil-cell sijil-cell-crit mono">' + sel + '</span>';
+    } else if (sel === -1) {
+      return '<span class="sijil-cell sijil-cell-warn mono">-1</span>';
+    } else if (sel > 0) {
+      return '<span class="sijil-cell sijil-cell-plus mono">+' + sel + '</span>';
+    } else {
+      return '<span class="sijil-cell sijil-cell-ok mono">0</span>';
+    }
+  }
+
+  function _renderMatrixTable() {
+    if (!_data || !_data.kapal) return;
+
+    var tbody = document.getElementById('sijil-2d-matrix-tbody');
     if (!tbody) return;
 
     var filterKls = (document.getElementById('sijil-filter-kelas') || {}).value || '';
@@ -93,7 +149,7 @@ var SijilView = (function () {
     var searchStr = (document.getElementById('sijil-search-input') || {}).value || '';
     searchStr = searchStr.toLowerCase().trim();
 
-    var filtered = kapalList.filter(function (k) {
+    var filtered = _data.kapal.filter(function (k) {
       if (filterKls && k.kelasKapal !== filterKls) return false;
       if (filterSts && k.statusOperasi !== filterSts) return false;
       if (searchStr) {
@@ -108,168 +164,291 @@ var SijilView = (function () {
     if (countInfo) countInfo.textContent = filtered.length + ' kapal cocok';
 
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada kapal pengawas yang cocok dengan kriteria pencarian.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada kapal pengawas yang cocok dengan kriteria pencarian.</td></tr>';
       return;
     }
 
+    function _normKelasKey(val) {
+      var s = String(val || '').toUpperCase().replace(/[\s-]+/g, '_');
+      if (s === 'KELAS_1') s = 'KELAS_I';
+      if (s === 'KELAS_2') s = 'KELAS_II';
+      if (s === 'KELAS_3') s = 'KELAS_III';
+      if (s === 'KELAS_4') s = 'KELAS_IV';
+      if (s === 'KELAS_5') s = 'KELAS_V';
+      return s;
+    }
+
     var html = '';
-    filtered.forEach(function (k) {
-      var isLaik = k.statusOperasi === 'LAIK_OPERASI';
-      var badgeHtml = isLaik
-        ? '<span class="badge badge-success">Siap Laik</span>'
-        : '<span class="badge badge-danger">Kurang Awak</span>';
+    var handledIds = {};
 
-      var pct = k.persenTerisi;
-      var barColor = isLaik ? 'var(--success)' : (pct >= 70 ? 'var(--warning)' : 'var(--danger)');
+    // Kelompokkan baris berdasarkan Kelas I–V
+    KELAS_GROUPS.forEach(function (grp) {
+      var inGroup = filtered.filter(function (k) { return _normKelasKey(k.kelasKapal) === grp.key; });
+      if (inGroup.length === 0) return;
 
-      html += '<tr>' +
-        '<td>' +
-          '<div style="font-weight:600; font-size:13px; color:var(--text);">' + Format.escape(k.namaKapal) + '</div>' +
-          '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">' + k.kapalId + '</div>' +
-        '</td>' +
-        '<td><span class="badge badge-muted">' + Format.escape(k.kelasKapal.replace(/_/g, ' ')) + '</span></td>' +
-        '<td style="font-size:12px; color:var(--text);">' + Format.escape(k.pangkalanId) + '</td>' +
-        '<td>' +
-          '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<div style="flex:1; height:6px; background:#ECEEEF; overflow:hidden;">' +
-              '<div style="width:' + Math.min(100, pct) + '%; height:100%; background-color:' + barColor + ';"></div>' +
-            '</div>' +
-            '<span style="font-size:12px; font-weight:700; font-family:var(--font-mono); color:' + barColor + ';">' + k.jumlahAwakBertugas + ' / ' + k.kebutuhanMinimum + '</span>' +
-          '</div>' +
-          (k.evaluasi.defisitPosisi.length > 0
-            ? '<div style="font-size:11px; color:var(--danger); margin-top:2px;">Posisi kurang: ' + Format.escape(k.evaluasi.defisitPosisi.slice(0, 2).join(', ')) + '</div>'
-            : '<div style="font-size:11px; color:var(--success); margin-top:2px;">Formasi lengkap sesuai Safe Manning</div>') +
-        '</td>' +
-        '<td style="text-align:center;">' + badgeHtml + '</td>' +
-        '<td style="text-align:center;">' +
-          '<button class="btn btn-secondary-sm btn-sijil-detail" data-id="' + k.kapalId + '">Papan Sijil</button>' +
-        '</td>' +
-      '</tr>';
+      html +=
+        '<tr class="sijil-group-row">' +
+          '<td colspan="14">' + Format.escape(grp.label) + ' (' + inGroup.length + ' kapal)</td>' +
+        '</tr>';
+
+      inGroup.forEach(function (k) {
+        handledIds[k.kapalId] = true;
+        var mCols = k.matrixCols || k.positions || {};
+        var defisitHtml = (k.kekuranganKursi > 0)
+          ? '<span class="delta-down mono">-' + k.kekuranganKursi + '</span>'
+          : '<span style="color:var(--muted);" class="mono">0</span>';
+
+        html +=
+          '<tr class="clickable" data-id="' + k.kapalId + '">' +
+            '<td>' +
+              '<div class="cell-primary">' + Format.escape(k.namaKapal) + '</div>' +
+              '<div class="cell-sub mono">' + k.kapalId + '</div>' +
+            '</td>' +
+            '<td style="color:var(--muted); font-size:12px;">' + Format.escape(k.pangkalanId) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.nakhoda) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.mualim) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.kkm) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.masinis) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.markonis) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.serang) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.juruMudi) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.kelasi) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.juruMinyak) + '</td>' +
+            '<td class="text-right mono tnum">' + k.jumlahAwakBertugas + ' / ' + k.kebutuhanMinimum + '</td>' +
+            '<td class="text-right">' + defisitHtml + '</td>' +
+            '<td class="text-center">' + Format.statusBadge(k.statusOperasi) + '</td>' +
+          '</tr>';
+      });
     });
+
+    // Baris sisa (jika ada kapal yang belum masuk grup di atas)
+    var remaining = filtered.filter(function (k) { return !handledIds[k.kapalId]; });
+    if (remaining.length > 0) {
+      html += '<tr class="sijil-group-row"><td colspan="14">Armada Kapal Lainnya (' + remaining.length + ' kapal)</td></tr>';
+      remaining.forEach(function (k) {
+        var mCols = k.matrixCols || k.positions || {};
+        var defisitHtml = (k.kekuranganKursi > 0)
+          ? '<span class="delta-down mono">-' + k.kekuranganKursi + '</span>'
+          : '<span style="color:var(--muted);" class="mono">0</span>';
+
+        html +=
+          '<tr class="clickable" data-id="' + k.kapalId + '">' +
+            '<td>' +
+              '<div class="cell-primary">' + Format.escape(k.namaKapal) + '</div>' +
+              '<div class="cell-sub mono">' + k.kapalId + '</div>' +
+            '</td>' +
+            '<td style="color:var(--muted); font-size:12px;">' + Format.escape(k.pangkalanId) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.nakhoda) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.mualim) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.kkm) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.masinis) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.markonis) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.serang) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.juruMudi) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.kelasi) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.juruMinyak) + '</td>' +
+            '<td class="text-right mono tnum">' + k.jumlahAwakBertugas + ' / ' + k.kebutuhanMinimum + '</td>' +
+            '<td class="text-right">' + defisitHtml + '</td>' +
+            '<td class="text-center">' + Format.statusBadge(k.statusOperasi) + '</td>' +
+          '</tr>';
+      });
+    }
 
     tbody.innerHTML = html;
 
-    tbody.querySelectorAll('.btn-sijil-detail').forEach(function (btn) {
-      btn.onclick = function () {
-        _openDetailModal(btn.getAttribute('data-id'));
+    // Pasang click listener di seluruh baris tabel
+    tbody.querySelectorAll('tr.clickable[data-id]').forEach(function (tr) {
+      tr.onclick = function () {
+        var id = tr.getAttribute('data-id');
+        openKapalSheet(id);
       };
     });
   }
 
-  function _openDetailModal(kapalId) {
-    _currentKapalId = kapalId;
+  function openKapalSheet(kapalId) {
     var token = AuthApp.getToken();
+    if (!token) return;
+
+    _currentKapalId = kapalId;
+    Sheet.open('sheet-sijil-panel', 'sheet-sijil-overlay');
+
+    var nameEl = document.getElementById('sheet-sijil-nama-kapal');
+    if (nameEl) nameEl.textContent = 'Memuat formasi ' + kapalId + '...';
 
     rpc('sijil_getDetailKapal', token, kapalId)
       .then(function (res) {
-        document.getElementById('sijil-detail-nama-kapal').textContent = res.namaKapal;
-        document.getElementById('sijil-detail-kelas').textContent = res.kelasKapal.replace(/_/g, ' ');
-        document.getElementById('sijil-detail-pangkalan').textContent = res.pangkalanId;
-
-        var stBadge = document.getElementById('sijil-detail-status-badge');
-        if (stBadge) {
-          stBadge.className = 'badge ' + (res.evaluasi.isLaikOperasi ? 'badge-success' : 'badge-danger');
-          stBadge.textContent = res.evaluasi.isLaikOperasi ? 'Siap Laik Operasi' : 'Kurang Awak';
-        }
-
-        var ratioEl = document.getElementById('sijil-detail-ratio');
-        if (ratioEl) {
-          ratioEl.textContent = res.evaluasi.totalTerisi + ' / ' + res.evaluasi.totalKebutuhan + ' Personil Terisi (' + res.evaluasi.persenTerisi + '%)';
-        }
-
-        // Render awak bertugas
-        var awakTbody = document.getElementById('sijil-awak-tbody');
-        if (awakTbody) {
-          if (!res.awakBertugas || res.awakBertugas.length === 0) {
-            awakTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted); padding:20px 0;">Belum ada personil yang ditempatkan di atas kapal ini.</td></tr>';
-          } else {
-            var aHtml = '';
-            res.awakBertugas.forEach(function (a) {
-              aHtml += '<tr>' +
-                '<td>' +
-                  '<div style="font-weight:600; font-size:12px; color:var(--text);">' + Format.escape(a.nama) + '</div>' +
-                  '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">' + a.nipDisplay + '</div>' +
-                '</td>' +
-                '<td><span class="badge badge-accent">' + Format.escape(a.posSijilLabel) + '</span></td>' +
-                '<td style="font-size:11px; font-family:var(--font-mono);">' + Format.date(a.tanggalNaik) + '</td>' +
-                '<td style="text-align:center;">' +
-                  '<button class="btn btn-secondary-sm btn-unassign-awak" data-row-id="' + a.rowId + '" data-peg-id="' + a.pegawaiId + '" data-nama="' + Format.escape(a.nama) + '">Turunkan</button>' +
-                '</td>' +
-              '</tr>';
-            });
-            awakTbody.innerHTML = aHtml;
-
-            awakTbody.querySelectorAll('.btn-unassign-awak').forEach(function (btn) {
-              btn.onclick = function () {
-                var rId = btn.getAttribute('data-row-id');
-                var pId = btn.getAttribute('data-peg-id');
-                var nm = btn.getAttribute('data-nama');
-                _unassignAwak(rId, pId, nm);
-              };
-            });
-          }
-        }
-
-        // Render kebutuhan Safe Manning
-        var manTbody = document.getElementById('sijil-manning-tbody');
-        if (manTbody) {
-          var mHtml = '';
-          res.evaluasi.posisiRincian.forEach(function (pr) {
-            var isOk = pr.status === 'TERPENUHI';
-            mHtml += '<tr>' +
-              '<td style="font-weight:500;">' + Format.escape(pr.posSijil.replace(/_/g, ' ')) + '</td>' +
-              '<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">' + pr.minimum + '</td>' +
-              '<td style="text-align:right; font-family:var(--font-mono); font-weight:600; color:' + (isOk ? 'var(--text)' : 'var(--danger)') + ';">' + pr.terisi + '</td>' +
-              '<td style="text-align:center;">' +
-                (isOk ? '<span class="badge badge-success">Terpenuhi</span>' : '<span class="badge badge-danger">Kurang ' + pr.kurang + '</span>') +
-              '</td>' +
-            '</tr>';
-          });
-          manTbody.innerHTML = mHtml;
-        }
-
-        Modal.open('modal-sijil-detail');
+        _renderSheetDetail(res);
       })
       .catch(function (err) {
-        Toast.error('Gagal memuat detail papan sijil: ' + err.message);
+        Toast.error('Gagal memuat detail kapal: ' + err.message);
       });
   }
 
-  function _openAssignModal(kapalId) {
-    document.getElementById('sijil-assign-kapal-id').value = kapalId;
-    document.getElementById('sijil-assign-tgl-naik').value = new Date().toISOString().substring(0, 10);
-    document.getElementById('sijil-assign-keterangan').value = '';
+  function _renderSheetDetail(d) {
+    if (!d) return;
 
-    // Ambil daftar awak dari direktori untuk isi dropdown
-    var token = AuthApp.getToken();
-    var selectAwak = document.getElementById('sijil-assign-pegawai');
-    selectAwak.innerHTML = '<option value="">Memuat direktori awak...</option>';
+    var nameEl = document.getElementById('sheet-sijil-nama-kapal');
+    var badgeKelas = document.getElementById('sheet-sijil-badge-kelas');
+    var statusBadge = document.getElementById('sheet-sijil-status-badge');
+    var pangkalanEl = document.getElementById('sheet-sijil-pangkalan');
+    var ratioText = document.getElementById('sheet-sijil-ratio-text');
+    var ratioBar = document.getElementById('sheet-sijil-ratio-bar');
+    var listAwak = document.getElementById('sheet-sijil-awak-list');
+    var tbodyManning = document.getElementById('sheet-sijil-manning-tbody');
 
-    rpc('dir_list', { token: token, limit: 400, offset: 0 })
-      .then(function (res) {
-        var optHtml = '<option value="">-- Pilih dari Direktori Awak (' + (res.items || []).length + ' Personil) --</option>';
-        (res.items || []).forEach(function (a) {
-          var statusKapal = a.kapalId && a.kapalId !== '-' ? ' [di ' + a.kapalId + ']' : '';
-          optHtml += '<option value="' + a.pegawaiId + '">' + Format.escape(a.nama) + ' (' + a.kelompokJabatan + ')' + statusKapal + '</option>';
+    if (nameEl) nameEl.textContent = d.namaKapal || d.kapalId;
+    if (badgeKelas) badgeKelas.textContent = String(d.kelasKapal || 'Kelas II').replace(/_/g, ' ');
+    if (statusBadge) {
+      var isLaik = d.evaluasi.isLaikOperasi;
+      statusBadge.textContent = isLaik ? 'Siap laik operasi' : 'Kurang awak';
+      statusBadge.className = isLaik ? 'pill pill-positive' : 'pill pill-negative';
+    }
+    if (pangkalanEl) pangkalanEl.textContent = d.pangkalanId || '-';
+
+    var terisi = d.evaluasi.totalTerisi || 0;
+    var butuh = d.evaluasi.totalKebutuhan || 0;
+    var pct = butuh > 0 ? Math.round((terisi / butuh) * 100) : 100;
+
+    if (ratioText) ratioText.textContent = terisi + ' / ' + butuh + ' (' + pct + '%)';
+    if (ratioBar) ratioBar.style.width = Math.min(100, pct) + '%';
+
+    // 1. Render Daftar Awak Aktif Naik Kapal
+    if (listAwak) {
+      var awakList = d.awakBertugas || [];
+      if (awakList.length === 0) {
+        listAwak.innerHTML = '<div style="padding:18px; text-align:center; color:var(--muted); font-size:12px;">Belum ada awak bertugas di kapal ini.</div>';
+      } else {
+        listAwak.innerHTML = awakList.map(function (a) {
+          var bg = Format.avatarBg(a.nama);
+          var inis = Format.initials(a.nama);
+          var posLabel = String(a.posSijil || '').replace(/_/g, ' ');
+
+          return (
+            '<div style="padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-control); background-color:var(--surface); display:flex; justify-content:space-between; align-items:center;">' +
+              '<div style="display:flex; align-items:center; gap:10px;">' +
+                '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
+                '<div>' +
+                  '<div class="cell-primary">' + Format.escape(a.nama) + '</div>' +
+                  '<div class="cell-sub"><strong style="color:var(--accent);">' + Format.escape(posLabel) + '</strong> · Naik: ' + Format.date(a.tanggalNaik) + '</div>' +
+                '</div>' +
+              '</div>' +
+              '<button type="button" class="btn btn-danger-sm btn-unassign" data-row="' + a.rowId + '" data-peg="' + a.pegawaiId + '" data-nama="' + Format.escape(a.nama) + '">Turunkan</button>' +
+            '</div>'
+          );
+        }).join('');
+
+        listAwak.querySelectorAll('.btn-unassign').forEach(function (btn) {
+          btn.onclick = function () {
+            var rId = btn.getAttribute('data-row');
+            var pId = btn.getAttribute('data-peg');
+            var nama = btn.getAttribute('data-nama');
+            _confirmUnassign(rId, pId, nama);
+          };
         });
-        selectAwak.innerHTML = optHtml;
-        Modal.open('modal-sijil-assign');
+      }
+    }
+
+    // 2. Render Tabel Standar Safe Manning
+    if (tbodyManning) {
+      var rincian = (d.evaluasi && d.evaluasi.posisiRincian) ? d.evaluasi.posisiRincian : [];
+      if (rincian.length === 0) {
+        tbodyManning.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:16px; color:var(--muted);">Standar safe manning tidak ditemukan.</td></tr>';
+      } else {
+        tbodyManning.innerHTML = rincian.map(function (r) {
+          var isOk = r.status === 'TERPENUHI';
+          return (
+            '<tr>' +
+              '<td>' + Format.escape(r.posSijil.replace(/_/g, ' ')) + '</td>' +
+              '<td class="text-right mono tnum">' + r.minimum + '</td>' +
+              '<td class="text-right mono tnum" style="font-weight:600;">' + r.terisi + '</td>' +
+              '<td class="text-center">' +
+                (isOk ? '<span class="pill pill-positive"><span class="pill-dot"></span>Sesuai</span>' : '<span class="pill pill-negative"><span class="pill-dot"></span>Kurang ' + r.kurang + '</span>') +
+              '</td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+    }
+  }
+
+  function _confirmUnassign(rowId, pegawaiId, nama) {
+    if (!confirm('Apakah Anda yakin ingin menurunkan personil ' + nama + ' dari penugasan kapal ini?')) {
+      return;
+    }
+
+    var token = AuthApp.getToken();
+    rpc('sijil_unassignAwak', {
+      token: token,
+      rowId: rowId,
+      pegawaiId: pegawaiId
+    })
+      .then(function (res) {
+        Toast.success(res.message || 'Personil berhasil diturunkan.');
+        load();
+        if (_currentKapalId) openKapalSheet(_currentKapalId);
       })
-      .catch(function () {
-        selectAwak.innerHTML = '<option value="">Gagal memuat awak.</option>';
+      .catch(function (err) {
+        Toast.error('Gagal menurunkan awak: ' + err.message);
       });
+  }
+
+  function openAssignModal(prefillKapalId) {
+    var selKapal = document.getElementById('assign-select-kapal');
+    var selPeg = document.getElementById('assign-select-pegawai');
+    var tglNaik = document.getElementById('assign-input-tgl-naik');
+    var ketInp = document.getElementById('assign-input-keterangan');
+
+    if (ketInp) ketInp.value = '';
+    if (tglNaik) {
+      var now = new Date();
+      tglNaik.value = now.toISOString().substring(0, 10);
+    }
+
+    // Populate dropdown kapal
+    if (selKapal && _data && _data.kapal) {
+      selKapal.innerHTML = '<option value="">-- Pilih Kapal Pengawas --</option>' + _data.kapal.map(function (k) {
+        var selected = (k.kapalId === prefillKapalId) ? 'selected' : '';
+        return '<option value="' + k.kapalId + '" ' + selected + '>' + Format.escape(k.namaKapal) + ' (' + k.kapalId + ')</option>';
+      }).join('');
+    }
+
+    // Populate dropdown awak
+    var token = AuthApp.getToken();
+    if (selPeg) {
+      selPeg.innerHTML = '<option value="">Memuat daftar personil...</option>';
+      rpc('dir_list', { token: token, limit: 120 })
+        .then(function (res) {
+          var items = res.items || [];
+          selPeg.innerHTML = '<option value="">-- Pilih Awak Kapal --</option>' + items.map(function (a) {
+            return '<option value="' + a.pegawaiId + '">' + Format.escape(a.nama) + ' (' + a.kelompokJabatan + ' - ' + a.rumpun + ')</option>';
+          }).join('');
+        })
+        .catch(function () {
+          selPeg.innerHTML = '<option value="">Gagal memuat personil</option>';
+        });
+    }
+
+    Modal.open('modal-sijil-assign');
   }
 
   function _submitAssign() {
     var token = AuthApp.getToken();
-    var kapalId = document.getElementById('sijil-assign-kapal-id').value;
-    var pegId = document.getElementById('sijil-assign-pegawai').value;
-    var posisi = document.getElementById('sijil-assign-posisi').value;
-    var tglNaik = document.getElementById('sijil-assign-tgl-naik').value;
-    var ket = document.getElementById('sijil-assign-keterangan').value.trim();
+    var kapalId = document.getElementById('assign-select-kapal').value;
+    var pegawaiId = document.getElementById('assign-select-pegawai').value;
+    var posSijil = document.getElementById('assign-select-posisi').value;
+    var tglNaik = document.getElementById('assign-input-tgl-naik').value;
+    var ket = document.getElementById('assign-input-keterangan').value.trim();
 
-    if (!pegId) {
-      Toast.error('Pilih personil awak kapal terlebih dahulu.');
+    if (!kapalId) {
+      Toast.error('Pilih kapal tujuan.');
+      return;
+    }
+    if (!pegawaiId) {
+      Toast.error('Pilih personil awak kapal.');
+      return;
+    }
+    if (!tglNaik) {
+      Toast.error('Tentukan tanggal naik kapal.');
       return;
     }
 
@@ -282,57 +461,37 @@ var SijilView = (function () {
     rpc('sijil_assignAwak', {
       token: token,
       kapalId: kapalId,
-      pegawaiId: pegId,
-      posSijil: posisi,
+      pegawaiId: pegawaiId,
+      posSijil: posSijil,
       tanggalNaik: tglNaik,
       keterangan: ket
     })
       .then(function (res) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Tempatkan ke Kapal';
+          btnSubmit.textContent = 'Tempatkan personil';
         }
         Modal.close('modal-sijil-assign');
-        Toast.success(res.message || 'Personil berhasil ditempatkan ke kapal.');
-        _openDetailModal(kapalId);
+        Toast.success(res.message || 'Personil berhasil ditempatkan ke papan sijil.');
         load();
+        if (_currentKapalId === kapalId) {
+          openKapalSheet(kapalId);
+        }
       })
       .catch(function (err) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Tempatkan ke Kapal';
+          btnSubmit.textContent = 'Tempatkan personil';
         }
         Toast.error('Gagal menempatkan awak: ' + err.message);
       });
   }
 
-  function _unassignAwak(rowId, pegId, nama) {
-    if (!confirm('Apakah Anda yakin ingin menurunkan ' + nama + ' dari kapal ini?')) {
-      return;
-    }
-
-    var token = AuthApp.getToken();
-    var todayStr = new Date().toISOString().substring(0, 10);
-
-    rpc('sijil_unassignAwak', {
-      token: token,
-      rowId: rowId,
-      pegawaiId: pegId,
-      tanggalTurun: todayStr
-    })
-      .then(function (res) {
-        Toast.success(res.message || 'Awak kapal berhasil diturunkan.');
-        _openDetailModal(_currentKapalId);
-        load();
-      })
-      .catch(function (err) {
-        Toast.error('Gagal menurunkan awak: ' + err.message);
-      });
-  }
-
   return {
     init: init,
-    load: load
+    load: load,
+    openKapalSheet: openKapalSheet,
+    openAssignModal: openAssignModal
   };
 })();
 </script>

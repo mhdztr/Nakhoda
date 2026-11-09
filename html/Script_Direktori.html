@@ -1,7 +1,7 @@
 <script>
 /**
  * html/Script_Direktori.html
- * Controller Klien Sub-Modul C: Direktori 396+ Awak Kapal Armada PSDKP
+ * Controller Klien Sub-Modul C: Direktori 396+ Awak Kapal Armada PSDKP (Achromatic Ledger).
  * Nakhoda — Timja Pengawakan Dit. POA KKP RI
  */
 var DirektoriView = (function () {
@@ -10,24 +10,20 @@ var DirektoriView = (function () {
   var _offset = 0;
   var _limit = 50;
   var _total = 0;
-  var _isPrivileged = false;
   var _selectedIds = {};
   var _perluDilengkapiOnly = false;
+  var _currentDetailAwak = null;
+  var _eventsBound = false;
 
   function init() {
-    var outlet = document.getElementById('outlet-content');
-    var viewTemplate = document.getElementById('view-direktori');
-    if (viewTemplate && outlet) {
-      outlet.innerHTML = viewTemplate.outerHTML;
-      var activeView = outlet.querySelector('#view-direktori');
-      if (activeView) activeView.classList.remove('hidden');
-    }
-
     _bindEvents();
     load(0);
   }
 
   function _bindEvents() {
+    if (_eventsBound) return;
+    _eventsBound = true;
+
     var filterRumpun = document.getElementById('dir-filter-rumpun');
     var filterKelas = document.getElementById('dir-filter-kelas');
     var searchInput = document.getElementById('dir-search-input');
@@ -41,6 +37,7 @@ var DirektoriView = (function () {
     var btnTambah = document.getElementById('btn-tambah-awak');
     var formAwak = document.getElementById('form-dir-awak');
     var formBatch = document.getElementById('form-dir-batch');
+    var btnSheetEdit = document.getElementById('btn-sheet-edit-awak');
 
     if (filterRumpun) filterRumpun.onchange = function () { load(0); };
     if (filterKelas) filterKelas.onchange = function () { load(0); };
@@ -66,7 +63,7 @@ var DirektoriView = (function () {
     if (btnTogglePerlu) {
       btnTogglePerlu.onclick = function () {
         _perluDilengkapiOnly = !_perluDilengkapiOnly;
-        btnTogglePerlu.textContent = _perluDilengkapiOnly ? 'Hanya Perlu Dilengkapi' : 'Semua Personil';
+        btnTogglePerlu.textContent = _perluDilengkapiOnly ? 'Hanya perlu dilengkapi' : 'Semua personil';
         btnTogglePerlu.className = _perluDilengkapiOnly ? 'btn btn-primary-md' : 'btn btn-secondary-md';
         load(0);
       };
@@ -76,7 +73,7 @@ var DirektoriView = (function () {
       cardFilterPerlu.onclick = function () {
         _perluDilengkapiOnly = true;
         if (btnTogglePerlu) {
-          btnTogglePerlu.textContent = 'Hanya Perlu Dilengkapi';
+          btnTogglePerlu.textContent = 'Hanya perlu dilengkapi';
           btnTogglePerlu.className = 'btn btn-primary-md';
         }
         load(0);
@@ -107,7 +104,15 @@ var DirektoriView = (function () {
 
     if (btnTambah) {
       btnTambah.onclick = function () {
-        _openFormModal();
+        _openFormModal(null);
+      };
+    }
+
+    if (btnSheetEdit) {
+      btnSheetEdit.onclick = function () {
+        if (_currentDetailAwak) {
+          _openFormModal(_currentDetailAwak);
+        }
       };
     }
 
@@ -146,23 +151,41 @@ var DirektoriView = (function () {
     })
       .then(function (res) {
         _total = res.total || 0;
-        _isPrivileged = res.isPrivileged;
 
-        // Update Stat Cards
+        // 1. Update KPI Stat Cards
         var stTot = document.getElementById('stat-total-awak');
         var stDek = document.getElementById('stat-dek-awak');
         var stMes = document.getElementById('stat-mesin-awak');
         var stPerlu = document.getElementById('stat-perlu-awak');
         var stMatch = document.getElementById('dir-total-matched');
+        var findingEl = document.getElementById('dir-finding-sub');
 
         if (stTot) stTot.textContent = Format.number(res.stats.total);
         if (stDek) stDek.textContent = Format.number(res.stats.dek);
         if (stMes) stMes.textContent = Format.number(res.stats.mesin);
         if (stPerlu) stPerlu.textContent = Format.number(res.stats.perluDilengkapi);
-        if (stMatch) stMatch.textContent = res.total + ' personil cocok';
+        if (stMatch) stMatch.textContent = Format.number(_total) + ' personil cocok';
 
+        if (findingEl) {
+          findingEl.textContent = 'Menampilkan ' + Format.number(_total) + ' personil awak kapal (' +
+            Format.number(res.stats.dek) + ' Dek, ' + Format.number(res.stats.mesin) + ' Mesin). ' +
+            (res.stats.perluDilengkapi > 0 ? (res.stats.perluDilengkapi + ' profil dalam antrean kelengkapan nomor buku pelaut / kategori.') : 'Seluruh profil terisi lengkap.');
+        }
+
+        // 2. Render Tabel Data
         _renderTable(res.items || []);
-        _updatePagination();
+
+        // 3. Update Paginasi
+        var pageInfo = document.getElementById('dir-page-info');
+        var btnPrev = document.getElementById('btn-dir-prev');
+        var btnNext = document.getElementById('btn-dir-next');
+
+        var start = _total === 0 ? 0 : (_offset + 1);
+        var end = Math.min(_offset + _limit, _total);
+        if (pageInfo) pageInfo.textContent = 'Menampilkan ' + start + ' – ' + end + ' dari ' + Format.number(_total) + ' data';
+
+        if (btnPrev) btnPrev.disabled = _offset <= 0;
+        if (btnNext) btnNext.disabled = (_offset + _limit) >= _total;
       })
       .catch(function (err) {
         Toast.error('Gagal memuat direktori awak: ' + err.message);
@@ -174,52 +197,62 @@ var DirektoriView = (function () {
     if (!tbody) return;
 
     if (!items || items.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada personil yang sesuai dengan filter pencarian.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada data personil awak yang cocok dengan kriteria saring.</td></tr>';
       return;
     }
 
     var html = '';
     items.forEach(function (a) {
       var isChecked = !!_selectedIds[a.pegawaiId];
-      var avBg = Format.avatarBg(a.nama);
-      var avInit = Format.initials(a.nama);
+      var klsLabel = String(a.kelasKapal || '').replace('_', ' ');
+      var bg = Format.avatarBg(a.nama);
+      var inis = Format.initials(a.nama);
 
-      var kelasLabel = a.kelasKapal.replace(/_/g, ' ');
-      var bukuBadge = a.nomorBukuPelaut && a.nomorBukuPelaut !== '-'
-        ? '<span style="font-family:var(--font-mono); font-size:12px;">' + Format.escape(a.nomorBukuPelaut) + '</span>'
-        : '<span class="badge badge-warning">Belum Ada</span>';
-
-      html += '<tr>' +
-        '<td style="text-align:center;">' +
-          '<input type="checkbox" class="cb-select-awak" data-id="' + a.pegawaiId + '" ' + (isChecked ? 'checked' : '') + '>' +
-        '</td>' +
-        '<td>' +
-          '<div style="display:flex; align-items:center; gap:10px;">' +
-            '<div class="user-avatar" style="width:32px; height:32px; font-size:11px; background-color:' + avBg + ';">' + avInit + '</div>' +
-            '<div>' +
-              '<div style="font-weight:600; color:var(--text); font-size:13px;">' + Format.escape(a.nama) + '</div>' +
-              '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">' + a.nipDisplay + '</div>' +
+      html +=
+        '<tr class="clickable" data-id="' + a.pegawaiId + '">' +
+          '<td style="text-align:center;" onclick="event.stopPropagation();">' +
+            '<input type="checkbox" class="cb-select-awak" data-id="' + a.pegawaiId + '" ' + (isChecked ? 'checked' : '') + '>' +
+          '</td>' +
+          '<td>' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
+              '<div>' +
+                '<div class="cell-primary">' + Format.escape(a.nama) + '</div>' +
+                '<div class="cell-sub mono">NIP: ' + Format.escape(a.nipDisplay) + '</div>' +
+              '</div>' +
             '</div>' +
-          '</div>' +
-        '</td>' +
-        '<td>' +
-          '<div style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(a.kelompokJabatan) + '</div>' +
-          '<div style="font-size:11px; color:var(--muted);">' + Format.escape(a.jabatanLengkap) + '</div>' +
-        '</td>' +
-        '<td><span class="badge badge-muted">' + Format.escape(kelasLabel) + '</span></td>' +
-        '<td>' + Format.kelompokBadge(a.rumpun) + '</td>' +
-        '<td><span class="badge badge-accent">' + Format.escape(a.kategoriKepegawaian) + '</span></td>' +
-        '<td>' + bukuBadge + '</td>' +
-        '<td style="text-align:center;">' +
-          '<div style="display:inline-flex; gap:4px;">' +
-            '<button class="btn btn-secondary-sm btn-dir-detail" data-id="' + a.pegawaiId + '">Profil</button>' +
-            '<button class="btn btn-secondary-sm btn-dir-edit" data-id="' + a.pegawaiId + '">Edit</button>' +
-          '</div>' +
-        '</td>' +
-      '</tr>';
+          '</td>' +
+          '<td>' +
+            '<div class="cell-primary">' + Format.escape(a.jabatanLengkap || a.kelompokJabatan) + '</div>' +
+            '<div class="cell-sub">' + Format.escape(a.kelompokJabatan) + '</div>' +
+          '</td>' +
+          '<td><span class="badge badge-neutral">' + Format.escape(klsLabel) + '</span></td>' +
+          '<td>' + Format.kelompokBadge(a.rumpun) + '</td>' +
+          '<td class="mono">' + (a.kategoriKepegawaian === '-' ? '<span style="color:var(--warning);">Belum diset</span>' : Format.escape(a.kategoriKepegawaian)) + '</td>' +
+          '<td class="mono">' + (a.nomorBukuPelaut === '-' ? '<span style="color:var(--warning);">-</span>' : Format.escape(a.nomorBukuPelaut)) + '</td>' +
+          '<td class="text-center" onclick="event.stopPropagation();">' +
+            '<button type="button" class="btn btn-secondary-sm btn-row-detail" data-id="' + a.pegawaiId + '">Buka</button>' +
+          '</td>' +
+        '</tr>';
     });
 
     tbody.innerHTML = html;
+
+    // Pasang click listener di seluruh baris tabel untuk membuka slide-over sheet
+    tbody.querySelectorAll('tr[data-id]').forEach(function (tr) {
+      tr.onclick = function () {
+        var id = tr.getAttribute('data-id');
+        openDetailSheet(id);
+      };
+    });
+
+    // Pasang listener di tombol "Buka"
+    tbody.querySelectorAll('.btn-row-detail').forEach(function (btn) {
+      btn.onclick = function () {
+        var id = btn.getAttribute('data-id');
+        openDetailSheet(id);
+      };
+    });
 
     // Pasang listener checkbox
     tbody.querySelectorAll('.cb-select-awak').forEach(function (cb) {
@@ -233,156 +266,198 @@ var DirektoriView = (function () {
         _updateBatchButton();
       };
     });
-
-    // Pasang listener detail
-    tbody.querySelectorAll('.btn-dir-detail').forEach(function (btn) {
-      btn.onclick = function () {
-        _openDetailModal(btn.getAttribute('data-id'));
-      };
-    });
-
-    // Pasang listener edit
-    tbody.querySelectorAll('.btn-dir-edit').forEach(function (btn) {
-      btn.onclick = function () {
-        _openEditModal(btn.getAttribute('data-id'));
-      };
-    });
   }
 
   function _updateBatchButton() {
     var count = Object.keys(_selectedIds).length;
-    var btn = document.getElementById('btn-batch-assign');
-    var badge = document.getElementById('selected-count-badge');
-    if (badge) badge.textContent = count;
-    if (btn) {
-      if (count > 0 && _isPrivileged) {
-        btn.classList.remove('hidden');
+    var btnBatch = document.getElementById('btn-batch-assign');
+    var badgeCount = document.getElementById('selected-count-badge');
+    if (badgeCount) badgeCount.textContent = count;
+    if (btnBatch) {
+      if (count > 0) {
+        btnBatch.classList.remove('hidden');
       } else {
-        btn.classList.add('hidden');
+        btnBatch.classList.add('hidden');
       }
     }
   }
 
-  function _updatePagination() {
-    var pageInfo = document.getElementById('dir-page-info');
-    var btnPrev = document.getElementById('btn-dir-prev');
-    var btnNext = document.getElementById('btn-dir-next');
-
-    var start = _total > 0 ? _offset + 1 : 0;
-    var end = Math.min(_offset + _limit, _total);
-    if (pageInfo) pageInfo.textContent = 'Menampilkan ' + start + ' - ' + end + ' dari ' + _total + ' personil';
-
-    if (btnPrev) btnPrev.disabled = _offset <= 0;
-    if (btnNext) btnNext.disabled = _offset + _limit >= _total;
-  }
-
-  function _openDetailModal(pegawaiId) {
+  function openDetailSheet(pegawaiId) {
     var token = AuthApp.getToken();
+    if (!token) return;
+
+    Sheet.open('sheet-dir-panel', 'sheet-dir-overlay');
+    switchSheetTab('profil');
+
+    var nameEl = document.getElementById('sheet-dir-nama');
+    if (nameEl) nameEl.textContent = 'Memuat profil...';
+
     rpc('dir_getDetail', token, pegawaiId)
       .then(function (res) {
-        document.getElementById('detail-dir-nama').textContent = res.nama;
-        document.getElementById('detail-dir-nip').textContent = res.nipDisplay;
-        document.getElementById('detail-dir-id').textContent = res.pegawaiId;
-        document.getElementById('detail-dir-jabatan').textContent = res.jabatanLengkap || res.kelompokJabatan;
-        document.getElementById('detail-dir-kategori').textContent = res.kategoriKepegawaian || 'Belum Ditentukan';
-        document.getElementById('detail-dir-buku').textContent = res.nomorBukuPelaut || 'Belum Ada';
-        document.getElementById('detail-dir-penempatan').textContent = (res.kapalId || '-') + ' (' + (res.pangkalanId || '-') + ')';
-
-        var avEl = document.getElementById('detail-dir-avatar');
-        if (avEl) {
-          avEl.textContent = Format.initials(res.nama);
-          avEl.style.backgroundColor = Format.avatarBg(res.nama);
-        }
-
-        var rmpBadge = document.getElementById('detail-dir-rumpun-badge');
-        if (rmpBadge) {
-          rmpBadge.className = 'badge ' + (res.rumpun === 'MESIN' ? 'badge-navy' : 'badge-accent');
-          rmpBadge.textContent = 'Rumpun ' + res.rumpun;
-        }
-
-        var klsBadge = document.getElementById('detail-dir-kelas-badge');
-        if (klsBadge) {
-          klsBadge.textContent = res.kelasKapal.replace(/_/g, ' ');
-        }
-
-        // Render daftar sertifikat
-        var srtList = document.getElementById('detail-dir-sertifikat-list');
-        if (srtList) {
-          if (!res.sertifikat || res.sertifikat.length === 0) {
-            srtList.innerHTML = '<div style="padding:12px; text-align:center; color:var(--muted);">Belum ada catatan sertifikat yang terdaftar.</div>';
-          } else {
-            var sHtml = '';
-            res.sertifikat.forEach(function (s) {
-              sHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-bottom:1px solid #ECEEEF;">' +
-                '<div>' +
-                  '<div style="font-weight:600; color:var(--text);">' + Format.escape(s.namaPelatihan) + '</div>' +
-                  '<div style="font-size:11px; color:var(--muted); font-family:var(--font-mono);">No: ' + Format.escape(s.nomorSertifikat) + '</div>' +
-                '</div>' +
-                '<div>' +
-                  (s.berlakuSampai ? '<span style="font-size:11px; font-family:var(--font-mono); color:var(--muted);">' + Format.date(s.berlakuSampai) + '</span>' : '') +
-                '</div>' +
-              '</div>';
-            });
-            srtList.innerHTML = sHtml;
-          }
-        }
-
-        Modal.open('modal-dir-detail');
+        _currentDetailAwak = res;
+        _renderSheetDetail(res);
       })
       .catch(function (err) {
-        Toast.error('Gagal mengambil rincian awak: ' + err.message);
+        Toast.error('Gagal memuat detail personil: ' + err.message);
       });
   }
 
-  function _openFormModal() {
-    document.getElementById('modal-dir-form-title').textContent = 'Tambah Personil Awak Kapal Baru';
-    document.getElementById('dir-form-pegawai-id').value = '';
-    document.getElementById('dir-form-nama').value = '';
-    document.getElementById('dir-form-nip').value = '';
-    document.getElementById('dir-form-buku').value = '';
-    document.getElementById('dir-form-jabatan').value = '';
-    document.getElementById('dir-form-jabatan-lengkap').value = '';
-    Modal.open('modal-dir-form');
+  function _renderSheetDetail(d) {
+    if (!d) return;
+
+    var nameEl = document.getElementById('sheet-dir-nama');
+    var nipEl = document.getElementById('sheet-dir-nip-display');
+    var idEl = document.getElementById('sheet-dir-id-display');
+    var avatarEl = document.getElementById('sheet-dir-avatar');
+    var badgeRumpun = document.getElementById('sheet-dir-badge-rumpun');
+    var badgeKelas = document.getElementById('sheet-dir-badge-kelas');
+    var badgeStatus = document.getElementById('sheet-dir-badge-status');
+    var jabEl = document.getElementById('sheet-dir-jabatan');
+    var katEl = document.getElementById('sheet-dir-kategori');
+    var bukuEl = document.getElementById('sheet-dir-buku');
+    var kapalEl = document.getElementById('sheet-dir-kapal');
+    var pangkalanEl = document.getElementById('sheet-dir-pangkalan');
+
+    if (nameEl) nameEl.textContent = d.nama || '-';
+    if (nipEl) nipEl.textContent = 'NIP: ' + (d.nipDisplay || '-');
+    if (idEl) idEl.textContent = 'ID: ' + (d.pegawaiId || '-');
+    if (avatarEl) {
+      avatarEl.textContent = Format.initials(d.nama);
+      avatarEl.style.backgroundColor = Format.avatarBg(d.nama);
+    }
+    if (badgeRumpun) badgeRumpun.textContent = d.rumpun || 'Dek';
+    if (badgeKelas) badgeKelas.textContent = String(d.kelasKapal || 'Kelas II').replace('_', ' ');
+    if (badgeStatus) {
+      badgeStatus.textContent = d.statusAktif || 'Aktif';
+      badgeStatus.className = d.statusAktif === 'NONAKTIF' ? 'pill pill-negative' : 'pill pill-positive';
+    }
+    if (jabEl) jabEl.textContent = d.jabatanLengkap || d.kelompokJabatan || '-';
+    if (katEl) katEl.textContent = d.kategoriKepegawaian || 'Belum ditentukan';
+    if (bukuEl) bukuEl.textContent = d.nomorBukuPelaut || 'Belum diisi';
+    if (kapalEl) kapalEl.textContent = d.kapalId || 'Belum ada penempatan';
+    if (pangkalanEl) pangkalanEl.textContent = d.pangkalanId || 'Pusat (Dit. POA)';
+
+    // Render daftar sertifikat di Tab 2
+    var certListEl = document.getElementById('sheet-dir-sertifikat-list');
+    if (certListEl) {
+      var certs = d.sertifikat || [];
+      if (certs.length === 0) {
+        certListEl.innerHTML = '<div style="padding:18px; text-align:center; color:var(--muted); font-size:12px;">Belum ada sertifikat kepelautan tercatat.</div>';
+      } else {
+        certListEl.innerHTML = certs.map(function (s) {
+          return (
+            '<div style="padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-control); background-color:var(--ground);">' +
+              '<div style="font-size:13px; font-weight:500; color:var(--text);">' + Format.escape(s.namaPelatihan) + '</div>' +
+              '<div class="mono" style="font-size:11px; color:var(--muted); margin-top:2px;">No: ' + Format.escape(s.nomorSertifikat) + '</div>' +
+              '<div style="font-size:11px; color:var(--muted); margin-top:2px;">Berlaku s.d: ' + (s.berlakuSampai ? Format.date(s.berlakuSampai) : 'Permanen') + '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+    }
+
+    // Render riwayat penugasan di Tab 3
+    var tgsListEl = document.getElementById('sheet-dir-penugasan-list');
+    if (tgsListEl) {
+      var penugasan = d.penugasan || [];
+      if (penugasan.length === 0) {
+        tgsListEl.innerHTML = '<div style="padding:18px; text-align:center; color:var(--muted); font-size:12px;">Belum ada riwayat penugasan kapal.</div>';
+      } else {
+        tgsListEl.innerHTML = penugasan.map(function (t) {
+          return (
+            '<div style="padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-control); background-color:var(--ground);">' +
+              '<div style="font-size:13px; font-weight:500; color:var(--text);">' + Format.escape(t.kapalId) + ' — ' + Format.escape(t.posSijil) + '</div>' +
+              '<div class="mono" style="font-size:11px; color:var(--muted); margin-top:2px;">Naik: ' + Format.date(t.tanggalNaik) + (t.tanggalTurun ? ' · Turun: ' + Format.date(t.tanggalTurun) : ' (Aktif)') + '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+    }
   }
 
-  function _openEditModal(pegawaiId) {
-    var token = AuthApp.getToken();
-    rpc('dir_getDetail', token, pegawaiId)
-      .then(function (res) {
-        document.getElementById('modal-dir-form-title').textContent = 'Pembaruan Data Awak Kapal';
-        document.getElementById('dir-form-pegawai-id').value = res.pegawaiId;
-        document.getElementById('dir-form-nama').value = res.nama;
-        document.getElementById('dir-form-nip').value = res.nipRaw || res.nipDisplay.replace(/•/g, '');
-        document.getElementById('dir-form-buku').value = res.nomorBukuPelaut === '-' ? '' : res.nomorBukuPelaut;
-        document.getElementById('dir-form-jabatan').value = res.kelompokJabatan;
-        document.getElementById('dir-form-rumpun').value = res.rumpun;
-        document.getElementById('dir-form-kelas').value = res.kelasKapal;
-        document.getElementById('dir-form-kategori').value = res.kategoriKepegawaian || 'PNS';
-        document.getElementById('dir-form-jabatan-lengkap').value = res.jabatanLengkap;
-        Modal.open('modal-dir-form');
-      })
-      .catch(function (err) {
-        Toast.error('Gagal membuka form edit: ' + err.message);
-      });
+  function switchSheetTab(tab) {
+    ['profil', 'sertifikat', 'penugasan'].forEach(function (t) {
+      var btn = document.getElementById('tab-dir-btn-' + t);
+      var panel = document.getElementById('sheet-tab-' + t);
+      if (btn) {
+        if (t === tab) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+      if (panel) {
+        if (t === tab) panel.classList.remove('hidden');
+        else panel.classList.add('hidden');
+      }
+    });
+  }
+
+  function openCatatSertifikatFromSheet() {
+    if (!_currentDetailAwak) return;
+    Sheet.close('sheet-dir-panel', 'sheet-dir-overlay');
+    Router.navigate('kompetensi');
+    if (typeof KompetensiView !== 'undefined' && KompetensiView.openModalCatat) {
+      KompetensiView.openModalCatat(_currentDetailAwak.pegawaiId, _currentDetailAwak.nama);
+    }
+  }
+
+  function _openFormModal(awakObj) {
+    var titleEl = document.getElementById('modal-awak-title');
+    var idInp = document.getElementById('awak-input-id');
+    var namaInp = document.getElementById('awak-input-nama');
+    var nipInp = document.getElementById('awak-input-nip');
+    var jabInp = document.getElementById('awak-input-jabatan-lengkap');
+    var kelInp = document.getElementById('awak-input-kelompok');
+    var rmpInp = document.getElementById('awak-input-rumpun');
+    var klsInp = document.getElementById('awak-input-kelas');
+    var katInp = document.getElementById('awak-input-kategori');
+    var bukuInp = document.getElementById('awak-input-buku');
+    var statusInp = document.getElementById('awak-input-status-aktif');
+
+    if (awakObj) {
+      if (titleEl) titleEl.textContent = 'Edit profil awak kapal';
+      if (idInp) idInp.value = awakObj.pegawaiId || '';
+      if (namaInp) namaInp.value = awakObj.nama || '';
+      if (nipInp) nipInp.value = awakObj.nipRaw || awakObj.nipDisplay || '';
+      if (jabInp) jabInp.value = awakObj.jabatanLengkap || '';
+      if (kelInp) kelInp.value = awakObj.kelompokJabatan || 'Juru Mudi';
+      if (rmpInp) rmpInp.value = awakObj.rumpun || 'DEK';
+      if (klsInp) klsInp.value = awakObj.kelasKapal || 'KELAS_II';
+      if (katInp) katInp.value = awakObj.kategoriKepegawaian || 'PNS';
+      if (bukuInp) bukuInp.value = awakObj.nomorBukuPelaut || '';
+      if (statusInp) statusInp.value = awakObj.statusAktif || 'AKTIF';
+    } else {
+      if (titleEl) titleEl.textContent = 'Tambah personil baru';
+      if (idInp) idInp.value = '';
+      if (namaInp) namaInp.value = '';
+      if (nipInp) nipInp.value = '';
+      if (jabInp) jabInp.value = '';
+      if (kelInp) kelInp.value = 'Juru Mudi';
+      if (rmpInp) rmpInp.value = 'DEK';
+      if (klsInp) klsInp.value = 'KELAS_II';
+      if (katInp) katInp.value = 'PNS';
+      if (bukuInp) bukuInp.value = '';
+      if (statusInp) statusInp.value = 'AKTIF';
+    }
+
+    Modal.open('modal-dir-awak');
   }
 
   function _submitFormAwak() {
     var token = AuthApp.getToken();
-    var pId = document.getElementById('dir-form-pegawai-id').value;
     var payload = {
       token: token,
-      pegawaiId: pId,
-      nama: document.getElementById('dir-form-nama').value.trim(),
-      nip: document.getElementById('dir-form-nip').value.trim(),
-      nomorBukuPelaut: document.getElementById('dir-form-buku').value.trim(),
-      kelompokJabatan: document.getElementById('dir-form-jabatan').value.trim(),
-      rumpun: document.getElementById('dir-form-rumpun').value,
-      kelasKapal: document.getElementById('dir-form-kelas').value,
-      kategoriKepegawaian: document.getElementById('dir-form-kategori').value,
-      jabatanLengkap: document.getElementById('dir-form-jabatan-lengkap').value.trim()
+      pegawaiId: document.getElementById('awak-input-id').value.trim(),
+      nama: document.getElementById('awak-input-nama').value.trim(),
+      nip: document.getElementById('awak-input-nip').value.trim(),
+      jabatanLengkap: document.getElementById('awak-input-jabatan-lengkap').value.trim(),
+      kelompokJabatan: document.getElementById('awak-input-kelompok').value,
+      rumpun: document.getElementById('awak-input-rumpun').value,
+      kelasKapal: document.getElementById('awak-input-kelas').value,
+      kategoriKepegawaian: document.getElementById('awak-input-kategori').value,
+      nomorBukuPelaut: document.getElementById('awak-input-buku').value.trim(),
+      statusAktif: document.getElementById('awak-input-status-aktif').value
     };
 
-    var btnSubmit = document.getElementById('btn-submit-dir');
+    var btnSubmit = document.getElementById('btn-submit-awak');
     if (btnSubmit) {
       btnSubmit.disabled = true;
       btnSubmit.textContent = 'Menyimpan...';
@@ -392,31 +467,35 @@ var DirektoriView = (function () {
       .then(function (res) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan Data';
+          btnSubmit.textContent = 'Simpan profil personil';
         }
-        Modal.close('modal-dir-form');
-        Toast.success(res.message || 'Data personil berhasil disimpan.');
+        Modal.close('modal-dir-awak');
+        Toast.success(res.message || 'Profil personil berhasil disimpan.');
         load(_offset);
+        if (_currentDetailAwak && _currentDetailAwak.pegawaiId === payload.pegawaiId) {
+          openDetailSheet(payload.pegawaiId);
+        }
       })
       .catch(function (err) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan Data';
+          btnSubmit.textContent = 'Simpan profil personil';
         }
-        Toast.error('Gagal menyimpan: ' + err.message);
+        Toast.error('Gagal menyimpan profil: ' + err.message);
       });
   }
 
   function _openBatchModal() {
-    var ids = Object.keys(_selectedIds);
-    document.getElementById('batch-selected-count').textContent = ids.length;
+    var count = Object.keys(_selectedIds).length;
+    var countEl = document.getElementById('modal-batch-count');
+    if (countEl) countEl.textContent = count;
     Modal.open('modal-dir-batch');
   }
 
   function _submitBatch() {
     var token = AuthApp.getToken();
     var ids = Object.keys(_selectedIds);
-    var kat = document.getElementById('batch-kategori-select').value;
+    var kat = document.getElementById('batch-input-kategori').value;
 
     var btnSubmit = document.getElementById('btn-submit-batch');
     if (btnSubmit) {
@@ -432,10 +511,10 @@ var DirektoriView = (function () {
       .then(function (res) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Terapkan Perubahan';
+          btnSubmit.textContent = 'Terapkan kategori';
         }
         Modal.close('modal-dir-batch');
-        Toast.success(res.message || 'Perubahan massal berhasil diterapkan.');
+        Toast.success(res.message || 'Kategori berhasil diperbarui.');
         _selectedIds = {};
         _updateBatchButton();
         load(_offset);
@@ -443,15 +522,18 @@ var DirektoriView = (function () {
       .catch(function (err) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Terapkan Perubahan';
+          btnSubmit.textContent = 'Terapkan kategori';
         }
-        Toast.error('Gagal menerapkan batch assign: ' + err.message);
+        Toast.error('Gagal memperbarui kategori massal: ' + err.message);
       });
   }
 
   return {
     init: init,
-    load: load
+    load: load,
+    openDetailSheet: openDetailSheet,
+    switchSheetTab: switchSheetTab,
+    openCatatSertifikatFromSheet: openCatatSertifikatFromSheet
   };
 })();
 </script>

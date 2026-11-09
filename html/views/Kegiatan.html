@@ -1,211 +1,240 @@
-<!-- ── SUB-MODUL B: LOG KEGIATAN & PEMBINAAN PERSONIL ── -->
+<!-- html/views/Kegiatan.html — Sub-Modul B: Log Kegiatan & Multi-Evidence Pelatihan Personil -->
 <div id="view-kegiatan" class="app-view hidden">
 
-  <!-- Page Header -->
+  <!-- Baris Judul & Temuan Data (DESIGN.md §5.1) -->
   <div class="page-header">
     <div class="page-title-group">
-      <h2 class="page-title">Log Kegiatan &amp; Pembinaan Personil</h2>
-      <p class="page-subtitle">Perekaman agenda pelatihan teknis, sertifikasi kepelautan, penyegaran taktik, dan bimtek awak kapal.</p>
+      <h1 class="page-title">Log kegiatan &amp; pembinaan personil</h1>
+      <p class="page-subtitle" id="kegiatan-finding-sub">
+        Perekaman agenda pelatihan teknis kepelautan, sertifikasi STCW-F, penyegaran taktik operasi, dan bimtek personil armada.
+      </p>
     </div>
     <div class="page-actions">
-      <button id="btn-tambah-kegiatan" class="btn btn-primary-md">
-        <svg viewBox="0 0 24 24" style="width:14px; height:14px; stroke:currentColor; stroke-width:2; fill:none;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Catat Kegiatan Baru
+      <button type="button" id="btn-keg-refresh" class="btn btn-secondary-md">
+        <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Segarkan</span>
+      </button>
+      <button type="button" id="btn-tambah-kegiatan" class="btn btn-primary-md">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Catat kegiatan baru</span>
       </button>
     </div>
   </div>
 
-  <!-- Filter & Toolbar -->
-  <div class="card" style="margin-bottom:16px; padding:12px 16px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-        <select id="keg-filter-jenis" class="form-control-md" style="width:200px;">
-          <option value="">Semua Jenis Kegiatan</option>
-          <option value="PELATIHAN_TEKNIS">Pelatihan Teknis</option>
-          <option value="SERTIFIKASI_LAUT">Sertifikasi Laut (STCW-F)</option>
-          <option value="PENYEGARAN_TAKTIK">Penyegaran Taktik</option>
-          <option value="PEMBINAAN_DISIPLIN">Pembinaan Disiplin</option>
-        </select>
-        <input type="text" id="keg-search-input" class="form-control-md" placeholder="Cari judul, wilayah, atau notula..." style="width:260px;">
-        <button id="btn-keg-search" class="btn btn-secondary-md">Cari</button>
+  <!-- Strip KPI Satu Kontainer (DESIGN.md §5.3) -->
+  <div class="kpi-container">
+    <div class="kpi-col">
+      <div class="kpi-label">Total agenda kegiatan</div>
+      <div class="kpi-value-lead mono tnum" id="kpi-keg-total">--</div>
+      <div class="kpi-delta">
+        <span class="mono">Agenda aktif tercatat</span>
       </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span id="keg-total-info" style="font-size:12px; color:var(--muted); font-family:var(--font-mono);">0 kegiatan tercatat</span>
+    </div>
+
+    <div class="kpi-col">
+      <div class="kpi-label">Personil terlatih &amp; terdata</div>
+      <div class="kpi-value mono tnum" id="kpi-keg-peserta" style="color:var(--text);">--</div>
+      <div class="kpi-delta">
+        <span>Partisipasi kumulatif</span>
+      </div>
+    </div>
+
+    <div class="kpi-col">
+      <div class="kpi-label">Dokumen bukti tersimpan</div>
+      <div class="kpi-value mono tnum" id="kpi-keg-lampiran" style="color:var(--accent);">--</div>
+      <div class="kpi-delta">
+        <span>Arsip Google Drive terhubung</span>
+      </div>
+    </div>
+
+    <div class="kpi-col">
+      <div class="kpi-label">Kegiatan bulan berjalan</div>
+      <div class="kpi-value mono tnum" id="kpi-keg-bulan-ini" style="color:var(--text);">--</div>
+      <div class="kpi-delta">
+        <span>Pelaksanaan bulan ini</span>
       </div>
     </div>
   </div>
 
-  <!-- Tabel Daftar Kegiatan -->
-  <div class="card">
-    <div style="overflow-x:auto;">
-      <table class="table" style="margin:0;">
-        <thead>
-          <tr>
-            <th style="width:80px;">Status</th>
-            <th>Nama Agenda &amp; Wilayah</th>
-            <th style="width:160px;">Jenis Kegiatan</th>
-            <th style="width:180px;">Jadwal Pelaksanaan</th>
-            <th style="width:100px; text-align:right;">Peserta</th>
-            <th style="width:110px; text-align:center;">Lampiran</th>
-            <th style="width:140px; text-align:center;">Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="keg-list-tbody">
-          <tr>
-            <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat log kegiatan...</td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- Tab Garis Bawah Navigasi Sub-Modul (DESIGN.md §5.2) -->
+  <div class="tab-strip" style="margin-bottom:16px;">
+    <button type="button" class="tab-item active" id="tab-keg-daftar">Daftar agenda kegiatan</button>
+    <button type="button" class="tab-item" id="tab-keg-timeline">Garis waktu pelaksanaan</button>
+  </div>
+
+  <!-- Panel 1: Daftar Kegiatan -->
+  <div id="keg-pane-daftar">
+    <!-- Filter & Toolbar (3-Tier MD 32px) -->
+    <div class="filter-bar">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
+        <select id="keg-filter-jenis" class="form-control-md" style="width:220px;">
+          <option value="">Semua jenis pembinaan</option>
+          <option value="PELATIHAN_TEKNIS">Pelatihan teknis</option>
+          <option value="SERTIFIKASI_LAUT">Sertifikasi laut (STCW-F)</option>
+          <option value="PENYEGARAN_TAKTIK">Penyegaran taktik</option>
+          <option value="PEMBINAAN_DISIPLIN">Pembinaan disiplin</option>
+        </select>
+        <input type="text" id="keg-search-input" class="form-control-md" placeholder="Cari agenda, wilayah, atau notula..." style="width:280px;">
+        <button type="button" id="btn-keg-search" class="btn btn-secondary-md">Cari</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span id="keg-total-info" class="mono tnum" style="font-size:12px; color:var(--muted);">0 agenda</span>
+      </div>
+    </div>
+
+    <!-- Tabel Daftar Kegiatan (Two-Line Rows & Tabular Figures) -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:90px;">Status</th>
+              <th>Nama agenda &amp; wilayah pelaksanaan</th>
+              <th style="width:160px;">Jenis kegiatan</th>
+              <th style="width:180px;">Jadwal waktu</th>
+              <th style="width:100px; text-align:right;">Peserta</th>
+              <th style="width:90px; text-align:center;">Bukti</th>
+              <th style="width:130px; text-align:right;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="keg-list-tbody">
+            <tr>
+              <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat log kegiatan...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel 2: Garis Waktu Pelaksanaan -->
+  <div id="keg-pane-timeline" class="hidden">
+    <div class="card" style="padding:24px;">
+      <div id="keg-timeline-container" style="display:flex; flex-direction:column; gap:20px;">
+        <div style="text-align:center; color:var(--muted); padding:32px 0;">Memuat garis waktu pelaksanaan...</div>
+      </div>
     </div>
   </div>
 
 </div>
 
-<!-- ── MODAL FORM CATAT KEGIATAN BARU ── -->
+<!-- ── 480PX SLIDE-OVER SHEET: DETAIL KEGIATAN & EVIDENCE (DESIGN.md §6.3) ── -->
+<div id="sheet-keg-overlay" class="sheet-overlay" onclick="KegiatanView.closeDetailSheet()"></div>
+<aside id="sheet-keg-detail" class="sheet-panel hidden" aria-labelledby="sheet-keg-title">
+  <div class="sheet-header">
+    <div class="sheet-title-group">
+      <h2 class="sheet-title" id="sheet-keg-title">Detail agenda kegiatan</h2>
+      <p class="sheet-subtitle" id="sheet-keg-subtitle">Informasi lengkap pelaksanaan, kehadiran personil, dan berkas bukti.</p>
+    </div>
+    <button type="button" class="sheet-close" onclick="KegiatanView.closeDetailSheet()" aria-label="Tutup panel detail">&times;</button>
+  </div>
+
+  <div class="sheet-content" id="sheet-keg-body">
+    <!-- Diisi secara dinamis -->
+  </div>
+</aside>
+
+<!-- ── MODAL FORM CATAT / REVISI AGENDA KEGIATAN (DESIGN.md §6.4) ── -->
 <div id="modal-keg-form" class="modal-overlay">
   <div class="modal-box" style="max-width:640px;">
     <div class="modal-header">
-      <div class="modal-title" id="modal-keg-title">Catat Agenda Kegiatan Baru</div>
-      <button class="modal-close" onclick="Modal.close('modal-keg-form')">&times;</button>
+      <h3 class="modal-title" id="modal-keg-title">Catat agenda kegiatan baru</h3>
+      <button type="button" class="modal-close" onclick="Modal.close('modal-keg-form')" aria-label="Tutup modal">&times;</button>
     </div>
     <form id="form-kegiatan">
       <input type="hidden" id="keg-form-mode" value="create">
       <input type="hidden" id="keg-form-rowid" value="">
 
       <div class="form-group" style="margin-bottom:12px;">
-        <label class="form-label" for="keg-judul">Nama Agenda Kegiatan <span style="color:var(--danger)">*</span></label>
-        <input type="text" id="keg-judul" class="form-control-lg" required placeholder="Contoh: Penyegaran Keterampilan Menembak Awak TW I">
+        <label class="form-label" for="keg-judul">Nama agenda kegiatan <span style="color:var(--negative)">*</span></label>
+        <input type="text" id="keg-judul" class="form-control-lg" required placeholder="Contoh: Penyegaran keterampilan menembak awak TW I">
       </div>
 
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
         <div class="form-group">
-          <label class="form-label" for="keg-jenis">Jenis Kegiatan <span style="color:var(--danger)">*</span></label>
+          <label class="form-label" for="keg-jenis">Jenis kegiatan <span style="color:var(--negative)">*</span></label>
           <select id="keg-jenis" class="form-control-md" required>
-            <option value="PELATIHAN_TEKNIS">Pelatihan Teknis</option>
-            <option value="SERTIFIKASI_LAUT">Sertifikasi Laut (STCW-F)</option>
-            <option value="PENYEGARAN_TAKTIK">Penyegaran Taktik</option>
-            <option value="PEMBINAAN_DISIPLIN">Pembinaan Disiplin</option>
+            <option value="PELATIHAN_TEKNIS">Pelatihan teknis</option>
+            <option value="SERTIFIKASI_LAUT">Sertifikasi laut (STCW-F)</option>
+            <option value="PENYEGARAN_TAKTIK">Penyegaran taktik</option>
+            <option value="PEMBINAAN_DISIPLIN">Pembinaan disiplin</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="keg-wilayah">Lokasi / Wilayah Pangkalan</label>
+          <label class="form-label" for="keg-wilayah">Lokasi / pangkalan</label>
           <input type="text" id="keg-wilayah" class="form-control-md" placeholder="Contoh: Pangkalan PSDKP Batam">
         </div>
       </div>
 
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px;">
         <div class="form-group">
-          <label class="form-label" for="keg-tgl-mulai">Tanggal Mulai <span style="color:var(--danger)">*</span></label>
+          <label class="form-label" for="keg-tgl-mulai">Tanggal mulai <span style="color:var(--negative)">*</span></label>
           <input type="date" id="keg-tgl-mulai" class="form-control-md" required>
         </div>
         <div class="form-group">
-          <label class="form-label" for="keg-tgl-selesai">Tanggal Selesai <span style="color:var(--danger)">*</span></label>
-          <input type="date" id="keg-tgl-selesai" class="form-control-md" required>
+          <label class="form-label" for="keg-tgl-selesai">Tanggal selesai</label>
+          <input type="date" id="keg-tgl-selesai" class="form-control-md">
         </div>
         <div class="form-group">
-          <label class="form-label" for="keg-peserta-count">Jumlah Peserta <span style="color:var(--danger)">*</span></label>
-          <input type="number" min="1" id="keg-peserta-count" class="form-control-md" required value="1" style="font-family:var(--font-mono);">
+          <label class="form-label" for="keg-peserta">Jumlah peserta</label>
+          <input type="number" id="keg-peserta" class="form-control-md mono tnum" min="0" placeholder="0">
         </div>
       </div>
 
       <div class="form-group" style="margin-bottom:12px;">
-        <label class="form-label" for="keg-deskripsi">Deskripsi &amp; Ringkasan Hasil Kegiatan</label>
-        <textarea id="keg-deskripsi" class="form-control-md" rows="3" placeholder="Tuliskan notula singkat, materi yang diberikan, atau evaluasi kegiatan..."></textarea>
+        <label class="form-label" for="keg-deskripsi">Ringkasan notula / materi pembahasan</label>
+        <textarea id="keg-deskripsi" class="form-control-md" rows="3" placeholder="Uraikan ringkasan materi, capaian instruktur, atau instruksi tindak lanjut..."></textarea>
       </div>
 
-      <!-- Multi-Evidence Upload Section -->
+      <!-- Unggah Dokumen Bukti Multi-Evidence (Maks 15 MB) -->
       <div class="form-group" style="margin-bottom:16px;">
-        <label class="form-label">Dokumen &amp; Bukti Pendukung (Multi-Evidence)</label>
-        <div style="border:1px dashed var(--border); padding:16px; text-align:center; background:#FAF8F5;">
-          <input type="file" id="keg-file-input" multiple style="display:none;" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx">
-          <div style="margin-bottom:8px;">
-            <button type="button" class="btn btn-secondary-md" onclick="document.getElementById('keg-file-input').click()">
-              <svg viewBox="0 0 24 24" style="width:14px; height:14px; stroke:currentColor; stroke-width:1.8; fill:none;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Pilih Berkas Lampiran (Maks. 15MB)
-            </button>
-          </div>
-          <div style="font-size:11px; color:var(--muted);">Format didukung: PDF, Foto JPG/PNG, Dokumen laporan. Berkas otomatis tersimpan di folder Google Drive POA_Evidence_Nakhoda.</div>
-          <div id="keg-file-list" style="margin-top:12px; text-align:left; font-size:12px;"></div>
+        <label class="form-label">Dokumen lampiran bukti (PDF / JPG &le; 15 MB)</label>
+        <div style="border:1px dashed var(--border); border-radius:var(--radius-sm); padding:16px; text-align:center; background:var(--surface);">
+          <input type="file" id="keg-file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+          <button type="button" class="btn btn-secondary-md" onclick="document.getElementById('keg-file-input').click()">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Pilih berkas bukti</span>
+          </button>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px;">Format didukung: PDF, PNG, JPG (maksimal 15 MB per berkas).</div>
         </div>
-      </div>
-
-      <div class="form-group" style="margin-bottom:20px;">
-        <label class="form-label" for="keg-evidence-url">Tautan Tambahan Google Drive (Opsional)</label>
-        <input type="url" id="keg-evidence-url" class="form-control-md" placeholder="https://drive.google.com/drive/folders/...">
-      </div>
-
-      <div id="keg-revisi-reason-group" class="form-group hidden" style="margin-bottom:20px; padding:12px; background:#FFF9DB; border:1px solid #FFE066;">
-        <label class="form-label" for="keg-alasan-revisi">Alasan Perubahan / Revisi <span style="color:var(--danger)">*</span></label>
-        <textarea id="keg-alasan-revisi" class="form-control-md" rows="2" placeholder="Jelaskan alasan pembaruan data agenda ini..."></textarea>
+        <div id="keg-staged-files" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-keg-form')">Batal</button>
-        <button type="submit" id="btn-submit-keg" class="btn btn-primary-md">Simpan Kegiatan</button>
+        <button type="submit" id="btn-keg-submit" class="btn btn-primary-md">Simpan agenda</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- ── MODAL DETAIL KEGIATAN & BUKTI ── -->
-<div id="modal-keg-detail" class="modal-overlay">
-  <div class="modal-box" style="max-width:600px;">
-    <div class="modal-header">
-      <div class="modal-title">Rincian Agenda Kegiatan</div>
-      <button class="modal-close" onclick="Modal.close('modal-keg-detail')">&times;</button>
-    </div>
-    <div style="padding:4px 0;">
-      <div style="margin-bottom:12px;">
-        <span id="detail-keg-status" class="badge badge-success">Aktif</span>
-        <span id="detail-keg-jenis" class="badge badge-accent" style="margin-left:6px;">Pelatihan Teknis</span>
-      </div>
-      <h3 id="detail-keg-judul" style="font-size:16px; font-weight:700; color:var(--text); margin-bottom:6px;">-</h3>
-      <div style="font-size:12px; color:var(--muted); margin-bottom:16px;">
-        Lokasi: <span id="detail-keg-wilayah" style="color:var(--text); font-weight:500;">-</span> &bull; 
-        Jadwal: <span id="detail-keg-jadwal" style="color:var(--text); font-weight:500;">-</span> &bull;
-        Peserta: <span id="detail-keg-peserta" style="color:var(--text); font-weight:500; font-family:var(--font-mono);">0 orang</span>
-      </div>
-
-      <div style="margin-bottom:16px;">
-        <div style="font-size:12px; font-weight:600; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Deskripsi &amp; Notula</div>
-        <div id="detail-keg-deskripsi" style="font-size:13px; color:var(--text); line-height:1.6; padding:10px; background:#F8F9FA; border:1px solid var(--border); white-space:pre-wrap;">-</div>
-      </div>
-
-      <!-- Daftar Lampiran Berkas -->
-      <div style="margin-bottom:16px;">
-        <div style="font-size:12px; font-weight:600; color:var(--muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">Lampiran Berkas (Google Drive)</div>
-        <div id="detail-keg-evidences" style="display:flex; flex-direction:column; gap:6px;">
-          <div style="font-size:12px; color:var(--muted);">Tidak ada berkas bukti yang dilampirkan.</div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-keg-detail')">Tutup</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── MODAL ANULIR KEGIATAN ── -->
+<!-- ── MODAL ANULIR KEGIATAN (SOFT-DELETE / ANULIR) ── -->
 <div id="modal-keg-anulir" class="modal-overlay">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:480px;">
     <div class="modal-header">
-      <div class="modal-title">Konfirmasi Anulir Kegiatan</div>
-      <button class="modal-close" onclick="Modal.close('modal-keg-anulir')">&times;</button>
+      <h3 class="modal-title">Anulir agenda kegiatan</h3>
+      <button type="button" class="modal-close" onclick="Modal.close('modal-keg-anulir')" aria-label="Tutup modal">&times;</button>
     </div>
     <form id="form-keg-anulir">
-      <input type="hidden" id="anulir-keg-id">
-      <div style="font-size:13px; color:var(--text); margin-bottom:12px;">
-        Apakah Anda yakin ingin membatalkan agenda kegiatan ini? Entri yang dibatalkan akan berstatus <strong style="color:var(--danger)">VOID</strong>.
+      <input type="hidden" id="anulir-keg-rowid" value="">
+
+      <div style="font-size:13px; line-height:1.5; color:var(--text); margin-bottom:12px;">
+        Anda akan menandai agenda berikut sebagai <strong>DIANULIR</strong> (tidak dihitung dalam ringkasan eksekutif):
       </div>
-      <div class="form-group" style="margin-bottom:20px;">
-        <label class="form-label" for="anulir-keg-alasan">Alasan Pembatalan <span style="color:var(--danger)">*</span></label>
-        <textarea id="anulir-keg-alasan" class="form-control-md" rows="3" required placeholder="Tuliskan alasan pembatalan kegiatan..."></textarea>
+
+      <div id="anulir-keg-judul" style="font-size:13px; font-weight:600; padding:10px 12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:16px;">
+        --
       </div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label" for="anulir-keg-alasan">Alasan pembatalan / anulir <span style="color:var(--negative)">*</span></label>
+        <textarea id="anulir-keg-alasan" class="form-control-md" rows="3" required placeholder="Contoh: Jadwal dialihkan ke TW II karena cuaca ekstrem perairan..."></textarea>
+      </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-keg-anulir')">Kembali</button>
-        <button type="submit" class="btn btn-danger-md">Anulir Agenda</button>
+        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-keg-anulir')">Batal</button>
+        <button type="submit" id="btn-keg-anulir-submit" class="btn btn-negative-md">Konfirmasi anulir</button>
       </div>
     </form>
   </div>
 </div>
-

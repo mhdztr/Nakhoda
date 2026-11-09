@@ -1,7 +1,7 @@
 # DESIGN.md — Panduan Desain & Antarmuka: Nakhoda
 **Naungan Awak Kapal Armada — Timja Pengawakan, Dit. POA, Ditjen PSDKP, KKP RI**
 
-> Dokumen ini diturunkan dari skill `design-taste-frontend` (mode **app screen**, gaya `achromatic-ledger`, seed `877942489`; hasil undian tersimpan di `.taste-skill/direction.json`). Skill disalin dari proyek SIKAP ke `.agents/skills/`. Aturan skill dipakai utuh kecuali tiga penyesuaian yang dicatat di §14.
+> Dokumen ini berakar pada skill `design-taste-frontend` (mode **app screen**, gaya `achromatic-ledger`, seed `877942489`; hasil undian v2 tersimpan di `.taste-skill/direction.json` sebagai arsip). Skill kini disinkronkan ke **tasteskill 2.5.0** dari proyek `smelt` di `.agents/skills/design-taste-frontend/`. Arahan visual Achromatic Ledger di dokumen ini tetap menjadi sumber kebenaran proyek; aturan skill dipakai selama tidak bertentangan, dengan penyesuaian yang dicatat di §14.
 > Dokumen ini **menggantikan** DESIGN.md sebelumnya (Apple HIG + kaca translusen + palet Maritime Navy warisan Nautika).
 
 ---
@@ -277,7 +277,7 @@ Satu kolom 360px di tengah: Panji November + "Nakhoda", satu kalimat fungsi ("Da
 
 ## 8. Visualisasi Data
 
-Aturan umum (skill): satu pertanyaan, satu seri, satu warna per grafik; tidak ada 3D, gauge melingkar, pie dengan kategori > 4, atau legenda untuk seri tunggal. Skala sumbu selalu tampak; 3-5 garis grid 1px `#E5E5E5`; tanpa garis sumbu-y; garis lurus (tidak dihaluskan); tanpa penanda titik kecuali hover. Gunakan `.agents/skills/design-taste-frontend/assets/charts.js` (`Charts.line`, `bars`, `barList`, `plan`, `bullet`, `matrix`, `timeline`) dan perluas, jangan menulis ulang kode sumbu.
+Aturan umum (skill): satu pertanyaan, satu seri, satu warna per grafik; tidak ada 3D, gauge melingkar, pie dengan kategori > 4, atau legenda untuk seri tunggal. Skala sumbu selalu tampak; 3-5 garis grid 1px `#E5E5E5`; tanpa garis sumbu-y; garis lurus (tidak dihaluskan); tanpa penanda titik kecuali hover. Gunakan `assets/charts.js` (helper SVG tasteskill yang disalin ke proyek; `Charts.line`, `bars`, `barList`, `plan`, `bullet`, `matrix`, `timeline`) dan perluas, jangan menulis ulang kode sumbu.
 
 | Pertanyaan | Bentuk | Pembuat |
 |---|---|---|
@@ -363,29 +363,35 @@ Dipertahankan dari DESIGN.md sebelumnya dan diperluas oleh skill. Semuanya diper
 |---|---|---|
 | Tinggi kontrol toolbar/form default 36px | Tiga tier 40/32/26 | Aturan keras proyek di `AGENTS.md`; masih dalam rentang 28-40px yang diamati skill |
 | Hue grafik `#1d5fbf` (biru) | `#D9480F` (Oranye Keselamatan) | Permintaan eksplisit pemilik proyek: bukan navy; hue diambil dari subjek (keselamatan laut) |
-| `inspect.mjs` menandai monospace | Geist Mono dipakai hanya untuk ID teknis; dijalankan dengan `--allow mono` dan alasan dicatat di laporan | Skill sendiri mengizinkan mono untuk ID; NIP dan nomor sertifikat harus sejajar digitnya |
+| `start.mjs` men-deal mono hanya untuk halaman tech/software | Geist Mono dipakai hanya untuk ID teknis; pairing diminta eksplisit dengan `--mono` dan alasan dicatat di laporan | NIP dan nomor sertifikat harus sejajar digitnya; mono bukan gaya default halaman |
 
 ---
 
 ## 15. Alur Kerja Skill (untuk agent)
 
-Dijalankan dari root proyek. `<skill>` = `.agents/skills/design-taste-frontend`.
+Dijalankan dari root proyek. `<skill>` = `.agents/skills/design-taste-frontend`. Semua perintah inspeksi memerlukan Node 22+ dan Chrome/Chromium.
 
 ```bash
-# cetak ulang arahan desain yang dipilih
-node <skill>/scripts/draw.mjs --show
+# undi hero, palet, dan pasangan font untuk halaman software
+node <skill>/assets/layout/deal.mjs --type software --has ui --history .taste-skill/layout-history.json
+node <skill>/scripts/start.mjs deal --page software --history .taste-skill/history.json
 
-# lint sumber (aturan app)
-node <skill>/scripts/lint.mjs --app html/ services/
+# konsistensi sumber + render pada 1440 / 1024 / 820 / 768 / 390
+node <skill>/scripts/consistency.mjs html/Index.html --widths 1440,1024,820,768,390 \
+  --rhythm-widths 1440,820,768,390 --page software --profile .taste-skill/chrome \
+  --category "<jenis layanan>" --primary "<aksi utama>"
 
-# inspeksi nyata pada 1440 / 768 / 390 (butuh Chrome/Chromium dan Node 22+)
-node <skill>/scripts/inspect.mjs --app <path/ke/pratinjau.html> --allow mono
+# cek layout, tangkapan layar, dan performa
+node <skill>/assets/layout/check.mjs --url html/Index.html --profile .taste-skill/chrome \
+  --sizes 1440x900,1024x768,820x1180,768x1024,390x844 --shots shots/layout
+node <skill>/scripts/shoot.mjs --url html/Index.html --w 1440 --out shots/1440.png --profile .taste-skill/chrome
+node <skill>/scripts/perf.mjs html/Index.html --profile .taste-skill/chrome
 
 # audit proyek (3-tier, zero-emoji, anti-gabruk, kalkulasi server-side)
 node lint_ui.js
 ```
 
-Kebijakan: tiap `FAIL` diperbaiki; tiap `WARN` dianggap salah kecuali dapat dibela dalam satu kalimat. Setelah putaran terakhir, buka **setiap** tangkapan layar (semua lebar) dan tulis kritik dengan tujuh pertanyaan di `references/app-screens.md` §2.7. Maksimal tiga putaran.
+Kebijakan: tiap `FAIL` diperbaiki; tiap `WARN` dianggap salah kecuali dapat dibela dalam satu kalimat. Setelah putaran terakhir, buka **setiap** tangkapan layar (semua lebar) dan tulis kritik dengan daftar periksa di `references/layout-v4.md` dan `SKILL.md` §5. Maksimal tiga putaran.
 
 Sebelum membangun sebuah layar, tulis di catatan: (1) pertanyaan layar, (2) temuan, (3) wajah yang dipilih, (4) elemen khas dan letaknya di layar pertama. Layar yang melewatkan langkah ini dianggap "kit yang diterapkan".
 
@@ -394,7 +400,7 @@ Sebelum membangun sebuah layar, tulis di catatan: (1) pertanyaan layar, (2) temu
 ## 16. Daftar Periksa Penerimaan Desain
 
 - [ ] Semua kontrol memakai tier 40/32/26; tidak ada inline `height` pada `button/input/select`.
-- [ ] `node lint_ui.js` dan `lint.mjs --app` bersih; `inspect.mjs --app` 0 FAIL di 1440/768/390.
+- [ ] `node lint_ui.js` bersih; `consistency.mjs` dan `check.mjs` melaporkan 0 FAIL untuk halaman yang diuji di 1440/1024/820/768/390.
 - [ ] Setiap layar punya satu `h1` kata benda dan kalimat temuan berbasis data.
 - [ ] Oranye muncul pada data utama setiap layar berisi grafik dan tidak di tempat lain; pangsa warna < 3%.
 - [ ] Papan Sijil, Panji November, dan inisial berwarna pucat tampil di layar terkait.

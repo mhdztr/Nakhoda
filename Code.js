@@ -1,5 +1,6 @@
 /**
  * Code.js — Entry point Google Apps Script (Nakhoda)
+ * Build: v1.0.8-revised
  *
  * doGet()  : serve SPA frontend
  * doPost() : tidak dipakai — semua komunikasi lewat google.script.run

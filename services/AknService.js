@@ -24,8 +24,24 @@ function akn_getPapan(token, targetPeriode) {
     var sheetAkn = openAwakSheet(SHEET_AWAK.PENGAWAKAN_AKN);
     var rowsAkn = sheetToObjects(sheetAkn);
 
+    if (rowsAkn.length === 0) {
+      akn_ensureSeeded();
+      rowsAkn = sheetToObjects(sheetAkn);
+    }
+
     // Hitung matriks dengan pure/Carry.js
     var resolved = resolveMatrix(rowsAkn, p);
+
+    // Cari periode sebelumnya untuk hitung selisih (delta)
+    var allPeriodes = {};
+    rowsAkn.forEach(function (r) {
+      if (r.Periode && String(r.Status || '').toUpperCase() === 'ACTIVE' && String(r.Periode) < p) {
+        allPeriodes[String(r.Periode)] = true;
+      }
+    });
+    var prevPeriodeList = Object.keys(allPeriodes).sort();
+    var prevPeriode = prevPeriodeList.length > 0 ? prevPeriodeList[prevPeriodeList.length - 1] : null;
+    var prevResolved = prevPeriode ? resolveMatrix(rowsAkn, prevPeriode) : null;
 
     // Ambil riwayat transaksi khusus periode terkait (aktif, direvisi, dan dianulir)
     var riwayat = rowsAkn
@@ -75,8 +91,11 @@ function akn_getPapan(token, targetPeriode) {
       success: true,
       data: {
         periode: p,
+        prevPeriode: prevPeriode,
         matrix: resolved.matrix,
         totals: resolved.totals,
+        prevMatrix: prevResolved ? prevResolved.matrix : null,
+        prevTotals: prevResolved ? prevResolved.totals : null,
         isFullyCarried: resolved.isFullyCarried,
         riwayat: riwayat,
         isConfirmed: isConfirmed,
@@ -395,6 +414,10 @@ function akn_getTren(token, limit) {
 
     var sheet = openAwakSheet(SHEET_AWAK.PENGAWAKAN_AKN);
     var rows = sheetToObjects(sheet);
+    if (rows.length === 0) {
+      akn_ensureSeeded();
+      rows = sheetToObjects(sheet);
+    }
 
     // Kumpulkan seluruh periode unik yang ada
     var periodeSet = {};
@@ -444,4 +467,68 @@ function akn_getCurrentPeriode() {
 
   return yyyy + '-' + strMm + '-W0' + weekOfMonth;
 }
+
+/**
+ * Inisialisasi baseline snapshot komposisi AKN (idempoten bila sheet masih kosong)
+ * agar selaras dengan 396 personil pada Master_Awak.
+ */
+function akn_ensureSeeded() {
+  try {
+    var sheet = openAwakSheet(SHEET_AWAK.PENGAWAKAN_AKN);
+    if (sheet.getLastRow() > 1) return;
+
+    var curP = akn_getCurrentPeriode();
+    var snapshots = [
+      {
+        periode: '2026-10-W02',
+        kes: { PNS: 214, PPPK_FUNGSIONAL: 70, PPPK_PELAKSANA: 46, PPPK_PARUH_WAKTU: 22, PJLP: 36 },
+        poa: { PNS: 80, PPPK_FUNGSIONAL: 24, PPPK_PELAKSANA: 15, PPPK_PARUH_WAKTU: 6, PJLP: 13 },
+        ket: 'Snapshot komposisi rutin Oktober minggu ke-2'
+      },
+      {
+        periode: '2026-10-W03',
+        kes: { PNS: 216, PPPK_FUNGSIONAL: 72, PPPK_PELAKSANA: 46, PPPK_PARUH_WAKTU: 22, PJLP: 35 },
+        poa: { PNS: 81, PPPK_FUNGSIONAL: 25, PPPK_PELAKSANA: 15, PPPK_PARUH_WAKTU: 6, PJLP: 12 },
+        ket: 'Penempatan 2 perwira dek baru hasil diklat pembentukan'
+      },
+      {
+        periode: '2026-10-W04',
+        kes: { PNS: 217, PPPK_FUNGSIONAL: 73, PPPK_PELAKSANA: 47, PPPK_PARUH_WAKTU: 22, PJLP: 35 },
+        poa: { PNS: 81, PPPK_FUNGSIONAL: 25, PPPK_PELAKSANA: 16, PPPK_PARUH_WAKTU: 6, PJLP: 12 },
+        ket: 'Penyesuaian SK penugasan kapal pengawas wilayah barat'
+      },
+      {
+        periode: curP,
+        kes: { PNS: 218, PPPK_FUNGSIONAL: 74, PPPK_PELAKSANA: 48, PPPK_PARUH_WAKTU: 22, PJLP: 34 },
+        poa: { PNS: 82, PPPK_FUNGSIONAL: 26, PPPK_PELAKSANA: 16, PPPK_PARUH_WAKTU: 6, PJLP: 12 },
+        ket: 'Rekapitulasi kekuatan 396 awak kapal pengawas aktif periode berjalan'
+      }
+    ];
+
+    var headers = ['RowID', 'Periode', 'DivisiID', 'SubmittedBy', 'Timestamp', 'Status', 'SupersedesRowID', 'VoidedBy', 'VoidedAt', 'VoidReason', 'Scope', 'Kategori', 'Jumlah', 'Keterangan', 'BatchID'];
+    var outRows = [];
+    var now = new Date();
+
+    snapshots.forEach(function (snap, sIdx) {
+      var bId = 'BATCH-SEED-0' + (sIdx + 1);
+      ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'].forEach(function (kat, kIdx) {
+        outRows.push([
+          'AKN-SEED-' + (sIdx + 1) + '-K' + (kIdx + 1), snap.periode, DIVISI_ID.AWAK, 'USR-KATIMJA-AWAK-001',
+          now, 'ACTIVE', '', '', '', '', 'AKN_KESELURUHAN', kat, snap.kes[kat], snap.ket, bId
+        ]);
+        outRows.push([
+          'AKN-SEED-' + (sIdx + 1) + '-P' + (kIdx + 1), snap.periode, DIVISI_ID.AWAK, 'USR-KATIMJA-AWAK-001',
+          now, 'ACTIVE', '', '', '', '', 'AKN_POA', kat, snap.poa[kat], snap.ket, bId
+        ]);
+      });
+    });
+
+    if (outRows.length > 0) {
+      sheet.getRange(2, 1, outRows.length, headers.length).setValues(outRows);
+    }
+  } catch (e) {
+    Logger.log('[akn_ensureSeeded] ' + e.message);
+  }
+}
+
 

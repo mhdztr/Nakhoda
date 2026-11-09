@@ -6,6 +6,16 @@
 
 ---
 
+## [Sinkronisasi Skill Agent — tasteskill 2.5.0 & Design-Kowalski] — 9 Nov 2026
+**Status:** Selesai
+
+**Pencapaian:**
+- Menyinkronkan seluruh skill dari proyek `smelt` ke `.agents/skills/` (46 skill): 6 skill `ponytail`, 17 skill `design-kowalski`, dan `design-taste-frontend` 2.5.0.
+- Merapikan struktur: `redesign-skill` → `redesign-existing-projects`, `generative_ui` → `generative-ui`, frontmatter tervalidasi tanpa tautan rusak, dan helper grafik v2 dipertahankan di `assets/charts.js`.
+- Memperbarui referensi perintah desain di `README.md`, `DESIGN.md`, `PHASES.md`, `PRD.md`, dan `skills-lock.json` dari `lint.mjs`/`inspect.mjs` ke `consistency.mjs`/`check.mjs`/`shoot.mjs`/`perf.mjs`.
+
+---
+
 ## [Fase 8 — Dasbor Ringkasan Eksekutif, Notifikasi Cron & Laporan Dinas] — 9 Nov 2026
 **Status:** Selesai
 

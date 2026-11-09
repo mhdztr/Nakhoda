@@ -1,7 +1,7 @@
 <script>
 /**
  * html/Script_Akn.html
- * Controller Logika Klien Sub-Modul A: Komposisi AKN
+ * Controller Logika Klien Sub-Modul A: Komposisi AKN (Achromatic Ledger).
  * Nakhoda — Timja Pengawakan Dit. POA KKP RI
  */
 var AknView = (function () {
@@ -9,25 +9,28 @@ var AknView = (function () {
 
   var _currentPeriode = '';
   var _data = null;
+  var _eventsBound = false;
   var KATEGORIS = ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'];
+  var KATEGORI_LABELS = {
+    'PNS': 'Pegawai negeri sipil (PNS)',
+    'PPPK_FUNGSIONAL': 'PPPK tenaga fungsional',
+    'PPPK_PELAKSANA': 'PPPK tenaga pelaksana',
+    'PPPK_PARUH_WAKTU': 'PPPK paruh waktu',
+    'PJLP': 'PJLP / pegawai non-ASN'
+  };
 
   function init() {
-    // Tampilkan view di outlet
-    var outlet = document.getElementById('outlet-content');
-    var viewTemplate = document.getElementById('view-komposisi');
-    if (viewTemplate && outlet) {
-      outlet.innerHTML = viewTemplate.outerHTML;
-      var activeView = outlet.querySelector('#view-komposisi');
-      if (activeView) activeView.classList.remove('hidden');
-    }
-
     _bindEvents();
     load();
   }
 
   function _bindEvents() {
+    if (_eventsBound) return;
+    _eventsBound = true;
+
     var periodInput = document.getElementById('akn-periode-select');
     var btnRefresh = document.getElementById('btn-akn-refresh');
+    var btnOpenModal = document.getElementById('btn-akn-open-modal');
     var formMatrix = document.getElementById('form-akn-matrix');
     var btnNoChange = document.getElementById('btn-akn-confirm-nochange');
 
@@ -35,6 +38,12 @@ var AknView = (function () {
       btnRefresh.onclick = function () {
         var p = (periodInput && periodInput.value || '').trim();
         load(p);
+      };
+    }
+
+    if (btnOpenModal) {
+      btnOpenModal.onclick = function () {
+        _openInputModal();
       };
     }
 
@@ -51,7 +60,6 @@ var AknView = (function () {
       };
     }
 
-    // Listener interaktif untuk auto-hitung total dan validasi POA <= Keseluruhan
     var inputs = document.querySelectorAll('.akn-input');
     inputs.forEach(function (inp) {
       inp.oninput = function () {
@@ -59,7 +67,6 @@ var AknView = (function () {
       };
     });
 
-    // Form modal revisi
     var formRevisi = document.getElementById('form-akn-revisi');
     if (formRevisi) {
       formRevisi.onsubmit = function (e) {
@@ -68,7 +75,6 @@ var AknView = (function () {
       };
     }
 
-    // Form modal anulir
     var formAnulir = document.getElementById('form-akn-anulir');
     if (formAnulir) {
       formAnulir.onsubmit = function (e) {
@@ -82,14 +88,14 @@ var AknView = (function () {
     var token = AuthApp.getToken();
     if (!token) return;
 
-    var targetP = periode || _currentPeriode || _getDefaultPeriode();
-    var periodInput = document.getElementById('akn-periode-select');
-    if (periodInput) periodInput.value = targetP;
+    var targetP = (periode || _currentPeriode || '').trim();
 
     rpc('akn_getPapan', token, targetP)
       .then(function (res) {
         _data = res;
         _currentPeriode = res.periode;
+        var periodInput = document.getElementById('akn-periode-select');
+        if (periodInput) periodInput.value = res.periode;
         _renderPapan(res);
         _loadTren();
       })
@@ -98,36 +104,39 @@ var AknView = (function () {
       });
   }
 
-  function _getDefaultPeriode() {
-    var d = new Date();
-    var yyyy = d.getFullYear();
-    var mm = d.getMonth() + 1;
-    var strMm = mm < 10 ? '0' + mm : String(mm);
-    var day = d.getDate();
-    var week = Math.ceil(day / 7);
-    if (week > 4) week = 4;
-    return yyyy + '-' + strMm + '-W0' + week;
-  }
-
   function _renderPapan(data) {
-    // 1. Banner status carry-forward
+    // 1. Finding Subtitle & Status Banner
+    var findingEl = document.getElementById('akn-finding-sub');
     var banner = document.getElementById('akn-status-banner');
     var bannerTitle = document.getElementById('akn-banner-title');
     var bannerDesc = document.getElementById('akn-banner-desc');
+    var badgeHeader = document.getElementById('akn-badge-periode-header');
+
+    if (badgeHeader) badgeHeader.textContent = 'Periode ' + data.periode;
+
+    var totKes = (data.totals && data.totals.AKN_KESELURUHAN) || 0;
+    var totPoa = (data.totals && data.totals.AKN_POA) || 0;
+    var prevKes = (data.prevTotals && data.prevTotals.AKN_KESELURUHAN) || totKes;
+    var deltaTotal = totKes - prevKes;
+
+    if (findingEl) {
+      findingEl.textContent = 'Total kekuatan personil ' + Format.number(totKes) + ' aparatur (' +
+        Format.number(totPoa) + ' Dit. POA). Status ' + (data.isConfirmed ? 'terkonfirmasi' : (data.isFullyCarried ? 'diwarisi (carry-forward)' : 'tercatat aktif')) + '.';
+    }
 
     if (banner) {
       if (data.isConfirmed) {
         banner.classList.remove('hidden');
-        banner.style.borderLeftColor = 'var(--success)';
-        if (bannerTitle) bannerTitle.textContent = 'Pernyataan Status Tanpa Mutasi Aktif';
+        banner.style.borderLeft = '4px solid var(--positive)';
+        if (bannerTitle) bannerTitle.textContent = 'Status terkonfirmasi tanpa mutasi';
         if (bannerDesc) bannerDesc.textContent = 'Periode ini telah dikonfirmasi tidak memiliki perubahan mutasi personil (' + (data.konfirmasiCatatan || 'Tetap') + ').';
         var btnNoChange = document.getElementById('btn-akn-confirm-nochange');
         if (btnNoChange) btnNoChange.style.display = 'none';
       } else if (data.isFullyCarried) {
         banner.classList.remove('hidden');
-        banner.style.borderLeftColor = 'var(--accent)';
-        if (bannerTitle) bannerTitle.textContent = 'Data Diwarisi dari Periode Sebelumnya (Carry-Forward)';
-        if (bannerDesc) bannerDesc.textContent = 'Belum ada pencatatan mutasi baru untuk periode ' + data.periode + '. Anda dapat mengonfirmasi tanpa mutasi atau menyimpan snapshot baru.';
+        banner.style.borderLeft = '4px solid var(--accent)';
+        if (bannerTitle) bannerTitle.textContent = 'Data diwarisi dari periode sebelumnya (carry-forward)';
+        if (bannerDesc) bannerDesc.textContent = 'Belum ada mutasi baru pada ' + data.periode + '. Anda dapat mengonfirmasi tanpa mutasi atau menyimpan snapshot baru.';
         var btnNoChange2 = document.getElementById('btn-akn-confirm-nochange');
         if (btnNoChange2) btnNoChange2.style.display = 'inline-block';
       } else {
@@ -135,22 +144,110 @@ var AknView = (function () {
       }
     }
 
-    // 2. Isi nilai input matriks
-    KATEGORIS.forEach(function (kat) {
-      var inpKes = document.querySelector('.akn-kes[data-kat="' + kat + '"]');
-      var inpPoa = document.querySelector('.akn-poa[data-kat="' + kat + '"]');
+    // 2. Strip KPI Satu Kontainer
+    var kpiKesEl = document.getElementById('kpi-akn-keseluruhan');
+    var kpiDeltaEl = document.getElementById('kpi-akn-delta');
+    if (kpiKesEl) kpiKesEl.textContent = Format.number(totKes);
+    if (kpiDeltaEl) {
+      kpiDeltaEl.innerHTML = Format.deltaText(deltaTotal, 'vs ' + (data.prevPeriode || 'lalu'));
+    }
 
-      var valKes = data.matrix.AKN_KESELURUHAN && data.matrix.AKN_KESELURUHAN[kat] ? data.matrix.AKN_KESELURUHAN[kat].jumlah : 0;
-      var valPoa = data.matrix.AKN_POA && data.matrix.AKN_POA[kat] ? data.matrix.AKN_POA[kat].jumlah : 0;
+    var kpiPoaEl = document.getElementById('kpi-akn-poa');
+    var kpiPoaPctEl = document.getElementById('kpi-akn-poa-pct');
+    if (kpiPoaEl) kpiPoaEl.textContent = Format.number(totPoa);
+    if (kpiPoaPctEl) {
+      var poaPct = totKes > 0 ? ((totPoa / totKes) * 100).toFixed(1) : 0;
+      kpiPoaPctEl.innerHTML = '<span class="mono">' + poaPct + '% dari total keseluruhan</span>';
+    }
 
-      if (inpKes) inpKes.value = valKes;
-      if (inpPoa) inpPoa.value = valPoa;
-    });
+    var kpiStatusText = document.getElementById('kpi-akn-status-text');
+    var kpiStatusSub = document.getElementById('kpi-akn-status-sub');
+    if (kpiStatusText) {
+      kpiStatusText.textContent = data.isConfirmed ? 'Terkonfirmasi' : (data.isFullyCarried ? 'Diwarisi (Carry)' : 'Snapshot Baru');
+      kpiStatusText.style.color = data.isConfirmed ? 'var(--positive)' : (data.isFullyCarried ? 'var(--accent)' : 'var(--text)');
+    }
+    if (kpiStatusSub) {
+      kpiStatusSub.textContent = data.isFullyCarried ? ('Sumber: ' + (data.sourcePeriode || data.prevPeriode)) : 'Tercatat di periode ini';
+    }
+
+    var kpiPnsTotal = document.getElementById('kpi-akn-pns-total');
+    if (kpiPnsTotal) {
+      var pnsKes = (data.matrix && data.matrix.AKN_KESELURUHAN && data.matrix.AKN_KESELURUHAN.PNS) ? data.matrix.AKN_KESELURUHAN.PNS.jumlah : 0;
+      kpiPnsTotal.textContent = Format.number(pnsKes);
+    }
+
+    // 3. Papan Matriks 5 Kategori Table
+    var tbodyMatrix = document.getElementById('tbody-akn-matrix-display');
+    if (tbodyMatrix) {
+      var m = data.matrix || {};
+      var prevM = data.prevMatrix || {};
+      var rowsHtml = '';
+
+      KATEGORIS.forEach(function (kat) {
+        var poa = (m.AKN_POA && m.AKN_POA[kat]) ? m.AKN_POA[kat].jumlah : 0;
+        var kes = (m.AKN_KESELURUHAN && m.AKN_KESELURUHAN[kat]) ? m.AKN_KESELURUHAN[kat].jumlah : 0;
+        var prevKesItem = (prevM.AKN_KESELURUHAN && prevM.AKN_KESELURUHAN[kat]) ? prevM.AKN_KESELURUHAN[kat].jumlah : kes;
+        var deltaKat = kes - prevKesItem;
+        var pct = kes > 0 ? Math.round((poa / kes) * 100) : 0;
+
+        rowsHtml +=
+          '<tr>' +
+            '<td>' +
+              '<div class="cell-primary">' + (KATEGORI_LABELS[kat] || kat) + '</div>' +
+              '<div class="cell-sub mono">' + kat + '</div>' +
+            '</td>' +
+            '<td class="text-right mono tnum" style="color:var(--accent); font-weight:600;">' + Format.number(poa) + '</td>' +
+            '<td class="text-right mono tnum" style="font-weight:600;">' + Format.number(kes) + '</td>' +
+            '<td>' +
+              '<div style="display:flex; align-items:center; gap:8px;">' +
+                '<div class="track-bar" style="flex:1;">' +
+                  '<div class="track-fill" style="width:' + pct + '%;"></div>' +
+                '</div>' +
+                '<span class="mono tnum" style="font-size:11px; width:44px; text-align:right;">' + pct + '%</span>' +
+              '</div>' +
+            '</td>' +
+            '<td class="text-right mono tnum">' + Format.deltaText(deltaKat) + '</td>' +
+          '</tr>';
+      });
+
+      tbodyMatrix.innerHTML = rowsHtml;
+    }
+
+    var tfootPoa = document.getElementById('tfoot-poa-total');
+    var tfootKes = document.getElementById('tfoot-kes-total');
+    var tfootBar = document.getElementById('tfoot-ratio-bar');
+    var tfootDelta = document.getElementById('tfoot-delta-total');
+
+    if (tfootPoa) tfootPoa.textContent = Format.number(totPoa);
+    if (tfootKes) tfootKes.textContent = Format.number(totKes);
+    if (tfootBar) {
+      var totPct = totKes > 0 ? Math.round((totPoa / totKes) * 100) : 0;
+      tfootBar.style.width = totPct + '%';
+    }
+    if (tfootDelta) tfootDelta.innerHTML = Format.deltaText(deltaTotal);
+
+    // 4. Render Riwayat Audit
+    _renderRiwayat(data.riwayat || [], data.userRole);
+  }
+
+  function _openInputModal() {
+    var pInput = document.getElementById('modal-input-periode');
+    if (pInput) pInput.value = _currentPeriode;
+
+    // Masukkan data terkini ke modal input
+    if (_data && _data.matrix) {
+      KATEGORIS.forEach(function (kat) {
+        var inpKes = document.querySelector('#modal-akn-input .akn-kes[data-kat="' + kat + '"]');
+        var inpPoa = document.querySelector('#modal-akn-input .akn-poa[data-kat="' + kat + '"]');
+        var valKes = (_data.matrix.AKN_KESELURUHAN && _data.matrix.AKN_KESELURUHAN[kat]) ? _data.matrix.AKN_KESELURUHAN[kat].jumlah : 0;
+        var valPoa = (_data.matrix.AKN_POA && _data.matrix.AKN_POA[kat]) ? _data.matrix.AKN_POA[kat].jumlah : 0;
+        if (inpKes) inpKes.value = valKes;
+        if (inpPoa) inpPoa.value = valPoa;
+      });
+    }
 
     _recalcLiveTotals();
-
-    // 3. Render riwayat transaksi
-    _renderRiwayat(data.riwayat || [], data.userRole);
+    Modal.open('modal-akn-input');
   }
 
   function _recalcLiveTotals() {
@@ -158,9 +255,9 @@ var AknView = (function () {
     var totPoa = 0;
 
     KATEGORIS.forEach(function (kat) {
-      var inpKes = document.querySelector('.akn-kes[data-kat="' + kat + '"]');
-      var inpPoa = document.querySelector('.akn-poa[data-kat="' + kat + '"]');
-      var rasioEl = document.getElementById('rasio-' + kat);
+      var inpKes = document.querySelector('#modal-akn-input .akn-kes[data-kat="' + kat + '"]');
+      var inpPoa = document.querySelector('#modal-akn-input .akn-poa[data-kat="' + kat + '"]');
+      var rasioEl = document.getElementById('modal-rasio-' + kat);
 
       var vKes = parseInt(inpKes ? inpKes.value : 0, 10) || 0;
       var vPoa = parseInt(inpPoa ? inpPoa.value : 0, 10) || 0;
@@ -168,15 +265,14 @@ var AknView = (function () {
       totKes += vKes;
       totPoa += vPoa;
 
-      // Validasi baris: POA tidak boleh melebihi Keseluruhan
       if (vPoa > vKes) {
-        if (inpPoa) inpPoa.style.borderColor = 'var(--danger)';
+        if (inpPoa) inpPoa.style.borderColor = 'var(--negative)';
         if (rasioEl) {
-          rasioEl.textContent = '! Over';
-          rasioEl.style.color = 'var(--danger)';
+          rasioEl.textContent = '! Lebih';
+          rasioEl.style.color = 'var(--negative)';
         }
       } else {
-        if (inpPoa) inpPoa.style.borderColor = 'var(--border)';
+        if (inpPoa) inpPoa.style.borderColor = 'var(--control)';
         if (rasioEl) {
           var pct = vKes > 0 ? ((vPoa / vKes) * 100).toFixed(1) + '%' : '-';
           rasioEl.textContent = pct;
@@ -185,27 +281,22 @@ var AknView = (function () {
       }
     });
 
-    var totKesEl = document.getElementById('total-keseluruhan-display');
-    var totPoaEl = document.getElementById('total-poa-display');
-    var rasioTotEl = document.getElementById('rasio-TOTAL');
+    var totKesEl = document.getElementById('modal-total-kes');
+    var totPoaEl = document.getElementById('modal-total-poa');
+    var rasioTotEl = document.getElementById('modal-total-rasio');
 
     if (totKesEl) totKesEl.textContent = Format.number(totKes);
     if (totPoaEl) totPoaEl.textContent = Format.number(totPoa);
     if (rasioTotEl) {
       var totPct = totKes > 0 ? ((totPoa / totKes) * 100).toFixed(1) + '%' : '-';
       rasioTotEl.textContent = totPct;
-      if (totPoa > totKes) {
-        rasioTotEl.style.color = 'var(--danger)';
-      } else {
-        rasioTotEl.style.color = 'var(--accent)';
-      }
+      rasioTotEl.style.color = totPoa > totKes ? 'var(--negative)' : 'var(--accent)';
     }
   }
 
   function _submitMatrix() {
     var token = AuthApp.getToken();
-    var periodInput = document.getElementById('akn-periode-select');
-    var periode = (periodInput && periodInput.value || '').trim();
+    var periode = _currentPeriode;
     var ketInput = document.getElementById('akn-keterangan');
     var keterangan = (ketInput && ketInput.value || '').trim();
 
@@ -216,22 +307,22 @@ var AknView = (function () {
 
     var hasInvalid = false;
     KATEGORIS.forEach(function (kat) {
-      var vKes = parseInt((document.querySelector('.akn-kes[data-kat="' + kat + '"]') || {}).value || 0, 10);
-      var vPoa = parseInt((document.querySelector('.akn-poa[data-kat="' + kat + '"]') || {}).value || 0, 10);
+      var vKes = parseInt((document.querySelector('#modal-akn-input .akn-kes[data-kat="' + kat + '"]') || {}).value || 0, 10);
+      var vPoa = parseInt((document.querySelector('#modal-akn-input .akn-poa[data-kat="' + kat + '"]') || {}).value || 0, 10);
       if (vPoa > vKes) hasInvalid = true;
       matrix.AKN_KESELURUHAN[kat] = vKes;
       matrix.AKN_POA[kat] = vPoa;
     });
 
     if (hasInvalid) {
-      Toast.error('Validasi gagal: Jumlah Dit. POA tidak boleh melebihi Keseluruhan pada kategori terkait.');
+      Toast.error('Validasi gagal: Jumlah Dit. POA tidak boleh melebihi Keseluruhan.');
       return;
     }
 
     var btnSubmit = document.getElementById('btn-submit-akn');
     if (btnSubmit) {
       btnSubmit.disabled = true;
-      btnSubmit.textContent = 'Menyimpan...';
+      btnSubmit.textContent = 'Menyimpan snapshot...';
     }
 
     rpc('akn_submit', {
@@ -243,16 +334,17 @@ var AknView = (function () {
       .then(function (res) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan Snapshot Komposisi';
+          btnSubmit.textContent = 'Simpan snapshot komposisi';
         }
-        Toast.success(res.message || 'Komposisi berhasil disimpan.');
+        Modal.close('modal-akn-input');
+        Toast.success(res.message || 'Snapshot komposisi berhasil dicatat.');
         if (ketInput) ketInput.value = '';
         load(periode);
       })
       .catch(function (err) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan Snapshot Komposisi';
+          btnSubmit.textContent = 'Simpan snapshot komposisi';
         }
         Toast.error('Gagal menyimpan: ' + err.message);
       });
@@ -284,7 +376,7 @@ var AknView = (function () {
     if (!tbody) return;
 
     if (!rows || rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:20px 0;">Belum ada riwayat transaksi pada periode ini.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--muted);">Belum ada riwayat transaksi pada periode ini.</td></tr>';
       return;
     }
 
@@ -292,21 +384,20 @@ var AknView = (function () {
     rows.forEach(function (r) {
       var canAnulir = (userRole === 'KADIV' || userRole === 'SUPERADMIN') && r.status === 'ACTIVE';
       var canRevisi = r.status === 'ACTIVE';
-
-      var scopeLabel = r.scope === 'AKN_POA' ? 'POA' : 'PSDKP';
+      var scopeLabel = r.scope === 'AKN_POA' ? 'Pusat (POA)' : 'PSDKP';
 
       html += '<tr>' +
         '<td>' + Format.statusBadge(r.status) + '</td>' +
         '<td>' +
-          '<div style="font-weight:500; font-size:12px;">' + Format.escape(scopeLabel + ' — ' + r.kategori) + '</div>' +
-          (r.keterangan ? '<div style="font-size:11px; color:var(--muted);">' + Format.escape(r.keterangan) + '</div>' : '') +
+          '<div class="cell-primary">' + Format.escape(scopeLabel + ' — ' + (KATEGORI_LABELS[r.kategori] || r.kategori)) + '</div>' +
+          (r.keterangan ? '<div class="cell-sub">' + Format.escape(r.keterangan) + '</div>' : '') +
         '</td>' +
-        '<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">' + Format.number(r.jumlah) + '</td>' +
-        '<td style="font-size:11px; color:var(--muted);">' + Format.dateTime(r.timestamp) + '</td>' +
-        '<td style="text-align:center;">' +
+        '<td class="text-right mono tnum" style="font-weight:600;">' + Format.number(r.jumlah) + '</td>' +
+        '<td class="mono" style="font-size:11px; color:var(--muted);">' + Format.dateTime(r.timestamp) + '</td>' +
+        '<td class="text-center">' +
           '<div style="display:inline-flex; gap:4px;">' +
-            (canRevisi ? '<button class="btn btn-secondary-sm btn-revisi" data-id="' + r.rowId + '" data-desc="' + r.scope + ' ' + r.kategori + '" data-val="' + r.jumlah + '">Revisi</button>' : '') +
-            (canAnulir ? '<button class="btn btn-danger-sm btn-anulir" data-id="' + r.rowId + '">Anulir</button>' : '') +
+            (canRevisi ? '<button type="button" class="btn btn-secondary-sm btn-revisi" data-id="' + r.rowId + '" data-desc="' + scopeLabel + ' ' + (KATEGORI_LABELS[r.kategori] || r.kategori) + '" data-val="' + r.jumlah + '">Revisi</button>' : '') +
+            (canAnulir ? '<button type="button" class="btn btn-danger-sm btn-anulir" data-id="' + r.rowId + '">Anulir</button>' : '') +
           '</div>' +
         '</td>' +
       '</tr>';
@@ -314,7 +405,6 @@ var AknView = (function () {
 
     tbody.innerHTML = html;
 
-    // Pasang click listener tombol revisi
     tbody.querySelectorAll('.btn-revisi').forEach(function (btn) {
       btn.onclick = function () {
         var id = btn.getAttribute('data-id');
@@ -324,7 +414,6 @@ var AknView = (function () {
       };
     });
 
-    // Pasang click listener tombol anulir
     tbody.querySelectorAll('.btn-anulir').forEach(function (btn) {
       btn.onclick = function () {
         var id = btn.getAttribute('data-id');
@@ -394,71 +483,78 @@ var AknView = (function () {
     var container = document.getElementById('akn-chart-container');
     if (!container) return;
 
-    rpc('akn_getTren', token, 6)
-      .then(function (trenData) {
-        _renderSvgChart(container, trenData);
+    rpc('akn_getTren', token, 12)
+      .then(function (res) {
+        var series = (res && Array.isArray(res.series)) ? res.series : (Array.isArray(res) ? res : []);
+        _renderSvgLineChart(container, series);
       })
       .catch(function () {
-        container.innerHTML = '<span style="font-size:12px; color:var(--muted);">Gagal memuat tren.</span>';
+        container.innerHTML = '<span style="font-size:12px; color:var(--muted);">Visualisasi tren belum tersedia.</span>';
       });
   }
 
-  function _renderSvgChart(container, data) {
+  function _renderSvgLineChart(container, data) {
     if (!data || data.length === 0) {
-      container.innerHTML = '<span style="font-size:12px; color:var(--muted);">Belum ada riwayat tren data.</span>';
+      container.innerHTML = '<span style="font-size:12px; color:var(--muted);">Belum ada riwayat tren data multi-periode.</span>';
       return;
     }
 
-    var width = container.clientWidth || 400;
-    var height = 180;
-    var padding = { top: 20, right: 20, bottom: 30, left: 40 };
+    var width = container.clientWidth || 440;
+    var height = 200;
+    var padding = { top: 20, right: 24, bottom: 30, left: 44 };
 
     var maxVal = 10;
     data.forEach(function (d) {
-      if (d.totalKeseluruhan > maxVal) maxVal = d.totalKeseluruhan;
+      var k = d.totalKeseluruhan || 0;
+      if (k > maxVal) maxVal = k;
     });
-    maxVal = Math.ceil(maxVal * 1.15); // headroom
+    maxVal = Math.ceil(maxVal * 1.12);
 
     var chartW = width - padding.left - padding.right;
     var chartH = height - padding.top - padding.bottom;
     var n = data.length;
-    var groupW = chartW / n;
-    var barW = Math.max(8, Math.min(24, groupW * 0.35));
+    var stepX = n > 1 ? (chartW / (n - 1)) : chartW;
 
     var svg = '<svg width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" style="font-family:var(--font-mono); font-size:10px;">';
 
-    // Garis grid horizontal
-    var gridSteps = 3;
-    for (var g = 0; g <= gridSteps; g++) {
-      var val = Math.round((maxVal / gridSteps) * g);
+    // Garis Grid Horizontal
+    for (var g = 0; g <= 3; g++) {
+      var val = Math.round((maxVal / 3) * g);
       var y = padding.top + chartH - (val / maxVal) * chartH;
-      svg += '<line x1="' + padding.left + '" y1="' + y + '" x2="' + (width - padding.right) + '" y2="' + y + '" stroke="var(--border)" stroke-dasharray="2,2" />';
+      svg += '<line x1="' + padding.left + '" y1="' + y + '" x2="' + (width - padding.right) + '" y2="' + y + '" stroke="var(--rule)" stroke-dasharray="3,3" />';
       svg += '<text x="' + (padding.left - 6) + '" y="' + (y + 3) + '" text-anchor="end" fill="var(--muted)">' + val + '</text>';
     }
 
-    // Render bar tiap periode
+    // Bangun Jalur Polyline
+    var pointsKes = [];
+    var pointsPoa = [];
+
     data.forEach(function (d, i) {
-      var xCenter = padding.left + i * groupW + groupW / 2;
-      var hKes = (d.totalKeseluruhan / maxVal) * chartH;
-      var hPoa = (d.totalPoa / maxVal) * chartH;
+      var x = padding.left + (n > 1 ? (i * stepX) : (chartW / 2));
+      var yKes = padding.top + chartH - ((d.totalKeseluruhan || 0) / maxVal) * chartH;
+      var yPoa = padding.top + chartH - ((d.totalPoa || 0) / maxVal) * chartH;
 
-      var xKes = xCenter - barW - 2;
-      var yKes = padding.top + chartH - hKes;
+      pointsKes.push(x.toFixed(1) + ',' + yKes.toFixed(1));
+      pointsPoa.push(x.toFixed(1) + ',' + yPoa.toFixed(1));
 
-      var xPoa = xCenter + 2;
-      var yPoa = padding.top + chartH - hPoa;
+      var shortPeriod = String(d.periode || '').substring(5);
+      svg += '<text x="' + x.toFixed(1) + '" y="' + (height - 8) + '" text-anchor="middle" fill="var(--muted)" font-size="9">' + Format.escape(shortPeriod) + '</text>';
+    });
 
-      // Bar Keseluruhan (Tinta Gelap)
-      svg += '<rect x="' + xKes + '" y="' + yKes + '" width="' + barW + '" height="' + hKes + '" fill="#15181B" rx="1">';
-      svg += '<title>' + d.periode + ' Keseluruhan: ' + d.totalKeseluruhan + '</title></rect>';
+    // Jalur Keseluruhan (Tinta Gelap)
+    svg += '<polyline points="' + pointsKes.join(' ') + '" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round" />';
 
-      // Bar Dit. POA (Oranye Keselamatan)
-      svg += '<rect x="' + xPoa + '" y="' + yPoa + '" width="' + barW + '" height="' + hPoa + '" fill="var(--accent)" rx="1">';
-      svg += '<title>' + d.periode + ' Dit. POA: ' + d.totalPoa + '</title></rect>';
+    // Jalur Dit. POA (Oranye Keselamatan)
+    svg += '<polyline points="' + pointsPoa.join(' ') + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" />';
 
-      // Label periode di bawah
-      var shortPeriod = d.periode.length > 8 ? d.periode.substring(5) : d.periode;
-      svg += '<text x="' + xCenter + '" y="' + (height - 10) + '" text-anchor="middle" fill="var(--text)" font-size="9">' + Format.escape(shortPeriod) + '</text>';
+    // Titik Simpul
+    data.forEach(function (d, i) {
+      var x = padding.left + (n > 1 ? (i * stepX) : (chartW / 2));
+      var yKes = padding.top + chartH - ((d.totalKeseluruhan || 0) / maxVal) * chartH;
+      var yPoa = padding.top + chartH - ((d.totalPoa || 0) / maxVal) * chartH;
+
+      svg += '<circle cx="' + x.toFixed(1) + '" cy="' + yKes.toFixed(1) + '" r="3" fill="#FFFFFF" stroke="var(--primary)" stroke-width="2"><title>' + d.periode + ' PSDKP: ' + d.totalKeseluruhan + '</title></circle>';
+      svg += '<circle cx="' + x.toFixed(1) + '" cy="' + yPoa.toFixed(1) + '" r="3" fill="#FFFFFF" stroke="var(--accent)" stroke-width="2"><title>' + d.periode + ' Dit. POA: ' + d.totalPoa + '</title></circle>';
     });
 
     svg += '</svg>';

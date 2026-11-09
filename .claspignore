@@ -16,8 +16,11 @@ skills-lock.json
 .git/**
 .taste-skill/**
 .agents/**
+.agent/**
 .impeccable/**
 .codex/**
+assets/**
+skills/**
 
 # Pengujian Unit Lokal & Script Linter Node.js
 tests/**

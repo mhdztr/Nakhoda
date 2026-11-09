@@ -1,7 +1,7 @@
 <script>
 /**
  * html/Script_Format.html
- * Utilitas pemformatan teks, angka tabular, tanggal Indonesia, dan token UI.
+ * Utilitas pemformatan teks, angka tabular, tanggal Indonesia, avatar pastel, dan pil status.
  * Memenuhi spesifikasi DESIGN.md: Achromatic Ledger, tabular-nums, zero-emoji.
  */
 var Format = (function () {
@@ -17,9 +17,6 @@ var Format = (function () {
     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
   ];
 
-  /**
-   * Sanitasi string untuk mencegah XSS.
-   */
   function escape(str) {
     if (str === null || str === undefined) return '';
     return String(str)
@@ -30,9 +27,6 @@ var Format = (function () {
       .replace(/'/g, '&#39;');
   }
 
-  /**
-   * Format integer dengan pemisah ribuan titik (1.250).
-   */
   function number(val) {
     if (val === null || val === undefined || val === '') return '0';
     var n = Number(val);
@@ -40,9 +34,6 @@ var Format = (function () {
     return n.toLocaleString('id-ID');
   }
 
-  /**
-   * Format mata uang Rupiah.
-   */
   function currency(val) {
     if (val === null || val === undefined || val === '') return 'Rp 0';
     var n = Number(val);
@@ -50,19 +41,18 @@ var Format = (function () {
     return 'Rp ' + n.toLocaleString('id-ID');
   }
 
-  /**
-   * Parsing objek atau string tanggal menjadi Date yang valid.
-   */
   function _parseDate(d) {
     if (!d) return null;
     if (d instanceof Date) return isNaN(d.getTime()) ? null : d;
-    var parsed = new Date(d);
+    var s = String(d).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+      var parts = s.split('-');
+      return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    }
+    var parsed = new Date(s);
     return isNaN(parsed.getTime()) ? null : parsed;
   }
 
-  /**
-   * Format tanggal ringkas (contoh: 14 Jan 2025).
-   */
   function date(val) {
     var d = _parseDate(val);
     if (!d) return '-';
@@ -72,9 +62,6 @@ var Format = (function () {
     return (day < 10 ? '0' + day : day) + ' ' + month + ' ' + year;
   }
 
-  /**
-   * Format tanggal panjang (contoh: 14 Januari 2025).
-   */
   function dateLong(val) {
     var d = _parseDate(val);
     if (!d) return '-';
@@ -84,9 +71,6 @@ var Format = (function () {
     return day + ' ' + month + ' ' + year;
   }
 
-  /**
-   * Format tanggal & waktu (contoh: 14 Jan 2025, 09:30 WIB).
-   */
   function dateTime(val) {
     var d = _parseDate(val);
     if (!d) return '-';
@@ -98,9 +82,6 @@ var Format = (function () {
     return dt + ', ' + hh + ':' + mm + ' WIB';
   }
 
-  /**
-   * Format inisial 2 huruf kapital untuk avatar nama.
-   */
   function initials(name) {
     if (!name) return '--';
     var parts = String(name).trim().split(/\s+/);
@@ -111,55 +92,61 @@ var Format = (function () {
   }
 
   /**
-   * Warna latar deterministik untuk avatar dari nama pengguna.
+   * 6 rona lembut deterministik (DESIGN.md §10.2: L=0.90, C=0.04 dengan teks gelap).
    */
   function avatarBg(name) {
-    if (!name) return '#5C6370';
+    if (!name) return '#E6E9EC';
     var hash = 0;
-    for (var i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    var str = String(name);
+    for (var i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
-    var colors = [
-      '#15181B', // Tinta Hitam
-      '#D9480F', // Oranye Keselamatan
-      '#364FC7', // Biru Baja
-      '#2B8A3E', // Hijau Lumut
-      '#862E9C', // Ungu
-      '#5C6370', // Slate Abu
-      '#E8590C', // Oranye Terang
-      '#0C8599'  // Cyan Laut
+    var pastels = [
+      '#FCE8DF', // Warm Peach (Safety Orange Tint)
+      '#E2F2E8', // Sage Mist
+      '#E6EBF2', // Cool Slate Tint
+      '#F5EBD6', // Warm Sand
+      '#ECE6F4', // Soft Lavender
+      '#E1EFEF'  // Seafoam Mist
     ];
-    var idx = Math.abs(hash) % colors.length;
-    return colors[idx];
+    return pastels[Math.abs(hash) % pastels.length];
   }
 
   /**
-   * Badge Pill HTML untuk status transaksi, sertifikat, atau pendaftaran.
+   * Pil status dengan titik 6px (DESIGN.md §5.6).
    */
   function statusBadge(status) {
     var s = String(status || '').toUpperCase().trim();
-    var badgeClass = 'badge-muted';
-    var label = s || 'DRAFT';
+    var pillClass = 'pill-neutral';
+    var label = s || 'Draft';
 
     switch (s) {
       case 'ACTIVE':
+      case 'AKTIF':
       case 'APPROVED':
       case 'BERLAKU':
       case 'SELESAI':
       case 'LENGKAP':
-        badgeClass = 'badge-success';
-        if (s === 'ACTIVE') label = 'Aktif';
-        if (s === 'APPROVED') label = 'Disetujui';
-        if (s === 'BERLAKU') label = 'Berlaku';
+      case 'LAIK_OPERASI':
+        pillClass = 'pill-positive';
+        if (s === 'ACTIVE' || s === 'AKTIF') label = 'Aktif';
+        else if (s === 'APPROVED') label = 'Disetujui';
+        else if (s === 'BERLAKU') label = 'Berlaku';
+        else if (s === 'LENGKAP') label = 'Lengkap';
+        else if (s === 'LAIK_OPERASI') label = 'Laik operasi';
+        else label = 'Selesai';
         break;
 
       case 'PENDING':
       case 'SEGERA_HABIS':
       case 'PROSES':
       case 'MENUNGGU':
-        badgeClass = 'badge-warning';
-        if (s === 'PENDING') label = 'Menunggu';
-        if (s === 'SEGERA_HABIS') label = 'Segera Habis';
+      case 'PERLU_DILENGKAPI':
+        pillClass = 'pill-warning';
+        if (s === 'PENDING' || s === 'MENUNGGU') label = 'Menunggu';
+        else if (s === 'SEGERA_HABIS') label = 'Segera habis';
+        else if (s === 'PERLU_DILENGKAPI') label = 'Perlu dilengkapi';
+        else label = 'Proses';
         break;
 
       case 'REJECTED':
@@ -167,43 +154,46 @@ var Format = (function () {
       case 'VOID':
       case 'NONAKTIF':
       case 'BELUM_LENGKAP':
-        badgeClass = 'badge-danger';
+      case 'KURANG_AWAK':
+        pillClass = 'pill-negative';
         if (s === 'REJECTED') label = 'Ditolak';
-        if (s === 'KEDALUWARSA') label = 'Kedaluwarsa';
-        if (s === 'VOID') label = 'Dianulir';
-        if (s === 'NONAKTIF') label = 'Nonaktif';
-        if (s === 'BELUM_LENGKAP') label = 'Belum Lengkap';
+        else if (s === 'KEDALUWARSA') label = 'Kedaluwarsa';
+        else if (s === 'VOID') label = 'Dianulir';
+        else if (s === 'NONAKTIF') label = 'Nonaktif';
+        else if (s === 'KURANG_AWAK') label = 'Kurang awak';
+        else label = 'Belum lengkap';
         break;
 
       case 'SUPERSEDED':
-        badgeClass = 'badge-muted';
+        pillClass = 'pill-neutral';
         label = 'Direvisi';
         break;
 
       default:
-        badgeClass = 'badge-muted';
-        label = s || '-';
+        pillClass = 'pill-neutral';
+        label = s ? (s.charAt(0) + s.slice(1).toLowerCase().replace(/_/g, ' ')) : '-';
         break;
     }
 
-    return '<span class="badge ' + badgeClass + '">' + escape(label) + '</span>';
+    return '<span class="pill ' + pillClass + '"><span class="pill-dot"></span>' + escape(label) + '</span>';
   }
 
-  /**
-   * Badge Pill HTML untuk rumpun/kelompok awak (Dek, Mesin, Non-Awak).
-   */
   function kelompokBadge(kelompok) {
     var k = String(kelompok || '').toUpperCase().trim();
-    var badgeClass = 'badge-muted';
-    if (k === 'DEK') badgeClass = 'badge-accent';
-    else if (k === 'MESIN') badgeClass = 'badge-navy';
-
-    return '<span class="badge ' + badgeClass + '">' + escape(k || '-') + '</span>';
+    if (k.indexOf('AWAK_') === 0) k = k.substring(5);
+    var cls = k === 'DEK' ? 'badge-accent' : 'badge-neutral';
+    var lbl = k === 'DEK' ? 'Dek' : (k === 'MESIN' ? 'Mesin' : (k || '-'));
+    return '<span class="pill ' + cls + '">' + escape(lbl) + '</span>';
   }
 
-  /**
-   * Helper nilai aman dengan fallback strip jika kosong.
-   */
+  function deltaText(delta, suffix) {
+    var d = parseInt(delta, 10) || 0;
+    var sfx = suffix ? ' ' + suffix : '';
+    if (d > 0) return '<span class="delta-up">+' + number(d) + sfx + '</span>';
+    if (d < 0) return '<span class="delta-down">' + number(d) + sfx + '</span>';
+    return '<span style="color:var(--muted);">0' + sfx + '</span>';
+  }
+
   function safe(val, fallback) {
     if (val === null || val === undefined || String(val).trim() === '') {
       return fallback !== undefined ? fallback : '-';
@@ -222,6 +212,7 @@ var Format = (function () {
     avatarBg: avatarBg,
     statusBadge: statusBadge,
     kelompokBadge: kelompokBadge,
+    deltaText: deltaText,
     safe: safe
   };
 })();

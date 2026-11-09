@@ -1,26 +1,32 @@
-<!-- html/Script_Laporan.html -->
 <script>
 /**
- * Controller Laporan Konsolidasi & Ekspor Data Nakhoda.
+ * html/Script_Laporan.html
+ * Controller Klien Laporan Dinas & Ekspor Data Nakhoda (Achromatic Ledger)
+ * Nakhoda — Timja Pengawakan Dit. POA KKP RI
  */
 var LaporanView = (function () {
   'use strict';
 
   var _previewData = null;
+  var _eventsBound = false;
+
+  var KATEGORI_LABELS = {
+    'PNS': 'Pegawai negeri sipil (PNS)',
+    'PPPK_FUNGSIONAL': 'PPPK fungsional',
+    'PPPK_PELAKSANA': 'PPPK pelaksana',
+    'PPPK_PARUH_WAKTU': 'PPPK paruh waktu',
+    'PJLP': 'PJLP / pegawai non-ASN'
+  };
 
   function init() {
-    var outlet = document.getElementById('outlet-content');
-    var tpl = document.getElementById('view-laporan');
-    if (!outlet || !tpl) return;
-
-    outlet.innerHTML = '';
-    outlet.appendChild(tpl.cloneNode(true));
-
     _bindEvents();
     loadPreview();
   }
 
   function _bindEvents() {
+    if (_eventsBound) return;
+    _eventsBound = true;
+
     var btnPrint = document.getElementById('btn-lap-print');
     if (btnPrint) {
       btnPrint.onclick = function () {
@@ -44,20 +50,25 @@ var LaporanView = (function () {
   }
 
   function loadPreview() {
-    var token = Auth.getToken();
+    var token = AuthApp.getToken();
     if (!token) return;
 
-    rpc('lap_getPreviewData', { token: token, params: { jenisLaporan: 'KOMPREHENSIF' } })
-      .then(function (res) {
-        if (!res || !res.success) {
-          Toast.error(res ? res.error : 'Gagal memuat pratinjau laporan');
+    var btnPrint = document.getElementById('btn-lap-print');
+    if (btnPrint) btnPrint.classList.add('loading');
+
+    rpc('lap_getPreviewData', token, { jenisLaporan: 'KOMPREHENSIF' })
+      .then(function (data) {
+        if (btnPrint) btnPrint.classList.remove('loading');
+        if (!data) {
+          Toast.error('Data pratinjau laporan tidak ditemukan.');
           return;
         }
-        _previewData = res.data;
+        _previewData = data;
         _render();
       })
       .catch(function (err) {
-        Toast.error(err.message || 'Galat memuat pratinjau laporan');
+        if (btnPrint) btnPrint.classList.remove('loading');
+        Toast.error(err.message || 'Galat memuat pratinjau laporan.');
       });
   }
 
@@ -65,9 +76,17 @@ var LaporanView = (function () {
     if (!_previewData) return;
 
     var r = _previewData.ringkasan || {};
+
+    // 1. Kalimat Temuan Subtitle
+    var subEl = document.getElementById('laporan-finding-sub');
+    if (subEl) {
+      subEl.textContent = r.findingSubtitle || ('Dokumen resmi ' + (_previewData.nomorDokumen || 'ND.AWAK/2026/POA-PSDKP') + ' · Siap cetak A4 dan ekspor CSV.');
+    }
+
+    // 2. Metadata Dokumen
     var metaEl = document.getElementById('lap-meta-info');
     if (metaEl) {
-      metaEl.textContent = 'Nomor: ' + _previewData.nomorDokumen + ' · Tanggal: ' + Format.date(_previewData.tanggalCetak);
+      metaEl.textContent = 'Nomor: ' + (_previewData.nomorDokumen || 'ND.AWAK/2026/POA-PSDKP') + ' · Tanggal: ' + Format.date(_previewData.tanggalCetak);
     }
 
     var tglSurat = document.getElementById('lap-tgl-surat');
@@ -76,103 +95,135 @@ var LaporanView = (function () {
     var penyusunEl = document.getElementById('lap-nama-penyusun');
     if (penyusunEl && _previewData.pencetak) penyusunEl.textContent = _previewData.pencetak;
 
-    // Metrik 4-Box
+    // 3. Metrik 4-Box
     var totAwak = document.getElementById('lap-total-awak');
     var totKapal = document.getElementById('lap-total-kapal');
     var kapalLaik = document.getElementById('lap-kapal-laik');
     var kelaikanSert = document.getElementById('lap-kelaikan-sertifikat');
 
-    if (totAwak && r.kpi) totAwak.textContent = Format.number(r.kpi.totalAwak);
-    if (totKapal && r.kpi) totKapal.textContent = Format.number(r.kpi.totalKapal);
-    if (kapalLaik && r.sijilSummary) kapalLaik.textContent = r.sijilSummary.laikOperasi + ' Unit';
+    if (totAwak && r.kpi) totAwak.textContent = Format.number(r.kpi.totalAwak || r.kpi.totalAknKeseluruhan || 0);
+    if (totKapal && r.sijilSummary) totKapal.textContent = Format.number(r.sijilSummary.totalKapal || 0);
+    if (kapalLaik && r.sijilSummary) kapalLaik.textContent = Format.number(r.sijilSummary.laikOperasi || 0) + ' Unit';
     if (kelaikanSert && r.kpi) kelaikanSert.textContent = (r.kpi.kelaikanPersen || 0) + '%';
 
-    // Narasi Temuan
+    // 4. Narasi Temuan
     var narasiEl = document.getElementById('lap-narasi-temuan');
     if (narasiEl) {
-      if (r.narasiTemuan && r.narasiTemuan.length > 0) {
+      if (Array.isArray(r.narasiTemuan) && r.narasiTemuan.length > 0) {
         narasiEl.innerHTML = r.narasiTemuan.map(function (n) {
-          return '<span style="display:block; margin-bottom:4px;">&bull; ' + Format.escape(n) + '</span>';
+          return '<div style="margin-bottom:4px;">&bull; ' + Format.escape(n) + '</div>';
         }).join('');
       } else {
-        narasiEl.textContent = 'Seluruh armada kapal pengawas dan personil berada dalam kondisi kelaikan operasi normal.';
+        narasiEl.textContent = r.findingSubtitle || 'Seluruh armada kapal pengawas dan personil berada dalam kondisi kelaikan operasi normal.';
       }
     }
 
-    // Tabel Komposisi AKN
-    var tbodyAkn = document.querySelector('#lap-table-akn tbody');
-    if (tbodyAkn && r.aknTerbaru) {
-      var m = r.aknTerbaru;
-      var labels = {
-        'PNS': 'Pegawai Negeri Sipil (PNS)',
-        'PPPK': 'PPPK',
-        'PPNPN': 'PPNPN',
-        'OUTSOURCING': 'Tenaga Alih Daya',
-        'KONTRAK': 'Kontrak / PJLP'
-      };
-      var rowsHtml = '';
-      ['PNS', 'PPPK', 'PPNPN', 'OUTSOURCING', 'KONTRAK'].forEach(function (k) {
-        var poa = (m.poa && m.poa[k]) || 0;
-        var tot = (m.keseluruhan && m.keseluruhan[k]) || 0;
-        rowsHtml +=
-          '<tr style="border-bottom:1px solid #EAECF0;">' +
-            '<td style="padding:6px 8px;">' + (labels[k] || k) + '</td>' +
-            '<td style="padding:6px 8px; text-align:right; font-weight:600;">' + Format.number(poa) + '</td>' +
-            '<td style="padding:6px 8px; text-align:right; font-weight:600;">' + Format.number(tot) + '</td>' +
-          '</tr>';
+    // 5. Tabel Komposisi AKN
+    var tableAkn = document.querySelector('#lap-table-akn tbody');
+    if (tableAkn && r.akn) {
+      var kats = ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'];
+      var mat = r.akn.matrix || {};
+      var aknHtml = '';
+      var sumPoa = 0;
+      var sumKes = 0;
+
+      kats.forEach(function (kat) {
+        var row = mat[kat] || { AKN_POA: 0, AKN_KESELURUHAN: 0 };
+        var pPoa = row.AKN_POA || 0;
+        var pKes = row.AKN_KESELURUHAN || 0;
+        sumPoa += pPoa;
+        sumKes += pKes;
+        var label = KATEGORI_LABELS[kat] || kat;
+
+        aknHtml += '<tr style="border-bottom:1px solid #E4E7EC;">' +
+          '<td style="padding:6px 8px;">' + Format.escape(label) + '</td>' +
+          '<td class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(pPoa) + '</td>' +
+          '<td class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(pKes) + '</td>' +
+        '</tr>';
       });
-      tbodyAkn.innerHTML = rowsHtml;
+
+      aknHtml += '<tr style="background:#F8F9FA; font-weight:700; border-top:2px solid #15181B;">' +
+        '<td style="padding:6px 8px;">TOTAL PERSONIL AKN</td>' +
+        '<td class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(sumPoa) + '</td>' +
+        '<td class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(sumKes) + '</td>' +
+      '</tr>';
+
+      tableAkn.innerHTML = aknHtml;
     }
 
-    // Tabel Armada Kapal
-    var tbodyArmada = document.querySelector('#lap-table-armada tbody');
-    if (tbodyArmada) {
-      var kapalList = _previewData.armada || [];
-      if (kapalList.length === 0) {
-        tbodyArmada.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:10px; color:#595E65;">Tidak ada data kapal.</td></tr>';
-      } else {
-        tbodyArmada.innerHTML = kapalList.map(function (k) {
-          var statusStyle = k.statusManning === 'LAIK_OPERASI'
-            ? 'color:#2B8A3E; font-weight:600;'
-            : (k.statusManning === 'KRITIS' ? 'color:#D9480F; font-weight:700;' : 'color:#E67700; font-weight:600;');
-          var devLabel = k.deviasiKekurangan > 0 ? '-' + k.deviasiKekurangan : '0';
-          return (
-            '<tr style="border-bottom:1px solid #EAECF0;">' +
-              '<td style="padding:6px 8px; font-weight:500;">' + Format.escape(k.namaKapal) + '</td>' +
-              '<td style="padding:6px 8px;">' + Format.escape(k.kelasKapal) + '</td>' +
-              '<td style="padding:6px 8px; text-align:center;">' + k.kebutuhanMinimum + '</td>' +
-              '<td style="padding:6px 8px; text-align:center; font-weight:600;">' + k.totalTerisi + '</td>' +
-              '<td style="padding:6px 8px; text-align:center;">' + devLabel + '</td>' +
-              '<td style="padding:6px 8px; text-align:center; ' + statusStyle + '">' + Format.escape(k.statusManning) + '</td>' +
-            '</tr>'
-          );
-        }).join('');
+    // 6. Tabel Matriks Armada Kapal
+    var tableArmada = document.querySelector('#lap-table-armada tbody');
+    if (tableArmada) {
+      var kapalArr = Array.isArray(_previewData.armada) && _previewData.armada.length > 0
+        ? _previewData.armada
+        : (r.sijilSummary && Array.isArray(r.sijilSummary.kapalRingkas) ? r.sijilSummary.kapalRingkas : []);
+
+      if (kapalArr.length === 0) {
+        tableArmada.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:10px; color:#595E65;">Tidak ada data armada kapal.</td></tr>';
+        return;
       }
+
+      var armadaHtml = '';
+      kapalArr.forEach(function (k) {
+        var dev = k.kekuranganKursi || 0;
+        var devText = dev > 0 ? '-' + dev : '0';
+        var devColor = dev >= 2 ? '#C92A2A' : (dev === 1 ? '#D9480F' : '#2B8A3E');
+        var statusColor = k.statusOperasi === 'LAIK' ? '#2B8A3E' : (k.statusOperasi === 'KRITIS' ? '#C92A2A' : '#D9480F');
+
+        armadaHtml += '<tr style="border-bottom:1px solid #E4E7EC;">' +
+          '<td style="padding:6px 8px; font-weight:600;">' + Format.escape(k.namaKapal) + '</td>' +
+          '<td style="padding:6px 8px;">' + Format.escape(k.kelasKapal) + '</td>' +
+          '<td class="mono tnum" style="padding:6px 8px; text-align:center;">' + Format.number(k.kebutuhanMinimum || 0) + '</td>' +
+          '<td class="mono tnum" style="padding:6px 8px; text-align:center;">' + Format.number(k.jumlahAwakBertugas || 0) + '</td>' +
+          '<td class="mono tnum" style="padding:6px 8px; text-align:center; font-weight:600; color:' + devColor + ';">' + devText + '</td>' +
+          '<td style="padding:6px 8px; text-align:center; font-weight:600; font-size:10px; color:' + statusColor + ';">' + Format.escape(k.statusOperasi || 'LAIK') + '</td>' +
+        '</tr>';
+      });
+
+      tableArmada.innerHTML = armadaHtml;
     }
   }
 
   function _exportData(modul) {
-    var token = Auth.getToken();
+    var token = AuthApp.getToken();
     if (!token) return;
 
-    Toast.info('Menyiapkan berkas ekspor CSV ' + modul + '...');
-    rpc('lap_exportData', { token: token, params: { modul: modul } })
+    var btnId = modul === 'DIREKTORI' ? 'btn-lap-export-direktori' : 'btn-lap-export-sijil';
+    var btn = document.getElementById(btnId);
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add('loading');
+    }
+
+    rpc('lap_exportData', token, { modul: modul })
       .then(function (res) {
-        if (!res || !res.success) {
-          Toast.error(res ? res.error : 'Gagal mengekspor data');
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        if (!res || !res.csv) {
+          Toast.error('Gagal mengekspor data: Berkas CSV kosong.');
           return;
         }
-        var blob = new Blob([res.data.csv], { type: 'text/csv;charset=utf-8;' });
-        var link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', res.data.filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        Toast.success('Berkas ' + res.data.filename + ' berhasil diunduh.');
+
+        var blob = new Blob([res.csv], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = res.filename || ('Nakhoda_' + modul + '.csv');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        Toast.success('Berkas CSV ' + modul + ' berhasil diunduh.');
       })
       .catch(function (err) {
-        Toast.error(err.message || 'Galat ekspor CSV');
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('loading');
+        }
+        Toast.error(err.message || 'Gagal mengekspor data.');
       });
   }
 
@@ -182,4 +233,3 @@ var LaporanView = (function () {
   };
 })();
 </script>
-

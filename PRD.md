@@ -185,4 +185,4 @@ Sistem menerapkan prinsip pelestarian data:
 - [ ] Data 396 Awak Kapal Armada terdaftar lengkap di Direktori dan bersih dari duplikasi.
 - [ ] Mesin status sertifikat kepelautan berjalan 100% server-side dengan klasifikasi akurat (`BERLAKU`, `SEGERA_HABIS`, `KEDALUWARSA`, `BELUM_ADA`).
 - [ ] Papan Sijil berhasil memetakan rasio keterisian awak kapal pengawas terhadap formasi minimum secara real-time.
-- [ ] Seluruh kode lolos audit linter antarmuka (`node lint_ui.js`), inspeksi skill (`lint.mjs --app`), dan verifikasi sintaksis JavaScript (`0 errors`).
+- [ ] Seluruh kode lolos audit linter antarmuka (`node lint_ui.js`), inspeksi skill (`consistency.mjs`), dan verifikasi sintaksis JavaScript (`0 errors`).
