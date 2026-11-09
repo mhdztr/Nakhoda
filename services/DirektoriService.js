@@ -270,6 +270,9 @@ function dir_save(params) {
       if (found) {
         updateRowCells(sheet, found.rowIndex, record);
         _auditLog(session.userId, 'UPDATE_AWAK', SHEET_AWAK.MASTER_AWAK, pId, 'Pembaruan profil: ' + nama);
+        if (typeof akn_syncFromAwak === 'function') {
+          try { akn_syncFromAwak(session.userId, 'Pembaruan profil awak: ' + nama); } catch (eAkn) {}
+        }
         return {
           success: true,
           data: { pegawaiId: pId, message: 'Profil personil berhasil diperbarui.' }
@@ -279,6 +282,9 @@ function dir_save(params) {
         record.PegawaiID = newId;
         appendRowData(sheet, record);
         _auditLog(session.userId, 'CREATE_AWAK', SHEET_AWAK.MASTER_AWAK, newId, 'Perekaman personil baru: ' + nama);
+        if (typeof akn_syncFromAwak === 'function') {
+          try { akn_syncFromAwak(session.userId, 'Penambahan personil baru: ' + nama); } catch (eAkn) {}
+        }
         return {
           success: true,
           data: { pegawaiId: newId, message: 'Personil baru berhasil ditambahkan.' }
@@ -333,6 +339,10 @@ function dir_batchAssign(params) {
 
       _auditLog(session.userId, 'BATCH_ASSIGN_AWAK', SHEET_AWAK.MASTER_AWAK, kat,
         'Penugasan kategori ' + kat + ' untuk ' + updatedCount + ' awak kapal');
+
+      if (typeof akn_syncFromAwak === 'function') {
+        try { akn_syncFromAwak(session.userId, 'Penugasan massal kategori ' + kat + ' (' + updatedCount + ' personil)'); } catch (eAkn) {}
+      }
 
       return {
         success: true,
@@ -520,6 +530,8 @@ function dir_syncSikap(tokenOrParams) {
           if (jab && r.JabatanLengkap !== jab) { patch.JabatanLengkap = jab; needsUpdate = true; }
           if (kelJab && r.KelompokJabatan !== kelJab) { patch.KelompokJabatan = kelJab; needsUpdate = true; }
           if (status && r.StatusAktif !== status) { patch.StatusAktif = status; needsUpdate = true; }
+          var kat = String(emp.KategoriKepegawaian || emp.kategori || emp.StatusKepegawaian || '').trim();
+          if (kat && r.KategoriKepegawaian !== kat) { patch.KategoriKepegawaian = kat; needsUpdate = true; }
 
           if (needsUpdate) {
             updateRowCells(sheetAwak, existing.rowIndex, patch);
@@ -531,6 +543,7 @@ function dir_syncSikap(tokenOrParams) {
           var kelas = String(emp.TingkatKelas || emp.tingkatKelas || extractKelasKapal(jab));
           var rmp = String(emp.Rumpun || emp.rumpun || extractRumpunAwak(jab));
           if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
+          var katBaru = String(emp.KategoriKepegawaian || emp.kategori || emp.StatusKepegawaian || 'PNS').trim();
 
           toAppend.push([
             newId,
@@ -540,7 +553,7 @@ function dir_syncSikap(tokenOrParams) {
             jab || kelJab || 'Awak Kapal Pengawas',
             kelas || 'NON_KAPAL',
             rmp || 'DEK',
-            'PNS',
+            katBaru || 'PNS',
             status || 'AKTIF',
             String(emp.PangkalanID || ''),
             String(emp.KapalID || ''),
@@ -560,8 +573,126 @@ function dir_syncSikap(tokenOrParams) {
         sheetAwak.getRange(startRow, 1, toAppend.length, toAppend[0].length).setValues(toAppend);
       }
 
+      // 3. Sinkronisasi Data Sertifikasi & Diklat dari SIKAP jika lembar sertifikat tersedia
+      var certSyncedCount = 0;
+      if (sikapId && isSourceFromSheet) {
+        try {
+          var sikapSs = SpreadsheetApp.openById(sikapId);
+          var certSheetNames = ['Riwayat_Diklat', 'Sertifikasi', 'Data_Sertifikat', 'Pelatihan', 'Diklat_Pegawai', 'TX_Pelatihan_Awak'];
+          var sCertSheet = null;
+          for (var c = 0; c < certSheetNames.length; c++) {
+            sCertSheet = sikapSs.getSheetByName(certSheetNames[c]);
+            if (sCertSheet) break;
+          }
+
+          if (sCertSheet) {
+            var rawCerts = sheetToObjects(sCertSheet);
+            if (rawCerts && rawCerts.length > 0) {
+              var sheetSrt = openAwakSheet(SHEET_AWAK.PELATIHAN_AWAK);
+              var existingSrt = sheetToObjects(sheetSrt);
+
+              // Index existing active certificates by PegawaiID + KodePelatihan and PegawaiID + NomorSertifikat
+              var certIndex = {};
+              existingSrt.forEach(function (s, sIdx) {
+                if (String(s.Status || '').toUpperCase() === ROW_STATUS.ACTIVE) {
+                  var epId = String(s.PegawaiID || '');
+                  var ekd = String(s.KodePelatihan || '');
+                  var eno = String(s.NomorSertifikat || '');
+                  if (epId && ekd) certIndex[epId + '::' + ekd] = { row: s, rowIndex: sIdx + 2 };
+                  if (epId && eno && eno !== '-') certIndex[epId + '::' + eno] = { row: s, rowIndex: sIdx + 2 };
+                }
+              });
+
+              // Fresh lookup NIP -> PegawaiID dari sheetAwak terkini
+              var freshAwak = sheetToObjects(sheetAwak);
+              var nipToPid = {};
+              freshAwak.forEach(function (a) {
+                var cNip = String(a.NIP || '').replace(/[^0-9]/g, '');
+                if (cNip) nipToPid[cNip] = String(a.PegawaiID || '');
+                var pid = String(a.PegawaiID || '');
+                if (pid) nipToPid[pid] = pid;
+              });
+
+              var certsToAppend = [];
+              rawCerts.forEach(function (c) {
+                var cNip = String(c.NIP || c.nip || '').trim().replace(/[^0-9]/g, '');
+                var cPid = String(c.PegawaiID || c.pegawaiId || '').trim();
+                var targetPid = cPid ? (nipToPid[cPid] || cPid) : (cNip ? nipToPid[cNip] : '');
+                if (!targetPid) return;
+
+                var namaPel = String(c.NamaPelatihan || c.Nama_Pelatihan || c.Nama_Diklat || c.NamaDiklat || c.NamaSertifikat || c.Jenis_Diklat || '').trim();
+                var kdPel = String(c.KodePelatihan || c.Kode_Pelatihan || c.Kode || '').trim();
+                if (!kdPel && namaPel) {
+                  kdPel = 'TRN-' + namaPel.toUpperCase().replace(/[^A-Z0-9]/g, '_').substring(0, 18);
+                }
+                if (!kdPel && !namaPel) return;
+                if (!namaPel) namaPel = kdPel;
+
+                var noSert = String(c.NomorSertifikat || c.Nomor_Sertifikat || c.NoSertifikat || c.No_Sertifikat || '-').trim();
+                var tglTerbit = String(c.TanggalTerbit || c.Tanggal_Terbit || c.Tgl_Sertifikat || '').trim();
+                var berlakuSampai = String(c.BerlakuSampai || c.Tanggal_Kedaluwarsa || c.Tgl_Expired || c.Masa_Berlaku || '').trim();
+                var lembaga = String(c.PenerbitLembaga || c.Penyelenggara || c.Lembaga || 'Pusdiklat / Balai KKP').trim();
+                var thn = parseInt(c.TahunPelatihan || c.Tahun || (tglTerbit ? tglTerbit.substring(0, 4) : now.getFullYear()), 10) || now.getFullYear();
+
+                var key1 = targetPid + '::' + kdPel;
+                var key2 = targetPid + '::' + noSert;
+                var existingC = certIndex[key1] || (noSert !== '-' ? certIndex[key2] : null);
+
+                if (existingC) {
+                  var ex = existingC.row;
+                  var cPatch = { 'UpdatedAt': now, 'UpdatedBy': session.userId };
+                  var cNeeds = false;
+                  if (noSert && noSert !== '-' && ex.NomorSertifikat !== noSert) { cPatch.NomorSertifikat = noSert; cNeeds = true; }
+                  if (berlakuSampai && ex.BerlakuSampai !== berlakuSampai) { cPatch.BerlakuSampai = berlakuSampai; cNeeds = true; }
+                  if (tglTerbit && ex.TanggalTerbit !== tglTerbit) { cPatch.TanggalTerbit = tglTerbit; cNeeds = true; }
+                  if (cNeeds) {
+                    updateRowCells(sheetSrt, existingC.rowIndex, cPatch);
+                    certSyncedCount++;
+                  }
+                } else {
+                  var newRowId = 'AWAK-SRT-' + Utilities.getUuid().replace(/-/g, '').substring(0, 10).toUpperCase();
+                  var periode = getPeriodeFromDate(tglTerbit || Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd'));
+                  certsToAppend.push([
+                    newRowId,
+                    DIVISI_ID.AWAK,
+                    periode,
+                    session.userId,
+                    now,
+                    ROW_STATUS.ACTIVE,
+                    '', // SupersedesRowID
+                    '', '', '', // Void fields
+                    targetPid,
+                    kdPel,
+                    namaPel,
+                    'SUDAH_LULUS',
+                    noSert,
+                    thn,
+                    tglTerbit,
+                    berlakuSampai,
+                    lembaga,
+                    ''  // EvidenceID
+                  ]);
+                  certSyncedCount++;
+                }
+              });
+
+              if (certsToAppend.length > 0) {
+                var sStart = sheetSrt.getLastRow() + 1;
+                sheetSrt.getRange(sStart, 1, certsToAppend.length, certsToAppend[0].length).setValues(certsToAppend);
+              }
+            }
+          }
+        } catch (eCert) {
+          Logger.log('[dir_syncSikap] Info: Gagal sinkronisasi sertifikat SIKAP: ' + eCert.message);
+        }
+      }
+
       _auditLog(session.userId, 'SYNC_SIKAP', SHEET_AWAK.MASTER_AWAK, 'SYNC',
-        'Sinkronisasi SIKAP berhasil: ' + matchedCount + ' cocok, ' + updatedCount + ' dimutakhirkan, ' + addedCount + ' personil baru ditambahkan.');
+        'Sinkronisasi SIKAP berhasil: ' + matchedCount + ' cocok, ' + updatedCount + ' dimutakhirkan, ' + addedCount + ' personil baru, ' + certSyncedCount + ' sertifikat disinkronkan.');
+
+      if (typeof akn_syncFromAwak === 'function') {
+        try { akn_syncFromAwak(session.userId, 'Sinkronisasi SIKAP: ' + updatedCount + ' mutasi, ' + addedCount + ' awak baru'); } catch (eAkn) {}
+      }
 
       return {
         success: true,
@@ -571,6 +702,7 @@ function dir_syncSikap(tokenOrParams) {
           matched: matchedCount,
           updated: updatedCount,
           added: addedCount,
+          sertifikatSynced: certSyncedCount,
           timestamp: now.toISOString()
         }
       };

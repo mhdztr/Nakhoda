@@ -174,6 +174,10 @@ function buildHtml() {
           }, 10);
         },
 
+        akn_recalculate: function(token) {
+          return this.akn_getPapan(token, '2026-W09');
+        },
+
         akn_getTren: function(token, count) {
           var self = this;
           setTimeout(function() {
@@ -273,6 +277,7 @@ function buildHtml() {
                 matched: 396,
                 updated: 0,
                 added: 0,
+                sertifikatSynced: 0,
                 timestamp: new Date().toISOString()
               }
             });

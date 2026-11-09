@@ -156,12 +156,61 @@ function validateAknMatrix(inputMatrix) {
   };
 }
 
+/**
+ * Menghitung kesimpulan agregasi komposisi AKN langsung dari data personil Master_Awak.
+ * Menghitung personil aktif berdasarkan (Scope, Kategori) secara deterministik.
+ *
+ * @param {Array<Object>} awakRows
+ * @returns {{
+ *   AKN_KESELURUHAN: Object,
+ *   AKN_POA: Object,
+ *   totalAktif: number,
+ *   totalPoa: number
+ * }}
+ */
+function akn_aggregateAwakRows(awakRows) {
+  var counts = {
+    AKN_KESELURUHAN: { PNS: 0, PPPK_FUNGSIONAL: 0, PPPK_PELAKSANA: 0, PPPK_PARUH_WAKTU: 0, PJLP: 0 },
+    AKN_POA: { PNS: 0, PPPK_FUNGSIONAL: 0, PPPK_PELAKSANA: 0, PPPK_PARUH_WAKTU: 0, PJLP: 0 },
+    totalAktif: 0,
+    totalPoa: 0
+  };
+
+  if (!awakRows || !Array.isArray(awakRows)) return counts;
+
+  awakRows.forEach(function (a) {
+    var st = String(a.StatusAktif || 'AKTIF').toUpperCase().trim();
+    if (st !== 'AKTIF') return; // Abaikan non-aktif / mutasi
+
+    var rawKat = String(a.KategoriKepegawaian || 'PNS').trim().toUpperCase();
+    var kat = 'PNS';
+    if (rawKat === 'PPPK_FUNGSIONAL' || rawKat.indexOf('FUNGSIONAL') !== -1) kat = 'PPPK_FUNGSIONAL';
+    else if (rawKat === 'PPPK_PELAKSANA' || rawKat.indexOf('PELAKSANA') !== -1) kat = 'PPPK_PELAKSANA';
+    else if (rawKat === 'PPPK_PARUH_WAKTU' || rawKat.indexOf('PARUH') !== -1) kat = 'PPPK_PARUH_WAKTU';
+    else if (rawKat === 'PJLP' || rawKat.indexOf('NON') !== -1 || rawKat.indexOf('KONTRAK') !== -1) kat = 'PJLP';
+    else kat = 'PNS';
+
+    counts.AKN_KESELURUHAN[kat]++;
+    counts.totalAktif++;
+
+    var unit = String(a.Unit || a.PangkalanID || a.Catatan || a.JabatanLengkap || '').toLowerCase();
+    var isPoa = unit.indexOf('pusat') !== -1 || unit.indexOf('poa') !== -1 || unit.indexOf('armada kapal pengawas (pusat)') !== -1;
+    if (isPoa) {
+      counts.AKN_POA[kat]++;
+      counts.totalPoa++;
+    }
+  });
+
+  return counts;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     AKN_SCOPES: AKN_SCOPES,
     AKN_KATEGORIS: AKN_KATEGORIS,
     resolveCarryForward: resolveCarryForward,
     resolveMatrix: resolveMatrix,
-    validateAknMatrix: validateAknMatrix
+    validateAknMatrix: validateAknMatrix,
+    akn_aggregateAwakRows: akn_aggregateAwakRows
   };
 }

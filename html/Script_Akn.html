@@ -30,8 +30,7 @@ var AknView = (function () {
 
     var periodInput = document.getElementById('akn-periode-select');
     var btnRefresh = document.getElementById('btn-akn-refresh');
-    var btnOpenModal = document.getElementById('btn-akn-open-modal');
-    var formMatrix = document.getElementById('form-akn-matrix');
+    var btnRecalculate = document.getElementById('btn-akn-recalculate');
     var btnNoChange = document.getElementById('btn-akn-confirm-nochange');
 
     if (btnRefresh) {
@@ -41,9 +40,9 @@ var AknView = (function () {
       };
     }
 
-    if (btnOpenModal) {
-      btnOpenModal.onclick = function () {
-        _openInputModal();
+    if (btnRecalculate) {
+      btnRecalculate.onclick = function () {
+        _recalculateAkn();
       };
     }
 
@@ -52,20 +51,6 @@ var AknView = (function () {
         _confirmNoChange();
       };
     }
-
-    if (formMatrix) {
-      formMatrix.onsubmit = function (e) {
-        e.preventDefault();
-        _submitMatrix();
-      };
-    }
-
-    var inputs = document.querySelectorAll('.akn-input');
-    inputs.forEach(function (inp) {
-      inp.oninput = function () {
-        _recalcLiveTotals();
-      };
-    });
 
     var formRevisi = document.getElementById('form-akn-revisi');
     if (formRevisi) {
@@ -230,123 +215,35 @@ var AknView = (function () {
     _renderRiwayat(data.riwayat || [], data.userRole);
   }
 
-  function _openInputModal() {
-    var pInput = document.getElementById('modal-input-periode');
-    if (pInput) pInput.value = _currentPeriode;
-
-    // Masukkan data terkini ke modal input
-    if (_data && _data.matrix) {
-      KATEGORIS.forEach(function (kat) {
-        var inpKes = document.querySelector('#modal-akn-input .akn-kes[data-kat="' + kat + '"]');
-        var inpPoa = document.querySelector('#modal-akn-input .akn-poa[data-kat="' + kat + '"]');
-        var valKes = (_data.matrix.AKN_KESELURUHAN && _data.matrix.AKN_KESELURUHAN[kat]) ? _data.matrix.AKN_KESELURUHAN[kat].jumlah : 0;
-        var valPoa = (_data.matrix.AKN_POA && _data.matrix.AKN_POA[kat]) ? _data.matrix.AKN_POA[kat].jumlah : 0;
-        if (inpKes) inpKes.value = valKes;
-        if (inpPoa) inpPoa.value = valPoa;
-      });
-    }
-
-    _recalcLiveTotals();
-    Modal.open('modal-akn-input');
-  }
-
-  function _recalcLiveTotals() {
-    var totKes = 0;
-    var totPoa = 0;
-
-    KATEGORIS.forEach(function (kat) {
-      var inpKes = document.querySelector('#modal-akn-input .akn-kes[data-kat="' + kat + '"]');
-      var inpPoa = document.querySelector('#modal-akn-input .akn-poa[data-kat="' + kat + '"]');
-      var rasioEl = document.getElementById('modal-rasio-' + kat);
-
-      var vKes = parseInt(inpKes ? inpKes.value : 0, 10) || 0;
-      var vPoa = parseInt(inpPoa ? inpPoa.value : 0, 10) || 0;
-
-      totKes += vKes;
-      totPoa += vPoa;
-
-      if (vPoa > vKes) {
-        if (inpPoa) inpPoa.style.borderColor = 'var(--negative)';
-        if (rasioEl) {
-          rasioEl.textContent = '! Lebih';
-          rasioEl.style.color = 'var(--negative)';
-        }
-      } else {
-        if (inpPoa) inpPoa.style.borderColor = 'var(--control)';
-        if (rasioEl) {
-          var pct = vKes > 0 ? ((vPoa / vKes) * 100).toFixed(1) + '%' : '-';
-          rasioEl.textContent = pct;
-          rasioEl.style.color = 'var(--muted)';
-        }
-      }
-    });
-
-    var totKesEl = document.getElementById('modal-total-kes');
-    var totPoaEl = document.getElementById('modal-total-poa');
-    var rasioTotEl = document.getElementById('modal-total-rasio');
-
-    if (totKesEl) totKesEl.textContent = Format.number(totKes);
-    if (totPoaEl) totPoaEl.textContent = Format.number(totPoa);
-    if (rasioTotEl) {
-      var totPct = totKes > 0 ? ((totPoa / totKes) * 100).toFixed(1) + '%' : '-';
-      rasioTotEl.textContent = totPct;
-      rasioTotEl.style.color = totPoa > totKes ? 'var(--negative)' : 'var(--accent)';
-    }
-  }
-
-  function _submitMatrix() {
+  function _recalculateAkn() {
     var token = AuthApp.getToken();
-    var periode = _currentPeriode;
-    var ketInput = document.getElementById('akn-keterangan');
-    var keterangan = (ketInput && ketInput.value || '').trim();
+    if (!token) return;
 
-    var matrix = {
-      AKN_KESELURUHAN: {},
-      AKN_POA: {}
-    };
-
-    var hasInvalid = false;
-    KATEGORIS.forEach(function (kat) {
-      var vKes = parseInt((document.querySelector('#modal-akn-input .akn-kes[data-kat="' + kat + '"]') || {}).value || 0, 10);
-      var vPoa = parseInt((document.querySelector('#modal-akn-input .akn-poa[data-kat="' + kat + '"]') || {}).value || 0, 10);
-      if (vPoa > vKes) hasInvalid = true;
-      matrix.AKN_KESELURUHAN[kat] = vKes;
-      matrix.AKN_POA[kat] = vPoa;
-    });
-
-    if (hasInvalid) {
-      Toast.error('Validasi gagal: Jumlah Dit. POA tidak boleh melebihi Keseluruhan.');
-      return;
+    var btn = document.getElementById('btn-akn-recalculate');
+    var origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>Menghitung kesimpulan...</span>';
     }
 
-    var btnSubmit = document.getElementById('btn-submit-akn');
-    if (btnSubmit) {
-      btnSubmit.disabled = true;
-      btnSubmit.textContent = 'Menyimpan snapshot...';
-    }
-
-    rpc('akn_submit', {
-      token: token,
-      periode: periode,
-      matrix: matrix,
-      keterangan: keterangan
-    })
+    rpc('akn_recalculate', token)
       .then(function (res) {
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan snapshot komposisi';
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
         }
-        Modal.close('modal-akn-input');
-        Toast.success(res.message || 'Snapshot komposisi berhasil dicatat.');
-        if (ketInput) ketInput.value = '';
-        load(periode);
+        Toast.success('Kesimpulan komposisi berhasil dihitung ulang dari data riil pegawai.');
+        _data = res;
+        _currentPeriode = res.periode;
+        _renderPapan(res);
+        _loadTren();
       })
       .catch(function (err) {
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Simpan snapshot komposisi';
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
         }
-        Toast.error('Gagal menyimpan: ' + err.message);
+        Toast.error('Gagal menghitung kesimpulan komposisi: ' + (err.message || err));
       });
   }
 

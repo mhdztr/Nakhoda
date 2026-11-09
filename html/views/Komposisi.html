@@ -5,9 +5,6 @@
   <div class="page-header">
     <div class="page-title-group">
       <h1 class="page-title">Komposisi awak kapal negara (AKN)</h1>
-      <p class="page-subtitle" id="akn-finding-sub">
-        Pencatatan snapshot total kekuatan aparatur pengawakan armada Ditjen PSDKP dan Dit. POA.
-      </p>
     </div>
     <div class="page-actions">
       <div style="display:flex; align-items:center; gap:8px;">
@@ -16,11 +13,23 @@
           <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           <span>Muat</span>
         </button>
-        <button type="button" id="btn-akn-open-modal" class="btn btn-primary-md">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span>Input komposisi</span>
+        <button type="button" id="btn-akn-recalculate" class="btn btn-secondary-md" title="Hitung ulang kesimpulan komposisi langsung dari basis data pegawai">
+          <svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span>Hitung ulang</span>
+        </button>
+        <button type="button" class="btn btn-primary-md" onclick="Router.navigate('direktori')">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Kelola pegawai &rarr;</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Pemberitahuan Integritas Data Komposisi -->
+  <div class="card" style="padding:12px 18px; margin-bottom:16px; border-left:3px solid var(--accent); display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+    <div>
+      <span style="font-weight:600; color:var(--text);">Prinsip Integritas Komposisi:</span>
+      <span style="color:var(--muted); margin-left:4px;">Komposisi AKN merupakan kesimpulan agregat otomatis dari data riil personil di Direktori Awak &amp; SIKAP. Angka tidak dapat dimanipulasi manual. Seluruh mutasi, penambahan, atau penonaktifan personil otomatis menyimpulkan postur kekuatan ini.</span>
     </div>
   </div>
 
@@ -172,92 +181,6 @@
 
   </div>
 
-</div>
-
-<!-- ── MODAL INPUT MATRIKS SNAPSHOT TOTAL (ANTI-GABRUK — 2×5) ── -->
-<div id="modal-akn-input" class="modal-overlay">
-  <div class="modal-box modal-box-lg">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title">Perekaman snapshot komposisi AKN</div>
-        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Input akumulasi total terkini personil aktif (bukan selisih mutasi).</div>
-      </div>
-      <button type="button" class="modal-close" onclick="Modal.close('modal-akn-input')">&times;</button>
-    </div>
-
-    <form id="form-akn-matrix">
-      <div class="modal-body">
-        <div class="form-grid-2" style="margin-bottom:16px;">
-          <div class="form-group">
-            <label class="form-label" for="modal-input-periode">Periode pelaporan</label>
-            <input type="text" id="modal-input-periode" class="form-control-md mono" readonly style="background-color:var(--ground);">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="akn-keterangan">Catatan dinamika personil</label>
-            <input type="text" id="akn-keterangan" class="form-control-md" placeholder="Contoh: Mutasi 2 staf ke Pangkalan Bitung">
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          <table class="table" style="font-size:13px;">
-            <thead>
-              <tr>
-                <th>Kategori personil</th>
-                <th class="text-right" style="width:130px;">Pusat (Dit. POA)</th>
-                <th class="text-right" style="width:130px;">Keseluruhan PSDKP</th>
-                <th class="text-right" style="width:90px;">Porsi POA</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Pegawai negeri sipil (PNS)</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PNS" value="0" style="text-align:right;" aria-label="PNS Pusat (Dit. POA)"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PNS" value="0" style="text-align:right;" aria-label="PNS Keseluruhan Ditjen"></td>
-                <td class="text-right mono" id="modal-rasio-PNS">-</td>
-              </tr>
-              <tr>
-                <td>PPPK tenaga fungsional</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_FUNGSIONAL" value="0" style="text-align:right;" aria-label="PPPK Fungsional Pusat (Dit. POA)"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_FUNGSIONAL" value="0" style="text-align:right;" aria-label="PPPK Fungsional Keseluruhan Ditjen"></td>
-                <td class="text-right mono" id="modal-rasio-PPPK_FUNGSIONAL">-</td>
-              </tr>
-              <tr>
-                <td>PPPK tenaga pelaksana</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_PELAKSANA" value="0" style="text-align:right;" aria-label="PPPK Pelaksana Pusat (Dit. POA)"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_PELAKSANA" value="0" style="text-align:right;" aria-label="PPPK Pelaksana Keseluruhan Ditjen"></td>
-                <td class="text-right mono" id="modal-rasio-PPPK_PELAKSANA">-</td>
-              </tr>
-              <tr>
-                <td>PPPK paruh waktu</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_PARUH_WAKTU" value="0" style="text-align:right;" aria-label="PPPK Paruh Waktu Pusat (Dit. POA)"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_PARUH_WAKTU" value="0" style="text-align:right;" aria-label="PPPK Paruh Waktu Keseluruhan Ditjen"></td>
-                <td class="text-right mono" id="modal-rasio-PPPK_PARUH_WAKTU">-</td>
-              </tr>
-              <tr>
-                <td>PJLP / non-ASN</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PJLP" value="0" style="text-align:right;" aria-label="PJLP Pusat (Dit. POA)"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PJLP" value="0" style="text-align:right;" aria-label="PJLP Keseluruhan Ditjen"></td>
-                <td class="text-right mono" id="modal-rasio-PJLP">-</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr style="background-color:var(--ground); font-weight:600;">
-                <td>Total akumulasi personil</td>
-                <td class="text-right mono tnum" id="modal-total-poa" style="color:var(--accent);">0</td>
-                <td class="text-right mono tnum" id="modal-total-kes">0</td>
-                <td class="text-right mono tnum" id="modal-total-rasio">-</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-akn-input')">Batal</button>
-        <button type="submit" id="btn-submit-akn" class="btn btn-primary-md">Simpan snapshot komposisi</button>
-      </div>
-    </form>
-  </div>
 </div>
 
 <!-- ── DIALOG MODAL REVISI BARIS AKN ── -->

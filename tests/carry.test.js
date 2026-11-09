@@ -140,3 +140,24 @@ test('validateAknMatrix — Lolos jika semua nilai valid dan POA <= Keseluruhan'
   assert.equal(check.totalKeseluruhan, 210);
   assert.equal(check.totalPoa, 90);
 });
+
+test('akn_aggregateAwakRows — Mengagregasi data pegawai aktif dan memisahkan Dit. POA vs Keseluruhan', () => {
+  const { akn_aggregateAwakRows } = require('../pure/Carry.js');
+  const sampleAwak = [
+    { Nama: 'Awak 1', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PNS', Unit: 'Armada Kapal Pengawas (Pusat)' },
+    { Nama: 'Awak 2', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PNS', Unit: 'Pangkalan PSDKP Batam' },
+    { Nama: 'Awak 3', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PPPK_FUNGSIONAL', Unit: 'Armada Kapal Pengawas (Pusat)' },
+    { Nama: 'Awak 4', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PJLP', Unit: 'Stasiun PSDKP Pontianak' },
+    { Nama: 'Awak 5', StatusAktif: 'NON_AKTIF', KategoriKepegawaian: 'PNS', Unit: 'Armada Kapal Pengawas (Pusat)' } // Non-aktif diabaikan
+  ];
+
+  const res = akn_aggregateAwakRows(sampleAwak);
+  assert.equal(res.totalAktif, 4);
+  assert.equal(res.totalPoa, 2);
+  assert.equal(res.AKN_KESELURUHAN.PNS, 2);
+  assert.equal(res.AKN_POA.PNS, 1);
+  assert.equal(res.AKN_KESELURUHAN.PPPK_FUNGSIONAL, 1);
+  assert.equal(res.AKN_POA.PPPK_FUNGSIONAL, 1);
+  assert.equal(res.AKN_KESELURUHAN.PJLP, 1);
+  assert.equal(res.AKN_POA.PJLP, 0);
+});

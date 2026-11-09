@@ -531,4 +531,108 @@ function akn_ensureSeeded() {
   }
 }
 
+/**
+ * Menghitung kesimpulan komposisi AKN secara otomatis langsung dari data riil personil (Master_Awak).
+ * Menjamin integritas data: Komposisi AKN tidak diisi manual lepas,
+ * melainkan selalu merupakan kesimpulan agregat dari data pegawai aktif (by-name by-NIP).
+ *
+ * @param {string} userId - ID pengguna yang memicu pembaruan
+ * @param {string} [keteranganMutasi] - Keterangan perubahan
+ * @returns {Object}
+ */
+function akn_syncFromAwak(userId, keteranganMutasi) {
+  try {
+    var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+    var rowsAwak = sheetToObjects(sheetAwak);
+    if (!rowsAwak || rowsAwak.length === 0) {
+      return { success: false, error: 'Data direktori awak kosong.' };
+    }
+
+    var curPeriode = akn_getCurrentPeriode();
+    var counts = akn_aggregateAwakRows(rowsAwak);
+
+    var sheetAkn = openAwakSheet(SHEET_AWAK.PENGAWAKAN_AKN);
+    var batchId = 'BATCH-AUTO-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase();
+    var now = new Date();
+    var ket = keteranganMutasi || 'Agregasi otomatis perubahan data personil awak armada';
+
+    var categories = ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'];
+    var toAppend = [];
+
+    // Tandai baris aktif periode berjalan sebelumnya sebagai SUPERSEDED jika ada
+    var existingAknRows = sheetToObjects(sheetAkn);
+    for (var i = 0; i < existingAknRows.length; i++) {
+      var r = existingAknRows[i];
+      if (String(r.Periode || '') === curPeriode && String(r.Status || '').toUpperCase() === 'ACTIVE') {
+        updateRowCells(sheetAkn, i + 2, { 'Status': 'SUPERSEDED' });
+      }
+    }
+
+    categories.forEach(function (k) {
+      toAppend.push([
+        'AKN-AUTO-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase(),
+        curPeriode,
+        DIVISI_ID.AWAK,
+        userId || 'SYSTEM',
+        now,
+        'ACTIVE',
+        '', '', '', '',
+        'AKN_KESELURUHAN',
+        k,
+        counts.AKN_KESELURUHAN[k],
+        ket,
+        batchId
+      ]);
+
+      toAppend.push([
+        'AKN-AUTO-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase(),
+        curPeriode,
+        DIVISI_ID.AWAK,
+        userId || 'SYSTEM',
+        now,
+        'ACTIVE',
+        '', '', '', '',
+        'AKN_POA',
+        k,
+        counts.AKN_POA[k],
+        ket,
+        batchId
+      ]);
+    });
+
+    if (toAppend.length > 0) {
+      var startRow = sheetAkn.getLastRow() + 1;
+      sheetAkn.getRange(startRow, 1, toAppend.length, toAppend[0].length).setValues(toAppend);
+    }
+
+    Logger.log('[akn_syncFromAwak] Komposisi AKN berhasil disimpulkan otomatis dari data pegawai untuk periode ' + curPeriode);
+    return { success: true, counts: counts, periode: curPeriode };
+  } catch (e) {
+    Logger.log('[akn_syncFromAwak] Error: ' + e.message);
+    return { success: false, error: e.message };
+  }
+}
+
+/**
+ * Endpoint RPC untuk rekalkulasi kesimpulan komposisi langsung dari Direktori Awak.
+ *
+ * @param {string} token
+ * @returns {Object}
+ */
+function akn_recalculate(token) {
+  try {
+    return withLock(function () {
+      var session = _requireSession(token);
+      assertScope(session, [ROLE.SUPERADMIN, ROLE.KADIV, ROLE.STAF], null);
+      var syncRes = akn_syncFromAwak(session.userId, 'Rekalkulasi manual kesimpulan agregat dari data riil pegawai');
+      if (!syncRes.success) return syncRes;
+      return akn_getPapan(token, syncRes.periode);
+    });
+  } catch (e) {
+    Logger.log('[akn_recalculate] ' + e.message);
+    return { success: false, error: e.message };
+  }
+}
+
+
 
