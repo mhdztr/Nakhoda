@@ -176,49 +176,83 @@ input[type="number"] {
   z-index: 48;
 }
 
-/* ── Puncak Sidebar & Panji November ── */
+/* ── Puncak Sidebar & Identitas Resmi Ditjen PSDKP ── */
 .brand-box {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
-  padding: 0 8px 16px 8px;
+  padding: 0 4px 16px 4px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 12px;
 }
 
-.brand-flag {
-  width: 24px;
-  height: 24px;
-  border-radius: 3px;
+.brand-crest {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 1px;
+}
+
+.brand-crest-img {
+  width: 32px;
+  height: 37px;
+  object-fit: contain;
+  display: block;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .brand-text h1 {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text);
   line-height: 1.2;
   letter-spacing: -0.01em;
+  margin: 0;
 }
 
-.brand-text p {
-  font-size: 12px;
+.brand-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: var(--radius-chip);
+  background-color: var(--pill-neutral-bg);
   color: var(--muted);
-  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.brand-acronym-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+  margin: 0;
+  font-weight: 400;
 }
 
 /* ── Navigasi Sidebar (Sentence Case, Tanpa Huruf Kapital Berjarak) ── */
 .nav-group-title {
   font-size: 12px;
   color: var(--muted);
-  font-weight: 400;
+  font-weight: 500;
   padding: 14px 10px 6px 10px;
 }
 
 .nav-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .nav-item,
@@ -235,27 +269,44 @@ button.nav-item,
   color: var(--muted);
   text-decoration: none;
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 500;
   cursor: pointer;
   border: 1px solid transparent;
   background: transparent;
   width: 100%;
-  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out);
+  position: relative;
+  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out), box-shadow var(--dur-ui) var(--ease-out);
 }
 
 .nav-item span {
   text-align: left !important;
 }
 
-.nav-item:hover {
-  background-color: var(--raised);
+.nav-item:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.75);
   color: var(--text);
+  border-color: rgba(227, 229, 232, 0.8);
 }
 
-.nav-item.active {
-  background-color: var(--active);
-  color: var(--text);
-  font-weight: 500;
+.nav-item.active,
+#app-sidebar .nav-item.active {
+  background-color: #FFFFFF !important;
+  color: var(--text) !important;
+  font-weight: 600 !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 1px 3px rgba(15, 18, 20, 0.08), 0 1px 2px rgba(15, 18, 20, 0.04) !important;
+}
+
+.nav-item.active::before,
+#app-sidebar .nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  width: 3.5px;
+  background-color: var(--accent);
+  border-radius: 0 2px 2px 0;
 }
 
 .nav-item svg {
@@ -265,6 +316,13 @@ button.nav-item,
   stroke: currentColor;
   fill: none;
   flex-shrink: 0;
+  transition: stroke var(--dur-ui) var(--ease-out);
+}
+
+.nav-item.active svg,
+#app-sidebar .nav-item.active svg {
+  stroke: var(--accent) !important;
+  stroke-width: 2 !important;
 }
 
 .nav-badge {
@@ -273,6 +331,15 @@ button.nav-item,
   padding: 1px 6px;
   border-radius: var(--radius-chip);
   background-color: var(--pill-negative-bg);
+  color: var(--pill-negative-ink);
+  font-weight: 500;
+}
+
+.nav-item.active .nav-badge {
+  background-color: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
   color: var(--pill-negative-ink);
   font-weight: 500;
 }
@@ -788,8 +855,8 @@ textarea::placeholder {
 .tab-btn.active,
 .tab-item.active {
   color: var(--text);
-  font-weight: 500;
-  border-bottom-color: var(--text);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
 }
 
 .filter-bar {
