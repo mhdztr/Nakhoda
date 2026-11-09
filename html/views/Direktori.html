@@ -10,6 +10,10 @@
       </p>
     </div>
     <div class="page-actions">
+      <button type="button" id="btn-sync-sikap" class="btn btn-secondary-md" title="Sinkronisasi data master aparatur dari sistem SIKAP Ditjen PSDKP">
+        <svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        <span>Sinkronkan SIKAP</span>
+      </button>
       <button type="button" id="btn-batch-assign" class="btn btn-secondary-md hidden">
         <span>Penugasan massal</span>
         <span class="badge badge-accent mono" id="selected-count-badge">0</span>
@@ -26,32 +30,23 @@
     <div class="kpi-col">
       <div class="kpi-label">Total personil terdaftar</div>
       <div class="kpi-value-lead mono tnum" id="stat-total-awak">--</div>
-      <div class="kpi-delta">
-        <span class="mono">Armada Pengawas PSDKP</span>
-      </div>
     </div>
 
     <div class="kpi-col">
       <div class="kpi-label">Awak rumpun dek</div>
       <div class="kpi-value mono tnum" id="stat-dek-awak" style="color:var(--accent);">--</div>
-      <div class="kpi-delta">
-        <span>Nahkoda, mualim, juru mudi, kelasi</span>
-      </div>
     </div>
 
     <div class="kpi-col">
       <div class="kpi-label">Awak rumpun mesin</div>
       <div class="kpi-value mono tnum" id="stat-mesin-awak">--</div>
-      <div class="kpi-delta">
-        <span>KKM, masinis, juru minyak</span>
-      </div>
     </div>
 
     <div class="kpi-col" style="cursor:pointer;" id="card-filter-perlu" title="Saring personil yang belum lengkap">
-      <div class="kpi-label">Antrean belum lengkap</div>
+      <div class="kpi-label">Perlu verifikasi</div>
       <div class="kpi-value mono tnum" id="stat-perlu-awak" style="color:var(--warning);">--</div>
       <div class="kpi-delta">
-        <span style="color:var(--warning);">Buku pelaut / kategori kosong &rarr;</span>
+        <span style="color:var(--warning); font-size:11px;">Buku pelaut / status &rarr;</span>
       </div>
     </div>
   </div>
@@ -121,10 +116,7 @@
   <div id="sheet-dir-overlay" class="sheet-overlay" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')"></div>
   <aside id="sheet-dir-panel" class="sheet-panel hidden">
     <div class="sheet-header">
-      <div>
-        <div style="font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;">Detail Profil Awak</div>
-        <h2 id="sheet-dir-nama" style="font-size:18px; font-weight:600; color:var(--text); margin-top:2px;">-</h2>
-      </div>
+      <h2 id="sheet-dir-nama" style="font-size:18px; font-weight:600; color:var(--text); margin:0;">-</h2>
       <button type="button" class="modal-close" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')">&times;</button>
     </div>
 
@@ -181,8 +173,7 @@
 
       <!-- Tab 2: Sertifikat -->
       <div id="sheet-tab-sertifikat" class="hidden">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <span style="font-size:12px; font-weight:500; color:var(--muted);">Register sertifikat keselamatan &amp; keahlian</span>
+        <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
           <button type="button" class="btn btn-secondary-sm" onclick="DirektoriView.openCatatSertifikatFromSheet()">+ Catat sertifikat</button>
         </div>
         <div id="sheet-dir-sertifikat-list" style="display:flex; flex-direction:column; gap:8px;">
@@ -192,7 +183,6 @@
 
       <!-- Tab 3: Riwayat Penugasan Sijil -->
       <div id="sheet-tab-penugasan" class="hidden">
-        <div style="font-size:12px; font-weight:500; color:var(--muted); margin-bottom:12px;">Riwayat naik &amp; turun kapal pengawas</div>
         <div id="sheet-dir-penugasan-list" style="display:flex; flex-direction:column; gap:8px;">
           <div style="padding:18px; text-align:center; color:var(--muted); font-size:12px;">Belum ada riwayat penugasan kapal.</div>
         </div>

@@ -38,6 +38,13 @@ var DirektoriView = (function () {
     var formAwak = document.getElementById('form-dir-awak');
     var formBatch = document.getElementById('form-dir-batch');
     var btnSheetEdit = document.getElementById('btn-sheet-edit-awak');
+    var btnSyncSikap = document.getElementById('btn-sync-sikap');
+
+    if (btnSyncSikap) {
+      btnSyncSikap.onclick = function () {
+        _syncSikap();
+      };
+    }
 
     if (filterRumpun) filterRumpun.onchange = function () { load(0); };
     if (filterKelas) filterKelas.onchange = function () { load(0); };
@@ -525,6 +532,40 @@ var DirektoriView = (function () {
           btnSubmit.textContent = 'Terapkan kategori';
         }
         Toast.error('Gagal memperbarui kategori massal: ' + err.message);
+      });
+  }
+
+  function _syncSikap() {
+    var token = AuthApp.getToken();
+    if (!token) return;
+
+    if (!confirm('Lakukan sinkronisasi data master aparatur dengan sistem SIKAP Ditjen PSDKP?\n\nProses ini akan memperbarui data demografis (nama, gelar, NIP) dan mengimpor personil baru tanpa mengubah atribut maritim (sijil, buku pelaut, sertifikat).')) {
+      return;
+    }
+
+    var btn = document.getElementById('btn-sync-sikap');
+    var origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>Sinkronisasi...</span>';
+    }
+
+    rpc('dir_syncSikap', { token: token })
+      .then(function (res) {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+        var d = res || {};
+        Toast.success('Sinkronisasi SIKAP selesai: ' + (d.updated || 0) + ' dimutakhirkan, ' + (d.added || 0) + ' awak baru diimpor.');
+        load(_offset);
+      })
+      .catch(function (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+        Toast.error('Gagal sinkronisasi SIKAP: ' + (err.message || err));
       });
   }
 

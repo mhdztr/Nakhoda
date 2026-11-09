@@ -26,33 +26,23 @@
     <div class="kpi-col">
       <div class="kpi-label">Total kapal pengawas armada</div>
       <div class="kpi-value-lead mono tnum" id="metric-sijil-total-kapal">--</div>
-      <div class="kpi-delta">
-        <span class="mono">Armada PSDKP Kelas I &ndash; V</span>
-      </div>
     </div>
 
     <div class="kpi-col">
       <div class="kpi-label">Siap laik operasi</div>
       <div class="kpi-value mono tnum" id="metric-sijil-laik" style="color:var(--positive);">--</div>
-      <div class="kpi-delta">
-        <span>Safe manning 100% terpenuhi</span>
-      </div>
     </div>
 
     <div class="kpi-col">
       <div class="kpi-label">Kapal kurang awak</div>
       <div class="kpi-value mono tnum" id="metric-sijil-kurang" style="color:var(--negative);">--</div>
-      <div class="kpi-delta">
-        <span id="metric-sijil-kurang-sub" style="color:var(--negative);">Formasi di bawah standar</span>
-      </div>
+      <div class="kpi-delta" id="metric-sijil-kurang-sub" style="color:var(--negative);"></div>
     </div>
 
     <div class="kpi-col">
       <div class="kpi-label">Total kursi kosong</div>
       <div class="kpi-value mono tnum" id="metric-sijil-defisit-kursi">--</div>
-      <div class="kpi-delta">
-        <span id="metric-sijil-awak-laut-sub">Awak bertugas di laut: --</span>
-      </div>
+      <div class="kpi-delta" id="metric-sijil-awak-laut-sub"></div>
     </div>
   </div>
 
@@ -83,10 +73,7 @@
   <!-- ── MATRIKS 2D PAPAN SIJIL ARMADA (ELEMEN TANDA TANGAN — DESIGN.md §8.1) ── -->
   <div class="card card-flush">
     <div class="card-header">
-      <div>
-        <h2 class="card-title">Matriks deviasi formasi safe manning per kapal</h2>
-        <div class="card-subtitle">Klik baris kapal untuk memeriksa rincian personil bertugas di lembar samping (480px)</div>
-      </div>
+      <h2 class="card-title">Matriks deviasi formasi safe manning per kapal</h2>
       <div style="display:flex; align-items:center; gap:12px; font-size:11px; color:var(--muted);">
         <div style="display:flex; align-items:center; gap:4px;">
           <span class="sijil-cell sijil-cell-ok mono">0</span>

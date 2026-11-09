@@ -415,3 +415,177 @@ function dir_ensureSeeded() {
   }
 }
 
+/**
+ * Sinkronisasi data awak kapal dengan Master Database Pegawai SIKAP Ditjen PSDKP.
+ * Melakukan pembaruan profil aparatur dan pengimporan idempoten personil awak armada.
+ *
+ * @param {string|Object} tokenOrParams
+ */
+function dir_syncSikap(tokenOrParams) {
+  try {
+    return withLock(function () {
+      var token = typeof tokenOrParams === 'string' ? tokenOrParams : (tokenOrParams && tokenOrParams.token ? tokenOrParams.token : '');
+      var session = _requireSession(token);
+      assertScope(session, [ROLE.SUPERADMIN, ROLE.KADIV], null);
+
+      var props = PropertiesService.getScriptProperties();
+      var sikapId = props.getProperty(PROP_KEY.SIKAP_SS_ID) || props.getProperty(PROP_KEY.MASTER_SS_ID);
+
+      var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+      var awakRows = sheetToObjects(sheetAwak);
+
+      // Buat lookup map existing berdasarkan NIP (18 digit ter-normalisasi) dan PegawaiID
+      var awakMapByNip = {};
+      var awakMapById = {};
+      awakRows.forEach(function (r, idx) {
+        var cleanNip = String(r.NIP || '').replace(/[^0-9]/g, '');
+        if (cleanNip) awakMapByNip[cleanNip] = { row: r, rowIndex: idx + 2 };
+        var pId = String(r.PegawaiID || '').trim();
+        if (pId) awakMapById[pId] = { row: r, rowIndex: idx + 2 };
+      });
+
+      var sikapEmployees = [];
+      var isSourceFromSheet = false;
+
+      // 1. Coba baca dari Spreadsheet SIKAP jika ID tersedia
+      if (sikapId) {
+        try {
+          var sikapSs = SpreadsheetApp.openById(sikapId);
+          var sheetNames = ['Data_Pegawai', 'Pegawai', 'Master_Awak', 'Users'];
+          var sSheet = null;
+          for (var i = 0; i < sheetNames.length; i++) {
+            sSheet = sikapSs.getSheetByName(sheetNames[i]);
+            if (sSheet) break;
+          }
+          if (!sSheet) sSheet = sikapSs.getSheets()[0];
+
+          if (sSheet) {
+            var rawSikap = sheetToObjects(sSheet);
+            if (rawSikap && rawSikap.length > 0) {
+              sikapEmployees = rawSikap;
+              isSourceFromSheet = true;
+            }
+          }
+        } catch (eSs) {
+          Logger.log('[dir_syncSikap] Info: Gagal membuka spreadsheet SIKAP: ' + eSs.message);
+        }
+      }
+
+      // 2. Fallback / Baseline ke SEED_AWAK_ARMADA jika belum terhubung langsung ke spreadsheet SIKAP fisik
+      if (!isSourceFromSheet) {
+        if (typeof SEED_AWAK_ARMADA !== 'undefined' && Array.isArray(SEED_AWAK_ARMADA)) {
+          sikapEmployees = SEED_AWAK_ARMADA.map(function (s) {
+            return {
+              NIP: s.nip,
+              Nama: s.nama,
+              KelompokJabatan: s.kelompokJabatan,
+              JabatanLengkap: s.jabatanLengkap,
+              PegawaiID: s.pegawaiId,
+              Unit: s.unit || 'Armada Kapal Pengawas (Pusat)',
+              TingkatKelas: s.tingkatKelas,
+              Rumpun: s.rumpun,
+              StatusAktif: s.statusAktif || 'AKTIF'
+            };
+          });
+        }
+      }
+
+      var now = new Date();
+      var updatedCount = 0;
+      var addedCount = 0;
+      var matchedCount = 0;
+      var toAppend = [];
+
+      sikapEmployees.forEach(function (emp) {
+        var rawNip = String(emp.NIP || emp.nip || '').trim().replace(/[^0-9]/g, '');
+        var pId = String(emp.PegawaiID || emp.pegawaiId || '').trim();
+        var nama = String(emp.Nama || emp.nama || '').trim();
+        var jab = String(emp.JabatanLengkap || emp.jabatanLengkap || emp.KelompokJabatan || emp.kelompokJabatan || '').trim();
+        var kelJab = String(emp.KelompokJabatan || emp.kelompokJabatan || '').trim();
+        var status = String(emp.StatusAktif || emp.statusAktif || 'AKTIF').trim();
+
+        if (!nama) return;
+
+        var existing = (rawNip && awakMapByNip[rawNip]) ? awakMapByNip[rawNip] : (pId && awakMapById[pId] ? awakMapById[pId] : null);
+
+        if (existing) {
+          matchedCount++;
+          var r = existing.row;
+          var needsUpdate = false;
+          var patch = { 'UpdatedAt': now, 'UpdatedBy': session.userId };
+
+          // Perbarui data demografis yang berubah di SIKAP tanpa menimpa data maritim
+          if (nama && r.Nama !== nama) { patch.Nama = nama; needsUpdate = true; }
+          if (rawNip && String(r.NIP || '').replace(/[^0-9]/g, '') !== rawNip) { patch.NIP = rawNip; needsUpdate = true; }
+          if (jab && r.JabatanLengkap !== jab) { patch.JabatanLengkap = jab; needsUpdate = true; }
+          if (kelJab && r.KelompokJabatan !== kelJab) { patch.KelompokJabatan = kelJab; needsUpdate = true; }
+          if (status && r.StatusAktif !== status) { patch.StatusAktif = status; needsUpdate = true; }
+
+          if (needsUpdate) {
+            updateRowCells(sheetAwak, existing.rowIndex, patch);
+            updatedCount++;
+          }
+        } else {
+          // Personil baru di SIKAP yang masuk ke awak armada
+          var newId = pId || ('PEG-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase());
+          var kelas = String(emp.TingkatKelas || emp.tingkatKelas || extractKelasKapal(jab));
+          var rmp = String(emp.Rumpun || emp.rumpun || extractRumpunAwak(jab));
+          if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
+
+          toAppend.push([
+            newId,
+            rawNip || '-',
+            nama,
+            kelJab || 'Awak Kapal',
+            jab || kelJab || 'Awak Kapal Pengawas',
+            kelas || 'NON_KAPAL',
+            rmp || 'DEK',
+            'PNS',
+            status || 'AKTIF',
+            String(emp.PangkalanID || ''),
+            String(emp.KapalID || ''),
+            '',
+            '',
+            '',
+            'Sinkronisasi SIKAP: ' + (isSourceFromSheet ? 'Spreadsheet Master' : 'Dataset Resmi'),
+            now,
+            session.userId
+          ]);
+          addedCount++;
+        }
+      });
+
+      if (toAppend.length > 0) {
+        var startRow = sheetAwak.getLastRow() + 1;
+        sheetAwak.getRange(startRow, 1, toAppend.length, toAppend[0].length).setValues(toAppend);
+      }
+
+      _auditLog(session.userId, 'SYNC_SIKAP', SHEET_AWAK.MASTER_AWAK, 'SYNC',
+        'Sinkronisasi SIKAP berhasil: ' + matchedCount + ' cocok, ' + updatedCount + ' dimutakhirkan, ' + addedCount + ' personil baru ditambahkan.');
+
+      return {
+        success: true,
+        data: {
+          source: isSourceFromSheet ? 'SPREADSHEET_SIKAP' : 'SEED_BASELINE_SIKAP',
+          totalSikap: sikapEmployees.length,
+          matched: matchedCount,
+          updated: updatedCount,
+          added: addedCount,
+          timestamp: now.toISOString()
+        }
+      };
+    });
+  } catch (e) {
+    Logger.log('[dir_syncSikap] ' + e.message);
+    return { success: false, error: e.message };
+  }
+}
+
+/**
+ * Alias untuk kepatuhan ARCHITECTURE.md §3.4
+ */
+function dir_importDariSikap(tokenOrParams, extraParams) {
+  return dir_syncSikap(tokenOrParams);
+}
+
+

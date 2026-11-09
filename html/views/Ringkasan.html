@@ -5,9 +5,7 @@
   <div class="page-header">
     <div class="page-title-group">
       <h1 class="page-title">Ringkasan eksekutif pengawakan</h1>
-      <p class="page-subtitle" id="ringkasan-finding-sub">
-        Memuat analisis situasi terkini komposisi AKN, safe manning armada, dan revalidasi sertifikasi...
-      </p>
+      <p class="page-subtitle" id="ringkasan-finding-sub"></p>
     </div>
     <div class="page-actions">
       <button type="button" class="btn btn-secondary-md" id="btn-ringkasan-refresh">
@@ -37,7 +35,7 @@
       <div class="kpi-label">Awak berkualifikasi lengkap</div>
       <div class="kpi-value mono tnum" id="kpi-awak-lengkap">--</div>
       <div class="kpi-delta" id="kpi-sub-kompetensi">
-        <span class="mono">Memuat persentase...</span>
+        <span class="mono">--</span>
       </div>
     </div>
 
@@ -46,7 +44,7 @@
       <div class="kpi-label">Sertifikat habis &le; 90 hari</div>
       <div class="kpi-value mono tnum" id="kpi-sertifikat-urgent">--</div>
       <div class="kpi-delta" id="kpi-sub-sertifikat">
-        <span class="mono">Memuat antrean diklat...</span>
+        <span class="mono">--</span>
       </div>
     </div>
 
@@ -55,7 +53,7 @@
       <div class="kpi-label">Kelaikan safe manning armada</div>
       <div class="kpi-value mono tnum" id="kpi-kapal-laik">--</div>
       <div class="kpi-delta" id="kpi-sub-kapal">
-        <span class="mono">Memuat formasi...</span>
+        <span class="mono">--</span>
       </div>
     </div>
   </div>
@@ -66,9 +64,9 @@
     <!-- Kolom Kiri: Distribusi Kekuatan AKN (Track Bar Oranye Keselamatan) -->
     <div class="card">
       <div class="card-header">
-        <div>
+        <div style="display:flex; align-items:center; gap:8px;">
           <h2 class="card-title">Komposisi awak kapal negara (AKN)</h2>
-          <div class="card-subtitle" id="label-ringkasan-akn-periode">Periode berjalan</div>
+          <span class="badge badge-neutral mono" id="label-ringkasan-akn-periode">Periode --</span>
         </div>
         <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('komposisi')">
           <span>Kelola komposisi &rarr;</span>
@@ -98,10 +96,7 @@
     <!-- Kolom Kanan: Antrean Tindak Lanjut Sertifikasi (<= 90 Hari) -->
     <div class="card">
       <div class="card-header">
-        <div>
-          <h2 class="card-title">Antrean tindak lanjut sertifikasi</h2>
-          <div class="card-subtitle">&le; 90 hari &amp; kedaluwarsa</div>
-        </div>
+        <h2 class="card-title">Antrean revalidasi sertifikasi (&le; 90 hari)</h2>
         <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('kompetensi')">
           <span>Semua sertifikat &rarr;</span>
         </button>
@@ -134,10 +129,7 @@
     <!-- Kolom Kiri: Papan Sijil Ringkas Armada -->
     <div class="card">
       <div class="card-header">
-        <div>
-          <h2 class="card-title">Kesiapan formasi safe manning armada</h2>
-          <div class="card-subtitle">Prioritas kapal dengan kekurangan formasi awak</div>
-        </div>
+        <h2 class="card-title">Kesiapan formasi safe manning armada</h2>
         <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('sijil')">
           <span>Buka papan sijil 2D &rarr;</span>
         </button>
@@ -167,10 +159,7 @@
     <!-- Kolom Kanan: Agenda Kegiatan Operasional Terkini -->
     <div class="card">
       <div class="card-header">
-        <div>
-          <h2 class="card-title">Agenda kegiatan terkini</h2>
-          <div class="card-subtitle">Pelatihan &amp; pembinaan awak</div>
-        </div>
+        <h2 class="card-title">Agenda kegiatan terkini</h2>
         <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('kegiatan')">
           <span>Lihat log &rarr;</span>
         </button>

@@ -262,6 +262,23 @@ function buildHtml() {
           }, 10);
         },
 
+        dir_syncSikap: function(params) {
+          var self = this;
+          setTimeout(function() {
+            self._onSuccess({
+              success: true,
+              data: {
+                source: 'SPREADSHEET_SIKAP',
+                totalSikap: 396,
+                matched: 396,
+                updated: 0,
+                added: 0,
+                timestamp: new Date().toISOString()
+              }
+            });
+          }, 10);
+        },
+
         kom_getDashboard: function(token) {
           var self = this;
           setTimeout(function() {
