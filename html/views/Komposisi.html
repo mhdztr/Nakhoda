@@ -11,7 +11,7 @@
     </div>
     <div class="page-actions">
       <div style="display:flex; align-items:center; gap:8px;">
-        <input type="text" id="akn-periode-select" class="form-control-md mono" style="width:130px; text-align:center;" placeholder="YYYY-MM-W#">
+        <input type="text" id="akn-periode-select" class="form-control-md mono" style="width:130px; text-align:center;" placeholder="YYYY-MM-W#" aria-label="Periode mingguan AKN">
         <button type="button" id="btn-akn-refresh" class="btn btn-secondary-md" title="Muat data periode">
           <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           <span>Muat</span>
@@ -220,32 +220,32 @@
             <tbody>
               <tr>
                 <td>Pegawai negeri sipil (PNS)</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PNS" value="0" style="text-align:right;"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PNS" value="0" style="text-align:right;"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PNS" value="0" style="text-align:right;" aria-label="PNS Pusat (Dit. POA)"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PNS" value="0" style="text-align:right;" aria-label="PNS Keseluruhan Ditjen"></td>
                 <td class="text-right mono" id="modal-rasio-PNS">-</td>
               </tr>
               <tr>
                 <td>PPPK tenaga fungsional</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_FUNGSIONAL" value="0" style="text-align:right;"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_FUNGSIONAL" value="0" style="text-align:right;"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_FUNGSIONAL" value="0" style="text-align:right;" aria-label="PPPK Fungsional Pusat (Dit. POA)"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_FUNGSIONAL" value="0" style="text-align:right;" aria-label="PPPK Fungsional Keseluruhan Ditjen"></td>
                 <td class="text-right mono" id="modal-rasio-PPPK_FUNGSIONAL">-</td>
               </tr>
               <tr>
                 <td>PPPK tenaga pelaksana</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_PELAKSANA" value="0" style="text-align:right;"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_PELAKSANA" value="0" style="text-align:right;"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_PELAKSANA" value="0" style="text-align:right;" aria-label="PPPK Pelaksana Pusat (Dit. POA)"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_PELAKSANA" value="0" style="text-align:right;" aria-label="PPPK Pelaksana Keseluruhan Ditjen"></td>
                 <td class="text-right mono" id="modal-rasio-PPPK_PELAKSANA">-</td>
               </tr>
               <tr>
                 <td>PPPK paruh waktu</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_PARUH_WAKTU" value="0" style="text-align:right;"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_PARUH_WAKTU" value="0" style="text-align:right;"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PPPK_PARUH_WAKTU" value="0" style="text-align:right;" aria-label="PPPK Paruh Waktu Pusat (Dit. POA)"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PPPK_PARUH_WAKTU" value="0" style="text-align:right;" aria-label="PPPK Paruh Waktu Keseluruhan Ditjen"></td>
                 <td class="text-right mono" id="modal-rasio-PPPK_PARUH_WAKTU">-</td>
               </tr>
               <tr>
                 <td>PJLP / non-ASN</td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PJLP" value="0" style="text-align:right;"></td>
-                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PJLP" value="0" style="text-align:right;"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-poa mono" data-kat="PJLP" value="0" style="text-align:right;" aria-label="PJLP Pusat (Dit. POA)"></td>
+                <td><input type="number" min="0" class="form-control-md akn-input akn-kes mono" data-kat="PJLP" value="0" style="text-align:right;" aria-label="PJLP Keseluruhan Ditjen"></td>
                 <td class="text-right mono" id="modal-rasio-PJLP">-</td>
               </tr>
             </tbody>

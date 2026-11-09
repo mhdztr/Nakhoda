@@ -59,7 +59,7 @@
   <!-- Bilah Saring Kelas & Status (DESIGN.md §5.2) -->
   <div class="filter-bar">
     <div class="filter-group">
-      <select id="sijil-filter-kelas" class="form-control-md" style="width:170px;">
+      <select id="sijil-filter-kelas" class="form-control-md" style="width:170px;" aria-label="Filter kelas kapal pengawas">
         <option value="">Semua kelas kapal</option>
         <option value="KELAS_I">Kelas I (&gt; 60m)</option>
         <option value="KELAS_II">Kelas II (40 &ndash; 60m)</option>
@@ -67,12 +67,12 @@
         <option value="KELAS_IV">Kelas IV (18 &ndash; 28m)</option>
         <option value="KELAS_V">Kelas V (Speedboat)</option>
       </select>
-      <select id="sijil-filter-status" class="form-control-md" style="width:160px;">
+      <select id="sijil-filter-status" class="form-control-md" style="width:160px;" aria-label="Filter status kelaikan safe manning">
         <option value="">Semua status kelaikan</option>
         <option value="LAIK_OPERASI">Siap laik operasi</option>
         <option value="KURANG_AWAK">Kurang awak</option>
       </select>
-      <input type="search" id="sijil-search-input" class="form-control-md" placeholder="Cari kapal atau pangkalan..." style="width:260px;">
+      <input type="search" id="sijil-search-input" class="form-control-md" placeholder="Cari kapal atau pangkalan..." style="width:260px;" aria-label="Cari nama kapal atau pangkalan">
       <button type="button" id="btn-sijil-search" class="btn btn-secondary-md">Cari</button>
     </div>
     <div>

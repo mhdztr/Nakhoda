@@ -67,14 +67,14 @@
     <!-- Filter & Toolbar (3-Tier MD 32px) -->
     <div class="filter-bar">
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
-        <select id="keg-filter-jenis" class="form-control-md" style="width:220px;">
+        <select id="keg-filter-jenis" class="form-control-md" style="width:220px;" aria-label="Filter jenis pembinaan kegiatan">
           <option value="">Semua jenis pembinaan</option>
           <option value="PELATIHAN_TEKNIS">Pelatihan teknis</option>
           <option value="SERTIFIKASI_LAUT">Sertifikasi laut (STCW-F)</option>
           <option value="PENYEGARAN_TAKTIK">Penyegaran taktik</option>
           <option value="PEMBINAAN_DISIPLIN">Pembinaan disiplin</option>
         </select>
-        <input type="text" id="keg-search-input" class="form-control-md" placeholder="Cari agenda, wilayah, atau notula..." style="width:280px;">
+        <input type="text" id="keg-search-input" class="form-control-md" placeholder="Cari agenda, wilayah, atau notula..." style="width:280px;" aria-label="Cari agenda, wilayah, atau notula">
         <button type="button" id="btn-keg-search" class="btn btn-secondary-md">Cari</button>
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
@@ -190,7 +190,7 @@
       <div class="form-group" style="margin-bottom:16px;">
         <label class="form-label">Dokumen lampiran bukti (PDF / JPG &le; 15 MB)</label>
         <div style="border:1px dashed var(--border); border-radius:var(--radius-sm); padding:16px; text-align:center; background:var(--surface);">
-          <input type="file" id="keg-file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+          <input type="file" id="keg-file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;" aria-label="Pilih dokumen bukti lampiran">
           <button type="button" class="btn btn-secondary-md" onclick="document.getElementById('keg-file-input').click()">
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             <span>Pilih berkas bukti</span>

@@ -59,12 +59,12 @@
   <!-- Bilah Filter & Pencarian MD (DESIGN.md §5.2) -->
   <div class="filter-bar">
     <div class="filter-group">
-      <select id="dir-filter-rumpun" class="form-control-md" style="width:140px;">
+      <select id="dir-filter-rumpun" class="form-control-md" style="width:140px;" aria-label="Filter rumpun personil">
         <option value="">Semua rumpun</option>
         <option value="DEK">Rumpun dek</option>
         <option value="MESIN">Rumpun mesin</option>
       </select>
-      <select id="dir-filter-kelas" class="form-control-md" style="width:140px;">
+      <select id="dir-filter-kelas" class="form-control-md" style="width:140px;" aria-label="Filter kelas kapal">
         <option value="">Semua kelas kapal</option>
         <option value="KELAS_I">Kelas I</option>
         <option value="KELAS_II">Kelas II</option>
@@ -72,7 +72,7 @@
         <option value="KELAS_IV">Kelas IV</option>
         <option value="KELAS_V">Kelas V</option>
       </select>
-      <input type="search" id="dir-search-input" class="form-control-md" placeholder="Cari nama personil, NIP, atau jabatan..." style="width:260px;">
+      <input type="search" id="dir-search-input" class="form-control-md" placeholder="Cari nama personil, NIP, atau jabatan..." style="width:260px;" aria-label="Cari nama personil, NIP, atau jabatan">
       <button type="button" id="btn-dir-search" class="btn btn-secondary-md">Cari</button>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
@@ -88,7 +88,7 @@
         <thead>
           <tr>
             <th style="width:36px; text-align:center;">
-              <input type="checkbox" id="check-select-all" title="Pilih semua">
+              <input type="checkbox" id="check-select-all" title="Pilih semua" aria-label="Pilih semua baris personil">
             </th>
             <th style="min-width:240px;">Personil awak kapal</th>
             <th>Jabatan &amp; formatur</th>

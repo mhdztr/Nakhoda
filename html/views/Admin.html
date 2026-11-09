@@ -94,15 +94,15 @@
     <!-- Filter & Toolbar Pengguna -->
     <div class="filter-bar">
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
-        <input type="text" id="admin-user-search" class="form-control-md" placeholder="Cari nama, NIP, atau email..." style="width:260px;">
-        <select id="admin-user-filter-role" class="form-control-md" style="width:180px;">
+        <input type="text" id="admin-user-search" class="form-control-md" placeholder="Cari nama, NIP, atau email..." style="width:260px;" aria-label="Cari nama, NIP, atau email pengguna">
+        <select id="admin-user-filter-role" class="form-control-md" style="width:180px;" aria-label="Filter peran pengguna">
           <option value="">Semua peran (Role)</option>
           <option value="SUPERADMIN">Super Administrator</option>
           <option value="DIREKTUR">Direktur Armada</option>
           <option value="KADIV">Katimja Awak</option>
           <option value="STAF">Staf Pengawakan</option>
         </select>
-        <select id="admin-user-filter-status" class="form-control-md" style="width:160px;">
+        <select id="admin-user-filter-status" class="form-control-md" style="width:160px;" aria-label="Filter status pengguna">
           <option value="">Semua status</option>
           <option value="APPROVED">Aktif (Approved)</option>
           <option value="PENDING">Menunggu</option>
@@ -146,8 +146,8 @@
     <!-- Filter & Toolbar Audit -->
     <div class="filter-bar">
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
-        <input type="text" id="admin-audit-search" class="form-control-md" placeholder="Cari ID pengguna, tabel target, atau kata kunci..." style="width:300px;">
-        <select id="admin-audit-filter-aksi" class="form-control-md" style="width:160px;">
+        <input type="text" id="admin-audit-search" class="form-control-md" placeholder="Cari ID pengguna, tabel target, atau kata kunci..." style="width:300px;" aria-label="Cari catatan audit">
+        <select id="admin-audit-filter-aksi" class="form-control-md" style="width:160px;" aria-label="Filter jenis aksi audit">
           <option value="">Semua aksi</option>
           <option value="INSERT">INSERT (Tambah)</option>
           <option value="UPDATE">UPDATE (Ubah)</option>
@@ -156,7 +156,7 @@
           <option value="APPROVE">APPROVE</option>
           <option value="REJECT">REJECT</option>
         </select>
-        <select id="admin-audit-limit" class="form-control-md" style="width:140px;">
+        <select id="admin-audit-limit" class="form-control-md" style="width:140px;" aria-label="Batas baris audit log">
           <option value="100">100 baris</option>
           <option value="300" selected>300 baris</option>
           <option value="500">500 baris</option>

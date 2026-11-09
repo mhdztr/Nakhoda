@@ -221,9 +221,13 @@ input[type="number"] {
   gap: 2px;
 }
 
-.nav-item {
+.nav-item,
+button.nav-item,
+#app-sidebar .nav-item {
   display: flex;
   align-items: center;
+  justify-content: flex-start !important;
+  text-align: left !important;
   gap: 10px;
   height: var(--ctl-h-md);
   padding: 0 10px;
@@ -236,8 +240,11 @@ input[type="number"] {
   border: 1px solid transparent;
   background: transparent;
   width: 100%;
-  text-align: left;
   transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out);
+}
+
+.nav-item span {
+  text-align: left !important;
 }
 
 .nav-item:hover {
@@ -407,6 +414,16 @@ button,
 button:active,
 .btn:active {
   transform: scale(0.98);
+}
+
+button:focus-visible,
+.btn:focus-visible,
+.nav-item:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
 }
 
 button:disabled,
@@ -744,9 +761,10 @@ textarea::placeholder {
   padding: 0 4px;
 }
 
-.tab-btn {
+.tab-btn,
+.tab-item {
   height: 36px;
-  padding: 0 2px;
+  padding: 0 4px;
   font-size: 13px;
   font-weight: 400;
   color: var(--muted);
@@ -755,13 +773,17 @@ textarea::placeholder {
   border-bottom: 2px solid transparent;
   border-radius: 0;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
 }
 
-.tab-btn:hover {
+.tab-btn:hover,
+.tab-item:hover {
   color: var(--text);
 }
 
-.tab-btn.active {
+.tab-btn.active,
+.tab-item.active {
   color: var(--text);
   font-weight: 500;
   border-bottom-color: var(--text);

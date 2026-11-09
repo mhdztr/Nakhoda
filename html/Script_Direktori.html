@@ -211,7 +211,7 @@ var DirektoriView = (function () {
       html +=
         '<tr class="clickable" data-id="' + a.pegawaiId + '">' +
           '<td style="text-align:center;" onclick="event.stopPropagation();">' +
-            '<input type="checkbox" class="cb-select-awak" data-id="' + a.pegawaiId + '" ' + (isChecked ? 'checked' : '') + '>' +
+            '<input type="checkbox" class="cb-select-awak" data-id="' + a.pegawaiId + '" aria-label="Pilih personil ' + Format.escape(a.nama) + '" ' + (isChecked ? 'checked' : '') + '>' +
           '</td>' +
           '<td>' +
             '<div style="display:flex; align-items:center; gap:10px;">' +
