@@ -327,6 +327,39 @@ function buildHtml() {
           }, 10);
         },
 
+        kom_getFormOptions: function(token) {
+          var self = this;
+          setTimeout(function() {
+            self._onSuccess({
+              success: true,
+              data: {
+                awakOptions: [
+                  { pegawaiId: 'PEG-0001', nama: 'Budi Setyawan', nipDisplay: '19880312 201201 1 001', kelompokJabatan: 'Juru Mudi', jabatanStd: 'Juru Mudi', rumpun: 'DEK', kapalId: 'KP-HIU-02' },
+                  { pegawaiId: 'PEG-0002', nama: 'Bambang Supriyanto', nipDisplay: '19820715 200604 1 002', kelompokJabatan: 'Nahkoda', jabatanStd: 'Nahkoda', rumpun: 'DEK', kapalId: 'KP-ORCA-01' },
+                  { pegawaiId: 'PEG-0003', nama: 'Hendro Prasetyo', nipDisplay: '19890412 201403 1 001', kelompokJabatan: 'Kepala Kamar Mesin', jabatanStd: 'Kepala Kamar Mesin Kapal', rumpun: 'MESIN', kapalId: 'KP-ORCA-01' }
+                ],
+                certOptions: [
+                  { kodePelatihan: 'TRN-NKH-02', namaPelatihan: 'Basic Safety Training Fisheries (BST / BST-F)', kategori: 'SERTIFIKASI_LAUT', masaBerlakuBulan: 60, source: 'SIKAP', jabatanMap: { 'Nahkoda': true, 'Juru Mudi': true } },
+                  { kodePelatihan: 'TRN-NKH-01', namaPelatihan: 'Sertifikat Keahlian Pelaut Nautika (ANKAPIN Tingkat I / II / ANT)', kategori: 'SERTIFIKASI_LAUT', masaBerlakuBulan: 60, source: 'SIKAP', jabatanMap: { 'Nahkoda': true } },
+                  { kodePelatihan: 'TRN-NKH-03', namaPelatihan: 'Advanced Fire Fighting (AFF)', kategori: 'SERTIFIKASI_LAUT', masaBerlakuBulan: 60, source: 'SIKAP', jabatanMap: { 'Nahkoda': true } },
+                  { kodePelatihan: 'TRN-JMD-01', namaPelatihan: 'Sertifikat Rating Dinas Jaga Navigasi (Rating Dek) / SKK 60 Mil', kategori: 'SERTIFIKASI_LAUT', masaBerlakuBulan: 60, source: 'STANDAR', jabatanMap: { 'Juru Mudi': true } },
+                  { kodePelatihan: 'TRN-NKH-05', namaPelatihan: 'Medical First Aid (MFA) / Medical Care', kategori: 'SERTIFIKASI_LAUT', masaBerlakuBulan: 60, source: 'SIKAP', jabatanMap: { 'Nahkoda': true } }
+                ]
+              }
+            });
+          }, 10);
+        },
+
+        kom_saveSertifikat: function(params) {
+          var self = this;
+          setTimeout(function() {
+            self._onSuccess({
+              success: true,
+              data: { rowId: 'AWAK-SRT-NEW01', message: 'Sertifikat berhasil direkam.' }
+            });
+          }, 10);
+        },
+
         sijil_getPapanArmada: function(token) {
           var self = this;
           setTimeout(function() {
@@ -845,6 +878,28 @@ async function runVisualTests() {
     await page.click('button[data-route="kompetensi"]');
     await page.waitForTimeout(500);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '04_kompetensi_desktop.png') });
+
+    // 4b. Modal Catat Sertifikat Baru (Searchable Crew + Katalog SIKAP)
+    console.log('  [Screen 04b] Modal Catat Sertifikat (Katalog SIKAP & Pencarian Awak)');
+    await page.click('#btn-kom-open-catat-new');
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '04b_kompetensi_modal_catat.png') });
+
+    // 4c. Dropdown Sertifikat SIKAP + Opsi Input Manual
+    console.log('  [Screen 04c] Dropdown Katalog Sertifikat SIKAP + Opsi Lainnya');
+    await page.focus('#kom-save-cert-search-input');
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '04c_kompetensi_cert_dropdown.png') });
+
+    // 4d. Mode Input Sertifikat Tambahan (Di Luar Daftar SIKAP)
+    console.log('  [Screen 04d] Mode Input Manual Sertifikat di Luar Daftar SIKAP');
+    await page.click('#btn-kom-toggle-custom');
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '04d_kompetensi_custom_cert.png') });
+
+    // Tutup modal
+    await page.click('#modal-kom-save .modal-close');
+    await page.waitForTimeout(200);
 
     // 5. Papan Sijil Kapal (2D Matrix Table)
     console.log('  [Screen 05] Papan Sijil Kapal (2D Matrix Table)');

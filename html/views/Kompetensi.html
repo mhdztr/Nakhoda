@@ -168,7 +168,7 @@
     <div class="modal-header">
       <div>
         <div class="modal-title" id="modal-kom-title">Rekam / revalidasi sertifikat</div>
-        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Mencatat STTPP kepelautan personil ke database satelit Nakhoda.</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Mencatat STTPP &amp; sertifikasi kepelautan berdasarkan katalog SIKAP serta standar STCW-F.</div>
       </div>
       <button type="button" class="modal-close" onclick="Modal.close('modal-kom-save')">&times;</button>
     </div>
@@ -176,23 +176,79 @@
     <form id="form-kom-save">
       <input type="hidden" id="kom-save-pegawai-id" value="">
       <input type="hidden" id="kom-save-kode-pelatihan" value="">
+      <input type="hidden" id="kom-save-nama-pelatihan" value="">
+      <input type="hidden" id="kom-save-is-custom" value="false">
 
       <div class="modal-body">
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="kom-save-select-personil">Personil awak kapal</label>
-            <div id="kom-save-nama-target" class="form-control-md" style="background-color:var(--ground); display:flex; align-items:center; font-weight:500;">-</div>
-            <select id="kom-save-select-personil" class="form-control-md hidden">
-              <option value="">-- Pilih Personil --</option>
-            </select>
+        <!-- 1. Personil Awak Kapal (Searchable Combobox) -->
+        <div class="form-group">
+          <label class="form-label" for="kom-save-crew-search-input">Personil awak kapal</label>
+          <select id="kom-save-select-personil" style="display:none;" tabindex="-1">
+            <option value="">-- Pilih Personil --</option>
+          </select>
+
+          <div id="kom-save-crew-search-wrap" class="combobox-wrap">
+            <input type="text" id="kom-save-crew-search-input" class="form-control-md" placeholder="Cari nama, NIP, atau jabatan awak (396+ personil)..." autocomplete="off">
+            <div id="kom-save-crew-dropdown" class="combobox-dropdown hidden"></div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="kom-save-select-standar">Standar pelatihan / diklat</label>
-            <div id="kom-save-pelatihan-target" class="form-control-md" style="background-color:var(--ground); display:flex; align-items:center; font-weight:500; color:var(--accent);">-</div>
-            <select id="kom-save-select-standar" class="form-control-md hidden">
-              <option value="">-- Pilih Standar Diklat --</option>
-            </select>
+
+          <div id="kom-save-crew-selected-card" class="selected-crew-box hidden">
+            <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+              <div id="kom-save-crew-avatar" class="avatar-sm" style="border-radius:3px; flex-shrink:0;">--</div>
+              <div style="min-width:0; flex:1;">
+                <div id="kom-save-crew-name" class="cell-primary" style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
+                <div id="kom-save-crew-meta" class="cell-sub" style="font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
+              </div>
+            </div>
+            <button type="button" id="btn-kom-change-crew" class="btn btn-secondary-sm" style="flex-shrink:0;">Ganti</button>
           </div>
+        </div>
+
+        <!-- 2. Jenis Sertifikat / Diklat (Katalog SIKAP + Opsi Input Manual) -->
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label class="form-label" for="kom-save-cert-search-input" style="margin-bottom:0;">Jenis sertifikat / diklat (data SIKAP)</label>
+            <button type="button" id="btn-kom-toggle-custom" class="btn btn-secondary-sm">+ Di luar daftar SIKAP</button>
+          </div>
+          <select id="kom-save-select-standar" style="display:none;" tabindex="-1">
+            <option value="">-- Pilih Standar Diklat --</option>
+          </select>
+
+          <div id="kom-save-cert-search-wrap" class="combobox-wrap">
+            <input type="text" id="kom-save-cert-search-input" class="form-control-md" placeholder="Cari nama atau kode sertifikat dari katalog SIKAP &amp; STCW-F..." autocomplete="off">
+            <div id="kom-save-cert-dropdown" class="combobox-dropdown hidden"></div>
+          </div>
+
+          <div id="kom-save-cert-selected-card" class="selected-crew-box hidden">
+            <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+              <span id="kom-save-cert-code-badge" class="file-icon-badge" style="flex-shrink:0;">TRN</span>
+              <div style="min-width:0; flex:1;">
+                <div id="kom-save-cert-name" class="cell-primary" style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
+                <div id="kom-save-cert-meta" class="cell-sub" style="font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
+              </div>
+            </div>
+            <button type="button" id="btn-kom-change-cert" class="btn btn-secondary-sm" style="flex-shrink:0;">Ganti</button>
+          </div>
+
+          <!-- Input Manual Sertifikat di Luar Daftar SIKAP -->
+          <div id="kom-save-custom-cert-wrap" class="hidden" style="padding:12px; border:1px solid var(--border); border-radius:var(--radius-chip); background-color:var(--ground);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:11px; font-weight:600; color:var(--text);">Input sertifikat tambahan (di luar daftar SIKAP)</span>
+              <button type="button" id="btn-kom-back-catalog" class="btn btn-secondary-sm">Pilih dari daftar SIKAP</button>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="kom-save-custom-nama">Nama sertifikat / pelatihan</label>
+                <input type="text" id="kom-save-custom-nama" class="form-control-md" placeholder="Contoh: Sertifikat Operator Drone Laut">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="kom-save-custom-kode">Kode diklat (opsional)</label>
+                <input type="text" id="kom-save-custom-kode" class="form-control-md mono" placeholder="Otomatis jika dikosongkan">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-hint" id="kom-save-cert-hint">Daftar sertifikat disinkronkan dari data kepegawaian SIKAP &amp; standar STCW-F. Gunakan tombol di kanan atas bila sertifikat tidak tercantum.</div>
         </div>
 
         <div class="form-grid-2">
@@ -220,12 +276,24 @@
         <!-- Berkas Bukti Evidence Upload (DESIGN.md §5.8) -->
         <div class="form-group">
           <label class="form-label" for="kom-save-file">Pindaian berkas sertifikat (PDF / JPG &le; 15 MB)</label>
-          <div class="dropzone-box" onclick="document.getElementById('kom-save-file').click();">
-            <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:var(--muted);stroke-width:1.6;fill:none;margin-bottom:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <div id="kom-save-file-label" style="font-size:13px; color:var(--text); font-weight:500;">Pilih file dokumen atau seret ke sini</div>
-            <div style="font-size:11px; color:var(--muted); margin-top:2px;">Maksimal 15 MB · Disimpan ke folder Google Drive satelit Nakhoda</div>
+          <div class="upload-dropzone" id="kom-save-dropzone">
+            <input type="file" id="kom-save-file" accept=".pdf,image/png,image/jpeg" style="display:none;">
+            <div id="kom-save-file-prompt" class="dropzone-prompt">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--muted)" fill="none" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk memilih berkas sertifikat</div>
+              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maksimal 15 MB · Disimpan ke Google Drive satelit Nakhoda)</div>
+            </div>
+            <div id="kom-save-file-selected" class="dropzone-selected hidden">
+              <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                <span class="file-icon-badge">CERT</span>
+                <div style="min-width:0;">
+                  <div id="kom-save-file-name" style="font-size:12px; font-weight:600; color:var(--text); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:340px;">-</div>
+                  <div id="kom-save-file-size" style="font-size:11px; color:var(--muted);">0 KB</div>
+                </div>
+              </div>
+              <button type="button" id="btn-kom-remove-file" class="btn btn-secondary-sm" style="color:var(--negative); flex-shrink:0;">Hapus</button>
+            </div>
           </div>
-          <input type="file" id="kom-save-file" accept=".pdf,image/png,image/jpeg" class="hidden">
         </div>
       </div>
 

@@ -11,6 +11,11 @@ var KompetensiView = (function () {
   var _stagedCertFile = null;
   var _eventsBound = false;
   var _dashboardData = null;
+  var _awakOptions = [];
+  var _certOptions = [];
+  var _selectedAwak = null;
+  var _selectedCert = null;
+  var _isCustomCert = false;
 
   function init() {
     _bindEvents();
@@ -32,7 +37,10 @@ var KompetensiView = (function () {
     var filterJab = document.getElementById('kom-matriks-filter-jabatan');
     var searchMatriks = document.getElementById('kom-matriks-search');
     var btnSearchMatriks = document.getElementById('btn-kom-matriks-search');
+    var dropzone = document.getElementById('kom-save-dropzone');
     var fileInput = document.getElementById('kom-save-file');
+    var btnRemoveFile = document.getElementById('btn-kom-remove-file');
+    var tglTerbitInp = document.getElementById('kom-save-tgl-terbit');
     var formSave = document.getElementById('form-kom-save');
 
     if (btnRefresh) {
@@ -44,7 +52,7 @@ var KompetensiView = (function () {
 
     if (btnOpenNew) {
       btnOpenNew.onclick = function () {
-        openModalCatat('', '', 'TRN-NKH-02', 'Basic Safety Training Fisheries (BST / BST-F)');
+        openModalCatat('', '', '', '');
       };
     }
 
@@ -76,23 +84,39 @@ var KompetensiView = (function () {
       };
     }
 
+    if (dropzone && fileInput) {
+      dropzone.onclick = function (e) {
+        if (e.target.id === 'btn-kom-remove-file') return;
+        fileInput.click();
+      };
+    }
+    if (btnRemoveFile) {
+      btnRemoveFile.onclick = function (e) {
+        e.stopPropagation();
+        _clearKomFile();
+      };
+    }
     if (fileInput) {
       fileInput.onchange = function (e) {
         var file = e.target.files[0];
-        var lbl = document.getElementById('kom-save-file-label');
         if (!file) {
-          _stagedCertFile = null;
-          if (lbl) lbl.textContent = 'Pilih file dokumen atau seret ke sini';
+          _clearKomFile();
           return;
         }
         if (file.size > 15 * 1024 * 1024) {
           Toast.error('Ukuran berkas melebihi batas 15 MB.');
-          e.target.value = '';
-          _stagedCertFile = null;
-          if (lbl) lbl.textContent = 'Pilih file dokumen atau seret ke sini';
+          _clearKomFile();
           return;
         }
-        if (lbl) lbl.textContent = file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)';
+        var promptEl = document.getElementById('kom-save-file-prompt');
+        var selEl = document.getElementById('kom-save-file-selected');
+        var nameEl = document.getElementById('kom-save-file-name');
+        var sizeEl = document.getElementById('kom-save-file-size');
+        if (promptEl) promptEl.classList.add('hidden');
+        if (selEl) selEl.classList.remove('hidden');
+        if (nameEl) nameEl.textContent = file.name;
+        if (sizeEl) sizeEl.textContent = (file.size / 1024).toFixed(1) + ' KB';
+
         var reader = new FileReader();
         reader.onload = function (evt) {
           _stagedCertFile = {
@@ -105,12 +129,20 @@ var KompetensiView = (function () {
       };
     }
 
+    if (tglTerbitInp) {
+      tglTerbitInp.onchange = function () {
+        _autoCalcExpiry();
+      };
+    }
+
     if (formSave) {
       formSave.onsubmit = function (e) {
         e.preventDefault();
         _submitSaveSertifikat();
       };
     }
+
+    _bindModalComboboxes();
   }
 
   function loadDashboard() {
@@ -379,101 +411,483 @@ var KompetensiView = (function () {
     }
   }
 
+  // ── COMBOBOX PERSONIL & KATALOG SERTIFIKAT (SIKAP + STANDAR STCW-F) ──
+  function _bindModalComboboxes() {
+    var crewSearchInp = document.getElementById('kom-save-crew-search-input');
+    var crewDropdown = document.getElementById('kom-save-crew-dropdown');
+    var btnChangeCrew = document.getElementById('btn-kom-change-crew');
+
+    var certSearchInp = document.getElementById('kom-save-cert-search-input');
+    var certDropdown = document.getElementById('kom-save-cert-dropdown');
+    var btnChangeCert = document.getElementById('btn-kom-change-cert');
+    var btnToggleCustom = document.getElementById('btn-kom-toggle-custom');
+    var btnBackCatalog = document.getElementById('btn-kom-back-catalog');
+
+    if (crewSearchInp) {
+      crewSearchInp.oninput = function () {
+        _renderCrewDropdown(crewSearchInp.value);
+      };
+      crewSearchInp.onfocus = function () {
+        _renderCrewDropdown(crewSearchInp.value);
+      };
+    }
+    if (btnChangeCrew) {
+      btnChangeCrew.onclick = function () {
+        _clearSelectedCrew();
+      };
+    }
+
+    if (certSearchInp) {
+      certSearchInp.oninput = function () {
+        _renderCertDropdown(certSearchInp.value);
+      };
+      certSearchInp.onfocus = function () {
+        _renderCertDropdown(certSearchInp.value);
+      };
+    }
+    if (btnChangeCert) {
+      btnChangeCert.onclick = function () {
+        _clearSelectedCert();
+      };
+    }
+    if (btnToggleCustom) {
+      btnToggleCustom.onclick = function () {
+        var prefillText = certSearchInp ? certSearchInp.value.trim() : '';
+        _setCustomCertMode(true, prefillText);
+      };
+    }
+    if (btnBackCatalog) {
+      btnBackCatalog.onclick = function () {
+        _setCustomCertMode(false, '');
+      };
+    }
+
+    document.addEventListener('click', function (e) {
+      var crewWrap = document.getElementById('kom-save-crew-search-wrap');
+      if (crewWrap && !crewWrap.contains(e.target) && crewDropdown) {
+        crewDropdown.classList.add('hidden');
+      }
+      var certWrap = document.getElementById('kom-save-cert-search-wrap');
+      if (certWrap && !certWrap.contains(e.target) && certDropdown) {
+        certDropdown.classList.add('hidden');
+      }
+    });
+  }
+
+  function _clearKomFile() {
+    _stagedCertFile = null;
+    var fInp = document.getElementById('kom-save-file');
+    var promptEl = document.getElementById('kom-save-file-prompt');
+    var selEl = document.getElementById('kom-save-file-selected');
+    if (fInp) fInp.value = '';
+    if (promptEl) promptEl.classList.remove('hidden');
+    if (selEl) selEl.classList.add('hidden');
+  }
+
+  function _renderCrewDropdown(query) {
+    var dropdown = document.getElementById('kom-save-crew-dropdown');
+    if (!dropdown) return;
+
+    var q = String(query || '').toLowerCase().trim();
+    var filtered = _awakOptions;
+    if (q) {
+      filtered = _awakOptions.filter(function (a) {
+        var s = (a.nama + ' ' + (a.nipDisplay || '') + ' ' + (a.kelompokJabatan || '') + ' ' + (a.rumpun || '')).toLowerCase();
+        return s.indexOf(q) !== -1;
+      });
+    }
+
+    if (filtered.length === 0) {
+      dropdown.innerHTML = '<div style="padding:12px; font-size:12px; color:var(--muted); text-align:center;">Tidak ada personil awak yang cocok.</div>';
+      dropdown.classList.remove('hidden');
+      return;
+    }
+
+    var slice = filtered.slice(0, 15);
+    dropdown.innerHTML = slice.map(function (a) {
+      var bg = Format.avatarBg(a.nama);
+      var inis = Format.initials(a.nama);
+      return (
+        '<div class="combobox-item" data-peg-id="' + a.pegawaiId + '">' +
+          '<div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">' +
+            '<div class="avatar-sm" style="background-color:' + bg + '; border-radius:3px; flex-shrink:0;">' + inis + '</div>' +
+            '<div style="min-width:0; flex:1;">' +
+              '<div style="font-size:12px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + Format.escape(a.nama) + '</div>' +
+              '<div style="font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' +
+                (a.nipDisplay ? 'NIP ' + a.nipDisplay + ' · ' : '') + Format.escape(a.kelompokJabatan || 'Awak') + ' (' + (a.rumpun || 'DEK') + ')' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          (a.kapalId ? '<span class="pill pill-neutral" style="font-size:10px; padding:1px 6px;">' + Format.escape(a.kapalId) + '</span>' : '') +
+        '</div>'
+      );
+    }).join('');
+
+    dropdown.classList.remove('hidden');
+
+    dropdown.querySelectorAll('.combobox-item[data-peg-id]').forEach(function (el) {
+      el.onclick = function () {
+        var pId = el.getAttribute('data-peg-id');
+        var found = _awakOptions.find(function (x) { return x.pegawaiId === pId; });
+        if (found) _selectCrew(found);
+      };
+    });
+  }
+
+  function _selectCrew(awak) {
+    _selectedAwak = awak;
+    var inpId = document.getElementById('kom-save-pegawai-id');
+    var selPeg = document.getElementById('kom-save-select-personil');
+    var searchWrap = document.getElementById('kom-save-crew-search-wrap');
+    var card = document.getElementById('kom-save-crew-selected-card');
+    var dropdown = document.getElementById('kom-save-crew-dropdown');
+
+    if (inpId) inpId.value = awak.pegawaiId || '';
+    if (selPeg) selPeg.value = awak.pegawaiId || '';
+    if (searchWrap) searchWrap.classList.add('hidden');
+    if (dropdown) dropdown.classList.add('hidden');
+
+    if (card) {
+      var avEl = document.getElementById('kom-save-crew-avatar');
+      var nameEl = document.getElementById('kom-save-crew-name');
+      var metaEl = document.getElementById('kom-save-crew-meta');
+      if (avEl) {
+        avEl.textContent = Format.initials(awak.nama);
+        avEl.style.backgroundColor = Format.avatarBg(awak.nama);
+      }
+      if (nameEl) nameEl.textContent = awak.nama;
+      if (metaEl) {
+        metaEl.textContent = (awak.nipDisplay ? 'NIP ' + awak.nipDisplay + ' · ' : '') +
+                             (awak.kelompokJabatan || 'Personil Armada') +
+                             (awak.pegawaiId ? ' (' + awak.pegawaiId + ')' : '');
+      }
+      card.classList.remove('hidden');
+    }
+  }
+
+  function _clearSelectedCrew() {
+    _selectedAwak = null;
+    var inpId = document.getElementById('kom-save-pegawai-id');
+    var selPeg = document.getElementById('kom-save-select-personil');
+    var searchWrap = document.getElementById('kom-save-crew-search-wrap');
+    var searchInp = document.getElementById('kom-save-crew-search-input');
+    var card = document.getElementById('kom-save-crew-selected-card');
+    var dropdown = document.getElementById('kom-save-crew-dropdown');
+
+    if (inpId) inpId.value = '';
+    if (selPeg) selPeg.value = '';
+    if (card) card.classList.add('hidden');
+    if (searchWrap) searchWrap.classList.remove('hidden');
+    if (dropdown) dropdown.classList.add('hidden');
+    if (searchInp) {
+      searchInp.value = '';
+      searchInp.focus();
+    }
+  }
+
+  function _renderCertDropdown(query) {
+    var dropdown = document.getElementById('kom-save-cert-dropdown');
+    if (!dropdown) return;
+
+    var q = String(query || '').toLowerCase().trim();
+    var targetJab = _selectedAwak ? (_selectedAwak.jabatanStd || _selectedAwak.kelompokJabatan || '') : '';
+
+    var list = _certOptions.slice();
+    if (q) {
+      list = list.filter(function (c) {
+        var s = (c.namaPelatihan + ' ' + c.kodePelatihan + ' ' + (c.kategori || '') + ' ' + (c.source || '')).toLowerCase();
+        return s.indexOf(q) !== -1;
+      });
+    }
+
+    // Prioritaskan sertifikat yang relevan dengan jabatan awak terpilih
+    if (targetJab) {
+      list.sort(function (a, b) {
+        var aHas = a.jabatanMap && (targetJab in a.jabatanMap);
+        var bHas = b.jabatanMap && (targetJab in b.jabatanMap);
+        if (aHas && !bHas) return -1;
+        if (!aHas && bHas) return 1;
+        var aWajib = aHas && a.jabatanMap[targetJab] === true;
+        var bWajib = bHas && b.jabatanMap[targetJab] === true;
+        if (aWajib && !bWajib) return -1;
+        if (!aWajib && bWajib) return 1;
+        return 0;
+      });
+    }
+
+    var slice = list.slice(0, 20);
+    var html = '';
+
+    if (slice.length === 0) {
+      html += '<div style="padding:10px 12px; font-size:12px; color:var(--muted);">Tidak ditemukan dalam katalog SIKAP.</div>';
+    } else {
+      html += slice.map(function (c) {
+        var isWajib = targetJab && c.jabatanMap && c.jabatanMap[targetJab] === true;
+        var badge = '';
+        if (isWajib) {
+          badge = '<span class="pill pill-warning" style="font-size:10px; padding:1px 6px;">Wajib jabatan</span>';
+        } else if (c.source === 'SIKAP') {
+          badge = '<span class="pill pill-positive" style="font-size:10px; padding:1px 6px;">Data SIKAP</span>';
+        } else {
+          badge = '<span class="pill pill-neutral" style="font-size:10px; padding:1px 6px;">Standar STCW-F</span>';
+        }
+
+        return (
+          '<div class="combobox-item" data-cert-kode="' + Format.escape(c.kodePelatihan) + '">' +
+            '<div style="min-width:0; flex:1;">' +
+              '<div style="font-size:12px; font-weight:600; color:var(--text); line-height:1.3;">' + Format.escape(c.namaPelatihan) + '</div>' +
+              '<div class="mono" style="font-size:10.5px; color:var(--muted); margin-top:2px;">' + Format.escape(c.kodePelatihan) + (c.masaBerlakuBulan ? (' · Berlaku ' + (c.masaBerlakuBulan / 12) + ' thn') : ' · Permanen') + '</div>' +
+            '</div>' +
+            '<div style="flex-shrink:0;">' + badge + '</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    // Opsi khusus di luar daftar SIKAP (sticky di bagian bawah dropdown)
+    html +=
+      '<div class="combobox-item combobox-item-sticky" data-cert-custom="true">' +
+        '<div style="font-size:12px; font-weight:600; color:var(--accent);">+ Sertifikat lainnya (Input manual di luar daftar SIKAP)</div>' +
+      '</div>';
+
+    dropdown.innerHTML = html;
+    dropdown.classList.remove('hidden');
+
+    dropdown.querySelectorAll('.combobox-item[data-cert-kode]').forEach(function (el) {
+      el.onclick = function () {
+        var kd = el.getAttribute('data-cert-kode');
+        var found = _certOptions.find(function (x) { return x.kodePelatihan === kd; });
+        if (found) _selectCert(found);
+      };
+    });
+
+    var customTrigger = dropdown.querySelector('.combobox-item[data-cert-custom="true"]');
+    if (customTrigger) {
+      customTrigger.onclick = function () {
+        var inp = document.getElementById('kom-save-cert-search-input');
+        _setCustomCertMode(true, inp ? inp.value.trim() : '');
+      };
+    }
+  }
+
+  function _selectCert(cert) {
+    _selectedCert = cert;
+    _isCustomCert = false;
+
+    var inpKode = document.getElementById('kom-save-kode-pelatihan');
+    var inpNama = document.getElementById('kom-save-nama-pelatihan');
+    var inpIsCustom = document.getElementById('kom-save-is-custom');
+    var searchWrap = document.getElementById('kom-save-cert-search-wrap');
+    var customWrap = document.getElementById('kom-save-custom-cert-wrap');
+    var card = document.getElementById('kom-save-cert-selected-card');
+    var dropdown = document.getElementById('kom-save-cert-dropdown');
+    var btnToggle = document.getElementById('btn-kom-toggle-custom');
+
+    if (inpKode) inpKode.value = cert.kodePelatihan || '';
+    if (inpNama) inpNama.value = cert.namaPelatihan || '';
+    if (inpIsCustom) inpIsCustom.value = 'false';
+
+    if (searchWrap) searchWrap.classList.add('hidden');
+    if (customWrap) customWrap.classList.add('hidden');
+    if (dropdown) dropdown.classList.add('hidden');
+    if (btnToggle) btnToggle.classList.add('hidden');
+
+    if (card) {
+      var badgeEl = document.getElementById('kom-save-cert-code-badge');
+      var nameEl = document.getElementById('kom-save-cert-name');
+      var metaEl = document.getElementById('kom-save-cert-meta');
+      if (badgeEl) badgeEl.textContent = cert.kodePelatihan || 'CERT';
+      if (nameEl) nameEl.textContent = cert.namaPelatihan || cert.kodePelatihan;
+      if (metaEl) {
+        var srcLabel = cert.source === 'SIKAP' ? 'Data Kepegawaian SIKAP' : 'Standar STCW-F KKP';
+        var expLabel = cert.masaBerlakuBulan ? ('Masa berlaku ' + cert.masaBerlakuBulan + ' bulan') : 'Berlaku permanen / sesuai sertifikat';
+        metaEl.textContent = srcLabel + ' · ' + expLabel;
+      }
+      card.classList.remove('hidden');
+    }
+
+    _autoCalcExpiry();
+  }
+
+  function _clearSelectedCert() {
+    _selectedCert = null;
+    _isCustomCert = false;
+
+    var inpKode = document.getElementById('kom-save-kode-pelatihan');
+    var inpNama = document.getElementById('kom-save-nama-pelatihan');
+    var inpIsCustom = document.getElementById('kom-save-is-custom');
+    var searchWrap = document.getElementById('kom-save-cert-search-wrap');
+    var searchInp = document.getElementById('kom-save-cert-search-input');
+    var customWrap = document.getElementById('kom-save-custom-cert-wrap');
+    var card = document.getElementById('kom-save-cert-selected-card');
+    var dropdown = document.getElementById('kom-save-cert-dropdown');
+    var btnToggle = document.getElementById('btn-kom-toggle-custom');
+
+    if (inpKode) inpKode.value = '';
+    if (inpNama) inpNama.value = '';
+    if (inpIsCustom) inpIsCustom.value = 'false';
+    if (card) card.classList.add('hidden');
+    if (customWrap) customWrap.classList.add('hidden');
+    if (searchWrap) searchWrap.classList.remove('hidden');
+    if (dropdown) dropdown.classList.add('hidden');
+    if (btnToggle) btnToggle.classList.remove('hidden');
+
+    if (searchInp) {
+      searchInp.value = '';
+      searchInp.focus();
+    }
+  }
+
+  function _setCustomCertMode(active, prefillNama) {
+    _isCustomCert = !!active;
+    var inpIsCustom = document.getElementById('kom-save-is-custom');
+    var searchWrap = document.getElementById('kom-save-cert-search-wrap');
+    var dropdown = document.getElementById('kom-save-cert-dropdown');
+    var card = document.getElementById('kom-save-cert-selected-card');
+    var customWrap = document.getElementById('kom-save-custom-cert-wrap');
+    var customNama = document.getElementById('kom-save-custom-nama');
+    var customKode = document.getElementById('kom-save-custom-kode');
+    var btnToggle = document.getElementById('btn-kom-toggle-custom');
+
+    if (inpIsCustom) inpIsCustom.value = active ? 'true' : 'false';
+
+    if (active) {
+      _selectedCert = null;
+      if (searchWrap) searchWrap.classList.add('hidden');
+      if (dropdown) dropdown.classList.add('hidden');
+      if (card) card.classList.add('hidden');
+      if (btnToggle) btnToggle.classList.add('hidden');
+      if (customWrap) customWrap.classList.remove('hidden');
+      if (customKode) customKode.value = '';
+      if (customNama) {
+        customNama.value = prefillNama || '';
+        customNama.focus();
+      }
+    } else {
+      if (customWrap) customWrap.classList.add('hidden');
+      if (card) card.classList.add('hidden');
+      if (searchWrap) searchWrap.classList.remove('hidden');
+      if (btnToggle) btnToggle.classList.remove('hidden');
+    }
+  }
+
+  function _autoCalcExpiry() {
+    var tglTerbit = (document.getElementById('kom-save-tgl-terbit') || {}).value;
+    var expInp = document.getElementById('kom-save-berlaku-sampai');
+    if (!tglTerbit || !expInp || expInp.value) return;
+    if (_selectedCert && _selectedCert.masaBerlakuBulan > 0) {
+      var dt = new Date(tglTerbit);
+      if (!isNaN(dt.getTime())) {
+        dt.setMonth(dt.getMonth() + _selectedCert.masaBerlakuBulan);
+        expInp.value = dt.toISOString().substring(0, 10);
+      }
+    }
+  }
+
   function openModalCatat(pegawaiId, namaAwak, kodePelatihan, namaPelatihan) {
-    document.getElementById('kom-save-pegawai-id').value = pegawaiId || '';
-    document.getElementById('kom-save-kode-pelatihan').value = kodePelatihan || '';
-
-    var targetNamaEl = document.getElementById('kom-save-nama-target');
-    var targetPelEl = document.getElementById('kom-save-pelatihan-target');
-    var selectPersonil = document.getElementById('kom-save-select-personil');
-    var selectStandar = document.getElementById('kom-save-select-standar');
-
-    if (pegawaiId && namaAwak) {
-      if (targetNamaEl) {
-        targetNamaEl.textContent = namaAwak + ' (' + pegawaiId + ')';
-        targetNamaEl.classList.remove('hidden');
-      }
-      if (selectPersonil) selectPersonil.classList.add('hidden');
-    } else {
-      if (targetNamaEl) targetNamaEl.classList.add('hidden');
-      if (selectPersonil) {
-        selectPersonil.classList.remove('hidden');
-        _populatePersonilDropdown(selectPersonil);
-      }
-    }
-
-    if (kodePelatihan && namaPelatihan) {
-      if (targetPelEl) {
-        targetPelEl.textContent = namaPelatihan + ' (' + kodePelatihan + ')';
-        targetPelEl.classList.remove('hidden');
-      }
-      if (selectStandar) selectStandar.classList.add('hidden');
-    } else {
-      if (targetPelEl) targetPelEl.classList.add('hidden');
-      if (selectStandar) {
-        selectStandar.classList.remove('hidden');
-        _populateStandarDropdown(selectStandar);
-      }
-    }
-
     document.getElementById('kom-save-nomor').value = '';
     document.getElementById('kom-save-lembaga').value = 'BP3IP / BPPP Tegal KKP';
     document.getElementById('kom-save-tgl-terbit').value = '';
     document.getElementById('kom-save-berlaku-sampai').value = '';
-    document.getElementById('kom-save-file').value = '';
-    document.getElementById('kom-save-file-label').textContent = 'Pilih file dokumen atau seret ke sini';
-    _stagedCertFile = null;
+    _clearKomFile();
+    _setCustomCertMode(false, '');
+
+    if (pegawaiId && namaAwak) {
+      _selectCrew({
+        pegawaiId: pegawaiId,
+        nama: namaAwak,
+        nipDisplay: '',
+        kelompokJabatan: ''
+      });
+    } else {
+      _clearSelectedCrew();
+    }
+
+    if (kodePelatihan && namaPelatihan) {
+      _selectCert({
+        kodePelatihan: kodePelatihan,
+        namaPelatihan: namaPelatihan,
+        source: 'STANDAR',
+        masaBerlakuBulan: 60
+      });
+    } else {
+      _clearSelectedCert();
+    }
 
     Modal.open('modal-kom-save');
-  }
 
-  function _populatePersonilDropdown(sel) {
+    // Muat daftar personil & katalog sertifikat resmi dari SIKAP + Standar STCW-F
     var token = AuthApp.getToken();
-    rpc('dir_list', { token: token, limit: 100 })
-      .then(function (res) {
-        var items = res.items || [];
-        sel.innerHTML = '<option value="">-- Pilih Personil Awak --</option>' + items.map(function (it) {
-          return '<option value="' + it.pegawaiId + '" data-nama="' + Format.escape(it.nama) + '">' + Format.escape(it.nama) + ' (' + it.kelompokJabatan + ')</option>';
-        }).join('');
-      })
-      .catch(function () {});
-  }
+    var crewSearch = document.getElementById('kom-save-crew-search-input');
+    var certSearch = document.getElementById('kom-save-cert-search-input');
+    if (crewSearch && !pegawaiId) crewSearch.placeholder = 'Memuat data personil armada...';
+    if (certSearch && !kodePelatihan) certSearch.placeholder = 'Memuat daftar sertifikat dari SIKAP...';
 
-  function _populateStandarDropdown(sel) {
-    var standards = [
-      { kd: 'TRN-NKH-01', nm: 'Sertifikat Keahlian Pelaut Nautika (ANKAPIN / ANT)' },
-      { kd: 'TRN-NKH-02', nm: 'Basic Safety Training Fisheries (BST / BST-F)' },
-      { kd: 'TRN-NKH-03', nm: 'Advanced Fire Fighting (AFF)' },
-      { kd: 'TRN-NKH-04', nm: 'Survival Craft and Rescue Boats (SCRB)' },
-      { kd: 'TRN-NKH-05', nm: 'Medical First Aid (MFA) / Medical Care' },
-      { kd: 'TRN-NKH-06', nm: 'Radar Simulator & Automatic Radar Plotting Aid (ARPA)' },
-      { kd: 'TRN-NKH-07', nm: 'Electronic Chart Display and Information System (ECDIS)' },
-      { kd: 'TRN-NKH-08', nm: 'Sertifikat Operator Radio Umum GMDSS (ORU / GOC)' },
-      { kd: 'TRN-KKM-01', nm: 'Sertifikat Keahlian Pelaut Teknika (ATKAPIN / ATT)' }
-    ];
-    sel.innerHTML = '<option value="">-- Pilih Standar Pelatihan --</option>' + standards.map(function (s) {
-      return '<option value="' + s.kd + '" data-nama="' + Format.escape(s.nm) + '">' + Format.escape(s.nm) + ' (' + s.kd + ')</option>';
-    }).join('');
+    rpc('kom_getFormOptions', token)
+      .then(function (res) {
+        var d = (res && res.awakOptions) ? res : (res && res.data ? res.data : {});
+        _awakOptions = d.awakOptions || [];
+        _certOptions = d.certOptions || [];
+
+        if (crewSearch) crewSearch.placeholder = 'Cari nama, NIP, atau jabatan awak (' + _awakOptions.length + ' personil)...';
+        if (certSearch) certSearch.placeholder = 'Cari nama atau kode sertifikat dari data SIKAP (' + _certOptions.length + ' jenis)...';
+
+        // Perkaya tampilan jika sudah terpilih sebelumnya
+        if (pegawaiId) {
+          var foundAwak = _awakOptions.find(function (x) { return x.pegawaiId === pegawaiId; });
+          if (foundAwak) _selectCrew(foundAwak);
+        }
+        if (kodePelatihan) {
+          var foundCert = _certOptions.find(function (x) { return x.kodePelatihan === kodePelatihan; });
+          if (foundCert) _selectCert(foundCert);
+        }
+      })
+      .catch(function () {
+        // Fallback jika environment mock lama
+        if (_certOptions.length === 0) {
+          _certOptions = [
+            { kodePelatihan: 'TRN-NKH-01', namaPelatihan: 'Sertifikat Keahlian Pelaut Nautika (ANKAPIN / ANT)', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} },
+            { kodePelatihan: 'TRN-NKH-02', namaPelatihan: 'Basic Safety Training Fisheries (BST / BST-F)', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} },
+            { kodePelatihan: 'TRN-NKH-03', namaPelatihan: 'Advanced Fire Fighting (AFF)', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} },
+            { kodePelatihan: 'TRN-NKH-04', namaPelatihan: 'Survival Craft and Rescue Boats (SCRB)', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} },
+            { kodePelatihan: 'TRN-NKH-05', namaPelatihan: 'Medical First Aid (MFA) / Medical Care', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} },
+            { kodePelatihan: 'TRN-NKH-06', namaPelatihan: 'Radar Simulator & ARPA', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} },
+            { kodePelatihan: 'TRN-NKH-07', namaPelatihan: 'Electronic Chart Display (ECDIS)', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} },
+            { kodePelatihan: 'TRN-NKH-08', namaPelatihan: 'Sertifikat Operator Radio GMDSS (ORU / GOC)', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} },
+            { kodePelatihan: 'TRN-KKM-01', namaPelatihan: 'Sertifikat Keahlian Pelaut Teknika (ATKAPIN / ATT)', source: 'SIKAP', masaBerlakuBulan: 60, jabatanMap: {} }
+          ];
+        }
+        rpc('dir_list', { token: token, limit: 500 })
+          .then(function (rDir) {
+            _awakOptions = rDir.items || [];
+            if (crewSearch) crewSearch.placeholder = 'Cari nama, NIP, atau jabatan awak (' + _awakOptions.length + ' personil)...';
+            if (certSearch) certSearch.placeholder = 'Cari nama atau kode sertifikat dari data SIKAP (' + _certOptions.length + ' jenis)...';
+          })
+          .catch(function () {});
+      });
   }
 
   function _submitSaveSertifikat() {
     var token = AuthApp.getToken();
     var pId = document.getElementById('kom-save-pegawai-id').value;
-    var selPeg = document.getElementById('kom-save-select-personil');
-    if (!pId && selPeg && !selPeg.classList.contains('hidden')) {
-      pId = selPeg.value;
-    }
-
-    var kd = document.getElementById('kom-save-kode-pelatihan').value;
-    var selStd = document.getElementById('kom-save-select-standar');
+    var kd = '';
     var namaPel = '';
-    if (!kd && selStd && !selStd.classList.contains('hidden')) {
-      kd = selStd.value;
-      var opt = selStd.options[selStd.selectedIndex];
-      if (opt) namaPel = opt.getAttribute('data-nama');
-    }
-    if (!namaPel) {
-      namaPel = (document.getElementById('kom-save-pelatihan-target').textContent || '').split(' (')[0];
+
+    if (_isCustomCert) {
+      namaPel = (document.getElementById('kom-save-custom-nama') || {}).value.trim();
+      kd = (document.getElementById('kom-save-custom-kode') || {}).value.trim();
+      if (!namaPel) {
+        Toast.error('Tuliskan nama sertifikat atau pelatihan.');
+        return;
+      }
+      if (!kd) kd = '__LAINNYA__';
+    } else {
+      kd = document.getElementById('kom-save-kode-pelatihan').value;
+      namaPel = document.getElementById('kom-save-nama-pelatihan').value;
+      if (!kd) {
+        Toast.error('Pilih sertifikat dari katalog SIKAP atau klik "+ Di luar daftar SIKAP".');
+        return;
+      }
     }
 
     var noSert = document.getElementById('kom-save-nomor').value.trim();
@@ -482,15 +896,11 @@ var KompetensiView = (function () {
     var tglExp = document.getElementById('kom-save-berlaku-sampai').value;
 
     if (!pId) {
-      Toast.error('Pilih personil awak kapal.');
-      return;
-    }
-    if (!kd) {
-      Toast.error('Pilih standar pelatihan.');
+      Toast.error('Pilih personil awak kapal terlebih dahulu.');
       return;
     }
     if (!noSert) {
-      Toast.error('Nomor sertifikat wajib diisi.');
+      Toast.error('Nomor registrasi sertifikat wajib diisi.');
       return;
     }
     if (!tglTerbit) {
@@ -509,6 +919,7 @@ var KompetensiView = (function () {
       pegawaiId: pId,
       kodePelatihan: kd,
       namaPelatihan: namaPel,
+      isCustom: _isCustomCert,
       nomorSertifikat: noSert,
       penerbitLembaga: lembaga,
       tanggalTerbit: tglTerbit,

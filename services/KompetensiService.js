@@ -278,8 +278,10 @@ function kom_getAwakMatriks(token, pegawaiId) {
 
     var now = new Date();
 
+    var stdCodesMap = {};
     var matriks = rowsStd.map(function (std) {
       var kd = String(std.KodePelatihan || '');
+      stdCodesMap[kd] = true;
       var cert = sMap[kd];
       var evalRes = evaluateSertifikatStatus(cert, now);
 
@@ -299,6 +301,30 @@ function kom_getAwakMatriks(token, pegawaiId) {
         label: evalRes.label,
         evidenceId: cert ? String(cert.EvidenceID || '') : ''
       };
+    });
+
+    // Sertakan juga sertifikat tambahan dari SIKAP / input luar standar wajib
+    rowsSrt.forEach(function (cert) {
+      var kd = String(cert.KodePelatihan || '');
+      if (!kd || stdCodesMap[kd]) return;
+      stdCodesMap[kd] = true;
+      var evalRes = evaluateSertifikatStatus(cert, now);
+      matriks.push({
+        kodePelatihan: kd,
+        namaPelatihan: String(cert.NamaPelatihan || kd),
+        kategori: 'TAMBAHAN',
+        wajib: false,
+        masaBerlakuBulan: 0,
+        hasCert: true,
+        nomorSertifikat: String(cert.NomorSertifikat || '-'),
+        tanggalTerbit: String(cert.TanggalTerbit || ''),
+        berlakuSampai: String(cert.BerlakuSampai || ''),
+        penerbitLembaga: String(cert.PenerbitLembaga || '-'),
+        status: evalRes.status,
+        sisaHari: evalRes.sisaHari,
+        label: evalRes.label,
+        evidenceId: String(cert.EvidenceID || '')
+      });
     });
 
     var wajibList = rowsStd.filter(function (s) { return s.Wajib === true || String(s.Wajib).toLowerCase() === 'true'; });
@@ -341,9 +367,17 @@ function kom_saveSertifikat(params) {
       var kd = String(params.kodePelatihan || '').trim();
       var namaPelatihan = String(params.namaPelatihan || '').trim();
       var noSert = String(params.nomorSertifikat || '').trim();
+      var isCustom = params.isCustom === true || kd === '__LAINNYA__';
 
       if (!pId) return { success: false, error: 'PegawaiID tidak valid.' };
-      if (!kd) return { success: false, error: 'Kode Pelatihan wajib diisi.' };
+      if (isCustom || !kd) {
+        if (!namaPelatihan) return { success: false, error: 'Nama sertifikat / pelatihan wajib diisi.' };
+        if (!kd || kd === '__LAINNYA__') {
+          var slug = namaPelatihan.toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_|_$/g, '').substring(0, 14);
+          kd = 'TRN-EXT-' + (slug || Utilities.getUuid().substring(0, 6).toUpperCase());
+        }
+      }
+      if (!namaPelatihan) namaPelatihan = kd;
       if (!noSert) return { success: false, error: 'Nomor Sertifikat wajib diisi.' };
 
       var sheetSrt = openAwakSheet(SHEET_AWAK.PELATIHAN_AWAK);
@@ -584,5 +618,165 @@ function _normalizeJabatanStandar(jabatanText) {
   if (/MASINIS/.test(t)) return 'Masinis';
   if (/JURU MINYAK|OILER/.test(t)) return 'Juru Minyak';
   return 'Nahkoda'; // fallback
+}
+
+/**
+ * Mengambil opsi lengkap untuk modal Catat/Revalidasi Sertifikat:
+ * 1) Daftar seluruh personil awak aktif (396+ orang) untuk pencarian combobox
+ * 2) Katalog sertifikat resmi yang berasal dari data SIKAP + Master_Standar_Pelatihan
+ *
+ * @param {string} token
+ */
+function kom_getFormOptions(token) {
+  try {
+    var session = _requireSession(token);
+    var isPrivileged = session.role === ROLE.SUPERADMIN || session.role === ROLE.KADIV;
+    kom_ensureStandarSeeded();
+
+    // 1. Awak Aktif
+    var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+    var rowsAwak = sheetToObjects(sheetAwak);
+    if (rowsAwak.length === 0 && typeof dir_ensureSeeded === 'function') {
+      dir_ensureSeeded();
+      rowsAwak = sheetToObjects(sheetAwak);
+    }
+
+    var awakOptions = rowsAwak
+      .filter(function (r) {
+        return String(r.StatusAktif || 'AKTIF').toUpperCase() === 'AKTIF';
+      })
+      .map(function (r) {
+        var rmp = String(r.Rumpun || '');
+        if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
+        var jabRaw = String(r.KelompokJabatan || '');
+        return {
+          pegawaiId: String(r.PegawaiID || ''),
+          nipDisplay: maskNip(String(r.NIP || ''), isPrivileged),
+          nama: String(r.Nama || ''),
+          kelompokJabatan: jabRaw,
+          jabatanStd: _normalizeJabatanStandar(jabRaw),
+          rumpun: rmp || 'DEK',
+          kapalId: String(r.KapalID || '')
+        };
+      });
+
+    // 2. Katalog Sertifikat dari SIKAP & Master_Standar_Pelatihan
+    var certMap = {}; // keyed by lowercase nama or kode
+
+    function upsertCert(kode, nama, kategori, masaBulan, source, jabatan, isWajib) {
+      var cleanNama = String(nama || '').trim();
+      var cleanKode = String(kode || '').trim();
+      if (!cleanNama && !cleanKode) return;
+      if (!cleanNama) cleanNama = cleanKode;
+
+      var normKey = cleanNama.toLowerCase().replace(/\s+/g, ' ');
+      if (!certMap[normKey]) {
+        certMap[normKey] = {
+          kodePelatihan: cleanKode,
+          namaPelatihan: cleanNama,
+          kategori: String(kategori || 'SERTIFIKASI_LAUT'),
+          masaBerlakuBulan: parseInt(masaBulan, 10) || 0,
+          source: source,
+          jabatanMap: {}
+        };
+      } else {
+        // Jika sumber dari SIKAP, tandai sebagai SIKAP
+        if (source === 'SIKAP') certMap[normKey].source = 'SIKAP';
+        if (!certMap[normKey].kodePelatihan && cleanKode) certMap[normKey].kodePelatihan = cleanKode;
+      }
+
+      if (jabatan) {
+        var curWajib = certMap[normKey].jabatanMap[jabatan] === true;
+        certMap[normKey].jabatanMap[jabatan] = curWajib || !!isWajib;
+      }
+    }
+
+    // Sumber A: Master_Standar_Pelatihan
+    var rowsStd = sheetToObjects(openAwakSheet(SHEET_AWAK.MASTER_STANDAR_PELATIHAN));
+    rowsStd.forEach(function (s) {
+      upsertCert(
+        s.KodePelatihan,
+        s.NamaPelatihan,
+        s.Kategori,
+        s.MasaBerlakuBulan,
+        'STANDAR',
+        String(s.KelompokJabatan || ''),
+        s.Wajib === true || String(s.Wajib).toLowerCase() === 'true'
+      );
+    });
+
+    // Sumber B: Sertifikat aktual dari TX_Pelatihan_Awak (termasuk hasil sync SIKAP)
+    var rowsSrt = sheetToObjects(openAwakSheet(SHEET_AWAK.PELATIHAN_AWAK));
+    rowsSrt.forEach(function (s) {
+      if (String(s.Status || '').toUpperCase() === 'VOID') return;
+      upsertCert(
+        s.KodePelatihan,
+        s.NamaPelatihan,
+        'SIKAP',
+        0,
+        'SIKAP',
+        '',
+        false
+      );
+    });
+
+    // Sumber C: Baca langsung sheet sertifikat di SIKAP jika SIKAP_SS_ID terkonfigurasi
+    try {
+      var props = PropertiesService.getScriptProperties();
+      var sikapId = props.getProperty(PROP_KEY.SIKAP_SS_ID);
+      if (sikapId) {
+        var sikapSs = SpreadsheetApp.openById(sikapId);
+        var certSheetNames = ['Riwayat_Diklat', 'Sertifikasi', 'Data_Sertifikat', 'Pelatihan', 'Diklat_Pegawai', 'TX_Pelatihan_Awak'];
+        for (var c = 0; c < certSheetNames.length; c++) {
+          var sCertSheet = sikapSs.getSheetByName(certSheetNames[c]);
+          if (sCertSheet) {
+            var rawCerts = sheetToObjects(sCertSheet);
+            rawCerts.forEach(function (rc) {
+              var rNama = String(rc.NamaPelatihan || rc.Nama_Pelatihan || rc.Nama_Diklat || rc.NamaDiklat || rc.NamaSertifikat || rc.Jenis_Diklat || '').trim();
+              var rKode = String(rc.KodePelatihan || rc.Kode_Pelatihan || rc.Kode || '').trim();
+              if (!rKode && rNama) {
+                rKode = 'TRN-' + rNama.toUpperCase().replace(/[^A-Z0-9]/g, '_').substring(0, 18);
+              }
+              if (rNama) upsertCert(rKode, rNama, 'SIKAP', 60, 'SIKAP', '', false);
+            });
+            break;
+          }
+        }
+      }
+    } catch (eSikap) {
+      Logger.log('[kom_getFormOptions] Info baca SIKAP: ' + eSikap.message);
+    }
+
+    var certOptions = Object.keys(certMap).map(function (k) {
+      var c = certMap[k];
+      return {
+        kodePelatihan: c.kodePelatihan,
+        namaPelatihan: c.namaPelatihan,
+        kategori: c.kategori,
+        masaBerlakuBulan: c.masaBerlakuBulan,
+        source: c.source,
+        jabatanMap: c.jabatanMap
+      };
+    });
+
+    // Urutkan: Data SIKAP & SERTIFIKASI_LAUT dulu, lalu alfabetis
+    certOptions.sort(function (a, b) {
+      var aSea = a.kategori === 'SERTIFIKASI_LAUT' || a.source === 'SIKAP' ? 0 : 1;
+      var bSea = b.kategori === 'SERTIFIKASI_LAUT' || b.source === 'SIKAP' ? 0 : 1;
+      if (aSea !== bSea) return aSea - bSea;
+      return a.namaPelatihan.localeCompare(b.namaPelatihan);
+    });
+
+    return {
+      success: true,
+      data: {
+        awakOptions: awakOptions,
+        certOptions: certOptions
+      }
+    };
+  } catch (e) {
+    Logger.log('[kom_getFormOptions] ' + e.message);
+    return { success: false, error: e.message };
+  }
 }
 

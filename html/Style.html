@@ -1414,6 +1414,13 @@ th.text-center {
 .combobox-wrap {
   position: relative;
   width: 100%;
+  box-sizing: border-box;
+}
+
+.combobox-wrap input {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
 }
 
 .combobox-dropdown {
@@ -1421,13 +1428,22 @@ th.text-center {
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  max-height: 240px;
+  max-height: 290px;
   overflow-y: auto;
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-chip);
   box-shadow: 0 4px 16px rgba(15, 18, 20, 0.12);
   z-index: 100;
+}
+
+.combobox-item-sticky {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--ground);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -2px 8px rgba(15, 18, 20, 0.05);
+  z-index: 2;
 }
 
 .combobox-item {
