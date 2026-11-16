@@ -273,13 +273,17 @@ var AuthApp = (function () {
     var roleEl = document.getElementById('shell-user-role');
     var avatarEl = document.getElementById('shell-user-avatar');
 
-    if (nameEl) nameEl.textContent = u.nama || u.email || 'Pengguna';
+    if (nameEl) {
+      nameEl.textContent = u.nama || u.email || 'Pengguna';
+      nameEl.title = u.nama || u.email || 'Pengguna';
+    }
     if (roleEl) {
       var rTitle = 'Staf Pengawakan';
       if (u.role === 'SUPERADMIN') rTitle = 'Super Administrator';
       else if (u.role === 'DIREKTUR') rTitle = 'Direktur POA';
       else if (u.role === 'KADIV') rTitle = 'Ketua Timja Pengawakan';
       roleEl.textContent = rTitle;
+      roleEl.title = rTitle;
     }
     if (avatarEl) {
       avatarEl.textContent = Format.initials(u.nama || u.email);

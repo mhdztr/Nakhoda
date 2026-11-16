@@ -181,7 +181,7 @@ input[type="number"] {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 0 4px 16px 4px;
+  padding: 0 2px 14px 2px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 12px;
 }
@@ -191,7 +191,7 @@ input[type="number"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 1px;
+  padding-top: 2px;
 }
 
 .brand-crest-img {
@@ -227,14 +227,16 @@ input[type="number"] {
   font-size: 10px;
   font-weight: 600;
   padding: 1px 5px;
-  border-radius: var(--radius-chip);
-  background-color: var(--pill-neutral-bg);
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background-color: var(--raised);
   color: var(--muted);
   letter-spacing: 0.02em;
+  line-height: 1.3;
 }
 
 .brand-acronym-desc {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--muted);
   line-height: 1.35;
   margin: 0;
@@ -243,10 +245,11 @@ input[type="number"] {
 
 /* ── Navigasi Sidebar (Sentence Case, Tanpa Huruf Kapital Berjarak) ── */
 .nav-group-title {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
-  font-weight: 500;
-  padding: 14px 10px 6px 10px;
+  font-weight: 600;
+  padding: 16px 10px 6px 10px;
+  letter-spacing: 0.01em;
 }
 
 .nav-list {
@@ -265,7 +268,7 @@ button.nav-item,
   gap: 10px;
   height: var(--ctl-h-md);
   padding: 0 10px;
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-chip);
   color: var(--muted);
   text-decoration: none;
   font-size: 13px;
@@ -283,9 +286,9 @@ button.nav-item,
 }
 
 .nav-item:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: #FFFFFF;
   color: var(--text);
-  border-color: rgba(227, 229, 232, 0.8);
+  border-color: var(--border);
 }
 
 .nav-item.active,
@@ -294,19 +297,19 @@ button.nav-item,
   color: var(--text) !important;
   font-weight: 600 !important;
   border: 1px solid var(--border) !important;
-  box-shadow: 0 1px 3px rgba(15, 18, 20, 0.08), 0 1px 2px rgba(15, 18, 20, 0.04) !important;
+  box-shadow: 0 1px 2px rgba(15, 18, 20, 0.05) !important;
 }
 
 .nav-item.active::before,
 #app-sidebar .nav-item.active::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 5px;
-  bottom: 5px;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
   width: 3.5px;
   background-color: var(--accent);
-  border-radius: 0 2px 2px 0;
+  border-radius: 3px 0 0 3px;
 }
 
 .nav-item svg {
@@ -329,33 +332,137 @@ button.nav-item,
   margin-left: auto;
   font-size: 11px;
   padding: 1px 6px;
-  border-radius: var(--radius-chip);
+  border-radius: 2px;
   background-color: var(--pill-negative-bg);
   color: var(--pill-negative-ink);
-  font-weight: 500;
+  font-weight: 600;
+  border: 1px solid rgba(196, 36, 42, 0.2);
 }
 
 .nav-item.active .nav-badge {
   background-color: var(--accent-soft);
   color: var(--accent-ink);
   font-weight: 600;
+  border-color: rgba(217, 72, 15, 0.2);
 }
 
-/* ── Dasar Sidebar (Profil Staf & Keluar) ── */
+/* ── Dasar Sidebar: Kartu Akun Sharp Ledger (DESIGN.md §3.3 & §4.1) ── */
 .sidebar-footer {
   margin-top: auto;
-  padding: 14px 8px 0 8px;
+  padding: 14px 0 0 0;
   border-top: 1px solid var(--border);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sidebar-account-box {
+  background-color: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-chip);
+  padding: 7px 8px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(15, 18, 20, 0.04);
+  transition: border-color var(--dur-ui) var(--ease-out), box-shadow var(--dur-ui) var(--ease-out);
+}
+
+.sidebar-account-box:hover {
+  border-color: var(--control);
+  box-shadow: 0 1px 3px rgba(15, 18, 20, 0.07);
+}
+
+.sidebar-account-box .user-avatar {
+  width: var(--ctl-h-sm);
+  height: var(--ctl-h-sm);
+  border-radius: 3px;
+  border: 1px solid rgba(15, 18, 20, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  background-color: var(--raised);
+  color: var(--text);
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.sidebar-account-box .user-info {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sidebar-account-box .user-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+.sidebar-account-box .user-role {
+  font-size: 10.5px;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.sidebar-account-box .btn-logout-box {
+  width: var(--ctl-h-sm);
+  height: var(--ctl-h-sm);
+  min-width: var(--ctl-h-sm);
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background-color: var(--ground);
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: background-color var(--dur-ui) var(--ease-out),
+              border-color var(--dur-ui) var(--ease-out),
+              color var(--dur-ui) var(--ease-out),
+              transform 90ms var(--ease-out);
+}
+
+.sidebar-account-box .btn-logout-box:hover {
+  background-color: var(--pill-negative-bg);
+  border-color: #FD886C;
+  color: var(--negative);
+}
+
+.sidebar-account-box .btn-logout-box:active {
+  transform: scale(0.95);
+}
+
+.sidebar-account-box .btn-logout-box svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.75;
+  stroke: currentColor;
+  fill: none;
 }
 
 .user-avatar,
 .avatar-sm {
   width: 28px;
   height: 28px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-chip);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -369,7 +476,7 @@ button.nav-item,
 .avatar-lg {
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-chip);
   display: inline-flex;
   align-items: center;
   justify-content: center;
