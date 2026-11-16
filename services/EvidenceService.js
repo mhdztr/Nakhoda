@@ -57,6 +57,11 @@ function _evResolveContext(refSheet, refRowId, session) {
 
   var periode = String(row['Periode'] || '');
   var ym = periode.length >= 7 ? periode.substring(0, 7) : '';
+  if (!ym) {
+    var tgl = String(row['TanggalNaik'] || row['CreatedAt'] || row['Timestamp'] || '');
+    if (tgl.length >= 7) ym = tgl.substring(0, 7);
+    else ym = Utilities.formatDate(new Date(), 'GMT+7', 'yyyy-MM');
+  }
 
   return {
     divisiId:   divisiId,
@@ -88,6 +93,9 @@ function _evKonteks(refSheet, row) {
   }
   if (refSheet === SHEET_AWAK.PELATIHAN_AWAK) {
     return 'Sertifikat-' + _evSlug(String(row['NamaPelatihan'] || row['KodePelatihan'] || 'diklat'), 40);
+  }
+  if (refSheet === SHEET_AWAK.PENUGASAN_KAPAL) {
+    return 'SuratTugas-' + _evSlug(String(row['KapalID'] || row['RowID'] || 'sijil'), 40);
   }
   return _evSlug(String(refSheet), 40);
 }

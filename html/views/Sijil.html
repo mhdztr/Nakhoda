@@ -201,12 +201,33 @@
           </select>
         </div>
 
+        <!-- Personil Awak Kapal (Searchable Combobox) -->
         <div class="form-group">
-          <label class="form-label" for="assign-select-pegawai">Personil awak kapal</label>
-          <select id="assign-select-pegawai" class="form-control-md" required>
+          <label class="form-label" for="assign-crew-search-input">Personil awak kapal</label>
+          <input type="hidden" id="assign-input-pegawai-id" required>
+          <select id="assign-select-pegawai" style="display:none;" tabindex="-1">
             <option value="">-- Pilih Awak Kapal --</option>
           </select>
-          <div class="form-hint">Jika personil sedang aktif di kapal lain, akan otomatis dirotasi dan diturunkan dari kapal lama.</div>
+
+          <!-- Input Pencarian Combobox -->
+          <div id="assign-crew-search-wrap" class="combobox-wrap">
+            <input type="text" id="assign-crew-search-input" class="form-control-md" placeholder="Cari nama, NIP, atau jabatan awak (396+ personil)..." autocomplete="off">
+            <div id="assign-crew-dropdown" class="combobox-dropdown hidden"></div>
+          </div>
+
+          <!-- Kartu Awak Terpilih -->
+          <div id="assign-crew-selected-card" class="selected-crew-box hidden">
+            <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+              <div id="assign-crew-avatar" class="avatar-sm" style="border-radius:3px; flex-shrink:0;">--</div>
+              <div style="min-width:0; flex:1;">
+                <div id="assign-crew-name" class="cell-primary" style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
+                <div id="assign-crew-meta" class="cell-sub" style="font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
+              </div>
+            </div>
+            <button type="button" id="btn-change-crew" class="btn btn-secondary-sm" style="flex-shrink:0;">Ganti</button>
+          </div>
+
+          <div class="form-hint">Jika personil sedang aktif di kapal lain, sistem otomatis merotasi dan mencatat tanggal turun dari kapal lama.</div>
         </div>
 
         <div class="form-grid-2">
@@ -235,13 +256,93 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="assign-input-keterangan">Keterangan penugasan (opsional)</label>
+          <label class="form-label" for="assign-input-keterangan">Keterangan penugasan / No. Surat (opsional)</label>
           <input type="text" id="assign-input-keterangan" class="form-control-md" placeholder="Contoh: Surat Perintah Tugas No. SPT/...">
+        </div>
+
+        <!-- Berkas Surat Perintah Tugas (SPT) -->
+        <div class="form-group">
+          <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Surat Perintah Tugas (SPT) / Surat Tugas</span>
+            <span style="font-size:11px; color:var(--muted); font-weight:normal;">Lampiran berkas</span>
+          </label>
+          
+          <div class="upload-dropzone" id="assign-spt-dropzone">
+            <input type="file" id="assign-spt-file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+            <div id="assign-spt-prompt" class="dropzone-prompt">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--muted)" fill="none" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk memilih berkas Surat Tugas</div>
+              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maksimal 15 MB)</div>
+            </div>
+            <div id="assign-spt-selected" class="dropzone-selected hidden">
+              <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                <span class="file-icon-badge">SPT</span>
+                <div style="min-width:0;">
+                  <div id="assign-spt-filename" style="font-size:12px; font-weight:600; color:var(--text); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:260px;">-</div>
+                  <div id="assign-spt-filesize" style="font-size:11px; color:var(--muted);">0 KB</div>
+                </div>
+              </div>
+              <button type="button" id="btn-assign-remove-file" class="btn btn-secondary-sm" style="color:var(--negative); flex-shrink:0;">Hapus</button>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+            <span style="font-size:11px; color:var(--muted); flex-shrink:0;">Atau tautan Google Drive:</span>
+            <input type="url" id="assign-spt-drive-url" class="form-control-md" placeholder="https://drive.google.com/file/d/..." style="font-size:11px;">
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-sijil-assign')">Batal</button>
         <button type="submit" id="btn-submit-sijil-assign" class="btn btn-primary-md">Tempatkan personil</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── MODAL UNGGAH SURAT TUGAS AWAK (DARI LEMBAR SAMPING KAPAL) ── -->
+<div id="modal-sijil-upload-spt" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Unggah Surat Perintah Tugas (SPT)</div>
+        <div id="upload-spt-target-info" style="font-size:11px; color:var(--muted); margin-top:2px;">Memuat target personil...</div>
+      </div>
+      <button type="button" class="modal-close" onclick="Modal.close('modal-sijil-upload-spt')">&times;</button>
+    </div>
+    <form id="form-sijil-upload-spt">
+      <input type="hidden" id="upload-spt-row-id">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Pilih berkas Surat Tugas</label>
+          <div class="upload-dropzone" id="quick-spt-dropzone">
+            <input type="file" id="quick-spt-file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+            <div id="quick-spt-prompt" class="dropzone-prompt">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--muted)" fill="none" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk memilih berkas Surat Tugas</div>
+              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maksimal 15 MB)</div>
+            </div>
+            <div id="quick-spt-selected" class="dropzone-selected hidden">
+              <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                <span class="file-icon-badge">SPT</span>
+                <div style="min-width:0;">
+                  <div id="quick-spt-filename" style="font-size:12px; font-weight:600; color:var(--text); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:260px;">-</div>
+                  <div id="quick-spt-filesize" style="font-size:11px; color:var(--muted);">0 KB</div>
+                </div>
+              </div>
+              <button type="button" id="btn-quick-remove-file" class="btn btn-secondary-sm" style="color:var(--negative); flex-shrink:0;">Hapus</button>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+            <span style="font-size:11px; color:var(--muted); flex-shrink:0;">Atau tautan Google Drive:</span>
+            <input type="url" id="quick-spt-drive-url" class="form-control-md" placeholder="https://drive.google.com/file/d/..." style="font-size:11px;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-sijil-upload-spt')">Batal</button>
+        <button type="submit" id="btn-submit-quick-spt" class="btn btn-primary-md">Unggah surat tugas</button>
       </div>
     </form>
   </div>

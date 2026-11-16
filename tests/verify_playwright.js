@@ -423,6 +423,142 @@ function buildHtml() {
           }, 10);
         },
 
+        sijil_getAwakOptions: function(token) {
+          var self = this;
+          setTimeout(function() {
+            self._onSuccess({
+              success: true,
+              data: [
+                { pegawaiId: 'PEG-0001', nama: 'Zulfikar', nipDisplay: '19820514 200801 1 002', kelompokJabatan: 'Nahkoda', rumpun: 'DEK', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0002', nama: 'Sunaryo', nipDisplay: '19871103 201101 1 004', kelompokJabatan: 'Mualim I', rumpun: 'DEK', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0003', nama: 'Untung Kurniawan', nipDisplay: '19840319 200912 1 001', kelompokJabatan: 'Kepala Kamar Mesin', rumpun: 'MESIN', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0004', nama: 'Dede Handoyo', nipDisplay: '19890227 201402 1 003', kelompokJabatan: 'Masinis I', rumpun: 'MESIN', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0005', nama: 'Lucky Hermanto', nipDisplay: '19910815 201601 1 005', kelompokJabatan: 'Masinis II', rumpun: 'MESIN', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0006', nama: 'Dimas Ade Virgiawan', nipDisplay: '19930412 201801 1 002', kelompokJabatan: 'Serang', rumpun: 'DEK', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0007', nama: 'Rahmad Idris', nipDisplay: '19940722 201903 1 004', kelompokJabatan: 'Juru Mudi', rumpun: 'DEK', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0008', nama: 'Agung Nugraha', nipDisplay: '19951010 202012 1 001', kelompokJabatan: 'Juru Mudi', rumpun: 'DEK', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0009', nama: 'Hermanto', nipDisplay: '19960105 202102 1 003', kelompokJabatan: 'Juru Mudi', rumpun: 'DEK', kapalId: 'KPL-001' },
+                { pegawaiId: 'PEG-0010', nama: 'Capt. Slamet Riyadi, M.Mar', nipDisplay: '19800412 200501 1 001', kelompokJabatan: 'Nahkoda', rumpun: 'DEK', kapalId: '' },
+                { pegawaiId: 'PEG-0011', nama: 'Bambang Supriyanto', nipDisplay: '19850620 201001 1 003', kelompokJabatan: 'Mualim II', rumpun: 'DEK', kapalId: '' },
+                { pegawaiId: 'PEG-0012', nama: 'Hendro Prasetyo', nipDisplay: '19880911 201201 1 002', kelompokJabatan: 'Masinis III', rumpun: 'MESIN', kapalId: '' },
+                { pegawaiId: 'PEG-0013', nama: 'Dedi Kurniawan', nipDisplay: '19920317 201502 1 005', kelompokJabatan: 'Markonis', rumpun: 'DEK', kapalId: '' }
+              ]
+            });
+          }, 10);
+        },
+
+        sijil_getDetailKapal: function(token, kapalId) {
+          var self = this;
+          setTimeout(function() {
+            self._onSuccess({
+              success: true,
+              data: {
+                kapalId: kapalId || 'KPL-001',
+                namaKapal: (kapalId === 'KPL-001' ? 'KP. Orca 01' : 'KP. Hiu Macan Tutul 02'),
+                jenisKapal: 'Kapal Pengawas',
+                kelasKapal: 'KELAS_I',
+                pangkalanId: 'Pangkalan PSDKP Batam',
+                evaluasi: {
+                  isLaikOperasi: false,
+                  totalTerisi: 16,
+                  totalKebutuhan: 18,
+                  kekuranganKursi: 2,
+                  posisiRincian: [
+                    { posSijil: 'NAKHODA', minimum: 1, terisi: 1, kurang: 0, status: 'TERPENUHI' },
+                    { posSijil: 'MUALIM_I', minimum: 1, terisi: 1, kurang: 0, status: 'TERPENUHI' },
+                    { posSijil: 'MUALIM_II', minimum: 1, terisi: 1, kurang: 0, status: 'TERPENUHI' },
+                    { posSijil: 'MUALIM_III', minimum: 1, terisi: 0, kurang: 1, status: 'KURANG' },
+                    { posSijil: 'KKM', minimum: 1, terisi: 1, kurang: 0, status: 'TERPENUHI' },
+                    { posSijil: 'MASINIS_I', minimum: 1, terisi: 1, kurang: 0, status: 'TERPENUHI' },
+                    { posSijil: 'MASINIS_II', minimum: 1, terisi: 1, kurang: 0, status: 'TERPENUHI' },
+                    { posSijil: 'MASINIS_III', minimum: 1, terisi: 0, kurang: 1, status: 'KURANG' }
+                  ]
+                },
+                awakBertugas: [
+                  {
+                    rowId: 'AWAK-TGS-01',
+                    pegawaiId: 'PEG-0001',
+                    nama: 'Zulfikar',
+                    nipDisplay: '19820514 200801 1 002',
+                    posSijil: 'NAKHODA',
+                    posSijilLabel: 'NAKHODA',
+                    rumpun: 'DEK',
+                    tanggalNaik: '2026-01-15',
+                    tanggalTurun: '',
+                    keterangan: 'SK Direktur POA No. 42/POA/2026',
+                    suratTugas: {
+                      evidenceId: 'EV-001',
+                      fileName: 'SPT_Penugasan_KP_Orca_01_Zulfikar.pdf',
+                      fileType: 'application/pdf',
+                      driveFileId: 'mock-drive-id-12345',
+                      viewUrl: 'https://drive.google.com/file/d/mock-drive-id-12345/view'
+                    }
+                  },
+                  {
+                    rowId: 'AWAK-TGS-02',
+                    pegawaiId: 'PEG-0002',
+                    nama: 'Sunaryo',
+                    nipDisplay: '19871103 201101 1 004',
+                    posSijil: 'MUALIM_I',
+                    posSijilLabel: 'MUALIM I',
+                    rumpun: 'DEK',
+                    tanggalNaik: '2026-01-15',
+                    tanggalTurun: '',
+                    keterangan: '',
+                    suratTugas: null
+                  },
+                  {
+                    rowId: 'AWAK-TGS-03',
+                    pegawaiId: 'PEG-0003',
+                    nama: 'Untung Kurniawan',
+                    nipDisplay: '19840319 200912 1 001',
+                    posSijil: 'KKM',
+                    posSijilLabel: 'KKM',
+                    rumpun: 'MESIN',
+                    tanggalNaik: '2026-01-15',
+                    tanggalTurun: '',
+                    keterangan: 'SPT No. 118/POA/I/2026',
+                    suratTugas: {
+                      evidenceId: 'EV-002',
+                      fileName: 'Surat_Tugas_KKM_Untung.pdf',
+                      fileType: 'application/pdf',
+                      driveFileId: 'mock-drive-id-67890',
+                      viewUrl: 'https://drive.google.com/file/d/mock-drive-id-67890/view'
+                    }
+                  }
+                ],
+                userRole: 'SUPERADMIN'
+              }
+            });
+          }, 10);
+        },
+
+        sijil_assignAwak: function(params) {
+          var self = this;
+          setTimeout(function() {
+            self._onSuccess({
+              success: true,
+              data: {
+                rowId: 'AWAK-TGS-NEW01',
+                message: 'Personil berhasil ditempatkan pada papan sijil ' + params.kapalId + '.'
+              }
+            });
+          }, 10);
+        },
+
+        sijil_uploadSuratTugas: function(params) {
+          var self = this;
+          setTimeout(function() {
+            self._onSuccess({
+              success: true,
+              data: {
+                evidenceId: 'EV-NEW01',
+                message: 'Surat tugas berhasil diunggah.'
+              }
+            });
+          }, 10);
+        },
+
         keg_list: function(params) {
           var self = this;
           setTimeout(function() {
@@ -715,6 +851,30 @@ async function runVisualTests() {
     await page.click('button[data-route="sijil"]');
     await page.waitForTimeout(500);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05_sijil_desktop.png') });
+
+    // 5b. Lembar Samping Sijil Kapal & Akses Berkas Surat Tugas
+    console.log('  [Screen 05b] Lembar Samping Sijil & Akses Surat Tugas (SPT)');
+    await page.click('#sijil-2d-matrix-tbody tr.clickable');
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05b_sijil_sheet_with_spt.png') });
+
+    // 5c. Modal Penempatan dengan Pencarian Awak & Dropzone Berkas
+    console.log('  [Screen 05c] Modal Penempatan: Pencarian Awak & Dropzone Surat Tugas');
+    await page.click('#btn-sheet-add-awak');
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05c_sijil_modal_assign.png') });
+
+    // 5d. Uji Pencarian Awak (Autocomplete Dropdown 396+ Personil)
+    console.log('  [Screen 05d] Autocomplete Pencarian Awak');
+    await page.fill('#assign-crew-search-input', 'Zulfikar');
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05d_sijil_combobox_search.png') });
+
+    // Tutup modal dan lembar samping
+    await page.click('#modal-sijil-assign .modal-close');
+    await page.waitForTimeout(200);
+    await page.click('#sheet-sijil-panel .modal-close');
+    await page.waitForTimeout(200);
 
     // 6. Log Kegiatan
     console.log('  [Screen 06] Log Kegiatan');

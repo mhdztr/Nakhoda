@@ -187,6 +187,20 @@ function sijil_getDetailKapal(token, kapalId) {
       awakMap[String(a.PegawaiID || '')] = a;
     });
 
+    // Baca metadata lampiran surat tugas dari TX_Evidence
+    var evMap = {};
+    try {
+      var sheetEv = openTransaksiSheet(SHEET_TX.EVIDENCE);
+      var evRows = sheetToObjects(sheetEv);
+      evRows.forEach(function (ev) {
+        if (String(ev.RefSheet) === SHEET_AWAK.PENUGASAN_KAPAL && String(ev.Status || '').toUpperCase() !== 'DELETED') {
+          evMap[String(ev.RefRowID)] = ev;
+        }
+      });
+    } catch (eEv) {
+      Logger.log('[sijil_getDetailKapal] Gagal membaca TX_Evidence: ' + eEv.message);
+    }
+
     var activePenugasan = sheetToObjects(sheetTgs)
       .filter(function (t) {
         if (String(t.KapalID || '') !== kId) return false;
@@ -198,9 +212,25 @@ function sijil_getDetailKapal(token, kapalId) {
         var pId = String(t.PegawaiID || '');
         var awk = awakMap[pId] || {};
         var posToken = normalizePosSijil(t.PosSijil);
+        var rId = String(t.RowID || '');
+
+        var ev = evMap[rId];
+        var suratTugas = null;
+        if (ev) {
+          var fId = String(ev.DriveFileID || '');
+          suratTugas = {
+            evidenceId: String(ev.EvidenceID || ''),
+            fileName: String(ev.FileName || 'Surat_Tugas.pdf'),
+            fileType: String(ev.FileType || 'application/pdf'),
+            driveFileId: fId,
+            viewUrl: fId ? ('https://drive.google.com/file/d/' + fId + '/view') : '',
+            sourceMode: String(ev.SourceMode || 'UPLOAD'),
+            uploadedAt: ev.UploadedAt ? new Date(ev.UploadedAt).toISOString() : ''
+          };
+        }
 
         return {
-          rowId: String(t.RowID || ''),
+          rowId: rId,
           pegawaiId: pId,
           nama: String(awk.Nama || pId),
           nipDisplay: maskNip(String(awk.NIP || ''), session.role === ROLE.SUPERADMIN || session.role === ROLE.KADIV),
@@ -209,7 +239,8 @@ function sijil_getDetailKapal(token, kapalId) {
           rumpun: String(awk.Rumpun || 'DEK'),
           tanggalNaik: String(t.TanggalNaik || ''),
           tanggalTurun: String(t.TanggalTurun || ''),
-          keterangan: String(t.Keterangan || '')
+          keterangan: String(t.Keterangan || ''),
+          suratTugas: suratTugas
         };
       });
 
@@ -307,19 +338,142 @@ function sijil_assignAwak(params) {
         });
       }
 
+      // Lampirkan Surat Perintah Tugas (SPT) jika ada file atau link Google Drive
+      var evidenceResult = null;
+      if (params.fileData && params.fileData.dataBase64) {
+        try {
+          evidenceResult = evidence_upload(params.token, {
+            refSheet: SHEET_AWAK.PENUGASAN_KAPAL,
+            refRowId: newRowId,
+            fileName: params.fileData.fileName || ('Surat_Tugas_' + kId + '_' + pId + '.pdf'),
+            mimeType: params.fileData.mimeType || 'application/pdf',
+            dataBase64: params.fileData.dataBase64
+          });
+        } catch (eEv) {
+          Logger.log('[sijil_assignAwak] evidence_upload error: ' + eEv.message);
+        }
+      } else if (params.driveUrl) {
+        try {
+          evidenceResult = evidence_uploadFromLink(params.token, {
+            refSheet: SHEET_AWAK.PENUGASAN_KAPAL,
+            refRowId: newRowId,
+            url: params.driveUrl,
+            fileName: params.fileName || ('Surat_Tugas_' + kId + '_' + pId)
+          });
+        } catch (eEvLink) {
+          Logger.log('[sijil_assignAwak] evidence_uploadFromLink error: ' + eEvLink.message);
+        }
+      }
+
       _auditLog(session.userId, 'ASSIGN_SIJIL', SHEET_AWAK.PENUGASAN_KAPAL, newRowId,
-        'Penempatan ' + pId + ' di ' + kId + ' sebagai ' + pos);
+        'Penempatan ' + pId + ' di ' + kId + ' sebagai ' + pos + (evidenceResult ? ' beserta Surat Tugas' : ''));
 
       return {
         success: true,
         data: {
           rowId: newRowId,
+          evidence: evidenceResult ? evidenceResult.data : null,
           message: 'Personil berhasil ditempatkan pada papan sijil ' + kId + '.'
         }
       };
     });
   } catch (e) {
     Logger.log('[sijil_assignAwak] ' + e.message);
+    return { success: false, error: e.message };
+  }
+}
+
+/**
+ * Mengunggah berkas Surat Perintah Tugas (SPT) untuk penugasan personil yang sudah ada di kapal.
+ *
+ * @param {Object} params
+ * @param {string} params.token
+ * @param {string} params.rowId
+ * @param {Object} [params.fileData]
+ * @param {string} [params.driveUrl]
+ * @param {string} [params.fileName]
+ */
+function sijil_uploadSuratTugas(params) {
+  try {
+    var session = _requireSession(params.token);
+    assertScope(session, [ROLE.STAF, ROLE.KADIV, ROLE.SUPERADMIN], null);
+
+    var rowId = String(params.rowId || '').trim();
+    if (!rowId) return { success: false, error: 'RowID penugasan tidak valid.' };
+
+    var res;
+    if (params.fileData && params.fileData.dataBase64) {
+      res = evidence_upload(params.token, {
+        refSheet: SHEET_AWAK.PENUGASAN_KAPAL,
+        refRowId: rowId,
+        fileName: params.fileData.fileName || 'Surat_Tugas.pdf',
+        mimeType: params.fileData.mimeType || 'application/pdf',
+        dataBase64: params.fileData.dataBase64
+      });
+    } else if (params.driveUrl) {
+      res = evidence_uploadFromLink(params.token, {
+        refSheet: SHEET_AWAK.PENUGASAN_KAPAL,
+        refRowId: rowId,
+        url: params.driveUrl,
+        fileName: params.fileName || 'Surat_Tugas'
+      });
+    } else {
+      return { success: false, error: 'Pilih berkas atau cantumkan tautan Google Drive.' };
+    }
+
+    if (res && res.success) {
+      _auditLog(session.userId, 'UPLOAD_SPT_SIJIL', SHEET_AWAK.PENUGASAN_KAPAL, rowId,
+        'Unggah surat tugas untuk penugasan kapal ' + rowId);
+    }
+
+    return res;
+  } catch (e) {
+    Logger.log('[sijil_uploadSuratTugas] ' + e.message);
+    return { success: false, error: e.message };
+  }
+}
+
+/**
+ * Mengambil daftar ringkas seluruh personil awak kapal aktif untuk autocomplete/pencarian modal penempatan sijil.
+ *
+ * @param {string} token
+ */
+function sijil_getAwakOptions(token) {
+  try {
+    var session = _requireSession(token);
+    var isPrivileged = session.role === ROLE.SUPERADMIN || session.role === ROLE.KADIV;
+
+    var sheet = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+    var rows = sheetToObjects(sheet);
+    if (rows.length === 0 && typeof dir_ensureSeeded === 'function') {
+      dir_ensureSeeded();
+      rows = sheetToObjects(sheet);
+    }
+
+    var items = rows
+      .filter(function (r) {
+        var st = String(r.StatusAktif || 'AKTIF').toUpperCase();
+        return st === 'AKTIF';
+      })
+      .map(function (r) {
+        var rawNip = String(r.NIP || '');
+        var rmp = String(r.Rumpun || '');
+        if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
+
+        return {
+          pegawaiId: String(r.PegawaiID || ''),
+          nipDisplay: maskNip(rawNip, isPrivileged),
+          nama: String(r.Nama || ''),
+          kelompokJabatan: String(r.KelompokJabatan || ''),
+          jabatanLengkap: String(r.JabatanLengkap || ''),
+          rumpun: rmp || 'DEK',
+          kapalId: String(r.KapalID || '')
+        };
+      });
+
+    return { success: true, data: items };
+  } catch (e) {
+    Logger.log('[sijil_getAwakOptions] ' + e.message);
     return { success: false, error: e.message };
   }
 }

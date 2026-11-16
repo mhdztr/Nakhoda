@@ -10,6 +10,10 @@ var SijilView = (function () {
   var _currentKapalId = '';
   var _data = null;
   var _eventsBound = false;
+  var _awakOptions = [];
+  var _selectedAwak = null;
+  var _assignFile = null;
+  var _quickFile = null;
 
   var KELAS_GROUPS = [
     { key: 'KELAS_I', label: 'Kapal Pengawas Kelas I (Panjang > 60 meter / ZEE)' },
@@ -36,6 +40,7 @@ var SijilView = (function () {
     var btnQuickAssign = document.getElementById('btn-sijil-quick-assign');
     var btnSheetAdd = document.getElementById('btn-sheet-add-awak');
     var formAssign = document.getElementById('form-sijil-assign');
+    var formQuickSpt = document.getElementById('form-sijil-upload-spt');
 
     if (btnRefresh) {
       btnRefresh.onclick = function () { load(); };
@@ -66,6 +71,300 @@ var SijilView = (function () {
         e.preventDefault();
         _submitAssign();
       };
+    }
+
+    if (formQuickSpt) {
+      formQuickSpt.onsubmit = function (e) {
+        e.preventDefault();
+        _submitQuickSpt();
+      };
+    }
+
+    _bindComboboxEvents();
+    _bindDropzoneEvents();
+  }
+
+  // ── PENCARIAN & AUTOCOMPLETE AWAK KAPAL (396+ PERSONIL) ──
+  function _bindComboboxEvents() {
+    var searchInp = document.getElementById('assign-crew-search-input');
+    var dropdown = document.getElementById('assign-crew-dropdown');
+    var btnChange = document.getElementById('btn-change-crew');
+
+    if (searchInp) {
+      searchInp.oninput = function () {
+        _filterAndRenderAwakDropdown(searchInp.value);
+      };
+      searchInp.onfocus = function () {
+        _filterAndRenderAwakDropdown(searchInp.value);
+      };
+    }
+
+    if (btnChange) {
+      btnChange.onclick = function () {
+        _clearSelectedCrew();
+      };
+    }
+
+    // Klik di luar dropdown untuk menutup
+    document.addEventListener('click', function (e) {
+      var wrap = document.getElementById('assign-crew-search-wrap');
+      if (wrap && !wrap.contains(e.target)) {
+        if (dropdown) dropdown.classList.add('hidden');
+      }
+    });
+  }
+
+  function _filterAndRenderAwakDropdown(query) {
+    var dropdown = document.getElementById('assign-crew-dropdown');
+    if (!dropdown) return;
+
+    var q = String(query || '').toLowerCase().trim();
+    var filtered = _awakOptions;
+    if (q) {
+      filtered = _awakOptions.filter(function (a) {
+        var str = (a.nama + ' ' + (a.nipDisplay || '') + ' ' + (a.kelompokJabatan || '') + ' ' + (a.rumpun || '') + ' ' + (a.kapalId || '')).toLowerCase();
+        return str.indexOf(q) !== -1;
+      });
+    }
+
+    if (filtered.length === 0) {
+      dropdown.innerHTML = '<div style="padding:12px; font-size:12px; color:var(--muted); text-align:center;">Tidak ada personil awak yang cocok.</div>';
+      dropdown.classList.remove('hidden');
+      return;
+    }
+
+    // Batasi maksimum 15 hasil per pencarian untuk performa render kilat
+    var slice = filtered.slice(0, 15);
+    dropdown.innerHTML = slice.map(function (a) {
+      var bg = Format.avatarBg(a.nama);
+      var inis = Format.initials(a.nama);
+      var shipStatus = a.kapalId
+        ? '<span class="pill pill-warning" style="font-size:10px; padding:1px 6px;">Aktif di ' + Format.escape(a.kapalId) + '</span>'
+        : '<span class="pill pill-neutral" style="font-size:10px; padding:1px 6px;">Bebas tugas</span>';
+
+      return (
+        '<div class="combobox-item" data-peg-id="' + a.pegawaiId + '">' +
+          '<div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">' +
+            '<div class="avatar-sm" style="background-color:' + bg + '; border-radius:3px; flex-shrink:0;">' + inis + '</div>' +
+            '<div style="min-width:0; flex:1;">' +
+              '<div style="font-size:12px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + Format.escape(a.nama) + '</div>' +
+              '<div style="font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' +
+                (a.nipDisplay ? 'NIP ' + a.nipDisplay + ' · ' : '') + Format.escape(a.kelompokJabatan || 'Awak') + ' (' + a.rumpun + ')' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="flex-shrink:0;">' + shipStatus + '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    dropdown.classList.remove('hidden');
+
+    dropdown.querySelectorAll('.combobox-item[data-peg-id]').forEach(function (el) {
+      el.onclick = function () {
+        var pId = el.getAttribute('data-peg-id');
+        var found = _awakOptions.find(function (x) { return x.pegawaiId === pId; });
+        if (found) _selectCrew(found);
+      };
+    });
+  }
+
+  function _selectCrew(awak) {
+    _selectedAwak = awak;
+    var inpId = document.getElementById('assign-input-pegawai-id');
+    var selPeg = document.getElementById('assign-select-pegawai');
+    var searchWrap = document.getElementById('assign-crew-search-wrap');
+    var card = document.getElementById('assign-crew-selected-card');
+    var dropdown = document.getElementById('assign-crew-dropdown');
+
+    if (inpId) inpId.value = awak.pegawaiId;
+    if (selPeg) selPeg.value = awak.pegawaiId;
+
+    if (searchWrap) searchWrap.classList.add('hidden');
+    if (dropdown) dropdown.classList.add('hidden');
+
+    if (card) {
+      var avEl = document.getElementById('assign-crew-avatar');
+      var nameEl = document.getElementById('assign-crew-name');
+      var metaEl = document.getElementById('assign-crew-meta');
+
+      if (avEl) {
+        avEl.textContent = Format.initials(awak.nama);
+        avEl.style.backgroundColor = Format.avatarBg(awak.nama);
+      }
+      if (nameEl) nameEl.textContent = awak.nama;
+      if (metaEl) {
+        var metaText = (awak.nipDisplay ? 'NIP ' + awak.nipDisplay + ' · ' : '') +
+                       (awak.kelompokJabatan || 'Awak') + ' (' + awak.rumpun + ')';
+        if (awak.kapalId) {
+          metaText += ' · Sedang di ' + awak.kapalId + ' (akan dirotasi)';
+        }
+        metaEl.textContent = metaText;
+      }
+      card.classList.remove('hidden');
+    }
+
+    // Penyelarasan otomatis opsi posisi sijil berdasarkan kelompok jabatan
+    _autoMatchPosisi(awak.kelompokJabatan);
+  }
+
+  function _autoMatchPosisi(jabatan) {
+    var selPos = document.getElementById('assign-select-posisi');
+    if (!selPos || !jabatan) return;
+
+    var jLower = String(jabatan).toLowerCase();
+    var mapped = '';
+
+    if (jLower.indexOf('nakhoda') !== -1 || jLower.indexOf('nahkoda') !== -1) mapped = 'NAKHODA';
+    else if (jLower.indexOf('mualim i') !== -1) mapped = 'MUALIM_I';
+    else if (jLower.indexOf('mualim ii') !== -1) mapped = 'MUALIM_II';
+    else if (jLower.indexOf('mualim iii') !== -1) mapped = 'MUALIM_III';
+    else if (jLower.indexOf('mualim') !== -1) mapped = 'MUALIM_I';
+    else if (jLower.indexOf('kkm') !== -1 || jLower.indexOf('kamar mesin') !== -1) mapped = 'KKM';
+    else if (jLower.indexOf('masinis i') !== -1) mapped = 'MASINIS_I';
+    else if (jLower.indexOf('masinis ii') !== -1) mapped = 'MASINIS_II';
+    else if (jLower.indexOf('masinis iii') !== -1) mapped = 'MASINIS_III';
+    else if (jLower.indexOf('masinis') !== -1) mapped = 'MASINIS_I';
+    else if (jLower.indexOf('markonis') !== -1) mapped = 'MARKONIS';
+    else if (jLower.indexOf('serang') !== -1) mapped = 'SERANG';
+    else if (jLower.indexOf('juru mudi') !== -1) mapped = 'JURU_MUDI';
+    else if (jLower.indexOf('juru minyak') !== -1) mapped = 'JURU_MINYAK';
+    else if (jLower.indexOf('kelasi') !== -1) mapped = 'KELASI';
+
+    if (mapped) selPos.value = mapped;
+  }
+
+  function _clearSelectedCrew() {
+    _selectedAwak = null;
+    var inpId = document.getElementById('assign-input-pegawai-id');
+    var selPeg = document.getElementById('assign-select-pegawai');
+    var searchWrap = document.getElementById('assign-crew-search-wrap');
+    var searchInp = document.getElementById('assign-crew-search-input');
+    var card = document.getElementById('assign-crew-selected-card');
+    var dropdown = document.getElementById('assign-crew-dropdown');
+
+    if (inpId) inpId.value = '';
+    if (selPeg) selPeg.value = '';
+    if (card) card.classList.add('hidden');
+    if (searchWrap) searchWrap.classList.remove('hidden');
+    if (dropdown) dropdown.classList.add('hidden');
+    if (searchInp) {
+      searchInp.value = '';
+      searchInp.focus();
+    }
+  }
+
+  // ── DROPZONE & PENGELOLAAN UNGGAH SURAT TUGAS ──
+  function _bindDropzoneEvents() {
+    // 1. Modal Penempatan
+    var assignDropzone = document.getElementById('assign-spt-dropzone');
+    var assignFileInput = document.getElementById('assign-spt-file');
+    var btnAssignRemove = document.getElementById('btn-assign-remove-file');
+
+    if (assignDropzone && assignFileInput) {
+      assignDropzone.onclick = function (e) {
+        if (e.target.id === 'btn-assign-remove-file') return;
+        assignFileInput.click();
+      };
+      assignFileInput.onchange = function () {
+        if (assignFileInput.files && assignFileInput.files[0]) {
+          _handleFileSelected(assignFileInput.files[0], 'assign');
+        }
+      };
+    }
+    if (btnAssignRemove) {
+      btnAssignRemove.onclick = function (e) {
+        e.stopPropagation();
+        _clearDropzoneFile('assign');
+      };
+    }
+
+    // 2. Modal Quick Upload SPT dari Lembar Kapal
+    var quickDropzone = document.getElementById('quick-spt-dropzone');
+    var quickFileInput = document.getElementById('quick-spt-file');
+    var btnQuickRemove = document.getElementById('btn-quick-remove-file');
+
+    if (quickDropzone && quickFileInput) {
+      quickDropzone.onclick = function (e) {
+        if (e.target.id === 'btn-quick-remove-file') return;
+        quickFileInput.click();
+      };
+      quickFileInput.onchange = function () {
+        if (quickFileInput.files && quickFileInput.files[0]) {
+          _handleFileSelected(quickFileInput.files[0], 'quick');
+        }
+      };
+    }
+    if (btnQuickRemove) {
+      btnQuickRemove.onclick = function (e) {
+        e.stopPropagation();
+        _clearDropzoneFile('quick');
+      };
+    }
+  }
+
+  function _handleFileSelected(file, mode) {
+    if (file.size > 15 * 1024 * 1024) {
+      Toast.error('Ukuran berkas melebihi batas 15 MB.');
+      _clearDropzoneFile(mode);
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function (evt) {
+      var fullData = evt.target.result;
+      var base64 = fullData.split(',')[1];
+      var fileObj = {
+        fileName: file.name,
+        mimeType: file.type || 'application/pdf',
+        dataBase64: base64
+      };
+
+      if (mode === 'assign') {
+        _assignFile = fileObj;
+        var pPrompt = document.getElementById('assign-spt-prompt');
+        var pSelected = document.getElementById('assign-spt-selected');
+        var fName = document.getElementById('assign-spt-filename');
+        var fSize = document.getElementById('assign-spt-filesize');
+        if (pPrompt) pPrompt.classList.add('hidden');
+        if (pSelected) pSelected.classList.remove('hidden');
+        if (fName) fName.textContent = file.name;
+        if (fSize) fSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+      } else {
+        _quickFile = fileObj;
+        var qPrompt = document.getElementById('quick-spt-prompt');
+        var qSelected = document.getElementById('quick-spt-selected');
+        var qName = document.getElementById('quick-spt-filename');
+        var qSize = document.getElementById('quick-spt-filesize');
+        if (qPrompt) qPrompt.classList.add('hidden');
+        if (qSelected) qSelected.classList.remove('hidden');
+        if (qName) qName.textContent = file.name;
+        if (qSize) qSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+      }
+    };
+    reader.onerror = function () {
+      Toast.error('Gagal membaca berkas.');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function _clearDropzoneFile(mode) {
+    if (mode === 'assign') {
+      _assignFile = null;
+      var fileInput = document.getElementById('assign-spt-file');
+      if (fileInput) fileInput.value = '';
+      var pPrompt = document.getElementById('assign-spt-prompt');
+      var pSelected = document.getElementById('assign-spt-selected');
+      if (pPrompt) pPrompt.classList.remove('hidden');
+      if (pSelected) pSelected.classList.add('hidden');
+    } else {
+      _quickFile = null;
+      var qInput = document.getElementById('quick-spt-file');
+      if (qInput) qInput.value = '';
+      var qPrompt = document.getElementById('quick-spt-prompt');
+      var qSelected = document.getElementById('quick-spt-selected');
+      if (qPrompt) qPrompt.classList.remove('hidden');
+      if (qSelected) qSelected.classList.add('hidden');
     }
   }
 
@@ -312,7 +611,7 @@ var SijilView = (function () {
     if (ratioText) ratioText.textContent = terisi + ' / ' + butuh + ' (' + pct + '%)';
     if (ratioBar) ratioBar.style.width = Math.min(100, pct) + '%';
 
-    // 1. Render Daftar Awak Aktif Naik Kapal
+    // 1. Render Daftar Awak Aktif Naik Kapal beserta Akses Surat Tugas (SPT)
     if (listAwak) {
       var awakList = d.awakBertugas || [];
       if (awakList.length === 0) {
@@ -322,27 +621,59 @@ var SijilView = (function () {
           var bg = Format.avatarBg(a.nama);
           var inis = Format.initials(a.nama);
           var posLabel = String(a.posSijil || '').replace(/_/g, ' ');
+          var sptBtn = '';
+
+          if (a.suratTugas && a.suratTugas.viewUrl) {
+            sptBtn =
+              '<a href="' + a.suratTugas.viewUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-sm" title="Buka berkas Surat Tugas: ' + Format.escape(a.suratTugas.fileName) + '" style="color:var(--text); text-decoration:none;">' +
+                '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' +
+                '<span>Surat tugas</span>' +
+              '</a>';
+          } else {
+            sptBtn =
+              '<button type="button" class="btn btn-secondary-sm btn-attach-spt" data-row="' + a.rowId + '" data-nama="' + Format.escape(a.nama) + '" data-pos="' + Format.escape(posLabel) + '" title="Unggah berkas Surat Tugas untuk awak ini">' +
+                '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>' +
+                '<span>+ Surat tugas</span>' +
+              '</button>';
+          }
+
+          var ketSub = a.keterangan ? ('<div style="font-size:11px; color:var(--muted); margin-top:2px;">' + Format.escape(a.keterangan) + '</div>') : '';
 
           return (
-            '<div style="padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-control); background-color:var(--surface); display:flex; justify-content:space-between; align-items:center;">' +
-              '<div style="display:flex; align-items:center; gap:10px;">' +
-                '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
-                '<div>' +
-                  '<div class="cell-primary">' + Format.escape(a.nama) + '</div>' +
+            '<div class="sijil-crew-card">' +
+              '<div class="sijil-crew-left">' +
+                '<div class="avatar-sm" style="background-color:' + bg + '; border-radius:3px; flex-shrink:0;">' + inis + '</div>' +
+                '<div style="min-width:0; flex:1;">' +
+                  '<div class="cell-primary" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + Format.escape(a.nama) + '</div>' +
                   '<div class="cell-sub"><strong style="color:var(--accent);">' + Format.escape(posLabel) + '</strong> · Naik: ' + Format.date(a.tanggalNaik) + '</div>' +
+                  ketSub +
                 '</div>' +
               '</div>' +
-              '<button type="button" class="btn btn-danger-sm btn-unassign" data-row="' + a.rowId + '" data-peg="' + a.pegawaiId + '" data-nama="' + Format.escape(a.nama) + '">Turunkan</button>' +
+              '<div class="sijil-crew-actions">' +
+                sptBtn +
+                '<button type="button" class="btn btn-danger-sm btn-unassign" data-row="' + a.rowId + '" data-peg="' + a.pegawaiId + '" data-nama="' + Format.escape(a.nama) + '">Turunkan</button>' +
+              '</div>' +
             '</div>'
           );
         }).join('');
 
+        // Pasang event listener tombol Turunkan
         listAwak.querySelectorAll('.btn-unassign').forEach(function (btn) {
           btn.onclick = function () {
             var rId = btn.getAttribute('data-row');
             var pId = btn.getAttribute('data-peg');
             var nama = btn.getAttribute('data-nama');
             _confirmUnassign(rId, pId, nama);
+          };
+        });
+
+        // Pasang event listener tombol Unggah Surat Tugas Langsung
+        listAwak.querySelectorAll('.btn-attach-spt').forEach(function (btn) {
+          btn.onclick = function () {
+            var rId = btn.getAttribute('data-row');
+            var nama = btn.getAttribute('data-nama');
+            var pos = btn.getAttribute('data-pos');
+            openUploadSptModal(rId, nama, pos);
           };
         });
       }
@@ -394,11 +725,15 @@ var SijilView = (function () {
 
   function openAssignModal(prefillKapalId) {
     var selKapal = document.getElementById('assign-select-kapal');
-    var selPeg = document.getElementById('assign-select-pegawai');
     var tglNaik = document.getElementById('assign-input-tgl-naik');
     var ketInp = document.getElementById('assign-input-keterangan');
+    var driveUrlInp = document.getElementById('assign-spt-drive-url');
 
     if (ketInp) ketInp.value = '';
+    if (driveUrlInp) driveUrlInp.value = '';
+    _clearSelectedCrew();
+    _clearDropzoneFile('assign');
+
     if (tglNaik) {
       var now = new Date();
       tglNaik.value = now.toISOString().substring(0, 10);
@@ -412,21 +747,33 @@ var SijilView = (function () {
       }).join('');
     }
 
-    // Populate dropdown awak
+    // Muat daftar lengkap seluruh personil awak aktif untuk pencarian (396+ personil)
     var token = AuthApp.getToken();
-    if (selPeg) {
-      selPeg.innerHTML = '<option value="">Memuat daftar personil...</option>';
-      rpc('dir_list', { token: token, limit: 120 })
-        .then(function (res) {
-          var items = res.items || [];
-          selPeg.innerHTML = '<option value="">-- Pilih Awak Kapal --</option>' + items.map(function (a) {
+    var searchInp = document.getElementById('assign-crew-search-input');
+    if (searchInp) searchInp.placeholder = 'Memuat data personil armada...';
+
+    rpc('sijil_getAwakOptions', token)
+      .then(function (res) {
+        _awakOptions = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
+        if (searchInp) searchInp.placeholder = 'Cari nama, NIP, atau jabatan awak (' + _awakOptions.length + ' personil)...';
+        
+        var selPeg = document.getElementById('assign-select-pegawai');
+        if (selPeg) {
+          selPeg.innerHTML = '<option value="">-- Pilih Awak Kapal --</option>' + _awakOptions.map(function (a) {
             return '<option value="' + a.pegawaiId + '">' + Format.escape(a.nama) + ' (' + a.kelompokJabatan + ' - ' + a.rumpun + ')</option>';
           }).join('');
-        })
-        .catch(function () {
-          selPeg.innerHTML = '<option value="">Gagal memuat personil</option>';
-        });
-    }
+        }
+      })
+      .catch(function () {
+        rpc('dir_list', { token: token, statusAktif: 'AKTIF', limit: 500 })
+          .then(function (res2) {
+            _awakOptions = res2.items || [];
+            if (searchInp) searchInp.placeholder = 'Cari nama, NIP, atau jabatan awak (' + _awakOptions.length + ' personil)...';
+          })
+          .catch(function () {
+            if (searchInp) searchInp.placeholder = 'Gagal memuat personil. Ketik untuk coba lagi.';
+          });
+      });
 
     Modal.open('modal-sijil-assign');
   }
@@ -434,17 +781,20 @@ var SijilView = (function () {
   function _submitAssign() {
     var token = AuthApp.getToken();
     var kapalId = document.getElementById('assign-select-kapal').value;
-    var pegawaiId = document.getElementById('assign-select-pegawai').value;
+    var pegawaiId = document.getElementById('assign-input-pegawai-id').value ||
+                    document.getElementById('assign-select-pegawai').value;
     var posSijil = document.getElementById('assign-select-posisi').value;
     var tglNaik = document.getElementById('assign-input-tgl-naik').value;
     var ket = document.getElementById('assign-input-keterangan').value.trim();
+    var driveUrl = (document.getElementById('assign-spt-drive-url') || {}).value || '';
+    driveUrl = driveUrl.trim();
 
     if (!kapalId) {
       Toast.error('Pilih kapal tujuan.');
       return;
     }
     if (!pegawaiId) {
-      Toast.error('Pilih personil awak kapal.');
+      Toast.error('Pilih personil awak kapal melalui pencarian.');
       return;
     }
     if (!tglNaik) {
@@ -458,14 +808,23 @@ var SijilView = (function () {
       btnSubmit.textContent = 'Menempatkan...';
     }
 
-    rpc('sijil_assignAwak', {
+    var payload = {
       token: token,
       kapalId: kapalId,
       pegawaiId: pegawaiId,
       posSijil: posSijil,
       tanggalNaik: tglNaik,
       keterangan: ket
-    })
+    };
+
+    if (_assignFile) {
+      payload.fileData = _assignFile;
+    }
+    if (driveUrl) {
+      payload.driveUrl = driveUrl;
+    }
+
+    rpc('sijil_assignAwak', payload)
       .then(function (res) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
@@ -487,11 +846,74 @@ var SijilView = (function () {
       });
   }
 
+  function openUploadSptModal(rowId, nama, pos) {
+    var rowInput = document.getElementById('upload-spt-row-id');
+    var infoEl = document.getElementById('upload-spt-target-info');
+    var driveInp = document.getElementById('quick-spt-drive-url');
+
+    if (rowInput) rowInput.value = rowId;
+    if (infoEl) infoEl.textContent = 'Personil: ' + nama + ' (' + pos + ') · Penugasan: ' + rowId;
+    if (driveInp) driveInp.value = '';
+    _clearDropzoneFile('quick');
+
+    Modal.open('modal-sijil-upload-spt');
+  }
+
+  function _submitQuickSpt() {
+    var token = AuthApp.getToken();
+    var rowId = document.getElementById('upload-spt-row-id').value;
+    var driveUrl = (document.getElementById('quick-spt-drive-url') || {}).value || '';
+    driveUrl = driveUrl.trim();
+
+    if (!rowId) {
+      Toast.error('Penugasan tidak valid.');
+      return;
+    }
+    if (!_quickFile && !driveUrl) {
+      Toast.error('Pilih berkas Surat Tugas atau cantumkan tautan Google Drive.');
+      return;
+    }
+
+    var btnSubmit = document.getElementById('btn-submit-quick-spt');
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Mengunggah...';
+    }
+
+    var payload = {
+      token: token,
+      rowId: rowId
+    };
+    if (_quickFile) payload.fileData = _quickFile;
+    if (driveUrl) payload.driveUrl = driveUrl;
+
+    rpc('sijil_uploadSuratTugas', payload)
+      .then(function (res) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Unggah surat tugas';
+        }
+        Modal.close('modal-sijil-upload-spt');
+        Toast.success(res.message || 'Surat tugas berhasil diunggah.');
+        if (_currentKapalId) {
+          openKapalSheet(_currentKapalId);
+        }
+      })
+      .catch(function (err) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Unggah surat tugas';
+        }
+        Toast.error('Gagal mengunggah surat tugas: ' + err.message);
+      });
+  }
+
   return {
     init: init,
     load: load,
     openKapalSheet: openKapalSheet,
-    openAssignModal: openAssignModal
+    openAssignModal: openAssignModal,
+    openUploadSptModal: openUploadSptModal
   };
 })();
 </script>

@@ -1410,6 +1410,123 @@ th.text-center {
   background-color: var(--accent-soft);
 }
 
+/* ── Searchable Combobox & Dropzone Surat Tugas Sijil (DESIGN.md §3.3 & §8.1) ── */
+.combobox-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.combobox-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-chip);
+  box-shadow: 0 4px 16px rgba(15, 18, 20, 0.12);
+  z-index: 100;
+}
+
+.combobox-item {
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--rule);
+  transition: background-color var(--dur-ui) var(--ease-out);
+}
+
+.combobox-item:last-child {
+  border-bottom: none;
+}
+
+.combobox-item:hover,
+.combobox-item.active {
+  background-color: var(--raised);
+}
+
+.selected-crew-box {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-chip);
+  background-color: var(--ground);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.upload-dropzone {
+  border: 1px dashed var(--control);
+  border-radius: var(--radius-chip);
+  background-color: var(--ground);
+  padding: 12px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--dur-ui) var(--ease-out), background-color var(--dur-ui) var(--ease-out);
+}
+
+.upload-dropzone:hover {
+  border-color: var(--accent);
+  background-color: #FFFFFF;
+}
+
+.dropzone-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.dropzone-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.file-icon-badge {
+  padding: 2px 6px;
+  border-radius: 2px;
+  background-color: var(--raised);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+
+.sijil-crew-card {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-chip);
+  background-color: var(--surface);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.sijil-crew-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.sijil-crew-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 /* ── Garis Waktu Horizontal Kegiatan (DESIGN.md §8.2) ── */
 .timeline-list {
   display: flex;
