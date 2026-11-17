@@ -432,7 +432,7 @@ function kom_saveSertifikat(params) {
       // Hitung periode minggu dari tanggal terbit
       var periode = getPeriodeFromDate(tglTerbit || Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd'));
 
-      appendRowData(sheetSrt, {
+      var newCertObj = {
         'RowID': newRowId,
         'DivisiID': DIVISI_ID.AWAK,
         'Periode': periode,
@@ -453,7 +453,20 @@ function kom_saveSertifikat(params) {
         'BerlakuSampai': tglExp,
         'PenerbitLembaga': String(params.penerbitLembaga || '').trim(),
         'EvidenceID': evidenceId
-      });
+      };
+      appendRowData(sheetSrt, newCertObj);
+      if (typeof applyFormalSheetFormatting === 'function') {
+        applyFormalSheetFormatting(sheetSrt, SHEET_AWAK.PELATIHAN_AWAK);
+      }
+
+      // Sinkronkan sertifikat (terutama BST) ke SIKAP
+      try {
+        var sheetAwakSync = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+        var foundAwakSync = findRowByField(sheetAwakSync, 'PegawaiID', pId);
+        if (foundAwakSync && typeof _pushSertifikatToSikap === 'function') {
+          _pushSertifikatToSikap(foundAwakSync.obj, newCertObj);
+        }
+      } catch (ePushCert) {}
 
       _auditLog(session.userId, 'REVALIDASI_SERTIFIKAT', SHEET_AWAK.PELATIHAN_AWAK, newRowId,
         'Rekam sertifikat: ' + namaPelatihan + ' (' + noSert + ') untuk ' + pId);
@@ -604,7 +617,7 @@ function kom_ensureSertifikatSeeded() {
 }
 
 /**
- * Helper pemetaan nama jabatan bebas ke 9 kelompok standar resmi.
+ * Helper pemetaan nama jabatan bebas ke 10 kelompok standar resmi (termasuk Juru Masak/Koki).
  */
 function _normalizeJabatanStandar(jabatanText) {
   var t = String(jabatanText || '').toUpperCase();
@@ -617,6 +630,7 @@ function _normalizeJabatanStandar(jabatanText) {
   if (/KEPALA KAMAR MESIN|KKM/.test(t)) return 'Kepala Kamar Mesin Kapal';
   if (/MASINIS/.test(t)) return 'Masinis';
   if (/JURU MINYAK|OILER/.test(t)) return 'Juru Minyak';
+  if (/JURU MASAK|KOKI|STEWARD|COOK/.test(t)) return 'Juru Masak';
   return 'Nahkoda'; // fallback
 }
 

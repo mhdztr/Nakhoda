@@ -13,6 +13,7 @@ test('Sijil — normalizePosSijil menormalisasi variasi teks posisi', () => {
   assert.equal(normalizePosSijil('Masinis I'), 'MASINIS_I');
   assert.equal(normalizePosSijil('Juru Mudi Kapal'), 'JURU_MUDI');
   assert.equal(normalizePosSijil('Juru Minyak'), 'JURU_MINYAK');
+  assert.equal(normalizePosSijil('Juru Masak (Koki)'), 'JURU_MASAK');
 });
 
 test('Sijil — evaluateSafeManning mendeteksi status KURANG_AWAK jika ada posisi kosong', () => {

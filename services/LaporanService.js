@@ -56,7 +56,7 @@ function ringkasan_get(token, filter) {
     allAwak.forEach(function (a) {
       var kat = String(a.kategoriKepegawaian || '').toUpperCase();
       if (kat === 'PNS') countPns++;
-      else if (kat.indexOf('PPPK') !== -1) countPppk++;
+      else if (kat === 'P3K' || kat === 'P3K_PARUH_WAKTU' || kat.indexOf('PPPK') !== -1) countPppk++;
       else countNonAsn++;
     });
 
@@ -125,7 +125,7 @@ function ringkasan_get(token, filter) {
       narasi.push('Terdapat ' + komMetrics.kedaluwarsa + ' sertifikat awak kapal berstatus kedaluwarsa yang wajib segera direvalidasi sebelum penugasan laut berikutnya.');
     }
     if (dirStats.perluDilengkapi > 0) {
-      narasi.push('Sebanyak ' + dirStats.perluDilengkapi + ' profil personil di direktori masih memerlukan pelengkapan nomor buku pelaut atau kategori kepegawaian.');
+      narasi.push('Sebanyak ' + dirStats.perluDilengkapi + ' profil personil di direktori memerlukan kelengkapan sertifikat dasar BST aktif atau verifikasi NIP non-PJLP.');
     }
 
     var totalAknKeseluruhan = (aknData && aknData.totals) ? aknData.totals.AKN_KESELURUHAN : dirStats.total;
@@ -161,6 +161,7 @@ function ringkasan_get(token, filter) {
         nonAsn: countNonAsn
       },
       aknTerbaru: aknData ? aknData.matrix : null,
+      rekapJabatan: (aknData && Array.isArray(aknData.rekapJabatan)) ? aknData.rekapJabatan : (typeof dir_computeRekapJabatan === 'function' ? dir_computeRekapJabatan() : []),
       aknTotals: aknData ? aknData.totals : { AKN_POA: 0, AKN_KESELURUHAN: 0 },
       aknPrevTotals: aknData ? aknData.prevTotals : { AKN_POA: 0, AKN_KESELURUHAN: 0 },
       aknMeta: aknData ? {
@@ -265,17 +266,26 @@ function lap_exportData(token, params) {
     if (modul === 'DIREKTORI') {
       var dirRes = dir_list({ token: token, limit: 2000 });
       var items = (dirRes.success && dirRes.data && Array.isArray(dirRes.data.items)) ? dirRes.data.items : [];
-      csvRows.push(['PegawaiID', 'Nama', 'NIP', 'Jabatan', 'Rumpun', 'Kelas_Kapal', 'Kategori_Kepegawaian', 'Kapal_Aktif', 'Status']);
+      csvRows.push([
+        'PegawaiID', 'Nama', 'NIP', 'Kelompok_Jabatan', 'Kelas_Kapal', 'Rumpun',
+        'Kategori_Kepegawaian', 'Status_Penempatan', 'Kapal_Aktif', 'Durasi_Kapal',
+        'Status_BST', 'Ukuran_Baju', 'Ukuran_Sepatu', 'Status_Aktif'
+      ]);
       items.forEach(function (it) {
         csvRows.push([
           it.pegawaiId || '',
           '"' + String(it.nama || '').replace(/"/g, '""') + '"',
-          it.nipDisplay || '',
-          '"' + String(it.jabatanLengkap || it.kelompokJabatan || '').replace(/"/g, '""') + '"',
-          it.rumpun || '',
+          it.nipDisplay || '-',
+          '"' + String(it.kelompokJabatan || '').replace(/"/g, '""') + '"',
           it.kelasKapal || '',
+          it.rumpun || '',
           it.kategoriKepegawaian || '',
-          '"' + String(it.kapalId || '-').replace(/"/g, '""') + '"',
+          it.statusPenempatan || 'PUSAT_POA',
+          '"' + String(it.namaKapal || it.kapalId || '-').replace(/"/g, '""') + '"',
+          '"' + String(it.durasiKapalTeks || '-').replace(/"/g, '""') + '"',
+          it.bstLabel || it.bstStatus || 'Belum ada',
+          it.ukuranBaju || '-',
+          it.ukuranSepatu || '-',
           it.statusAktif || 'AKTIF'
         ]);
       });

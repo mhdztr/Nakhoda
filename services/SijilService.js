@@ -92,7 +92,8 @@ function sijil_getPapanArmada(token) {
         serang: aggregateGroup(['SERANG']),
         juruMudi: aggregateGroup(['JURU_MUDI']),
         kelasi: aggregateGroup(['KELASI']),
-        juruMinyak: aggregateGroup(['JURU_MINYAK'])
+        juruMinyak: aggregateGroup(['JURU_MINYAK']),
+        juruMasak: aggregateGroup(['JURU_MASAK'])
       };
 
       var kurangKapal = 0;
@@ -240,6 +241,7 @@ function sijil_getDetailKapal(token, kapalId) {
           rumpun: String(awk.Rumpun || 'DEK'),
           tanggalNaik: String(t.TanggalNaik || ''),
           tanggalTurun: String(t.TanggalTurun || ''),
+          durasiKapalTeks: typeof _computeVesselDurationText === 'function' ? _computeVesselDurationText(t.TanggalNaik, now) : '-',
           keterangan: String(t.Keterangan || ''),
           suratTugas: suratTugas
         };
@@ -328,15 +330,23 @@ function sijil_assignAwak(params) {
         'Keterangan': String(params.keterangan || '').trim()
       });
 
-      // Update penempatan KapalID di Master_Awak
+      // Update penempatan KapalID di Master_Awak + Push Sync ke SIKAP
       var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
       var foundAwak = findRowByField(sheetAwak, 'PegawaiID', pId);
       if (foundAwak) {
         updateRowCells(sheetAwak, foundAwak.rowIndex, {
           'KapalID': kId,
-          'UpdatedAt': now,
+          'UpdatedAt': Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd HH:mm:ss'),
           'UpdatedBy': session.userId
         });
+        foundAwak.obj.KapalID = kId;
+        foundAwak.obj.UpdatedBy = session.userId;
+        if (typeof _pushAwakToSikap === 'function') {
+          _pushAwakToSikap(foundAwak.obj, 'Penempatan Sijil di ' + kId + ' sebagai ' + pos.replace(/_/g, ' ') + ' (TMT ' + tglNaik + ')');
+        }
+      }
+      if (typeof applyFormalSheetFormatting === 'function') {
+        applyFormalSheetFormatting(sheetTgs, SHEET_AWAK.PENUGASAN_KAPAL);
       }
 
       // Lampirkan Surat Perintah Tugas (SPT) jika ada file atau link Google Drive
@@ -506,17 +516,25 @@ function sijil_unassignAwak(params) {
         'Keterangan': (String(found.obj.Keterangan || '') + ' [Turun kapal ' + tglTurun + ']').trim()
       });
 
-      // Lepaskan KapalID di Master_Awak
+      // Lepaskan KapalID di Master_Awak + Push Sync ke SIKAP
       if (pId) {
         var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
         var foundAwak = findRowByField(sheetAwak, 'PegawaiID', pId);
         if (foundAwak) {
           updateRowCells(sheetAwak, foundAwak.rowIndex, {
             'KapalID': '',
-            'UpdatedAt': now,
+            'UpdatedAt': Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd HH:mm:ss'),
             'UpdatedBy': session.userId
           });
+          foundAwak.obj.KapalID = '';
+          foundAwak.obj.UpdatedBy = session.userId;
+          if (typeof _pushAwakToSikap === 'function') {
+            _pushAwakToSikap(foundAwak.obj, 'Pelepasan Sijil kapal per ' + tglTurun);
+          }
         }
+      }
+      if (typeof applyFormalSheetFormatting === 'function') {
+        applyFormalSheetFormatting(sheetTgs, SHEET_AWAK.PENUGASAN_KAPAL);
       }
 
       _auditLog(session.userId, 'UNASSIGN_SIJIL', SHEET_AWAK.PENUGASAN_KAPAL, rowId,

@@ -1161,5 +1161,27 @@ var SEED_STANDAR_AWAK = {
       "wajib": true,
       "urutan": 10
     }
+  ],
+  "Juru Masak": [
+    {
+      "kode": "TRN-JMK-01",
+      "kelompokJabatan": "Juru Masak",
+      "tingkatKelas": "ALL",
+      "kategori": "SERTIFIKASI_LAUT",
+      "nama": "Basic Safety Training Fisheries (BST / BST-F)",
+      "masaBerlakuBulan": 60,
+      "wajib": true,
+      "urutan": 1
+    },
+    {
+      "kode": "TRN-JMK-02",
+      "kelompokJabatan": "Juru Masak",
+      "tingkatKelas": "ALL",
+      "kategori": "TEKNIS",
+      "nama": "Pelatihan Keterampilan Pelaut Bagian Dapur, Sanitasi & Higiene Kapal",
+      "masaBerlakuBulan": 0,
+      "wajib": true,
+      "urutan": 2
+    }
   ]
 };

@@ -168,10 +168,38 @@ var ShellUI = (function () {
     }
   }
 
+  /**
+   * Mengunci seluruh input type="date" agar pengguna selalu memilih dari kalender (dilarang ketik manual).
+   */
+  function bindCalendarInputs(rootEl) {
+    var scope = rootEl || document;
+    var inputs = scope.querySelectorAll('input[type="date"]');
+    Array.prototype.forEach.call(inputs, function (inp) {
+      if (inp.getAttribute('data-cal-bound') === '1') return;
+      inp.setAttribute('data-cal-bound', '1');
+      inp.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab' && e.key !== 'Escape') {
+          e.preventDefault();
+          return false;
+        }
+      });
+      inp.addEventListener('paste', function (e) {
+        e.preventDefault();
+        return false;
+      });
+      inp.addEventListener('click', function () {
+        if (typeof inp.showPicker === 'function') {
+          try { inp.showPicker(); } catch (ignore) {}
+        }
+      });
+    });
+  }
+
   return {
     toggleMobileNav: toggleMobileNav,
     closeMobileNav: closeMobileNav,
-    syncHeaderDatum: syncHeaderDatum
+    syncHeaderDatum: syncHeaderDatum,
+    bindCalendarInputs: bindCalendarInputs
   };
 })();
 
@@ -425,6 +453,7 @@ var AuthApp = (function () {
     if (appShell) appShell.classList.remove('hidden');
     _updateShellProfile();
     ShellUI.syncHeaderDatum();
+    ShellUI.bindCalendarInputs(document);
     if (!ShellUI._datumBound) {
       ShellUI._datumBound = true;
       window.addEventListener('resize', ShellUI.syncHeaderDatum);

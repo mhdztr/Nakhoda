@@ -95,11 +95,18 @@ function buildHtml() {
                   totals: { AKN_POA: 142, AKN_KESELURUHAN: 396 },
                   prevTotals: { AKN_POA: 140, AKN_KESELURUHAN: 394 },
                   matrix: {
-                    'PNS': { AKN_POA: 78, AKN_KESELURUHAN: 218 },
-                    'PPPK_FUNGSIONAL': { AKN_POA: 26, AKN_KESELURUHAN: 74 },
-                    'PPPK_PELAKSANA': { AKN_POA: 18, AKN_KESELURUHAN: 48 },
-                    'PPPK_PARUH_WAKTU': { AKN_POA: 8, AKN_KESELURUHAN: 22 },
-                    'PJLP': { AKN_POA: 12, AKN_KESELURUHAN: 34 }
+                    AKN_POA: {
+                      PNS: { jumlah: 78 },
+                      P3K: { jumlah: 44 },
+                      P3K_PARUH_WAKTU: { jumlah: 8 },
+                      PJLP: { jumlah: 12 }
+                    },
+                    AKN_KESELURUHAN: {
+                      PNS: { jumlah: 218 },
+                      P3K: { jumlah: 122 },
+                      P3K_PARUH_WAKTU: { jumlah: 22 },
+                      PJLP: { jumlah: 34 }
+                    }
                   }
                 },
                 sijilSummary: {
@@ -116,12 +123,25 @@ function buildHtml() {
                   ]
                 },
                 aknTerbaru: {
-                  'PNS': { AKN_POA: 78, AKN_KESELURUHAN: 218 },
-                  'PPPK_FUNGSIONAL': { AKN_POA: 26, AKN_KESELURUHAN: 74 },
-                  'PPPK_PELAKSANA': { AKN_POA: 18, AKN_KESELURUHAN: 48 },
-                  'PPPK_PARUH_WAKTU': { AKN_POA: 8, AKN_KESELURUHAN: 22 },
-                  'PJLP': { AKN_POA: 12, AKN_KESELURUHAN: 34 }
+                  AKN_POA: {
+                    PNS: { jumlah: 78 },
+                    P3K: { jumlah: 44 },
+                    P3K_PARUH_WAKTU: { jumlah: 8 },
+                    PJLP: { jumlah: 12 }
+                  },
+                  AKN_KESELURUHAN: {
+                    PNS: { jumlah: 218 },
+                    P3K: { jumlah: 122 },
+                    P3K_PARUH_WAKTU: { jumlah: 22 },
+                    PJLP: { jumlah: 34 }
+                  }
                 },
+                rekapJabatan: [
+                  { jabatan: 'Nakhoda', rumpun: 'DEK', eksisting: 26, kebutuhan: 28, selisih: -2 },
+                  { jabatan: 'KKM', rumpun: 'MESIN', eksisting: 27, kebutuhan: 28, selisih: -1 },
+                  { jabatan: 'Juru Mudi', rumpun: 'DEK', eksisting: 72, kebutuhan: 70, selisih: 2 },
+                  { jabatan: 'Juru Masak', rumpun: 'PENUNJANG', eksisting: 12, kebutuhan: 14, selisih: -2 }
+                ],
                 sijilKapalRingkas: [
                   { kapalId: 'KPL-001', namaKapal: 'KP. Orca 01', kelasKapal: 'Kelas I', pangkalanId: 'Pangkalan PSDKP Batam', kebutuhanMinimum: 18, jumlahAwakBertugas: 16, kekuranganKursi: 2, statusOperasi: 'KRITIS' },
                   { kapalId: 'KPL-002', namaKapal: 'KP. Orca 02', kelasKapal: 'Kelas I', pangkalanId: 'Pangkalan PSDKP Benoa', kebutuhanMinimum: 18, jumlahAwakBertugas: 17, kekuranganKursi: 1, statusOperasi: 'KURANG_AWAK' },
@@ -156,19 +176,39 @@ function buildHtml() {
                 totals: { AKN_POA: 142, AKN_KESELURUHAN: 396 },
                 prevTotals: { AKN_POA: 140, AKN_KESELURUHAN: 394 },
                 matrix: {
-                  'PNS': { AKN_POA: 78, AKN_KESELURUHAN: 218 },
-                  'PPPK_FUNGSIONAL': { AKN_POA: 26, AKN_KESELURUHAN: 74 },
-                  'PPPK_PELAKSANA': { AKN_POA: 18, AKN_KESELURUHAN: 48 },
-                  'PPPK_PARUH_WAKTU': { AKN_POA: 8, AKN_KESELURUHAN: 22 },
-                  'PJLP': { AKN_POA: 12, AKN_KESELURUHAN: 34 }
+                  AKN_POA: {
+                    PNS: { jumlah: 78 },
+                    P3K: { jumlah: 44 },
+                    P3K_PARUH_WAKTU: { jumlah: 8 },
+                    PJLP: { jumlah: 12 }
+                  },
+                  AKN_KESELURUHAN: {
+                    PNS: { jumlah: 218 },
+                    P3K: { jumlah: 122 },
+                    P3K_PARUH_WAKTU: { jumlah: 22 },
+                    PJLP: { jumlah: 34 }
+                  }
                 },
                 prevMatrix: {
-                  'PNS': { AKN_POA: 77, AKN_KESELURUHAN: 217 },
-                  'PPPK_FUNGSIONAL': { AKN_POA: 26, AKN_KESELURUHAN: 73 },
-                  'PPPK_PELAKSANA': { AKN_POA: 18, AKN_KESELURUHAN: 48 },
-                  'PPPK_PARUH_WAKTU': { AKN_POA: 7, AKN_KESELURUHAN: 22 },
-                  'PJLP': { AKN_POA: 12, AKN_KESELURUHAN: 34 }
-                }
+                  AKN_POA: {
+                    PNS: { jumlah: 77 },
+                    P3K: { jumlah: 44 },
+                    P3K_PARUH_WAKTU: { jumlah: 7 },
+                    PJLP: { jumlah: 12 }
+                  },
+                  AKN_KESELURUHAN: {
+                    PNS: { jumlah: 217 },
+                    P3K: { jumlah: 121 },
+                    P3K_PARUH_WAKTU: { jumlah: 22 },
+                    PJLP: { jumlah: 34 }
+                  }
+                },
+                rekapJabatan: [
+                  { jabatan: 'Nakhoda', rumpun: 'DEK', eksisting: 26, kebutuhan: 28, selisih: -2 },
+                  { jabatan: 'KKM', rumpun: 'MESIN', eksisting: 27, kebutuhan: 28, selisih: -1 },
+                  { jabatan: 'Juru Mudi', rumpun: 'DEK', eksisting: 72, kebutuhan: 70, selisih: 2 },
+                  { jabatan: 'Juru Masak', rumpun: 'PENUNJANG', eksisting: 12, kebutuhan: 14, selisih: -2 }
+                ]
               }
             });
           }, 10);
@@ -223,14 +263,14 @@ function buildHtml() {
               success: true,
               data: {
                 items: [
-                  { pegawaiId: 'AWAK-001', nama: 'Bambang Supriyanto', nip: '198207152006041002', nipDisplay: '198207152006041002', jabatanLengkap: 'Nakhoda Kapal Pengawas Kelas I', rumpun: 'DEK', kelasKapal: 'Kelas I', kategoriKepegawaian: 'PNS', kapalId: 'KP. Orca 01', statusAktif: 'AKTIF' },
-                  { pegawaiId: 'AWAK-002', nama: 'Hendro Prasetyo', nip: '198904122014031001', nipDisplay: '198904122014031001', jabatanLengkap: 'Kepala Kamar Mesin (KKM) Kelas I', rumpun: 'MESIN', kelasKapal: 'Kelas I', kategoriKepegawaian: 'PNS', kapalId: 'KP. Orca 01', statusAktif: 'AKTIF' },
-                  { pegawaiId: 'AWAK-003', nama: 'Dedi Kurniawan', nip: '199105202019021004', nipDisplay: '199105202019021004', jabatanLengkap: 'Mualim I Kapal Pengawas', rumpun: 'DEK', kelasKapal: 'Kelas II', kategoriKepegawaian: 'PPPK_FUNGSIONAL', kapalId: 'KP. Hiu 01', statusAktif: 'AKTIF' },
-                  { pegawaiId: 'AWAK-004', nama: 'Siti Rahmawati', nip: '199508112022032008', nipDisplay: '199508112022032008', jabatanLengkap: 'Juru Mudi Kelas III', rumpun: 'DEK', kelasKapal: 'Kelas III', kategoriKepegawaian: 'PPPK_PELAKSANA', kapalId: 'KP. Macan 01', statusAktif: 'AKTIF' },
-                  { pegawaiId: 'AWAK-005', nama: 'Agus Setiawan', nip: '199703142024011003', nipDisplay: '199703142024011003', jabatanLengkap: 'Kelasi Kapal Pengawas', rumpun: 'DEK', kelasKapal: 'Kelas II', kategoriKepegawaian: 'PJLP', kapalId: '-', statusAktif: 'AKTIF' }
+                  { pegawaiId: 'AWAK-001', nama: 'BAMBANG SUPRIYANTO', nip: '198207152006041002', nipDisplay: '198207152006041002', kelompokJabatan: 'Nakhoda', rumpun: 'DEK', kelasKapal: 'Kelas I', kategoriKepegawaian: 'PNS', statusPenempatan: 'KAPAL', kapalId: 'KP. Orca 01', durasiKapalTeks: '1 tahun 4 bulan', bstStatus: 'AKTIF', bstExpiry: '2028-05-12', statusAktif: 'AKTIF' },
+                  { pegawaiId: 'AWAK-002', nama: 'HENDRO PRASETYO', nip: '198904122014031001', nipDisplay: '198904122014031001', kelompokJabatan: 'KKM', rumpun: 'MESIN', kelasKapal: 'Kelas I', kategoriKepegawaian: 'PNS', statusPenempatan: 'KAPAL', kapalId: 'KP. Orca 01', durasiKapalTeks: '2 tahun 1 bulan', bstStatus: 'SEGERA_HABIS', bstExpiry: '2026-04-10', statusAktif: 'AKTIF' },
+                  { pegawaiId: 'AWAK-003', nama: 'DEDI KURNIAWAN', nip: '199105202019021004', nipDisplay: '199105202019021004', kelompokJabatan: 'Mualim I', rumpun: 'DEK', kelasKapal: 'Kelas II', kategoriKepegawaian: 'P3K', statusPenempatan: 'KAPAL', kapalId: 'KP. Hiu 01', durasiKapalTeks: '8 bulan', bstStatus: 'AKTIF', bstExpiry: '2029-01-15', statusAktif: 'AKTIF' },
+                  { pegawaiId: 'AWAK-004', nama: 'SITI RAHMAWATI', nip: '199508112022032008', nipDisplay: '199508112022032008', kelompokJabatan: 'Juru Mudi', rumpun: 'DEK', kelasKapal: 'Kelas III', kategoriKepegawaian: 'P3K_PARUH_WAKTU', statusPenempatan: 'KAPAL', kapalId: 'KP. Macan 01', durasiKapalTeks: '4 bulan', bstStatus: 'KEDALUWARSA', bstExpiry: '2025-11-20', statusAktif: 'AKTIF' },
+                  { pegawaiId: 'AWAK-005', nama: 'AGUS SETIAWAN', nip: '', nipDisplay: 'NON-ASN / PJLP', kelompokJabatan: 'Juru Masak', rumpun: 'PENUNJANG', kelasKapal: 'Kelas II', kategoriKepegawaian: 'PJLP', statusPenempatan: 'BELUM_DITEMPATKAN', kapalId: '-', durasiKapalTeks: '-', bstStatus: 'BELUM_TERCATAT', bstExpiry: '', statusAktif: 'AKTIF' }
                 ],
                 total: 5,
-                stats: { total: 396, dek: 238, mesin: 158, perluDilengkapi: 2 },
+                stats: { total: 396, dek: 230, mesin: 154, penunjang: 12, onBoard: 378, standby: 18, bstExpired: 14 },
                 isPrivileged: true
               }
             });
@@ -245,13 +285,17 @@ function buildHtml() {
               data: {
                 awak: {
                   PegawaiID: pegId,
-                  Nama: 'Bambang Supriyanto',
+                  Nama: 'BAMBANG SUPRIYANTO',
                   NIP: '198207152006041002',
-                  KelompokJabatan: 'Nakhoda Kapal Pengawas Kelas I',
+                  KelompokJabatan: 'Nakhoda',
                   Rumpun: 'DEK',
                   KelasKapal: 'Kelas I',
                   KategoriKepegawaian: 'PNS',
-                  NoBukuPelaut: 'B.091248-INA',
+                  StatusPenempatan: 'KAPAL',
+                  NoSkPenempatan: 'SK-42/POA/2026',
+                  SkPenempatanEvidenceId: 'EV-SK-001',
+                  UkuranBaju: 'L',
+                  UkuranSepatu: '42',
                   StatusAktif: 'AKTIF'
                 },
                 sertifikat: [
@@ -259,7 +303,7 @@ function buildHtml() {
                   { JenisSertifikat: 'ANT-III', NomorSertifikat: 'ANT3-2018-0412', TanggalBerlaku: '', StatusBerlaku: 'BERLAKU' }
                 ],
                 penugasan: [
-                  { NamaKapal: 'KP. Orca 01', PosisiSijil: 'Nakhoda', TanggalMulai: '2024-01-01', TanggalSelesai: '', StatusPenugasan: 'AKTIF' }
+                  { NamaKapal: 'KP. Orca 01', PosisiSijil: 'NAKHODA', TanggalMulai: '2024-01-01', TanggalSelesai: '', StatusPenugasan: 'AKTIF', DurasiTeks: '1 tahun 4 bulan' }
                 ]
               }
             });
@@ -384,7 +428,8 @@ function buildHtml() {
                   { key: 'serang', label: 'Serang' },
                   { key: 'juruMudi', label: 'Juru Mudi' },
                   { key: 'kelasi', label: 'Kelasi' },
-                  { key: 'juruMinyak', label: 'Juru Minyak' }
+                  { key: 'juruMinyak', label: 'Juru Minyak' },
+                  { key: 'juruMasak', label: 'Juru Masak' }
                 ],
                 kapal: [
                   {
@@ -392,8 +437,8 @@ function buildHtml() {
                     namaKapal: 'KP. Orca 01',
                     kelasKapal: 'Kelas I',
                     pangkalanId: 'Pangkalan PSDKP Batam',
-                    kebutuhanMinimum: 18,
-                    jumlahAwakBertugas: 16,
+                    kebutuhanMinimum: 19,
+                    jumlahAwakBertugas: 17,
                     kekuranganKursi: 2,
                     statusOperasi: 'KRITIS',
                     positions: {
@@ -405,7 +450,8 @@ function buildHtml() {
                       serang: { req: 1, act: 1, dev: 0 },
                       juruMudi: { req: 3, act: 3, dev: 0 },
                       kelasi: { req: 3, act: 3, dev: 0 },
-                      juruMinyak: { req: 2, act: 2, dev: 0 }
+                      juruMinyak: { req: 2, act: 2, dev: 0 },
+                      juruMasak: { req: 1, act: 1, dev: 0 }
                     }
                   },
                   {
@@ -413,8 +459,8 @@ function buildHtml() {
                     namaKapal: 'KP. Orca 02',
                     kelasKapal: 'Kelas I',
                     pangkalanId: 'Pangkalan PSDKP Benoa',
-                    kebutuhanMinimum: 18,
-                    jumlahAwakBertugas: 17,
+                    kebutuhanMinimum: 19,
+                    jumlahAwakBertugas: 18,
                     kekuranganKursi: 1,
                     statusOperasi: 'KURANG_AWAK',
                     positions: {
@@ -426,7 +472,8 @@ function buildHtml() {
                       serang: { req: 1, act: 1, dev: 0 },
                       juruMudi: { req: 3, act: 3, dev: 0 },
                       kelasi: { req: 3, act: 3, dev: 0 },
-                      juruMinyak: { req: 2, act: 2, dev: 0 }
+                      juruMinyak: { req: 2, act: 2, dev: 0 },
+                      juruMasak: { req: 1, act: 1, dev: 0 }
                     }
                   },
                   {
@@ -434,8 +481,8 @@ function buildHtml() {
                     namaKapal: 'KP. Hiu 01',
                     kelasKapal: 'Kelas II',
                     pangkalanId: 'Pangkalan PSDKP Jakarta',
-                    kebutuhanMinimum: 14,
-                    jumlahAwakBertugas: 14,
+                    kebutuhanMinimum: 15,
+                    jumlahAwakBertugas: 15,
                     kekuranganKursi: 0,
                     statusOperasi: 'LAIK',
                     positions: {
@@ -447,7 +494,8 @@ function buildHtml() {
                       serang: { req: 1, act: 1, dev: 0 },
                       juruMudi: { req: 2, act: 2, dev: 0 },
                       kelasi: { req: 2, act: 2, dev: 0 },
-                      juruMinyak: { req: 2, act: 2, dev: 0 }
+                      juruMinyak: { req: 2, act: 2, dev: 0 },
+                      juruMasak: { req: 1, act: 1, dev: 0 }
                     }
                   }
                 ]
@@ -685,13 +733,24 @@ function buildHtml() {
                   ],
                   akn: {
                     matrix: {
-                      'PNS': { AKN_POA: 78, AKN_KESELURUHAN: 218 },
-                      'PPPK_FUNGSIONAL': { AKN_POA: 26, AKN_KESELURUHAN: 74 },
-                      'PPPK_PELAKSANA': { AKN_POA: 18, AKN_KESELURUHAN: 48 },
-                      'PPPK_PARUH_WAKTU': { AKN_POA: 8, AKN_KESELURUHAN: 22 },
-                      'PJLP': { AKN_POA: 12, AKN_KESELURUHAN: 34 }
+                      AKN_POA: {
+                        PNS: { jumlah: 78 },
+                        P3K: { jumlah: 44 },
+                        P3K_PARUH_WAKTU: { jumlah: 8 },
+                        PJLP: { jumlah: 12 }
+                      },
+                      AKN_KESELURUHAN: {
+                        PNS: { jumlah: 218 },
+                        P3K: { jumlah: 122 },
+                        P3K_PARUH_WAKTU: { jumlah: 22 },
+                        PJLP: { jumlah: 34 }
+                      }
                     }
-                  }
+                  },
+                  rekapJabatan: [
+                    { jabatan: 'Nakhoda', rumpun: 'DEK', eksisting: 26, kebutuhan: 28, selisih: -2 },
+                    { jabatan: 'Juru Masak', rumpun: 'PENUNJANG', eksisting: 12, kebutuhan: 14, selisih: -2 }
+                  ]
                 },
                 armada: [
                   { namaKapal: 'KP. Orca 01', kelasKapal: 'Kelas I', kebutuhanMinimum: 18, jumlahAwakBertugas: 16, kekuranganKursi: 2, statusOperasi: 'KRITIS' },
@@ -830,6 +889,10 @@ async function runVisualTests() {
     // ── TEST A: DESKTOP (1440x900) ──
     console.log('\n--- 1. Testing Desktop Viewport (1440x900) ---');
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    const pageErrors = [];
+    page.on('pageerror', (err) => {
+      pageErrors.push(err.message || String(err));
+    });
     
     // Set authenticated token and user
     await page.goto(`http://localhost:${PORT}`);
@@ -870,12 +933,63 @@ async function runVisualTests() {
     console.log('  [Screen 02] Komposisi AKN');
     await page.click('button[data-route="komposisi"]');
     await page.waitForTimeout(500);
+    const aknChecks = await page.evaluate(() => {
+      const modeSel = document.getElementById('akn-filter-mode');
+      const oldPeriodeInput = document.getElementById('akn-periode-select');
+      const matrixRows = document.querySelectorAll('#tbody-akn-matrix-display tr');
+      const rekapRows = document.querySelectorAll('#akn-rekap-jabatan-tbody tr');
+      return {
+        hasFilterMode: !!modeSel,
+        hasOldPeriodeText: !!oldPeriodeInput,
+        matrixText: document.getElementById('tbody-akn-matrix-display')?.innerText || '',
+        matrixRowCount: matrixRows.length,
+        rekapRowCount: rekapRows.length
+      };
+    });
+    if (!aknChecks.hasFilterMode || aknChecks.hasOldPeriodeText) {
+      throw new Error('Komposisi AKN filter kontrol tidak sesuai standar kalender/preset');
+    }
+    if (aknChecks.matrixText.includes('PPPK tenaga fungsional') || aknChecks.matrixText.includes('PPPK tenaga pelaksana')) {
+      throw new Error('Komposisi AKN masih menampilkan kategori PPPK lama');
+    }
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '02_komposisi_desktop.png') });
 
     // 3. Direktori Awak
     console.log('  [Screen 03] Direktori Awak');
     await page.click('button[data-route="direktori"]');
     await page.waitForTimeout(500);
+    const dirChecks = await page.evaluate(() => {
+      return {
+        hasOldJabatan: !!document.getElementById('awak-input-jabatan-lengkap'),
+        hasOldBuku: !!document.getElementById('awak-input-buku'),
+        hasPeriodePreset: !!document.getElementById('dir-filter-periode-mode'),
+        hasStatusPenempatanFilter: !!document.getElementById('dir-filter-penempatan')
+      };
+    });
+    if (dirChecks.hasOldJabatan || dirChecks.hasOldBuku || !dirChecks.hasPeriodePreset || !dirChecks.hasStatusPenempatanFilter) {
+      throw new Error('Direktori Awak DOM tidak sesuai kontrak Tahap 3: ' + JSON.stringify(dirChecks));
+    }
+    // Uji modal Tambah Awak: sanitasi nama & kondisional NIP PJLP
+    await page.click('#btn-tambah-awak');
+    await page.waitForTimeout(250);
+    await page.fill('#awak-input-nama', "Ma'ruf, S.Pi.");
+    await page.dispatchEvent('#awak-input-nama', 'input');
+    const sanitizedVal = await page.inputValue('#awak-input-nama');
+    if (sanitizedVal !== 'MARUF SPI') {
+      throw new Error('Sanitasi nama kanonik gagal, hasil: ' + sanitizedVal);
+    }
+    await page.selectOption('#awak-input-kategori', 'PJLP');
+    const pjlpNipDisabled = await page.isDisabled('#awak-input-nip');
+    if (!pjlpNipDisabled) {
+      throw new Error('Field NIP harus dinonaktifkan saat kategori PJLP dipilih');
+    }
+    await page.selectOption('#awak-input-kategori', 'PNS');
+    const pnsNipDisabled = await page.isDisabled('#awak-input-nip');
+    if (pnsNipDisabled) {
+      throw new Error('Field NIP harus aktif saat kategori PNS dipilih');
+    }
+    await page.click('#modal-dir-awak .modal-close');
+    await page.waitForTimeout(200);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '03_direktori_desktop.png') });
 
     // Open Direktori Slide-Over Sheet
@@ -1002,6 +1116,10 @@ async function runVisualTests() {
     await mobilePage.screenshot({ path: path.join(SCREENSHOT_DIR, '11_mobile_nav.png') });
 
     await mobilePage.close();
+
+    if (pageErrors.length > 0) {
+      throw new Error('Uncaught browser page errors: ' + pageErrors.join(' | '));
+    }
 
     console.log('\n======================================================');
     console.log('PLAYWRIGHT VISUAL VERIFICATION COMPLETED SUCCESSFULLY!');

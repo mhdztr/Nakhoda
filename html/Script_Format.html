@@ -185,7 +185,7 @@ var Format = (function () {
     var k = String(kelompok || '').toUpperCase().trim();
     if (k.indexOf('AWAK_') === 0) k = k.substring(5);
     var cls = k === 'DEK' ? 'badge-accent' : 'badge-neutral';
-    var lbl = k === 'DEK' ? 'Dek' : (k === 'MESIN' ? 'Mesin' : (k || '-'));
+    var lbl = k === 'DEK' ? 'Dek' : (k === 'MESIN' ? 'Mesin' : (k === 'PENUNJANG' ? 'Penunjang' : (k || '-')));
     return '<span class="pill ' + cls + '">' + escape(lbl) + '</span>';
   }
 

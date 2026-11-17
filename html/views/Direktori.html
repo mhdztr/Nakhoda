@@ -54,24 +54,45 @@
       <div class="kpi-value mono tnum" id="stat-mesin-awak">--</div>
     </div>
 
-    <div class="kpi-col" style="cursor:pointer;" id="card-filter-perlu" title="Saring personil yang belum lengkap">
+    <div class="kpi-col" style="cursor:pointer;" id="card-filter-perlu" title="Saring personil yang belum lengkap BST atau NIP">
       <div class="kpi-label">Perlu verifikasi</div>
       <div class="kpi-value mono tnum" id="stat-perlu-awak" style="color:var(--warning);">--</div>
       <div class="kpi-delta">
-        <span style="color:var(--warning); font-size:11px;">Buku pelaut / status &rarr;</span>
+        <span style="color:var(--warning); font-size:11px;">Sertifikat BST / NIP &rarr;</span>
       </div>
     </div>
   </div>
 
   <!-- Bilah Filter & Pencarian MD (DESIGN.md §5.2) -->
-  <div class="filter-bar">
-    <div class="filter-group">
-      <select id="dir-filter-rumpun" class="form-control-md" style="width:140px;" aria-label="Filter rumpun personil">
+  <div class="filter-bar" style="flex-wrap:wrap; gap:8px;">
+    <div class="filter-group" style="flex-wrap:wrap;">
+      <select id="dir-filter-periode-mode" class="form-control-md" style="width:165px;" aria-label="Filter periode penempatan">
+        <option value="ALL">Semua periode</option>
+        <option value="TW1">TW I (Jan - Mar)</option>
+        <option value="TW2">TW II (Apr - Jun)</option>
+        <option value="TW3">TW III (Jul - Sep)</option>
+        <option value="TW4">TW IV (Okt - Des)</option>
+        <option value="SEM1">Semester I (Jan - Jun)</option>
+        <option value="SEM2">Semester II (Jul - Des)</option>
+        <option value="CUSTOM">Rentang kalender</option>
+      </select>
+      <select id="dir-filter-tahun" class="form-control-md hidden" style="width:88px;" aria-label="Tahun filter periode">
+        <option value="2025">2025</option>
+        <option value="2026" selected>2026</option>
+        <option value="2027">2027</option>
+      </select>
+      <div id="dir-filter-range-wrap" class="hidden" style="display:flex; align-items:center; gap:6px;">
+        <input type="date" id="dir-filter-date-start" class="form-control-md mono" onkeydown="return false" style="width:140px;" aria-label="Tanggal mulai dari kalender">
+        <span style="font-size:12px; color:var(--muted);">s.d.</span>
+        <input type="date" id="dir-filter-date-end" class="form-control-md mono" onkeydown="return false" style="width:140px;" aria-label="Tanggal selesai dari kalender">
+      </div>
+      <select id="dir-filter-rumpun" class="form-control-md" style="width:145px;" aria-label="Filter rumpun personil">
         <option value="">Semua rumpun</option>
         <option value="DEK">Rumpun dek</option>
         <option value="MESIN">Rumpun mesin</option>
+        <option value="PENUNJANG">Penunjang (Koki)</option>
       </select>
-      <select id="dir-filter-kelas" class="form-control-md" style="width:165px;" aria-label="Filter kelas kapal">
+      <select id="dir-filter-kelas" class="form-control-md" style="width:155px;" aria-label="Filter kelas kapal">
         <option value="">Semua kelas kapal</option>
         <option value="KELAS_I">Kelas I</option>
         <option value="KELAS_II">Kelas II</option>
@@ -79,12 +100,17 @@
         <option value="KELAS_IV">Kelas IV</option>
         <option value="KELAS_V">Kelas V</option>
       </select>
-      <select id="dir-filter-status" class="form-control-md" style="width:155px;" aria-label="Filter status aktif personil">
+      <select id="dir-filter-penempatan" class="form-control-md" style="width:170px;" aria-label="Filter status penempatan">
+        <option value="">Semua penempatan</option>
+        <option value="PUSAT_POA">Dit. POA Pusat</option>
+        <option value="DIPERBANTUKAN_UPT">Diperbantukan di UPT</option>
+      </select>
+      <select id="dir-filter-status" class="form-control-md" style="width:145px;" aria-label="Filter status aktif personil">
         <option value="">Semua status</option>
         <option value="AKTIF">Aktif</option>
         <option value="NONAKTIF">Nonaktif / Keluar</option>
       </select>
-      <input type="search" id="dir-search-input" class="form-control-md" placeholder="Cari nama personil, NIP, atau jabatan..." style="width:260px;" aria-label="Cari nama personil, NIP, atau jabatan">
+      <input type="search" id="dir-search-input" class="form-control-md" placeholder="Cari nama, NIP, kapal, jabatan..." style="width:230px;" aria-label="Cari nama personil, NIP, kapal, atau jabatan">
       <button type="button" id="btn-dir-search" class="btn btn-secondary-md">Cari</button>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
@@ -102,12 +128,12 @@
             <th style="width:36px; text-align:center;">
               <input type="checkbox" id="check-select-all" title="Pilih semua" aria-label="Pilih semua baris personil">
             </th>
-            <th style="min-width:240px;">Personil awak kapal</th>
-            <th>Jabatan &amp; formatur</th>
-            <th style="width:110px;">Kelas kapal</th>
-            <th style="width:90px;">Rumpun</th>
+            <th style="min-width:220px;">Personil awak kapal</th>
+            <th>Jabatan &amp; kelas</th>
+            <th style="width:95px;">Rumpun</th>
             <th style="width:130px;">Kategori</th>
-            <th style="width:130px;">Buku pelaut</th>
+            <th style="min-width:175px;">Penempatan &amp; durasi</th>
+            <th style="width:135px;">Sertifikat BST</th>
             <th style="width:80px; text-align:center;">Aksi</th>
           </tr>
         </thead>
@@ -162,7 +188,7 @@
 
         <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
           <div>
-            <div style="font-size:11px; color:var(--muted);">Jabatan fungsional / pelaksana</div>
+            <div style="font-size:11px; color:var(--muted);">Kelompok jabatan</div>
             <div id="sheet-dir-jabatan" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
           </div>
           <div class="form-grid-2">
@@ -171,8 +197,8 @@
               <div id="sheet-dir-kategori" class="mono" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
             </div>
             <div>
-              <div style="font-size:11px; color:var(--muted);">Nomor buku pelaut</div>
-              <div id="sheet-dir-buku" class="mono" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+              <div style="font-size:11px; color:var(--muted);">Sertifikat dasar BST</div>
+              <div id="sheet-dir-bst" style="margin-top:2px;">-</div>
             </div>
           </div>
           <div class="form-grid-2">
@@ -181,8 +207,28 @@
               <div id="sheet-dir-kapal" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
             </div>
             <div>
+              <div style="font-size:11px; color:var(--muted);">Durasi di kapal saat ini</div>
+              <div id="sheet-dir-durasi" class="mono" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div>
+              <div style="font-size:11px; color:var(--muted);">Status penempatan</div>
+              <div id="sheet-dir-penempatan" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+            </div>
+            <div>
               <div style="font-size:11px; color:var(--muted);">Pangkalan / stasiun</div>
               <div id="sheet-dir-pangkalan" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div>
+              <div style="font-size:11px; color:var(--muted);">Ukuran baju &amp; sepatu</div>
+              <div id="sheet-dir-logistik" class="mono" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--muted);">SK Penempatan / Surat Tugas</div>
+              <div id="sheet-dir-sk" style="font-weight:500; color:var(--text); margin-top:2px;">-</div>
             </div>
           </div>
         </div>
@@ -226,23 +272,30 @@
       <div class="modal-body">
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label" for="awak-input-nama">Nama lengkap (beserta gelar)</label>
-            <input type="text" id="awak-input-nama" class="form-control-md" required placeholder="Contoh: Rijal Arif Fadhli, S.St.Pi">
+            <label class="form-label" for="awak-input-nama">Nama lengkap (HURUF BESAR, tanpa gelar &amp; simbol)</label>
+            <input type="text" id="awak-input-nama" class="form-control-md" required placeholder="Contoh: RIJAL ARIF FADHLI" oninput="DirektoriView.sanitizeNamaInput(this)">
+            <div class="form-hint">Hanya huruf besar A-Z dan spasi; tanpa gelar, petik, titik, koma, atau angka.</div>
           </div>
           <div class="form-group">
-            <label class="form-label" for="awak-input-nip">NIP (18 digit angka)</label>
-            <input type="text" id="awak-input-nip" class="form-control-md mono" maxlength="18" placeholder="19xxxxxxxxxxxxxxxx">
+            <label class="form-label" for="awak-input-kategori">Kategori status kepegawaian</label>
+            <select id="awak-input-kategori" class="form-control-md" required onchange="DirektoriView.syncKategoriRules()">
+              <option value="PNS">PNS</option>
+              <option value="P3K">P3K (PPPK)</option>
+              <option value="P3K_PARUH_WAKTU">P3K Paruh Waktu</option>
+              <option value="PJLP">PJLP (Kontrak non-ASN)</option>
+            </select>
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label" for="awak-input-jabatan-lengkap">Jabatan lengkap</label>
-            <input type="text" id="awak-input-jabatan-lengkap" class="form-control-md" required placeholder="Contoh: Juru Mudi Kapal Kelas I">
+            <label class="form-label" for="awak-input-nip" id="awak-nip-label">NIP (Wajib 18 digit angka)</label>
+            <input type="text" id="awak-input-nip" class="form-control-md mono" maxlength="18" placeholder="19xxxxxxxxxxxxxxxx" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <div class="form-hint" id="awak-nip-hint">Wajib 18 digit untuk PNS, P3K, dan P3K Paruh Waktu. Nonaktif untuk PJLP.</div>
           </div>
           <div class="form-group">
-            <label class="form-label" for="awak-input-kelompok">Kelompok jabatan</label>
-            <select id="awak-input-kelompok" class="form-control-md" required>
+            <label class="form-label" for="awak-input-kelompok">Kelompok jabatan awak</label>
+            <select id="awak-input-kelompok" class="form-control-md" required onchange="DirektoriView.autoMatchRumpun()">
               <option value="Nahkoda">Nahkoda</option>
               <option value="Mualim">Mualim</option>
               <option value="Kepala Kamar Mesin Kapal">KKM (Kepala Kamar Mesin)</option>
@@ -251,8 +304,10 @@
               <option value="Serang">Serang</option>
               <option value="Juru Mudi">Juru Mudi</option>
               <option value="Kelasi Kapal">Kelasi</option>
-              <option value="Juru Minyak">Juru Minyak</option>
+              <option value="Juru Minyak">Juru Minyak (Oiler)</option>
+              <option value="Juru Masak">Juru Masak (Koki)</option>
             </select>
+            <div class="form-hint">Nomenklatur Jabatan Lengkap akan diverifikasi/dilengkapi Subbag TU di SIKAP.</div>
           </div>
         </div>
 
@@ -262,6 +317,7 @@
             <select id="awak-input-rumpun" class="form-control-md" required>
               <option value="DEK">Rumpun Dek</option>
               <option value="MESIN">Rumpun Mesin</option>
+              <option value="PENUNJANG">Penunjang (Juru Masak / Koki)</option>
             </select>
           </div>
           <div class="form-group">
@@ -276,28 +332,82 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label" for="awak-input-kategori">Kategori status</label>
-            <select id="awak-input-kategori" class="form-control-md" required>
-              <option value="PNS">PNS</option>
-              <option value="PPPK_FUNGSIONAL">PPPK Fungsional</option>
-              <option value="PPPK_PELAKSANA">PPPK Pelaksana</option>
-              <option value="PPPK_PARUH_WAKTU">PPPK Paruh Waktu</option>
-              <option value="PJLP">PJLP / Kontrak</option>
+            <label class="form-label" for="awak-input-status-aktif">Status dinas</label>
+            <select id="awak-input-status-aktif" class="form-control-md">
+              <option value="AKTIF">Aktif</option>
+              <option value="CUTI">Cuti</option>
+              <option value="TUGAS_BELAJAR">Tugas Belajar</option>
+              <option value="MUTASI_KELUAR">Mutasi Keluar</option>
+              <option value="NONAKTIF">Nonaktif / Purna Tugas</option>
             </select>
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label" for="awak-input-buku">Nomor buku pelaut (seaman book)</label>
-            <input type="text" id="awak-input-buku" class="form-control-md mono" placeholder="Contoh: B.123456">
+            <label class="form-label" for="awak-input-status-penempatan">Status penempatan</label>
+            <select id="awak-input-status-penempatan" class="form-control-md">
+              <option value="PUSAT_POA">Organik Dit. POA Pusat</option>
+              <option value="DIPERBANTUKAN_UPT">AKP Pusat Diperbantukan di UPT</option>
+            </select>
           </div>
           <div class="form-group">
-            <label class="form-label" for="awak-input-status-aktif">Status dinas</label>
-            <select id="awak-input-status-aktif" class="form-control-md">
-              <option value="AKTIF">Aktif</option>
-              <option value="NONAKTIF">Nonaktif / Purna Tugas</option>
+            <label class="form-label" for="awak-input-pangkalan">Pangkalan / Unit Penempatan (opsional)</label>
+            <input type="text" id="awak-input-pangkalan" class="form-control-md" placeholder="Contoh: Dit. POA Pusat / Pangkalan PSDKP Batam">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="awak-input-tgl-mulai">Tanggal mulai tugas (pilih kalender, opsional)</label>
+            <input type="date" id="awak-input-tgl-mulai" class="form-control-md mono" onkeydown="return false">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awak-input-tgl-selesai">Tanggal selesai kontrak (pilih kalender, opsional)</label>
+            <input type="date" id="awak-input-tgl-selesai" class="form-control-md mono" onkeydown="return false">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="awak-input-ukuran-baju">Ukuran baju dinas (opsional)</label>
+            <select id="awak-input-ukuran-baju" class="form-control-md">
+              <option value="">-- Belum diisi --</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+              <option value="XXL">XXL</option>
+              <option value="XXXL">XXXL</option>
             </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awak-input-ukuran-sepatu">Ukuran sepatu dinas (opsional)</label>
+            <select id="awak-input-ukuran-sepatu" class="form-control-md">
+              <option value="">-- Belum diisi --</option>
+              <option value="37">37</option>
+              <option value="38">38</option>
+              <option value="39">39</option>
+              <option value="40">40</option>
+              <option value="41">41</option>
+              <option value="42">42</option>
+              <option value="43">43</option>
+              <option value="44">44</option>
+              <option value="45">45</option>
+              <option value="46">46</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="awak-input-no-sk">Nomor SK Penempatan / Surat Tugas (opsional)</label>
+            <input type="text" id="awak-input-no-sk" class="form-control-md mono" placeholder="Diisi bila ada, contoh: ST-412/PSDKP/2026">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="awak-input-file-sk">Unggah SK Penempatan / Surat Tugas (opsional — jika ada)</label>
+            <input type="file" id="awak-input-file-sk" class="form-control-md" accept=".pdf,image/png,image/jpeg">
+            <div class="form-hint" id="awak-file-sk-status">Format PDF, JPG, atau PNG maks 15 MB.</div>
           </div>
         </div>
       </div>
@@ -325,10 +435,9 @@
           <label class="form-label" for="batch-input-kategori">Kategori tujuan</label>
           <select id="batch-input-kategori" class="form-control-md" required>
             <option value="PNS">PNS (Pegawai Negeri Sipil)</option>
-            <option value="PPPK_FUNGSIONAL">PPPK Tenaga Fungsional</option>
-            <option value="PPPK_PELAKSANA">PPPK Tenaga Pelaksana</option>
-            <option value="PPPK_PARUH_WAKTU">PPPK Paruh Waktu</option>
-            <option value="PJLP">PJLP / Tenaga Kontrak</option>
+            <option value="P3K">P3K (PPPK)</option>
+            <option value="P3K_PARUH_WAKTU">P3K Paruh Waktu</option>
+            <option value="PJLP">PJLP / Tenaga Kontrak Non-ASN</option>
           </select>
         </div>
       </div>

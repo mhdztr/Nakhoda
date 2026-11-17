@@ -113,7 +113,8 @@
             <th class="text-center" style="width:48px;" title="Serang">SRG</th>
             <th class="text-center" style="width:48px;" title="Juru Mudi">JMD</th>
             <th class="text-center" style="width:48px;" title="Kelasi">KLS</th>
-            <th class="text-center" style="width:48px;" title="Juru Minyak">JMY</th>
+            <th class="text-center" style="width:48px;" title="Juru Minyak (Oiler)">JMY</th>
+            <th class="text-center" style="width:48px;" title="Juru Masak (Koki)">JMK</th>
             <th class="text-right" style="width:80px;">Terisi / Min</th>
             <th class="text-right" style="width:70px;">Defisit</th>
             <th class="text-center" style="width:110px;">Status</th>
@@ -121,7 +122,7 @@
         </thead>
         <tbody id="sijil-2d-matrix-tbody">
           <tr>
-            <td colspan="14" style="text-align:center; padding:32px 0; color:var(--muted);">Loading matriks 2D papan sijil armada...</td>
+            <td colspan="15" style="text-align:center; padding:32px 0; color:var(--muted);">Loading matriks 2D papan sijil armada...</td>
           </tr>
         </tbody>
       </table>
@@ -257,13 +258,14 @@
               <option value="MARKONIS">Markonis</option>
               <option value="SERANG">Serang</option>
               <option value="JURU_MUDI">Juru Mudi</option>
-              <option value="JURU_MINYAK">Juru Minyak</option>
+              <option value="JURU_MINYAK">Juru Minyak (Oiler)</option>
+              <option value="JURU_MASAK">Juru Masak (Koki)</option>
               <option value="KELASI">Kelasi</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label" for="assign-input-tgl-naik">Tanggal naik kapal</label>
-            <input type="date" id="assign-input-tgl-naik" class="form-control-md mono" required>
+            <label class="form-label" for="assign-input-tgl-naik">Tanggal naik kapal (pilih kalender)</label>
+            <input type="date" id="assign-input-tgl-naik" class="form-control-md mono" onkeydown="return false" required>
           </div>
         </div>
 

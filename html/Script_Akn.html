@@ -10,33 +10,107 @@ var AknView = (function () {
   var _currentPeriode = '';
   var _data = null;
   var _eventsBound = false;
-  var KATEGORIS = ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'];
+  var KATEGORIS = ['PNS', 'P3K', 'P3K_PARUH_WAKTU', 'PJLP'];
   var KATEGORI_LABELS = {
     'PNS': 'Pegawai negeri sipil (PNS)',
-    'PPPK_FUNGSIONAL': 'PPPK tenaga fungsional',
-    'PPPK_PELAKSANA': 'PPPK tenaga pelaksana',
-    'PPPK_PARUH_WAKTU': 'PPPK paruh waktu',
+    'P3K': 'PPPK (P3K)',
+    'P3K_PARUH_WAKTU': 'PPPK paruh waktu',
     'PJLP': 'PJLP / pegawai non-ASN'
   };
 
   function init() {
     _bindEvents();
+    _syncFilterVisibility();
     load();
+  }
+
+  function _syncFilterVisibility() {
+    var modeSel = document.getElementById('akn-filter-mode');
+    var tahunSel = document.getElementById('akn-filter-tahun');
+    var dateSingle = document.getElementById('akn-date-single');
+    var rangeWrap = document.getElementById('akn-date-range-wrap');
+    if (!modeSel) return;
+
+    var m = modeSel.value || 'WEEK';
+    var isWeek = m === 'WEEK';
+    var isCustom = m === 'CUSTOM';
+    var isPreset = !isWeek && !isCustom;
+
+    if (dateSingle) {
+      dateSingle.classList.toggle('hidden', !isWeek);
+      if (isWeek && !dateSingle.value) {
+        dateSingle.value = new Date().toISOString().substring(0, 10);
+      }
+    }
+    if (rangeWrap) {
+      rangeWrap.classList.toggle('hidden', !isCustom);
+      rangeWrap.style.display = isCustom ? 'flex' : 'none';
+    }
+    if (tahunSel) {
+      tahunSel.classList.toggle('hidden', !isPreset);
+    }
+  }
+
+  function _buildFilterPayload() {
+    var modeSel = document.getElementById('akn-filter-mode');
+    var tahunSel = document.getElementById('akn-filter-tahun');
+    var dateSingle = document.getElementById('akn-date-single');
+    var dateStart = document.getElementById('akn-date-start');
+    var dateEnd = document.getElementById('akn-date-end');
+
+    var mode = (modeSel && modeSel.value) || 'WEEK';
+    var payload = {
+      mode: mode,
+      tahun: tahunSel ? parseInt(tahunSel.value, 10) : new Date().getFullYear()
+    };
+    if (mode === 'WEEK') {
+      payload.date = (dateSingle && dateSingle.value) || new Date().toISOString().substring(0, 10);
+    } else if (mode === 'CUSTOM') {
+      payload.startDate = (dateStart && dateStart.value) || '';
+      payload.endDate = (dateEnd && dateEnd.value) || '';
+    }
+    return payload;
   }
 
   function _bindEvents() {
     if (_eventsBound) return;
     _eventsBound = true;
 
-    var periodInput = document.getElementById('akn-periode-select');
+    var modeSel = document.getElementById('akn-filter-mode');
+    var tahunSel = document.getElementById('akn-filter-tahun');
+    var dateSingle = document.getElementById('akn-date-single');
+    var dateStart = document.getElementById('akn-date-start');
+    var dateEnd = document.getElementById('akn-date-end');
     var btnRefresh = document.getElementById('btn-akn-refresh');
     var btnRecalculate = document.getElementById('btn-akn-recalculate');
     var btnNoChange = document.getElementById('btn-akn-confirm-nochange');
 
+    if (modeSel) {
+      modeSel.onchange = function () {
+        _syncFilterVisibility();
+        load(_buildFilterPayload());
+      };
+    }
+    if (tahunSel) {
+      tahunSel.onchange = function () { load(_buildFilterPayload()); };
+    }
+    if (dateSingle) {
+      dateSingle.onchange = function () { load(_buildFilterPayload()); };
+    }
+    if (dateStart) {
+      dateStart.onchange = function () {
+        if (dateEnd && dateEnd.value) load(_buildFilterPayload());
+      };
+    }
+    if (dateEnd) {
+      dateEnd.onchange = function () {
+        load(_buildFilterPayload());
+      };
+    }
+
     if (btnRefresh) {
       btnRefresh.onclick = function () {
-        var p = (periodInput && periodInput.value || '').trim();
-        load(p);
+        load(_buildFilterPayload());
       };
     }
 
@@ -69,18 +143,22 @@ var AknView = (function () {
     }
   }
 
-  function load(periode) {
+  function load(filterOrPeriode) {
     var token = AuthApp.getToken();
     if (!token) return;
 
-    var targetP = (periode || _currentPeriode || '').trim();
+    var req = (filterOrPeriode && typeof filterOrPeriode === 'object')
+      ? filterOrPeriode
+      : (filterOrPeriode ? String(filterOrPeriode).trim() : _buildFilterPayload());
 
-    rpc('akn_getPapan', token, targetP)
+    rpc('akn_getPapan', token, req)
       .then(function (res) {
         _data = res;
         _currentPeriode = res.periode;
-        var periodInput = document.getElementById('akn-periode-select');
-        if (periodInput) periodInput.value = res.periode;
+        var pillEl = document.getElementById('akn-resolved-periode-pill');
+        if (pillEl) {
+          pillEl.textContent = (res.periodeWindow && res.periodeWindow.label) ? res.periodeWindow.label : res.periode;
+        }
         _renderPapan(res);
         _loadTren();
       })
@@ -214,8 +292,39 @@ var AknView = (function () {
     }
     if (tfootDelta) tfootDelta.innerHTML = Format.deltaText(deltaTotal);
 
-    // 4. Render Riwayat Audit
+    // 4. Render Rekap Kekuatan per Jabatan Awak
+    _renderRekapJabatan(data.rekapJabatan || []);
+
+    // 5. Render Riwayat Audit
     _renderRiwayat(data.riwayat || [], data.userRole);
+  }
+
+  function _renderRekapJabatan(list) {
+    var tbody = document.getElementById('akn-rekap-jabatan-tbody');
+    if (!tbody) return;
+    if (!Array.isArray(list) || list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Belum ada data postur per jabatan.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(function (row) {
+      var diff = row.selisih || 0;
+      var diffHtml = diff < 0
+        ? '<span class="delta-down mono">' + diff + '</span>'
+        : (diff > 0 ? '<span class="delta-up mono">+' + diff + '</span>' : '<span class="mono" style="color:var(--muted);">0</span>');
+      var badge = row.idealArmada === 0
+        ? '<span class="pill pill-neutral"><span class="pill-dot"></span>Penunjang</span>'
+        : (diff >= 0
+          ? '<span class="pill pill-positive"><span class="pill-dot"></span>Terpenuhi</span>'
+          : '<span class="pill pill-negative"><span class="pill-dot"></span>Kurang ' + Math.abs(diff) + '</span>');
+      return '<tr>' +
+        '<td><div class="cell-primary">' + Format.escape(row.kelompokJabatan) + '</div></td>' +
+        '<td class="text-right mono tnum" style="color:var(--accent);">' + Format.number(row.poaPusat || 0) + '</td>' +
+        '<td class="text-right mono tnum" style="font-weight:600;">' + Format.number(row.eksisting || 0) + '</td>' +
+        '<td class="text-right mono tnum">' + (row.idealArmada > 0 ? Format.number(row.idealArmada) : '-') + '</td>' +
+        '<td class="text-right">' + diffHtml + '</td>' +
+        '<td class="text-center">' + badge + '</td>' +
+      '</tr>';
+    }).join('');
   }
 
   function _recalculateAkn() {

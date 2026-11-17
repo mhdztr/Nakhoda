@@ -13,19 +13,39 @@ var DirektoriView = (function () {
   var _selectedIds = {};
   var _perluDilengkapiOnly = false;
   var _currentDetailAwak = null;
+  var _skFileData = null;
   var _eventsBound = false;
 
   function init() {
     _bindEvents();
+    _syncPeriodeRangeVisibility();
     load(0);
+  }
+
+  function _syncPeriodeRangeVisibility() {
+    var modeEl = document.getElementById('dir-filter-periode-mode');
+    var tahunEl = document.getElementById('dir-filter-tahun');
+    var rangeWrap = document.getElementById('dir-filter-range-wrap');
+    if (!modeEl) return;
+    var m = modeEl.value || 'ALL';
+    if (tahunEl) tahunEl.classList.toggle('hidden', m === 'ALL' || m === 'CUSTOM');
+    if (rangeWrap) {
+      rangeWrap.classList.toggle('hidden', m !== 'CUSTOM');
+      rangeWrap.style.display = m === 'CUSTOM' ? 'flex' : 'none';
+    }
   }
 
   function _bindEvents() {
     if (_eventsBound) return;
     _eventsBound = true;
 
+    var filterPeriodeMode = document.getElementById('dir-filter-periode-mode');
+    var filterTahun = document.getElementById('dir-filter-tahun');
+    var filterDateStart = document.getElementById('dir-filter-date-start');
+    var filterDateEnd = document.getElementById('dir-filter-date-end');
     var filterRumpun = document.getElementById('dir-filter-rumpun');
     var filterKelas = document.getElementById('dir-filter-kelas');
+    var filterPenempatan = document.getElementById('dir-filter-penempatan');
     var filterStatus = document.getElementById('dir-filter-status');
     var searchInput = document.getElementById('dir-search-input');
     var btnSearch = document.getElementById('btn-dir-search');
@@ -42,6 +62,7 @@ var DirektoriView = (function () {
     var formBatch = document.getElementById('form-dir-batch');
     var btnSheetEdit = document.getElementById('btn-sheet-edit-awak');
     var btnSyncSikap = document.getElementById('btn-sync-sikap');
+    var fileSkInp = document.getElementById('awak-input-file-sk');
 
     if (btnSyncSikap) {
       btnSyncSikap.onclick = function () {
@@ -49,9 +70,51 @@ var DirektoriView = (function () {
       };
     }
 
+    if (filterPeriodeMode) {
+      filterPeriodeMode.onchange = function () {
+        _syncPeriodeRangeVisibility();
+        load(0);
+      };
+    }
+    if (filterTahun) filterTahun.onchange = function () { load(0); };
+    if (filterDateStart) {
+      filterDateStart.onchange = function () {
+        if (filterDateEnd && filterDateEnd.value) load(0);
+      };
+    }
+    if (filterDateEnd) filterDateEnd.onchange = function () { load(0); };
     if (filterRumpun) filterRumpun.onchange = function () { load(0); };
     if (filterKelas) filterKelas.onchange = function () { load(0); };
+    if (filterPenempatan) filterPenempatan.onchange = function () { load(0); };
     if (filterStatus) filterStatus.onchange = function () { load(0); };
+
+    if (fileSkInp) {
+      fileSkInp.onchange = function () {
+        var f = fileSkInp.files && fileSkInp.files[0];
+        var stEl = document.getElementById('awak-file-sk-status');
+        if (!f) {
+          _skFileData = null;
+          if (stEl) stEl.textContent = 'Format PDF, JPG, atau PNG maks 15 MB.';
+          return;
+        }
+        if (f.size > 15 * 1024 * 1024) {
+          Toast.error('Ukuran berkas SK maksimal 15 MB.');
+          fileSkInp.value = '';
+          _skFileData = null;
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          _skFileData = {
+            fileName: f.name,
+            mimeType: f.type || 'application/pdf',
+            dataBase64: String(ev.target.result || '').split(',')[1] || ''
+          };
+          if (stEl) stEl.textContent = 'Siap unggah: ' + f.name + ' (' + (f.size / 1024).toFixed(0) + ' KB)';
+        };
+        reader.readAsDataURL(f);
+      };
+    }
     if (btnSearch) btnSearch.onclick = function () { load(0); };
     if (btnFilterNonaktif) {
       btnFilterNonaktif.onclick = function () {
@@ -162,15 +225,25 @@ var DirektoriView = (function () {
     if (!token) return;
 
     _offset = offset || 0;
+    var periodeMode = (document.getElementById('dir-filter-periode-mode') || {}).value || 'ALL';
+    var tahun = (document.getElementById('dir-filter-tahun') || {}).value || new Date().getFullYear();
+    var startDate = (document.getElementById('dir-filter-date-start') || {}).value || '';
+    var endDate = (document.getElementById('dir-filter-date-end') || {}).value || '';
     var rumpun = (document.getElementById('dir-filter-rumpun') || {}).value || '';
     var kelas = (document.getElementById('dir-filter-kelas') || {}).value || '';
+    var statusPenempatan = (document.getElementById('dir-filter-penempatan') || {}).value || '';
     var statusAktif = (document.getElementById('dir-filter-status') || {}).value || '';
     var search = (document.getElementById('dir-search-input') || {}).value || '';
 
     rpc('dir_list', {
       token: token,
+      periodeMode: periodeMode,
+      tahun: tahun,
+      startDate: startDate,
+      endDate: endDate,
       rumpun: rumpun,
       kelasKapal: kelas,
+      statusPenempatan: statusPenempatan,
       statusAktif: statusAktif,
       search: search,
       perluDilengkapi: _perluDilengkapiOnly,
@@ -199,7 +272,7 @@ var DirektoriView = (function () {
         if (findingEl) {
           findingEl.textContent = 'Menampilkan ' + Format.number(_total) + ' personil awak kapal (' +
             Format.number(res.stats.dek) + ' Dek, ' + Format.number(res.stats.mesin) + ' Mesin). ' +
-            (res.stats.perluDilengkapi > 0 ? (res.stats.perluDilengkapi + ' profil dalam antrean kelengkapan nomor buku pelaut / kategori.') : 'Seluruh profil terisi lengkap.');
+            (res.stats.perluDilengkapi > 0 ? (res.stats.perluDilengkapi + ' profil memerlukan sertifikat BST aktif atau verifikasi NIP non-PJLP.') : 'Seluruh profil dan BST terisi lengkap.');
         }
 
         // 2. Render Tabel Data
@@ -283,6 +356,14 @@ var DirektoriView = (function () {
       var inis = Format.initials(a.nama);
       var isNonAktif = String(a.statusAktif || 'AKTIF').toUpperCase() !== 'AKTIF';
       var statusNote = isNonAktif ? ' <span class="pill pill-neutral" style="margin-left:6px;">Nonaktif SIKAP</span>' : '';
+      var isUpt = a.statusPenempatan === 'DIPERBANTUKAN_UPT';
+      var kapalText = (a.namaKapal && a.namaKapal !== '-') ? a.namaKapal : (isUpt ? a.pangkalanId : 'Dit. POA Pusat');
+      var durasiSub = (a.durasiKapalTeks && a.durasiKapalTeks !== '-') ? ('Durasi: ' + a.durasiKapalTeks) : (isUpt ? 'Diperbantukan UPT' : 'Pusat POA');
+      var uptTag = isUpt ? ' <span class="badge badge-neutral" style="font-size:10px; margin-left:4px;">UPT</span>' : '';
+      var bstPill = Format.statusBadge(a.bstStatus || 'BELUM_ADA');
+      var sizeTag = (a.ukuranBaju || a.ukuranSepatu)
+        ? ('<div class="cell-sub mono" style="font-size:10px;">Baju: ' + Format.escape(a.ukuranBaju || '-') + ' · Sepatu: ' + Format.escape(a.ukuranSepatu || '-') + '</div>')
+        : '';
 
       html +=
         '<tr class="clickable" data-id="' + a.pegawaiId + '" style="' + (isNonAktif ? 'opacity:0.75;' : '') + '">' +
@@ -294,18 +375,24 @@ var DirektoriView = (function () {
               '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
               '<div>' +
                 '<div class="cell-primary">' + Format.escape(a.nama) + statusNote + '</div>' +
-                '<div class="cell-sub mono">NIP: ' + Format.escape(a.nipDisplay) + '</div>' +
+                '<div class="cell-sub mono">NIP: ' + Format.escape(a.nipDisplay || '-') + '</div>' +
               '</div>' +
             '</div>' +
           '</td>' +
           '<td>' +
-            '<div class="cell-primary">' + Format.escape(a.jabatanLengkap || a.kelompokJabatan) + '</div>' +
-            '<div class="cell-sub">' + Format.escape(a.kelompokJabatan) + '</div>' +
+            '<div class="cell-primary">' + Format.escape(a.kelompokJabatan || '-') + '</div>' +
+            '<div class="cell-sub">' + Format.escape(klsLabel) + '</div>' +
           '</td>' +
-          '<td><span class="badge badge-neutral">' + Format.escape(klsLabel) + '</span></td>' +
           '<td>' + Format.kelompokBadge(a.rumpun) + '</td>' +
-          '<td class="mono">' + (a.kategoriKepegawaian === '-' ? '<span style="color:var(--warning);">Belum diset</span>' : Format.escape(a.kategoriKepegawaian)) + '</td>' +
-          '<td class="mono">' + (a.nomorBukuPelaut === '-' ? '<span style="color:var(--warning);">-</span>' : Format.escape(a.nomorBukuPelaut)) + '</td>' +
+          '<td>' +
+            '<div class="mono">' + Format.escape(a.kategoriKepegawaian || 'PNS') + '</div>' +
+            sizeTag +
+          '</td>' +
+          '<td>' +
+            '<div class="cell-primary" style="font-size:12px;">' + Format.escape(kapalText) + uptTag + '</div>' +
+            '<div class="cell-sub mono">' + Format.escape(durasiSub) + '</div>' +
+          '</td>' +
+          '<td>' + bstPill + '</td>' +
           '<td class="text-center" onclick="event.stopPropagation();">' +
             '<button type="button" class="btn btn-secondary-sm btn-row-detail" data-id="' + a.pegawaiId + '">Buka</button>' +
           '</td>' +
@@ -390,9 +477,13 @@ var DirektoriView = (function () {
     var badgeStatus = document.getElementById('sheet-dir-badge-status');
     var jabEl = document.getElementById('sheet-dir-jabatan');
     var katEl = document.getElementById('sheet-dir-kategori');
-    var bukuEl = document.getElementById('sheet-dir-buku');
+    var bstEl = document.getElementById('sheet-dir-bst');
     var kapalEl = document.getElementById('sheet-dir-kapal');
+    var durasiEl = document.getElementById('sheet-dir-durasi');
+    var penempatanEl = document.getElementById('sheet-dir-penempatan');
     var pangkalanEl = document.getElementById('sheet-dir-pangkalan');
+    var logistikEl = document.getElementById('sheet-dir-logistik');
+    var skEl = document.getElementById('sheet-dir-sk');
 
     if (nameEl) nameEl.textContent = d.nama || '-';
     if (nipEl) nipEl.textContent = 'NIP: ' + (d.nipDisplay || '-');
@@ -407,11 +498,27 @@ var DirektoriView = (function () {
       badgeStatus.textContent = d.statusAktif || 'Aktif';
       badgeStatus.className = d.statusAktif === 'NONAKTIF' ? 'pill pill-negative' : 'pill pill-positive';
     }
-    if (jabEl) jabEl.textContent = d.jabatanLengkap || d.kelompokJabatan || '-';
+    if (jabEl) jabEl.textContent = d.kelompokJabatan || '-';
     if (katEl) katEl.textContent = d.kategoriKepegawaian || 'Belum ditentukan';
-    if (bukuEl) bukuEl.textContent = d.nomorBukuPelaut || 'Belum diisi';
-    if (kapalEl) kapalEl.textContent = d.kapalId || 'Belum ada penempatan';
+    if (bstEl) bstEl.innerHTML = Format.statusBadge(d.bstStatus || 'BELUM_ADA');
+    if (kapalEl) kapalEl.textContent = d.namaKapal || d.kapalId || 'Belum ada penempatan';
+    if (durasiEl) durasiEl.textContent = d.durasiKapalTeks || '-';
+    if (penempatanEl) {
+      penempatanEl.textContent = d.statusPenempatan === 'DIPERBANTUKAN_UPT'
+        ? 'AKP Pusat Diperbantukan di UPT'
+        : 'Organik Dit. POA Pusat';
+    }
     if (pangkalanEl) pangkalanEl.textContent = d.pangkalanId || 'Pusat (Dit. POA)';
+    if (logistikEl) {
+      logistikEl.textContent = 'Baju: ' + (d.ukuranBaju || '-') + ' · Sepatu: ' + (d.ukuranSepatu || '-');
+    }
+    if (skEl) {
+      if (d.dokumenPenempatanUrl) {
+        skEl.innerHTML = '<a href="' + Format.escape(d.dokumenPenempatanUrl) + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">' + Format.escape(d.nomorSkPenempatan || 'Lihat SK / Surat Tugas') + '</a>';
+      } else {
+        skEl.textContent = d.nomorSkPenempatan || 'Belum diunggah (opsional)';
+      }
+    }
 
     // Render daftar sertifikat di Tab 2
     var certListEl = document.getElementById('sheet-dir-sertifikat-list');
@@ -475,62 +582,145 @@ var DirektoriView = (function () {
     }
   }
 
+  function sanitizeNamaInput(inp) {
+    if (!inp) return;
+    var clean = String(inp.value || '').toUpperCase().replace(/['’`´]/g, '').replace(/[^A-Z\s]/g, '').replace(/\s{2,}/g, ' ');
+    if (inp.value !== clean) inp.value = clean;
+  }
+
+  function syncKategoriRules() {
+    var katEl = document.getElementById('awak-input-kategori');
+    var nipEl = document.getElementById('awak-input-nip');
+    var nipLbl = document.getElementById('awak-nip-label');
+    var nipHint = document.getElementById('awak-nip-hint');
+    if (!katEl || !nipEl) return;
+
+    var isPjlp = katEl.value === 'PJLP';
+    if (isPjlp) {
+      nipEl.value = '';
+      nipEl.disabled = true;
+      nipEl.required = false;
+      nipEl.placeholder = 'Tidak wajib (PJLP tidak memiliki NIP)';
+      if (nipLbl) nipLbl.textContent = 'NIP (Tidak wajib untuk PJLP)';
+      if (nipHint) nipHint.textContent = 'Personel PJLP tidak memiliki NIP — input dinonaktifkan.';
+    } else {
+      nipEl.disabled = false;
+      nipEl.required = true;
+      nipEl.placeholder = '19xxxxxxxxxxxxxxxx';
+      if (nipLbl) nipLbl.textContent = 'NIP (Wajib 18 digit angka)';
+      if (nipHint) nipHint.textContent = 'Wajib tepat 18 digit angka untuk kategori PNS, P3K, dan P3K Paruh Waktu.';
+    }
+  }
+
+  function autoMatchRumpun() {
+    var kelEl = document.getElementById('awak-input-kelompok');
+    var rmpEl = document.getElementById('awak-input-rumpun');
+    if (!kelEl || !rmpEl) return;
+    var val = String(kelEl.value || '').toUpperCase();
+    if (/MASAK|KOKI/.test(val)) rmpEl.value = 'PENUNJANG';
+    else if (/MESIN|KKM|MASINIS|MINYAK|OILER/.test(val)) rmpEl.value = 'MESIN';
+    else rmpEl.value = 'DEK';
+  }
+
   function _openFormModal(awakObj) {
+    _skFileData = null;
     var titleEl = document.getElementById('modal-awak-title');
     var idInp = document.getElementById('awak-input-id');
     var namaInp = document.getElementById('awak-input-nama');
     var nipInp = document.getElementById('awak-input-nip');
-    var jabInp = document.getElementById('awak-input-jabatan-lengkap');
     var kelInp = document.getElementById('awak-input-kelompok');
     var rmpInp = document.getElementById('awak-input-rumpun');
     var klsInp = document.getElementById('awak-input-kelas');
     var katInp = document.getElementById('awak-input-kategori');
-    var bukuInp = document.getElementById('awak-input-buku');
     var statusInp = document.getElementById('awak-input-status-aktif');
+    var penempatanInp = document.getElementById('awak-input-status-penempatan');
+    var pangkalanInp = document.getElementById('awak-input-pangkalan');
+    var tglMulaiInp = document.getElementById('awak-input-tgl-mulai');
+    var tglSelesaiInp = document.getElementById('awak-input-tgl-selesai');
+    var bajuInp = document.getElementById('awak-input-ukuran-baju');
+    var sepatuInp = document.getElementById('awak-input-ukuran-sepatu');
+    var noSkInp = document.getElementById('awak-input-no-sk');
+    var fileSkInp = document.getElementById('awak-input-file-sk');
+    var fileSkSt = document.getElementById('awak-file-sk-status');
+
+    if (fileSkInp) fileSkInp.value = '';
+    if (fileSkSt) fileSkSt.textContent = 'Format PDF, JPG, atau PNG maks 15 MB.';
 
     if (awakObj) {
       if (titleEl) titleEl.textContent = 'Edit profil awak kapal';
       if (idInp) idInp.value = awakObj.pegawaiId || '';
       if (namaInp) namaInp.value = awakObj.nama || '';
-      if (nipInp) nipInp.value = awakObj.nipRaw || awakObj.nipDisplay || '';
-      if (jabInp) jabInp.value = awakObj.jabatanLengkap || '';
+      if (nipInp) nipInp.value = (awakObj.nipRaw && awakObj.nipRaw !== '-') ? awakObj.nipRaw : '';
       if (kelInp) kelInp.value = awakObj.kelompokJabatan || 'Juru Mudi';
       if (rmpInp) rmpInp.value = awakObj.rumpun || 'DEK';
       if (klsInp) klsInp.value = awakObj.kelasKapal || 'KELAS_II';
       if (katInp) katInp.value = awakObj.kategoriKepegawaian || 'PNS';
-      if (bukuInp) bukuInp.value = awakObj.nomorBukuPelaut || '';
       if (statusInp) statusInp.value = awakObj.statusAktif || 'AKTIF';
+      if (penempatanInp) penempatanInp.value = awakObj.statusPenempatan || 'PUSAT_POA';
+      if (pangkalanInp) pangkalanInp.value = awakObj.pangkalanId || '';
+      if (tglMulaiInp) tglMulaiInp.value = awakObj.tanggalMulaiKerja || '';
+      if (tglSelesaiInp) tglSelesaiInp.value = awakObj.tanggalSelesaiKontrak || '';
+      if (bajuInp) bajuInp.value = awakObj.ukuranBaju || '';
+      if (sepatuInp) sepatuInp.value = awakObj.ukuranSepatu || '';
+      if (noSkInp) noSkInp.value = awakObj.nomorSkPenempatan || '';
     } else {
       if (titleEl) titleEl.textContent = 'Tambah personil baru';
       if (idInp) idInp.value = '';
       if (namaInp) namaInp.value = '';
       if (nipInp) nipInp.value = '';
-      if (jabInp) jabInp.value = '';
       if (kelInp) kelInp.value = 'Juru Mudi';
       if (rmpInp) rmpInp.value = 'DEK';
       if (klsInp) klsInp.value = 'KELAS_II';
       if (katInp) katInp.value = 'PNS';
-      if (bukuInp) bukuInp.value = '';
       if (statusInp) statusInp.value = 'AKTIF';
+      if (penempatanInp) penempatanInp.value = 'PUSAT_POA';
+      if (pangkalanInp) pangkalanInp.value = '';
+      if (tglMulaiInp) tglMulaiInp.value = '';
+      if (tglSelesaiInp) tglSelesaiInp.value = '';
+      if (bajuInp) bajuInp.value = '';
+      if (sepatuInp) sepatuInp.value = '';
+      if (noSkInp) noSkInp.value = '';
     }
 
+    syncKategoriRules();
     Modal.open('modal-dir-awak');
   }
 
   function _submitFormAwak() {
     var token = AuthApp.getToken();
+    var namaInp = document.getElementById('awak-input-nama');
+    sanitizeNamaInput(namaInp);
+    var namaVal = (namaInp ? namaInp.value : '').trim();
+    var katVal = document.getElementById('awak-input-kategori').value;
+    var nipVal = (document.getElementById('awak-input-nip').value || '').replace(/[^0-9]/g, '');
+
+    if (!namaVal || !/^[A-Z ]+$/.test(namaVal)) {
+      Toast.error('Nama lengkap wajib HURUF BESAR (A-Z) tanpa gelar, simbol, atau angka.');
+      return;
+    }
+    if (katVal !== 'PJLP' && !/^\d{18}$/.test(nipVal)) {
+      Toast.error('NIP wajib diisi 18 digit angka untuk kategori PNS, P3K, dan P3K Paruh Waktu.');
+      return;
+    }
+
     var payload = {
       token: token,
       pegawaiId: document.getElementById('awak-input-id').value.trim(),
-      nama: document.getElementById('awak-input-nama').value.trim(),
-      nip: document.getElementById('awak-input-nip').value.trim(),
-      jabatanLengkap: document.getElementById('awak-input-jabatan-lengkap').value.trim(),
+      nama: namaVal,
+      nip: katVal === 'PJLP' ? '' : nipVal,
       kelompokJabatan: document.getElementById('awak-input-kelompok').value,
       rumpun: document.getElementById('awak-input-rumpun').value,
       kelasKapal: document.getElementById('awak-input-kelas').value,
-      kategoriKepegawaian: document.getElementById('awak-input-kategori').value,
-      nomorBukuPelaut: document.getElementById('awak-input-buku').value.trim(),
-      statusAktif: document.getElementById('awak-input-status-aktif').value
+      kategoriKepegawaian: katVal,
+      statusAktif: document.getElementById('awak-input-status-aktif').value,
+      statusPenempatan: document.getElementById('awak-input-status-penempatan').value,
+      pangkalanId: document.getElementById('awak-input-pangkalan').value.trim(),
+      tanggalMulaiKerja: document.getElementById('awak-input-tgl-mulai').value,
+      tanggalSelesaiKontrak: document.getElementById('awak-input-tgl-selesai').value,
+      ukuranBaju: document.getElementById('awak-input-ukuran-baju').value,
+      ukuranSepatu: document.getElementById('awak-input-ukuran-sepatu').value,
+      nomorSkPenempatan: document.getElementById('awak-input-no-sk').value.trim(),
+      fileData: _skFileData
     };
 
     var btnSubmit = document.getElementById('btn-submit-awak');
@@ -654,6 +844,9 @@ var DirektoriView = (function () {
   return {
     init: init,
     load: load,
+    sanitizeNamaInput: sanitizeNamaInput,
+    syncKategoriRules: syncKategoriRules,
+    autoMatchRumpun: autoMatchRumpun,
     openDetailSheet: openDetailSheet,
     switchSheetTab: switchSheetTab,
     openCatatSertifikatFromSheet: openCatatSertifikatFromSheet

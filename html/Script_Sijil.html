@@ -228,7 +228,8 @@ var SijilView = (function () {
     else if (jLower.indexOf('markonis') !== -1) mapped = 'MARKONIS';
     else if (jLower.indexOf('serang') !== -1) mapped = 'SERANG';
     else if (jLower.indexOf('juru mudi') !== -1) mapped = 'JURU_MUDI';
-    else if (jLower.indexOf('juru minyak') !== -1) mapped = 'JURU_MINYAK';
+    else if (jLower.indexOf('juru minyak') !== -1 || jLower.indexOf('oiler') !== -1) mapped = 'JURU_MINYAK';
+    else if (jLower.indexOf('juru masak') !== -1 || jLower.indexOf('koki') !== -1) mapped = 'JURU_MASAK';
     else if (jLower.indexOf('kelasi') !== -1) mapped = 'KELASI';
 
     if (mapped) selPos.value = mapped;
@@ -494,7 +495,7 @@ var SijilView = (function () {
     if (countInfo) countInfo.textContent = filtered.length + ' kapal cocok';
 
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada kapal pengawas yang cocok dengan kriteria pencarian.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada kapal pengawas yang cocok dengan kriteria pencarian.</td></tr>';
       return;
     }
 
@@ -518,7 +519,7 @@ var SijilView = (function () {
 
       html +=
         '<tr class="sijil-group-row">' +
-          '<td colspan="14">' + Format.escape(grp.label) + ' (' + inGroup.length + ' kapal)</td>' +
+          '<td colspan="15">' + Format.escape(grp.label) + ' (' + inGroup.length + ' kapal)</td>' +
         '</tr>';
 
       inGroup.forEach(function (k) {
@@ -544,6 +545,7 @@ var SijilView = (function () {
             '<td class="text-center">' + _renderDevCell(mCols.juruMudi) + '</td>' +
             '<td class="text-center">' + _renderDevCell(mCols.kelasi) + '</td>' +
             '<td class="text-center">' + _renderDevCell(mCols.juruMinyak) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.juruMasak) + '</td>' +
             '<td class="text-right mono tnum">' + k.jumlahAwakBertugas + ' / ' + k.kebutuhanMinimum + '</td>' +
             '<td class="text-right">' + defisitHtml + '</td>' +
             '<td class="text-center">' + Format.statusBadge(k.statusOperasi) + '</td>' +
@@ -554,7 +556,7 @@ var SijilView = (function () {
     // Baris sisa (jika ada kapal yang belum masuk grup di atas)
     var remaining = filtered.filter(function (k) { return !handledIds[k.kapalId]; });
     if (remaining.length > 0) {
-      html += '<tr class="sijil-group-row"><td colspan="14">Armada Kapal Lainnya (' + remaining.length + ' kapal)</td></tr>';
+      html += '<tr class="sijil-group-row"><td colspan="15">Armada Kapal Lainnya (' + remaining.length + ' kapal)</td></tr>';
       remaining.forEach(function (k) {
         var mCols = k.matrixCols || k.positions || {};
         var defisitHtml = (k.kekuranganKursi > 0)
@@ -577,6 +579,7 @@ var SijilView = (function () {
             '<td class="text-center">' + _renderDevCell(mCols.juruMudi) + '</td>' +
             '<td class="text-center">' + _renderDevCell(mCols.kelasi) + '</td>' +
             '<td class="text-center">' + _renderDevCell(mCols.juruMinyak) + '</td>' +
+            '<td class="text-center">' + _renderDevCell(mCols.juruMasak) + '</td>' +
             '<td class="text-right mono tnum">' + k.jumlahAwakBertugas + ' / ' + k.kebutuhanMinimum + '</td>' +
             '<td class="text-right">' + defisitHtml + '</td>' +
             '<td class="text-center">' + Format.statusBadge(k.statusOperasi) + '</td>' +
@@ -676,7 +679,7 @@ var SijilView = (function () {
                 '<div class="avatar-sm" style="background-color:' + bg + '; border-radius:3px; flex-shrink:0;">' + inis + '</div>' +
                 '<div style="min-width:0; flex:1;">' +
                   '<div class="cell-primary" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + Format.escape(a.nama) + '</div>' +
-                  '<div class="cell-sub"><strong style="color:var(--accent);">' + Format.escape(posLabel) + '</strong> · Naik: ' + Format.date(a.tanggalNaik) + '</div>' +
+                  '<div class="cell-sub"><strong style="color:var(--accent);">' + Format.escape(posLabel) + '</strong> · Naik: ' + Format.date(a.tanggalNaik) + (a.durasiKapalTeks && a.durasiKapalTeks !== '-' ? (' (' + Format.escape(a.durasiKapalTeks) + ')') : '') + '</div>' +
                   ketSub +
                 '</div>' +
               '</div>' +

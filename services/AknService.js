@@ -243,12 +243,15 @@ function akn_getPapan(token, filterOrPeriode) {
       Logger.log('[akn_getPapan] Konfirmasi check notice: ' + eKfm.message);
     }
 
+    var rekapJabatan = typeof dir_computeRekapJabatan === 'function' ? dir_computeRekapJabatan() : [];
+
     return {
       success: true,
       data: {
         periode: p,
         periodeWindow: win,
         kategoris: AKN_KATEGORIS,
+        rekapJabatan: rekapJabatan,
         prevPeriode: prevPeriode,
         sourcePeriode: sourcePeriode || prevPeriode || '',
         matrix: resolved.matrix,

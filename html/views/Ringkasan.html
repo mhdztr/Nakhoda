@@ -171,4 +171,32 @@
 
   </div>
 
+  <!-- Postur Kekuatan per Jabatan Awak (Ringkasan Pimpinan) -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Postur kekuatan per kelompok jabatan awak</h2>
+      <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('komposisi')">
+        <span>Rincian komposisi &rarr;</span>
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Kelompok jabatan</th>
+            <th class="text-right">Dit. POA (Pusat)</th>
+            <th class="text-right">Eksisting aktif</th>
+            <th class="text-right">Standar ideal armada</th>
+            <th class="text-right">Selisih</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-ringkasan-jabatan">
+          <tr>
+            <td colspan="5" style="text-align:center; padding:24px; color:var(--muted);">Loading postur jabatan awak...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>

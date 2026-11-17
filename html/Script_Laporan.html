@@ -12,9 +12,8 @@ var LaporanView = (function () {
 
   var KATEGORI_LABELS = {
     'PNS': 'Pegawai negeri sipil (PNS)',
-    'PPPK_FUNGSIONAL': 'PPPK fungsional',
-    'PPPK_PELAKSANA': 'PPPK pelaksana',
-    'PPPK_PARUH_WAKTU': 'PPPK paruh waktu',
+    'P3K': 'PPPK (P3K)',
+    'P3K_PARUH_WAKTU': 'PPPK paruh waktu',
     'PJLP': 'PJLP / pegawai non-ASN'
   };
 
@@ -118,19 +117,20 @@ var LaporanView = (function () {
       }
     }
 
-    // 5. Tabel Komposisi AKN
+    // 5. Tabel Komposisi AKN (4 kategori baku)
     var tableAkn = document.querySelector('#lap-table-akn tbody');
-    if (tableAkn && r.akn) {
-      var kats = ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'];
-      var mat = r.akn.matrix || {};
+    if (tableAkn && (r.aknTerbaru || r.akn)) {
+      var kats = ['PNS', 'P3K', 'P3K_PARUH_WAKTU', 'PJLP'];
+      var mat = r.aknTerbaru || (r.akn && r.akn.matrix) || {};
       var aknHtml = '';
       var sumPoa = 0;
       var sumKes = 0;
 
       kats.forEach(function (kat) {
-        var row = mat[kat] || { AKN_POA: 0, AKN_KESELURUHAN: 0 };
-        var pPoa = row.AKN_POA || 0;
-        var pKes = row.AKN_KESELURUHAN || 0;
+        var poaNode = (mat.AKN_POA && mat.AKN_POA[kat]) ? mat.AKN_POA[kat] : (mat[kat] || {});
+        var kesNode = (mat.AKN_KESELURUHAN && mat.AKN_KESELURUHAN[kat]) ? mat.AKN_KESELURUHAN[kat] : (mat[kat] || {});
+        var pPoa = poaNode.jumlah !== undefined ? poaNode.jumlah : (poaNode.AKN_POA || 0);
+        var pKes = kesNode.jumlah !== undefined ? kesNode.jumlah : (kesNode.AKN_KESELURUHAN || 0);
         sumPoa += pPoa;
         sumKes += pKes;
         var label = KATEGORI_LABELS[kat] || kat;

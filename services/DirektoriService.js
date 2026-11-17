@@ -21,63 +21,337 @@
  * Memperbaiki data KelasKapal lawas yang korup akibat bug pencocokan substring lama
  * (misal Kelas II/III/IV tersimpan KELAs_I atau Kelas V tersimpan NON_JENJANG).
  */
+var _MASTER_AWAK_REQUIRED_COLS = [
+  'StatusPenempatan', 'NomorSKPenempatan', 'DokumenPenempatanURL', 'UkuranBaju', 'UkuranSepatu'
+];
+
+function _inferStatusPenempatan(unitOrPangkalan, currentVal) {
+  var cur = String(currentVal || '').trim().toUpperCase();
+  if (cur === 'PUSAT_POA' || cur === 'DIPERBANTUKAN_UPT') return cur;
+  var u = String(unitOrPangkalan || '').toLowerCase();
+  if (u.indexOf('pangkalan') !== -1 || u.indexOf('stasiun') !== -1 || u.indexOf('satwas') !== -1 || u.indexOf('upt-') !== -1) {
+    return 'DIPERBANTUKAN_UPT';
+  }
+  return 'PUSAT_POA';
+}
+
+function _computeVesselDurationText(startDateStr, nowDate) {
+  var s = String(startDateStr || '').trim();
+  if (!s) return '-';
+  var d = new Date(s.length === 10 ? (s + 'T00:00:00') : s);
+  if (isNaN(d.getTime())) return '-';
+  var now = nowDate || new Date();
+  var diffDays = Math.floor((now.getTime() - d.getTime()) / 86400000);
+  if (diffDays < 0) return 'Terjadwal';
+  if (diffDays < 1) return 'Hari ini';
+  if (diffDays < 30) return diffDays + ' hari';
+  var totalMonths = Math.floor(diffDays / 30.4375);
+  var years = Math.floor(totalMonths / 12);
+  var months = totalMonths % 12;
+  if (years > 0 && months > 0) return years + ' thn ' + months + ' bln';
+  if (years > 0) return years + ' thn';
+  return totalMonths + ' bln';
+}
+
+/**
+ * Self-healing skema kolom baru (21 kolom kanonik DATA_SCHEMA.md §3.1),
+ * koreksi KelasKapal, konversi nama kanonik HURUF BESAR tanpa gelar/simbol,
+ * penyatuan 4 kategori kepegawaian, dan pemformatan sheet formal.
+ */
 function _healMasterAwakKelasIfNeeded(sheet, rows) {
-  if (!sheet || !rows || rows.length === 0) return;
-  var hasHealKelas = false;
-  var hasHealPangkalan = false;
+  if (!sheet) return;
+  try {
+    var lastCol = sheet.getLastColumn();
+    var headers = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+    var schemaChanged = false;
 
-  // Map pangkalan/unit baseline dari SEED_AWAK_ARMADA bila PangkalanID masih kosong
-  var seedUnitById = {};
-  if (typeof SEED_AWAK_ARMADA !== 'undefined' && Array.isArray(SEED_AWAK_ARMADA)) {
-    SEED_AWAK_ARMADA.forEach(function (s) {
-      if (s.pegawaiId && s.unit) seedUnitById[String(s.pegawaiId)] = String(s.unit);
+    _MASTER_AWAK_REQUIRED_COLS.forEach(function (colName) {
+      if (headers.indexOf(colName) === -1) {
+        var newCol = sheet.getLastColumn() + 1;
+        sheet.getRange(1, newCol).setValue(colName);
+        headers.push(colName);
+        schemaChanged = true;
+      }
     });
-  }
 
-  rows.forEach(function (r) {
-    var cur = String(r.KelasKapal || '').toUpperCase().trim();
-    var jab = String(r.JabatanLengkap || r.KelompokJabatan || '');
-    var extracted = extractKelasKapal(jab);
-    if (extracted !== 'NON_KAPAL' && (
-      !cur ||
-      cur === 'NON_JENJANG' ||
-      cur === 'NON_KAPAL' ||
-      (cur === 'KELAS_I' && extracted !== 'KELAS_I')
-    )) {
-      r.KelasKapal = extracted;
-      hasHealKelas = true;
+    if (!rows || rows.length === 0) {
+      if (schemaChanged && typeof applyFormalSheetFormatting === 'function') {
+        applyFormalSheetFormatting(sheet, SHEET_AWAK.MASTER_AWAK);
+      }
+      return;
     }
 
-    var pId = String(r.PegawaiID || '').trim();
-    if (!String(r.PangkalanID || '').trim() && pId && seedUnitById[pId]) {
-      r.PangkalanID = seedUnitById[pId];
-      hasHealPangkalan = true;
+    var seedUnitById = {};
+    if (typeof SEED_AWAK_ARMADA !== 'undefined' && Array.isArray(SEED_AWAK_ARMADA)) {
+      SEED_AWAK_ARMADA.forEach(function (s) {
+        if (s.pegawaiId && s.unit) seedUnitById[String(s.pegawaiId)] = String(s.unit);
+      });
     }
-  });
 
-  if (hasHealKelas || hasHealPangkalan) {
-    try {
-      var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-      if (hasHealKelas) {
-        var colIdx = headers.indexOf('KelasKapal');
-        if (colIdx !== -1) {
-          sheet.getRange(2, colIdx + 1, rows.length, 1).setValues(rows.map(function (r) {
-            return [String(r.KelasKapal || 'NON_KAPAL')];
-          }));
+    var dirtyCols = {};
+
+    rows.forEach(function (r) {
+      // 1. Heal tertukar NIP vs Nama (jika terlanjur tersimpan terbalik)
+      var rawNama = String(r.Nama || '').trim();
+      var rawNip = String(r.NIP || '').trim();
+      if (/^\d{10,}$/.test(rawNama) && rawNip && !/^\d+$/.test(rawNip)) {
+        r.NIP = rawNama;
+        r.Nama = rawNip;
+        dirtyCols.NIP = true;
+        dirtyCols.Nama = true;
+      }
+
+      // 2. Normalisasi Nama Kanonik HURUF BESAR tanpa gelar/simbol
+      if (typeof sanitizeNamaPersonel === 'function' && r.Nama) {
+        var cleanNama = sanitizeNamaPersonel(String(r.Nama));
+        if (cleanNama && cleanNama !== String(r.Nama)) {
+          r.Nama = cleanNama;
+          dirtyCols.Nama = true;
         }
       }
-      if (hasHealPangkalan) {
-        var pColIdx = headers.indexOf('PangkalanID');
-        if (pColIdx !== -1) {
-          sheet.getRange(2, pColIdx + 1, rows.length, 1).setValues(rows.map(function (r) {
-            return [String(r.PangkalanID || '')];
-          }));
+
+      // 3. Normalisasi 4 Kategori Kepegawaian
+      if (typeof normalizeAknKategori === 'function') {
+        var normKat = normalizeAknKategori(r.KategoriKepegawaian || 'PNS');
+        if (String(r.KategoriKepegawaian || '').trim() !== normKat) {
+          r.KategoriKepegawaian = normKat;
+          dirtyCols.KategoriKepegawaian = true;
         }
       }
-    } catch (eHeal) {
-      Logger.log('[_healMasterAwakKelasIfNeeded] ' + eHeal.message);
+
+      // 4. Heal KelasKapal
+      var cur = String(r.KelasKapal || '').toUpperCase().trim();
+      var jab = String(r.JabatanLengkap || r.KelompokJabatan || '');
+      var extracted = extractKelasKapal(jab);
+      if (extracted !== 'NON_KAPAL' && (
+        !cur || cur === 'NON_JENJANG' || cur === 'NON_KAPAL' ||
+        (cur === 'KELAS_I' && extracted !== 'KELAS_I')
+      )) {
+        r.KelasKapal = extracted;
+        dirtyCols.KelasKapal = true;
+      }
+
+      // 5. Heal PangkalanID dari seed bila kosong
+      var pId = String(r.PegawaiID || '').trim();
+      if (!String(r.PangkalanID || '').trim() && pId && seedUnitById[pId]) {
+        r.PangkalanID = seedUnitById[pId];
+        dirtyCols.PangkalanID = true;
+      }
+
+      // 6. Heal StatusPenempatan default
+      var inferredPenempatan = _inferStatusPenempatan(r.PangkalanID || r.Catatan, r.StatusPenempatan);
+      if (String(r.StatusPenempatan || '').trim() !== inferredPenempatan) {
+        r.StatusPenempatan = inferredPenempatan;
+        dirtyCols.StatusPenempatan = true;
+      }
+    });
+
+    Object.keys(dirtyCols).forEach(function (colKey) {
+      var colIdx = headers.indexOf(colKey);
+      if (colIdx !== -1) {
+        sheet.getRange(2, colIdx + 1, rows.length, 1).setValues(rows.map(function (r) {
+          var v = r[colKey];
+          return [v !== undefined && v !== null ? String(v) : ''];
+        }));
+      }
+    });
+
+    if (schemaChanged || Object.keys(dirtyCols).length > 0) {
+      if (typeof applyFormalSheetFormatting === 'function') {
+        applyFormalSheetFormatting(sheet, SHEET_AWAK.MASTER_AWAK);
+      }
     }
+  } catch (eHeal) {
+    Logger.log('[_healMasterAwakKelasIfNeeded] ' + eHeal.message);
   }
+}
+
+function _buildAwakComputedMaps() {
+  var now = new Date();
+  var todayStr = Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd');
+  var bstByPegawai = {};
+  var vesselByPegawai = {};
+  var placementsByPegawai = {};
+  var kapalNameMap = {};
+
+  try {
+    var rowsKapal = sheetToObjects(openMasterSheet(SHEET_MASTER.KAPAL));
+    rowsKapal.forEach(function (k) {
+      kapalNameMap[String(k.KapalID || '')] = String(k.NamaKapal || k.KapalID || '');
+    });
+  } catch (eK) {}
+
+  try {
+    var rowsSrt = sheetToObjects(openAwakSheet(SHEET_AWAK.PELATIHAN_AWAK));
+    rowsSrt.forEach(function (s) {
+      if (String(s.Status || '').toUpperCase() !== ROW_STATUS.ACTIVE) return;
+      var pid = String(s.PegawaiID || '').trim();
+      if (!pid) return;
+      var kd = String(s.KodePelatihan || '').toUpperCase();
+      var nm = String(s.NamaPelatihan || '').toUpperCase();
+      var isBst = nm.indexOf('BST') !== -1 || nm.indexOf('BASIC SAFETY TRAINING') !== -1 ||
+        kd === 'TRN-JMK-01' || /^TRN-[A-Z]+-02$/.test(kd);
+      if (!isBst) return;
+
+      var evalRes = typeof evaluateSertifikatStatus === 'function'
+        ? evaluateSertifikatStatus(s, now)
+        : { status: 'BERLAKU', label: 'Berlaku', sisaHari: 999 };
+
+      var prev = bstByPegawai[pid];
+      // Ambil status terbaik jika ada lebih dari 1 catatan BST aktif
+      var rank = { BERLAKU: 3, SEGERA_HABIS: 2, KEDALUWARSA: 1, BELUM_ADA: 0 };
+      if (!prev || (rank[evalRes.status] || 0) >= (rank[prev.status] || 0)) {
+        bstByPegawai[pid] = {
+          status: evalRes.status,
+          label: evalRes.label,
+          berlakuSampai: String(s.BerlakuSampai || ''),
+          nomorSertifikat: String(s.NomorSertifikat || '-')
+        };
+      }
+    });
+  } catch (eSrt) {}
+
+  try {
+    var rowsTgs = sheetToObjects(openAwakSheet(SHEET_AWAK.PENUGASAN_KAPAL));
+    rowsTgs.forEach(function (t) {
+      if (String(t.Status || '').toUpperCase() !== ROW_STATUS.ACTIVE) return;
+      var pid = String(t.PegawaiID || '').trim();
+      if (!pid) return;
+      var kId = String(t.KapalID || '').trim();
+      var tNaik = String(t.TanggalNaik || '').trim().substring(0, 10);
+      var tTurun = String(t.TanggalTurun || '').trim().substring(0, 10);
+
+      if (!placementsByPegawai[pid]) placementsByPegawai[pid] = [];
+      placementsByPegawai[pid].push({
+        kapalId: kId,
+        namaKapal: kapalNameMap[kId] || kId,
+        posSijil: String(t.PosSijil || ''),
+        tanggalNaik: tNaik,
+        tanggalTurun: tTurun
+      });
+
+      var isCurrentlyActive = !tTurun || tTurun >= todayStr;
+      if (isCurrentlyActive) {
+        var prevV = vesselByPegawai[pid];
+        if (!prevV || tNaik >= prevV.tanggalNaik) {
+          vesselByPegawai[pid] = {
+            kapalId: kId,
+            namaKapal: kapalNameMap[kId] || kId,
+            posSijil: String(t.PosSijil || ''),
+            tanggalNaik: tNaik,
+            durasiTeks: _computeVesselDurationText(tNaik, now)
+          };
+        }
+      }
+    });
+  } catch (eTgs) {}
+
+  return {
+    now: now,
+    bstByPegawai: bstByPegawai,
+    vesselByPegawai: vesselByPegawai,
+    placementsByPegawai: placementsByPegawai,
+    kapalNameMap: kapalNameMap
+  };
+}
+
+/**
+ * Menghitung rekap kekuatan personel per Kelompok Jabatan (Eksisting vs Ideal Safe Manning Armada)
+ * untuk tampilan eksekutif di Ringkasan, Komposisi AKN, dan Papan Sijil.
+ */
+function dir_computeRekapJabatan() {
+  var result = [];
+  try {
+    var rowsAwak = sheetToObjects(openAwakSheet(SHEET_AWAK.MASTER_AWAK));
+    var rowsKapal = sheetToObjects(openMasterSheet(SHEET_MASTER.KAPAL));
+    var rowsManning = sheetToObjects(openAwakSheet(SHEET_AWAK.MASTER_SAFE_MANNING));
+
+    var manningByKelasPos = {};
+    rowsManning.forEach(function (m) {
+      var kls = String(m.KelasKapal || '').toUpperCase().trim();
+      var pos = String(m.PosSijil || '').toUpperCase().trim();
+      if (!manningByKelasPos[kls]) manningByKelasPos[kls] = {};
+      manningByKelasPos[kls][pos] = (manningByKelasPos[kls][pos] || 0) + (parseInt(m.Minimum, 10) || 0);
+    });
+
+    function mapPosToKelompok(posToken) {
+      if (posToken === 'NAKHODA') return 'Nahkoda';
+      if (posToken.indexOf('MUALIM') === 0) return 'Mualim';
+      if (posToken === 'KKM') return 'KKM';
+      if (posToken.indexOf('MASINIS') === 0) return 'Masinis';
+      if (posToken === 'MARKONIS') return 'Markonis';
+      if (posToken === 'SERANG') return 'Serang';
+      if (posToken === 'JURU_MUDI') return 'Juru Mudi';
+      if (posToken === 'KELASI') return 'Kelasi';
+      if (posToken === 'JURU_MINYAK') return 'Juru Minyak';
+      if (posToken === 'JURU_MASAK') return 'Juru Masak';
+      return 'Kelasi';
+    }
+
+    function normalizeAwakToGroup(jabStr) {
+      var t = String(jabStr || '').toUpperCase();
+      if (/NAHKODA|NAKHODA/.test(t)) return 'Nahkoda';
+      if (/MUALIM/.test(t)) return 'Mualim';
+      if (/KKM|KEPALA KAMAR MESIN/.test(t)) return 'KKM';
+      if (/MASINIS/.test(t)) return 'Masinis';
+      if (/MARKONIS|RADIO/.test(t)) return 'Markonis';
+      if (/SERANG/.test(t)) return 'Serang';
+      if (/JURU[\s_]*MUDI|JURU[\s_]*MUDY/.test(t)) return 'Juru Mudi';
+      if (/JURU[\s_]*MINYAK|OILER/.test(t)) return 'Juru Minyak';
+      if (/JURU[\s_]*MASAK|KOKI|COOK|STEWARD/.test(t)) return 'Juru Masak';
+      if (/KELASI/.test(t)) return 'Kelasi';
+      return 'Kelasi';
+    }
+
+    var groupsOrder = [
+      'Nahkoda', 'Mualim', 'KKM', 'Masinis', 'Markonis',
+      'Serang', 'Juru Mudi', 'Kelasi', 'Juru Minyak', 'Juru Masak'
+    ];
+    var mapData = {};
+    groupsOrder.forEach(function (g) {
+      mapData[g] = { kelompokJabatan: g, eksisting: 0, poaPusat: 0, idealArmada: 0 };
+    });
+
+    // 1. Hitung kebutuhan ideal armada per kelompok jabatan
+    rowsKapal.forEach(function (k) {
+      var kls = String(k.KelasKapal || 'KELAS_II').toUpperCase().trim();
+      var posMap = manningByKelasPos[kls] || {};
+      Object.keys(posMap).forEach(function (pos) {
+        var grp = mapPosToKelompok(pos);
+        if (mapData[grp]) {
+          mapData[grp].idealArmada += posMap[pos];
+        }
+      });
+    });
+
+    // 2. Hitung personil eksisting aktif dari Master_Awak
+    rowsAwak.forEach(function (a) {
+      if (String(a.StatusAktif || 'AKTIF').toUpperCase().trim() !== 'AKTIF') return;
+      var grp = normalizeAwakToGroup(a.KelompokJabatan || a.JabatanLengkap);
+      if (!mapData[grp]) mapData[grp] = { kelompokJabatan: grp, eksisting: 0, poaPusat: 0, idealArmada: 0 };
+      mapData[grp].eksisting++;
+      var sp = _inferStatusPenempatan(a.PangkalanID || a.Catatan, a.StatusPenempatan);
+      if (sp === 'PUSAT_POA' || String(a.PangkalanID || '').toLowerCase().indexOf('pusat') !== -1) {
+        mapData[grp].poaPusat++;
+      }
+    });
+
+    result = groupsOrder.map(function (g) {
+      var d = mapData[g];
+      var selisih = d.eksisting - d.idealArmada;
+      return {
+        kelompokJabatan: d.kelompokJabatan,
+        eksisting: d.eksisting,
+        poaPusat: d.poaPusat,
+        idealArmada: d.idealArmada,
+        selisih: selisih,
+        status: d.idealArmada === 0 ? 'TERSEDIA' : (selisih >= 0 ? 'CUKUP' : 'KURANG')
+      };
+    });
+  } catch (eRec) {
+    Logger.log('[dir_computeRekapJabatan] ' + eRec.message);
+  }
+  return result;
 }
 
 function dir_list(params) {
@@ -89,58 +363,139 @@ function dir_list(params) {
     var sheet = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
     var rows = sheetToObjects(sheet);
 
-    // Auto-seed jika belum ada data
     if (rows.length === 0) {
       dir_ensureSeeded();
       rows = sheetToObjects(sheet);
     }
 
     _healMasterAwakKelasIfNeeded(sheet, rows);
+    var computed = _buildAwakComputedMaps();
 
     var rumpunFilter = String(p.rumpun || '').toUpperCase().trim();
     var kelasFilter = p.kelasKapal ? normalizeKelasKapal(p.kelasKapal, '') : '';
+    var kategoriFilter = p.kategoriKepegawaian ? normalizeAknKategori(p.kategoriKepegawaian) : '';
     var statusFilter = String(p.statusAktif || '').toUpperCase().trim();
+    var penempatanFilter = String(p.statusPenempatan || '').toUpperCase().trim();
+    var bstFilter = String(p.bstStatus || '').toUpperCase().trim();
     var searchStr = String(p.search || '').toLowerCase().trim();
     var filterPerluDilengkapi = p.perluDilengkapi === true;
 
-    // Hitung statistik keseluruhan sebelum difilter paginasi
+    // Filter Periode / Triwulan / Rentang Kalender
+    var hasPeriodeFilter = p.periodeMode && String(p.periodeMode).toUpperCase() !== 'ALL';
+    var periodeWin = hasPeriodeFilter && typeof resolvePeriodeWindow === 'function'
+      ? resolvePeriodeWindow({
+          mode: p.periodeMode,
+          tahun: p.tahun,
+          startDate: p.startDate,
+          endDate: p.endDate
+        })
+      : null;
+
     var countTotal = rows.length;
     var countDek = 0;
     var countMesin = 0;
+    var countPenunjang = 0;
     var countPerlu = 0;
 
-    rows.forEach(function (r) {
+    // Enrich & hitung KPI sebelum disaring filter UI
+    var enriched = rows.map(function (r) {
+      var pId = String(r.PegawaiID || '');
+      var rawNip = String(r.NIP || '').trim();
+      var cleanNipDigits = rawNip.replace(/[^0-9]/g, '');
       var rmp = String(r.Rumpun || '').toUpperCase();
-      if (rmp === 'DEK' || rmp === 'AWAK_DEK') countDek++;
-      else if (rmp === 'MESIN' || rmp === 'AWAK_MESIN') countMesin++;
+      if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
+      if (!rmp) rmp = extractRumpunAwak(r.KelompokJabatan || r.JabatanLengkap || '');
+      if (rmp === 'NON_AWAK') rmp = 'DEK';
 
-      var kat = String(r.KategoriKepegawaian || '').trim();
-      var buku = String(r.NomorBukuPelaut || '').trim();
-      if (!kat || !buku) countPerlu++;
+      if (rmp === 'DEK') countDek++;
+      else if (rmp === 'MESIN') countMesin++;
+      else if (rmp === 'PENUNJANG') countPenunjang++;
+
+      var kat = normalizeAknKategori(r.KategoriKepegawaian || 'PNS');
+      var bstInfo = computed.bstByPegawai[pId] || { status: 'BELUM_ADA', label: 'Belum ada' };
+      var hasValidBst = bstInfo.status === 'BERLAKU' || bstInfo.status === 'SEGERA_HABIS';
+      var needsNip = (kat !== 'PJLP') && !/^\d{18}$/.test(cleanNipDigits);
+      var isPerlu = !kat || !hasValidBst || needsNip;
+      if (isPerlu) countPerlu++;
+
+      var vessel = computed.vesselByPegawai[pId];
+      var kapalId = String((vessel && vessel.kapalId) || r.KapalID || '').trim();
+      var namaKapal = kapalId ? (computed.kapalNameMap[kapalId] || kapalId) : '';
+      var tglNaik = (vessel && vessel.tanggalNaik) || String(r.TanggalMulaiKerja || '').substring(0, 10);
+      var durasiTeks = (vessel && vessel.durasiTeks) || (kapalId && tglNaik ? _computeVesselDurationText(tglNaik, computed.now) : '-');
+      var statusPenempatan = _inferStatusPenempatan(r.PangkalanID || r.Catatan, r.StatusPenempatan);
+
+      return {
+        row: r,
+        pegawaiId: pId,
+        nipDisplay: kat === 'PJLP' && !cleanNipDigits ? '-' : maskNip(rawNip, isPrivileged),
+        nipRaw: isPrivileged ? rawNip : '',
+        cleanNipDigits: cleanNipDigits,
+        nama: String(r.Nama || ''),
+        kelompokJabatan: String(r.KelompokJabatan || ''),
+        jabatanLengkap: String(r.JabatanLengkap || r.KelompokJabatan || ''),
+        kelasKapal: normalizeKelasKapal(r.KelasKapal, r.JabatanLengkap || r.KelompokJabatan),
+        rumpun: rmp,
+        kategoriKepegawaian: kat,
+        statusAktif: String(r.StatusAktif || 'AKTIF'),
+        statusPenempatan: statusPenempatan,
+        pangkalanId: String(r.PangkalanID || '-'),
+        kapalId: kapalId || '-',
+        namaKapal: namaKapal || (kapalId || '-'),
+        tanggalNaikKapal: tglNaik,
+        durasiKapalTeks: durasiTeks,
+        bstStatus: bstInfo.status,
+        bstLabel: bstInfo.label,
+        ukuranBaju: String(r.UkuranBaju || ''),
+        ukuranSepatu: String(r.UkuranSepatu || ''),
+        nomorSkPenempatan: String(r.NomorSKPenempatan || ''),
+        dokumenPenempatanUrl: String(r.DokumenPenempatanURL || ''),
+        tanggalMulaiKerja: String(r.TanggalMulaiKerja || ''),
+        tanggalSelesaiKontrak: String(r.TanggalSelesaiKontrak || ''),
+        isPerluDilengkapi: isPerlu,
+        placements: computed.placementsByPegawai[pId] || []
+      };
     });
 
-    // Saring baris
-    var filtered = rows.filter(function (r) {
-      if (rumpunFilter) {
-        var rmp = String(r.Rumpun || '').toUpperCase();
-        if (rmp !== rumpunFilter && rmp !== ('AWAK_' + rumpunFilter)) return false;
+    var filtered = enriched.filter(function (it) {
+      if (rumpunFilter && it.rumpun !== rumpunFilter) return false;
+      if (kelasFilter && it.kelasKapal !== kelasFilter) return false;
+      if (kategoriFilter && it.kategoriKepegawaian !== kategoriFilter) return false;
+      if (statusFilter && it.statusAktif.toUpperCase() !== statusFilter) return false;
+      if (penempatanFilter && it.statusPenempatan !== penempatanFilter) return false;
+      if (bstFilter && it.bstStatus !== bstFilter) return false;
+      if (filterPerluDilengkapi && !it.isPerluDilengkapi) return false;
+
+      if (periodeWin && periodeWin.startDateStr && periodeWin.endDateStr) {
+        var wStart = periodeWin.startDateStr;
+        var wEnd = periodeWin.endDateStr;
+        var matchesWindow = false;
+        if (it.placements.length > 0) {
+          matchesWindow = it.placements.some(function (pl) {
+            var pStart = pl.tanggalNaik || '1900-01-01';
+            var pEnd = pl.tanggalTurun || '9999-12-31';
+            return pStart <= wEnd && pEnd >= wStart;
+          });
+        } else {
+          var tMulai = String(it.tanggalMulaiKerja || '').substring(0, 10);
+          var tSelesai = String(it.tanggalSelesaiKontrak || '').substring(0, 10);
+          if (tMulai) {
+            matchesWindow = tMulai <= wEnd && (!tSelesai || tSelesai >= wStart);
+          } else {
+            // Gunakan UpdatedAt untuk awak lama yang belum memiliki tanggal mulai eksplisit
+            var updStr = it.row.UpdatedAt instanceof Date
+              ? Utilities.formatDate(it.row.UpdatedAt, 'GMT+7', 'yyyy-MM-dd')
+              : String(it.row.UpdatedAt || '').substring(0, 10);
+            matchesWindow = !updStr || updStr <= wEnd;
+          }
+        }
+        if (!matchesWindow) return false;
       }
-      if (kelasFilter) {
-        var rowKelas = normalizeKelasKapal(r.KelasKapal, r.JabatanLengkap || r.KelompokJabatan);
-        if (rowKelas !== kelasFilter) return false;
-      }
-      if (statusFilter && String(r.StatusAktif || 'AKTIF').toUpperCase() !== statusFilter) {
-        return false;
-      }
-      if (filterPerluDilengkapi) {
-        var kat = String(r.KategoriKepegawaian || '').trim();
-        var buku = String(r.NomorBukuPelaut || '').trim();
-        if (kat && buku) return false;
-      }
+
       if (searchStr) {
-        var nama = String(r.Nama || '').toLowerCase();
-        var nip = String(r.NIP || '').toLowerCase();
-        var jab = String(r.JabatanLengkap || r.KelompokJabatan || '').toLowerCase();
+        var nama = it.nama.toLowerCase();
+        var nip = String(it.row.NIP || '').toLowerCase();
+        var jab = (it.kelompokJabatan + ' ' + it.jabatanLengkap + ' ' + it.namaKapal).toLowerCase();
         if (nama.indexOf(searchStr) === -1 && nip.indexOf(searchStr) === -1 && jab.indexOf(searchStr) === -1) {
           return false;
         }
@@ -151,39 +506,25 @@ function dir_list(params) {
     var totalMatched = filtered.length;
     var limit = p.limit || 50;
     var offset = p.offset || 0;
-    var paged = filtered.slice(offset, offset + limit);
-
-    var items = paged.map(function (r) {
-      var rawNip = String(r.NIP || '');
-      var rmp = String(r.Rumpun || '');
-      if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
-
-      return {
-        pegawaiId: String(r.PegawaiID || ''),
-        nipDisplay: maskNip(rawNip, isPrivileged),
-        nipRaw: isPrivileged ? rawNip : '',
-        nama: String(r.Nama || ''),
-        kelompokJabatan: String(r.KelompokJabatan || ''),
-        jabatanLengkap: String(r.JabatanLengkap || ''),
-        kelasKapal: normalizeKelasKapal(r.KelasKapal, r.JabatanLengkap || r.KelompokJabatan),
-        rumpun: rmp || 'DEK',
-        kategoriKepegawaian: String(r.KategoriKepegawaian || '-'),
-        statusAktif: String(r.StatusAktif || 'AKTIF'),
-        nomorBukuPelaut: String(r.NomorBukuPelaut || '-'),
-        pangkalanId: String(r.PangkalanID || '-'),
-        kapalId: String(r.KapalID || '-')
-      };
+    var paged = filtered.slice(offset, offset + limit).map(function (it) {
+      var out = Object.assign({}, it);
+      delete out.row;
+      delete out.placements;
+      delete out.cleanNipDigits;
+      return out;
     });
 
     return {
       success: true,
       data: {
-        items: items,
+        items: paged,
         total: totalMatched,
+        periodeWindow: periodeWin,
         stats: {
           total: countTotal,
           dek: countDek,
           mesin: countMesin,
+          penunjang: countPenunjang,
           perluDilengkapi: countPerlu
         },
         sikapAlerts: _getCurrentSikapAlerts(rows),
@@ -199,9 +540,6 @@ function dir_list(params) {
 
 /**
  * Mengambil detail profil komprehensif seorang awak kapal.
- *
- * @param {string} token
- * @param {string} pegawaiId
  */
 function dir_getDetail(token, pegawaiId) {
   try {
@@ -215,8 +553,9 @@ function dir_getDetail(token, pegawaiId) {
 
     var a = found.obj;
     var rawNip = String(a.NIP || '');
+    var now = new Date();
+    var computed = _buildAwakComputedMaps();
 
-    // Ambil riwayat penugasan kapal
     var penugasan = [];
     try {
       var sheetTgs = openAwakSheet(SHEET_AWAK.PENUGASAN_KAPAL);
@@ -225,18 +564,21 @@ function dir_getDetail(token, pegawaiId) {
           return String(t.PegawaiID || '') === pId && String(t.Status || '').toUpperCase() === 'ACTIVE';
         })
         .map(function (t) {
+          var kId = String(t.KapalID || '');
+          var tNaik = String(t.TanggalNaik || '').substring(0, 10);
           return {
             rowId: String(t.RowID || ''),
-            kapalId: String(t.KapalID || ''),
+            kapalId: kId,
+            namaKapal: computed.kapalNameMap[kId] || kId,
             posSijil: String(t.PosSijil || ''),
-            tanggalNaik: String(t.TanggalNaik || ''),
-            tanggalTurun: String(t.TanggalTurun || ''),
+            tanggalNaik: tNaik,
+            tanggalTurun: String(t.TanggalTurun || '').substring(0, 10),
+            durasiTeks: _computeVesselDurationText(tNaik, now),
             keterangan: String(t.Keterangan || '')
           };
         });
     } catch (eTgs) {}
 
-    // Ambil register sertifikat kompetensi
     var sertifikat = [];
     try {
       var sheetSrt = openAwakSheet(SHEET_AWAK.PELATIHAN_AWAK);
@@ -251,13 +593,16 @@ function dir_getDetail(token, pegawaiId) {
             namaPelatihan: String(s.NamaPelatihan || ''),
             statusKelulusan: String(s.StatusKelulusan || ''),
             nomorSertifikat: String(s.NomorSertifikat || '-'),
-            berlakuSampai: String(s.BerlakuSampai || '')
+            berlakuSampai: String(s.BerlakuSampai || '').substring(0, 10)
           };
         });
     } catch (eSrt) {}
 
-    var rmp = String(a.Rumpun || '');
+    var rmp = String(a.Rumpun || '').toUpperCase();
     if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
+    var bstInfo = computed.bstByPegawai[pId] || { status: 'BELUM_ADA', label: 'Belum ada' };
+    var vessel = computed.vesselByPegawai[pId];
+    var kapalId = String((vessel && vessel.kapalId) || a.KapalID || '');
 
     return {
       success: true,
@@ -270,13 +615,22 @@ function dir_getDetail(token, pegawaiId) {
         jabatanLengkap: String(a.JabatanLengkap || ''),
         kelasKapal: normalizeKelasKapal(a.KelasKapal, a.JabatanLengkap || a.KelompokJabatan),
         rumpun: rmp || 'DEK',
-        kategoriKepegawaian: String(a.KategoriKepegawaian || ''),
+        kategoriKepegawaian: normalizeAknKategori(a.KategoriKepegawaian || 'PNS'),
         statusAktif: String(a.StatusAktif || 'AKTIF'),
+        statusPenempatan: _inferStatusPenempatan(a.PangkalanID || a.Catatan, a.StatusPenempatan),
         pangkalanId: String(a.PangkalanID || ''),
-        kapalId: String(a.KapalID || ''),
-        nomorBukuPelaut: String(a.NomorBukuPelaut || ''),
-        tanggalMulaiKerja: String(a.TanggalMulaiKerja || ''),
-        tanggalSelesaiKontrak: String(a.TanggalSelesaiKontrak || ''),
+        kapalId: kapalId,
+        namaKapal: kapalId ? (computed.kapalNameMap[kapalId] || kapalId) : '',
+        tanggalNaikKapal: (vessel && vessel.tanggalNaik) || String(a.TanggalMulaiKerja || '').substring(0, 10),
+        durasiKapalTeks: (vessel && vessel.durasiTeks) || '-',
+        bstStatus: bstInfo.status,
+        bstLabel: bstInfo.label,
+        nomorSkPenempatan: String(a.NomorSKPenempatan || ''),
+        dokumenPenempatanUrl: String(a.DokumenPenempatanURL || ''),
+        ukuranBaju: String(a.UkuranBaju || ''),
+        ukuranSepatu: String(a.UkuranSepatu || ''),
+        tanggalMulaiKerja: String(a.TanggalMulaiKerja || '').substring(0, 10),
+        tanggalSelesaiKontrak: String(a.TanggalSelesaiKontrak || '').substring(0, 10),
         catatan: String(a.Catatan || ''),
         penugasan: penugasan,
         sertifikat: sertifikat,
@@ -290,9 +644,169 @@ function dir_getDetail(token, pegawaiId) {
 }
 
 /**
+ * Mendorong pembaruan profil awak kapal dari NAKHODA ke SIKAP (Master_Pegawai_POA)
+ * dengan penanda StatusKelengkapanTU = 'DISPARITAS_NAKHODA' agar TU melengkapinya di SIKAP.
+ */
+function _pushAwakToSikap(awakRecord, reasonText) {
+  try {
+    if (!awakRecord) return { skipped: true };
+    var props = PropertiesService.getScriptProperties();
+    var sikapId = props ? props.getProperty(PROP_KEY.SIKAP_SS_ID) : '';
+    if (!sikapId) return { skipped: true, reason: 'SIKAP_SS_ID belum tertaut' };
+
+    var sikapSs = SpreadsheetApp.openById(sikapId);
+    var sSheet = sikapSs.getSheetByName('Master_Pegawai_POA') || sikapSs.getSheetByName('Data_Pegawai');
+    if (!sSheet) return { skipped: true, reason: 'Sheet Master_Pegawai_POA tidak ditemukan di SIKAP' };
+
+    // Pastikan kolom sinkronisasi & disparitas tersedia di sheet SIKAP
+    var reqSikapCols = [
+      'StatusPenempatan', 'KapalPenempatan', 'UkuranBaju', 'UkuranSepatu',
+      'SumberSinkronisasi', 'StatusKelengkapanTU', 'CatatanDisparitas'
+    ];
+    var lastCol = sSheet.getLastColumn();
+    var headers = lastCol > 0 ? sSheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+    reqSikapCols.forEach(function (col) {
+      if (headers.indexOf(col) === -1) {
+        var newC = sSheet.getLastColumn() + 1;
+        sSheet.getRange(1, newC).setValue(col);
+        headers.push(col);
+      }
+    });
+
+    var rows = sheetToObjects(sSheet);
+    var pId = String(awakRecord.PegawaiID || '').trim();
+    var nipClean = String(awakRecord.NIP || '').replace(/[^0-9]/g, '');
+    var canonNama = typeof sanitizeNamaPersonel === 'function'
+      ? sanitizeNamaPersonel(String(awakRecord.Nama || ''))
+      : String(awakRecord.Nama || '').toUpperCase().trim();
+
+    var matchIdx = -1;
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (pId && String(r.PegawaiID || '').trim() === pId) { matchIdx = i; break; }
+      if (nipClean && /^\d{18}$/.test(nipClean) && String(r.NIP || '').replace(/[^0-9]/g, '') === nipClean) { matchIdx = i; break; }
+      if (canonNama) {
+        var rNama = typeof sanitizeNamaPersonel === 'function'
+          ? sanitizeNamaPersonel(String(r.Nama || ''))
+          : String(r.Nama || '').toUpperCase().trim();
+        if (rNama === canonNama) { matchIdx = i; break; }
+      }
+    }
+
+    var now = new Date();
+    var todayIso = Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd');
+    var kapalId = String(awakRecord.KapalID || '').trim();
+    var kapalNameMap = {};
+    try {
+      sheetToObjects(openMasterSheet(SHEET_MASTER.KAPAL)).forEach(function (k) {
+        kapalNameMap[String(k.KapalID || '')] = String(k.NamaKapal || k.KapalID || '');
+      });
+    } catch (eK) {}
+    var kapalLabel = kapalId ? (kapalNameMap[kapalId] || kapalId) : '';
+    var pangkalan = String(awakRecord.PangkalanID || 'Dit. POA Pusat').trim();
+    var statusPenempatan = _inferStatusPenempatan(pangkalan, awakRecord.StatusPenempatan);
+    var unitKerjaText = statusPenempatan === 'DIPERBANTUKAN_UPT'
+      ? ('AKP Pusat Diperbantukan di ' + (kapalLabel || pangkalan) + (kapalLabel ? (' — ' + pangkalan) : ''))
+      : ('Dit. POA Pusat' + (kapalLabel ? (' — ' + kapalLabel) : ''));
+
+    var kelJab = String(awakRecord.KelompokJabatan || '').trim();
+    var klsKapal = String(awakRecord.KelasKapal || 'NON_KAPAL').trim();
+    var rmp = String(awakRecord.Rumpun || 'DEK').toUpperCase();
+    var kategoriRumpun = rmp === 'MESIN' ? 'AWAK_MESIN' : (rmp === 'PENUNJANG' ? 'PENUNJANG' : 'AWAK_DEK');
+    var catatanDisparitas = 'Kiriman Nakhoda [' + todayIso + ']: ' +
+      (reasonText || ('Kelompok Jabatan [' + kelJab + ' / ' + klsKapal.replace('_', ' ') + ']')) +
+      ' — Perlu verifikasi / pelengkapan Jabatan Lengkap TU di SIKAP.';
+
+    var patchObj = {
+      'PegawaiID': pId,
+      'NIP': nipClean,
+      'Nama': canonNama,
+      'UnitKerja': unitKerjaText,
+      'LingkupData': 'AWAK_KAPAL_ARMADA',
+      'KelompokJabatan': kelJab,
+      'TingkatKelas': klsKapal,
+      'KategoriRumpun': kategoriRumpun,
+      'StatusKepegawaian': String(awakRecord.KategoriKepegawaian || 'PNS'),
+      'StatusAktif': String(awakRecord.StatusAktif || 'AKTIF'),
+      'StatusPenempatan': statusPenempatan,
+      'KapalPenempatan': kapalLabel,
+      'UkuranBaju': String(awakRecord.UkuranBaju || ''),
+      'UkuranSepatu': String(awakRecord.UkuranSepatu || ''),
+      'TanggalMulai': String(awakRecord.TanggalMulaiKerja || ''),
+      'TanggalSelesai': String(awakRecord.TanggalSelesaiKontrak || ''),
+      'DokumenSK_URL': String(awakRecord.DokumenPenempatanURL || ''),
+      'CatatanTambahan': String(awakRecord.Catatan || unitKerjaText),
+      'SumberSinkronisasi': 'PUSH_NAKHODA',
+      'StatusKelengkapanTU': 'DISPARITAS_NAKHODA',
+      'CatatanDisparitas': catatanDisparitas,
+      'UpdatedAt': Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd HH:mm:ss'),
+      'UpdatedBy': String(awakRecord.UpdatedBy || 'NAKHODA_SYNC')
+    };
+
+    if (matchIdx !== -1) {
+      // Pertahankan JabatanLengkap jika TU sudah pernah mengisi dan kelompok tidak berubah drastis, namun tandai disparitas
+      updateRowCells(sSheet, matchIdx + 2, patchObj);
+    } else {
+      patchObj.JabatanLengkap = '';
+      appendRowData(sSheet, patchObj);
+    }
+
+    if (typeof applyFormalSheetFormatting === 'function') {
+      applyFormalSheetFormatting(sSheet, 'Master_Pegawai_POA');
+    }
+
+    return { success: true, matched: matchIdx !== -1 };
+  } catch (ePush) {
+    Logger.log('[_pushAwakToSikap] Notice: ' + ePush.message);
+    return { success: false, error: ePush.message };
+  }
+}
+
+/**
+ * Mendorong sertifikat (terutama BST) dari NAKHODA ke TX_TU_Pelatihan_Pegawai di SIKAP.
+ */
+function _pushSertifikatToSikap(pegawaiObj, certRecord) {
+  try {
+    if (!pegawaiObj || !certRecord) return { skipped: true };
+    var props = PropertiesService.getScriptProperties();
+    var sikapId = props ? props.getProperty(PROP_KEY.SIKAP_SS_ID) : '';
+    if (!sikapId) return { skipped: true };
+
+    var sikapSs = SpreadsheetApp.openById(sikapId);
+    var certSheet = sikapSs.getSheetByName('TX_TU_Pelatihan_Pegawai');
+    if (!certSheet) return { skipped: true };
+
+    var now = new Date();
+    appendRowData(certSheet, {
+      'RecordID': String(certRecord.RowID || ('CERT-NKH-' + Utilities.getUuid().substring(0, 8).toUpperCase())),
+      'PegawaiID': String(pegawaiObj.PegawaiID || ''),
+      'NIP': String(pegawaiObj.NIP || '').replace(/[^0-9]/g, ''),
+      'KodePelatihan': String(certRecord.KodePelatihan || ''),
+      'NamaPelatihan': String(certRecord.NamaPelatihan || ''),
+      'StatusKelulusan': String(certRecord.StatusKelulusan || 'SUDAH_LULUS'),
+      'NomorSertifikat': String(certRecord.NomorSertifikat || '-'),
+      'TahunPelatihan': certRecord.TahunPelatihan || now.getFullYear(),
+      'BerlakuSampai': String(certRecord.BerlakuSampai || ''),
+      'FileEvidenceID': String(certRecord.EvidenceID || ''),
+      'FileEvidenceURL': certRecord.EvidenceID ? ('https://drive.google.com/file/d/' + certRecord.EvidenceID + '/view') : '',
+      'UpdatedAt': Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd HH:mm:ss'),
+      'UpdatedBy': 'NAKHODA_SYNC'
+    });
+
+    if (typeof applyFormalSheetFormatting === 'function') {
+      applyFormalSheetFormatting(certSheet, 'TX_TU_Pelatihan_Pegawai');
+    }
+    return { success: true };
+  } catch (eCert) {
+    Logger.log('[_pushSertifikatToSikap] Notice: ' + eCert.message);
+    return { success: false, error: eCert.message };
+  }
+}
+
+/**
  * Menyimpan atau memperbarui profil awak kapal di Master_Awak.
- *
- * @param {Object} params
+ * Menegakkan Nama Kanonik HURUF BESAR, NIP kondisional (18 digit wajib non-PJLP),
+ * tanpa input JabatanLengkap / NomorBukuPelaut, serta push sync ke SIKAP.
  */
 function dir_save(params) {
   try {
@@ -301,64 +815,135 @@ function dir_save(params) {
       assertScope(session, [ROLE.STAF, ROLE.KADIV, ROLE.SUPERADMIN], null);
 
       var pId = String(params.pegawaiId || '').trim();
-      var nama = String(params.nama || '').trim();
-      var rawNip = String(params.nip || '').trim().replace(/[^0-9]/g, '');
+      var rawNama = String(params.nama || '').trim();
+      var nama = typeof sanitizeNamaPersonel === 'function' ? sanitizeNamaPersonel(rawNama) : rawNama.toUpperCase();
+      if (!nama || !/^[A-Z ]+$/.test(nama)) {
+        return { success: false, error: 'Nama lengkap wajib diisi dengan huruf kapital (A-Z) tanpa gelar, simbol, atau angka.' };
+      }
 
-      if (!nama) return { success: false, error: 'Nama lengkap wajib diisi.' };
+      var kat = typeof normalizeAknKategori === 'function'
+        ? normalizeAknKategori(params.kategoriKepegawaian || 'PNS')
+        : String(params.kategoriKepegawaian || 'PNS').trim();
+
+      var rawNip = String(params.nip || '').trim().replace(/[^0-9]/g, '');
+      if (kat !== 'PJLP') {
+        if (!/^\d{18}$/.test(rawNip)) {
+          return {
+            success: false,
+            error: 'NIP wajib diisi tepat 18 digit angka untuk kategori PNS, P3K, dan P3K Paruh Waktu.'
+          };
+        }
+      } else {
+        rawNip = ''; // PJLP tidak memiliki NIP
+      }
+
+      var kelJab = String(params.kelompokJabatan || '').trim();
+      if (!kelJab) {
+        return { success: false, error: 'Kelompok jabatan wajib dipilih.' };
+      }
+
+      var kelasKapal = params.kelasKapal ? normalizeKelasKapal(params.kelasKapal, '') : 'KELAS_II';
+      var kelasHuman = kelasKapal !== 'NON_KAPAL' ? (' ' + kelasKapal.replace('_', ' ')) : '';
+      var autoJabatanLengkap = kelJab + kelasHuman;
+
+      var rumpun = String(params.rumpun || extractRumpunAwak(kelJab)).toUpperCase().trim();
+      if (rumpun.indexOf('AWAK_') === 0) rumpun = rumpun.substring(5);
+      if (rumpun === 'NON_AWAK') rumpun = 'DEK';
+
+      var statusPenempatan = _inferStatusPenempatan(params.pangkalanId, params.statusPenempatan);
+      var pangkalanId = String(params.pangkalanId || (statusPenempatan === 'PUSAT_POA' ? 'Dit. POA Pusat' : '')).trim();
+      var kapalId = String(params.kapalId || '').trim();
+      var noSk = String(params.nomorSkPenempatan || '').trim();
+      var docUrl = String(params.dokumenPenempatanUrl || '').trim();
+      var ukBaju = String(params.ukuranBaju || '').toUpperCase().trim();
+      var ukSepatu = String(params.ukuranSepatu || '').trim();
 
       var sheet = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+      var rowsExisting = sheetToObjects(sheet);
+      _healMasterAwakKelasIfNeeded(sheet, rowsExisting);
+
       var now = new Date();
-
       var found = pId ? findRowByField(sheet, 'PegawaiID', pId) : null;
+      var targetId = found ? pId : ('PEG-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase());
 
-      var jabLengkap = String(params.jabatanLengkap || params.kelompokJabatan || '').trim();
-      var kelasKapal = params.kelasKapal
-        ? normalizeKelasKapal(params.kelasKapal, '')
-        : extractKelasKapal(jabLengkap);
-      var rumpun = String(params.rumpun || extractRumpunAwak(jabLengkap)).trim();
+      // Upload opsional dokumen SK Penempatan / Surat Tugas jika disertakan
+      if (params.fileData && params.fileData.dataBase64 && typeof evidence_upload === 'function') {
+        try {
+          var upRes = evidence_upload(params.token, {
+            refSheet: SHEET_AWAK.MASTER_AWAK,
+            refRowId: targetId,
+            fileName: params.fileData.fileName || ('SK_Penempatan_' + targetId + '.pdf'),
+            mimeType: params.fileData.mimeType || 'application/pdf',
+            dataBase64: params.fileData.dataBase64
+          });
+          if (upRes && upRes.success && upRes.data && upRes.data.driveFileId) {
+            docUrl = 'https://drive.google.com/file/d/' + upRes.data.driveFileId + '/view';
+          }
+        } catch (eUp) {
+          Logger.log('[dir_save] Upload SK optional notice: ' + eUp.message);
+        }
+      }
+
+      var catatanInput = String(params.catatan || '').trim();
+      if (!catatanInput) {
+        catatanInput = (statusPenempatan === 'DIPERBANTUKAN_UPT' ? 'AKP Pusat Diperbantukan di UPT' : 'Organik Dit. POA Pusat') +
+          (kelJab ? (' · ' + kelJab + kelasHuman) : '');
+      }
 
       var record = {
+        'PegawaiID': targetId,
         'Nama': nama,
         'NIP': rawNip,
-        'KelompokJabatan': String(params.kelompokJabatan || '').trim(),
-        'JabatanLengkap': jabLengkap,
+        'KelompokJabatan': kelJab,
+        'JabatanLengkap': autoJabatanLengkap,
         'KelasKapal': kelasKapal,
         'Rumpun': rumpun,
-        'KategoriKepegawaian': String(params.kategoriKepegawaian || '').trim(),
+        'KategoriKepegawaian': kat,
         'StatusAktif': String(params.statusAktif || 'AKTIF').trim(),
-        'PangkalanID': String(params.pangkalanId || '').trim(),
-        'KapalID': String(params.kapalId || '').trim(),
-        'NomorBukuPelaut': String(params.nomorBukuPelaut || '').trim(),
+        'StatusPenempatan': statusPenempatan,
+        'PangkalanID': pangkalanId,
+        'KapalID': kapalId,
         'TanggalMulaiKerja': String(params.tanggalMulaiKerja || '').trim(),
         'TanggalSelesaiKontrak': String(params.tanggalSelesaiKontrak || '').trim(),
-        'Catatan': String(params.catatan || '').trim(),
-        'UpdatedAt': now,
+        'NomorSKPenempatan': noSk,
+        'DokumenPenempatanURL': docUrl,
+        'UkuranBaju': ukBaju,
+        'UkuranSepatu': ukSepatu,
+        'Catatan': catatanInput,
+        'UpdatedAt': Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd HH:mm:ss'),
         'UpdatedBy': session.userId
       };
 
       if (found) {
+        if (!docUrl && found.obj.DokumenPenempatanURL) {
+          record.DokumenPenempatanURL = String(found.obj.DokumenPenempatanURL);
+        }
         updateRowCells(sheet, found.rowIndex, record);
-        _auditLog(session.userId, 'UPDATE_AWAK', SHEET_AWAK.MASTER_AWAK, pId, 'Pembaruan profil: ' + nama);
-        if (typeof akn_syncFromAwak === 'function') {
-          try { akn_syncFromAwak(session.userId, 'Pembaruan profil awak: ' + nama); } catch (eAkn) {}
-        }
-        return {
-          success: true,
-          data: { pegawaiId: pId, message: 'Profil personil berhasil diperbarui.' }
-        };
+        _auditLog(session.userId, 'UPDATE_AWAK', SHEET_AWAK.MASTER_AWAK, targetId, 'Pembaruan profil: ' + nama);
       } else {
-        var newId = 'PEG-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase();
-        record.PegawaiID = newId;
         appendRowData(sheet, record);
-        _auditLog(session.userId, 'CREATE_AWAK', SHEET_AWAK.MASTER_AWAK, newId, 'Perekaman personil baru: ' + nama);
-        if (typeof akn_syncFromAwak === 'function') {
-          try { akn_syncFromAwak(session.userId, 'Penambahan personil baru: ' + nama); } catch (eAkn) {}
-        }
-        return {
-          success: true,
-          data: { pegawaiId: newId, message: 'Personil baru berhasil ditambahkan.' }
-        };
+        _auditLog(session.userId, 'CREATE_AWAK', SHEET_AWAK.MASTER_AWAK, targetId, 'Perekaman personil baru: ' + nama);
       }
+
+      if (typeof applyFormalSheetFormatting === 'function') {
+        applyFormalSheetFormatting(sheet, SHEET_AWAK.MASTER_AWAK);
+      }
+      if (typeof akn_syncFromAwak === 'function') {
+        try { akn_syncFromAwak(session.userId, (found ? 'Pembaruan profil awak: ' : 'Penambahan personil baru: ') + nama); } catch (eAkn) {}
+      }
+
+      var pushRes = _pushAwakToSikap(record, (found ? 'Pembaruan profil ' : 'Personil baru ') + kelJab + kelasHuman);
+
+      return {
+        success: true,
+        data: {
+          pegawaiId: targetId,
+          sikapSynced: !!(pushRes && pushRes.success),
+          message: found
+            ? 'Profil personil berhasil diperbarui dan disinkronkan ke SIKAP.'
+            : 'Personil baru berhasil ditambahkan dan didorong ke antrean verifikasi TU SIKAP.'
+        }
+      };
     });
   } catch (e) {
     Logger.log('[dir_save] ' + e.message);
@@ -367,12 +952,7 @@ function dir_save(params) {
 }
 
 /**
- * Penugasan Kategori Kepegawaian Massal (Batch Assign) untuk Kadiv/Superadmin.
- *
- * @param {Object} params
- * @param {string} params.token
- * @param {Array<string>} params.pegawaiIds
- * @param {string} params.kategoriKepegawaian - 'PNS' | 'PPPK_FUNGSIONAL' | 'PPPK_PELAKSANA' | 'PPPK_PARUH_WAKTU' | 'PJLP'
+ * Penugasan Kategori Kepegawaian Massal (Batch Assign) ke 4 kategori baku + Push Sync SIKAP.
  */
 function dir_batchAssign(params) {
   try {
@@ -381,7 +961,9 @@ function dir_batchAssign(params) {
       assertScope(session, [ROLE.KADIV, ROLE.SUPERADMIN], null);
 
       var ids = params.pegawaiIds || [];
-      var kat = String(params.kategoriKepegawaian || '').trim();
+      var kat = typeof normalizeAknKategori === 'function'
+        ? normalizeAknKategori(params.kategoriKepegawaian || '')
+        : String(params.kategoriKepegawaian || '').trim();
       if (!Array.isArray(ids) || ids.length === 0) {
         return { success: false, error: 'Pilih minimal satu personil awak kapal.' };
       }
@@ -393,17 +975,26 @@ function dir_batchAssign(params) {
       var rows = sheetToObjects(sheet);
       var updatedCount = 0;
       var now = new Date();
+      var updStr = Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd HH:mm:ss');
 
       for (var i = 0; i < rows.length; i++) {
         var pId = String(rows[i].PegawaiID || '');
         if (ids.indexOf(pId) !== -1) {
-          updateRowCells(sheet, i + 2, {
+          var patch = {
             'KategoriKepegawaian': kat,
-            'UpdatedAt': now,
+            'UpdatedAt': updStr,
             'UpdatedBy': session.userId
-          });
+          };
+          updateRowCells(sheet, i + 2, patch);
+          rows[i].KategoriKepegawaian = kat;
+          rows[i].UpdatedBy = session.userId;
+          _pushAwakToSikap(rows[i], 'Perubahan massal kategori menjadi ' + kat);
           updatedCount++;
         }
+      }
+
+      if (typeof applyFormalSheetFormatting === 'function') {
+        applyFormalSheetFormatting(sheet, SHEET_AWAK.MASTER_AWAK);
       }
 
       _auditLog(session.userId, 'BATCH_ASSIGN_AWAK', SHEET_AWAK.MASTER_AWAK, kat,
@@ -428,11 +1019,12 @@ function dir_batchAssign(params) {
 }
 
 /**
- * Seeding otomatis dan idempoten 396 awak kapal armada PSDKP ke Master_Awak.
+ * Seeding otomatis dan idempoten 396 awak kapal armada PSDKP ke Master_Awak (21 kolom kanonik).
  */
 function dir_ensureSeeded() {
   try {
     var sheet = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
+    _healMasterAwakKelasIfNeeded(sheet, []);
     var rows = sheetToObjects(sheet);
     if (rows.length >= 300) {
       return { success: true, count: rows.length, message: 'Data sudah terisi.' };
@@ -448,8 +1040,9 @@ function dir_ensureSeeded() {
       existingIds[String(r.PegawaiID || '')] = true;
     });
 
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var nowStr = Utilities.formatDate(new Date(), 'GMT+7', 'yyyy-MM-dd HH:mm:ss');
     var toInsert = [];
-    var now = new Date();
 
     SEED_AWAK_ARMADA.forEach(function (a) {
       var pId = String(a.pegawaiId || '');
@@ -459,31 +1052,41 @@ function dir_ensureSeeded() {
       var kelas = normalizeKelasKapal(a.tingkatKelas, jabLengkap);
       var rmp = String(a.rumpun || extractRumpunAwak(jabLengkap));
       if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
-
-      toInsert.push([
-        pId,
-        String(a.nip || ''),
-        String(a.nama || ''),
-        String(a.kelompokJabatan || ''),
-        jabLengkap,
-        kelas,
-        rmp,
-        'PNS', // Default baseline status ASN
-        String(a.statusAktif || 'AKTIF'),
-        String(a.unit || a.pangkalanId || ''), // PangkalanID
-        '', // KapalID
-        '', // TanggalMulaiKerja
-        '', // TanggalSelesaiKontrak
-        '', // NomorBukuPelaut
-        'Data Impor Armada PSDKP',
-        now,
-        'SYSTEM_SEED'
-      ]);
+      var unit = String(a.unit || a.pangkalanId || 'Dit. POA Pusat');
+      var rowObj = {
+        PegawaiID: pId,
+        NIP: String(a.nip || '').trim() === '-' ? '' : String(a.nip || ''),
+        Nama: typeof sanitizeNamaPersonel === 'function' ? sanitizeNamaPersonel(a.nama) : String(a.nama || '').toUpperCase(),
+        KelompokJabatan: String(a.kelompokJabatan || ''),
+        JabatanLengkap: jabLengkap,
+        KelasKapal: kelas,
+        Rumpun: rmp || 'DEK',
+        KategoriKepegawaian: 'PNS',
+        StatusAktif: String(a.statusAktif || 'AKTIF'),
+        StatusPenempatan: _inferStatusPenempatan(unit, ''),
+        PangkalanID: unit,
+        KapalID: '',
+        TanggalMulaiKerja: '',
+        TanggalSelesaiKontrak: '',
+        NomorSKPenempatan: '',
+        DokumenPenempatanURL: '',
+        UkuranBaju: '',
+        UkuranSepatu: '',
+        Catatan: 'Data Induk Armada PSDKP',
+        UpdatedAt: nowStr,
+        UpdatedBy: 'SYSTEM_SEED'
+      };
+      toInsert.push(headers.map(function (h) {
+        return rowObj[h] !== undefined ? rowObj[h] : '';
+      }));
     });
 
     if (toInsert.length > 0) {
       var startRow = sheet.getLastRow() + 1;
-      sheet.getRange(startRow, 1, toInsert.length, toInsert[0].length).setValues(toInsert);
+      sheet.getRange(startRow, 1, toInsert.length, headers.length).setValues(toInsert);
+      if (typeof applyFormalSheetFormatting === 'function') {
+        applyFormalSheetFormatting(sheet, SHEET_AWAK.MASTER_AWAK);
+      }
       Logger.log('[dir_ensureSeeded] Berhasil men-seed ' + toInsert.length + ' awak kapal armada.');
     }
 
@@ -614,15 +1217,19 @@ function _runSikapSyncCore(actorUserId, onlyIfExternalConfigured) {
 
   var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
   var awakRows = sheetToObjects(sheetAwak);
+  _healMasterAwakKelasIfNeeded(sheetAwak, awakRows);
 
-  // Lookup existing berdasarkan NIP (18 digit) dan PegawaiID
+  // Lookup existing berdasarkan PegawaiID, NIP (18 digit), dan Nama Kanonik
   var awakMapByNip = {};
   var awakMapById = {};
+  var awakMapByNama = {};
   awakRows.forEach(function (r, idx) {
     var cleanNip = String(r.NIP || '').replace(/[^0-9]/g, '');
     if (cleanNip) awakMapByNip[cleanNip] = { row: r, rowIndex: idx + 2 };
     var pId = String(r.PegawaiID || '').trim();
     if (pId) awakMapById[pId] = { row: r, rowIndex: idx + 2 };
+    var cNama = typeof sanitizeNamaPersonel === 'function' ? sanitizeNamaPersonel(String(r.Nama || '')) : String(r.Nama || '').toUpperCase().trim();
+    if (cNama) awakMapByNama[cNama] = { row: r, rowIndex: idx + 2 };
   });
 
   var sikapEmployees = [];
@@ -632,7 +1239,7 @@ function _runSikapSyncCore(actorUserId, onlyIfExternalConfigured) {
   if (sikapId) {
     try {
       var sikapSs = SpreadsheetApp.openById(sikapId);
-      var sheetNames = ['Data_Pegawai', 'Pegawai', 'Master_Awak'];
+      var sheetNames = ['Master_Pegawai_POA', 'Data_Pegawai', 'Pegawai', 'Master_Awak'];
       var sSheet = null;
       for (var i = 0; i < sheetNames.length; i++) {
         sSheet = sikapSs.getSheetByName(sheetNames[i]);
@@ -682,35 +1289,52 @@ function _runSikapSyncCore(actorUserId, onlyIfExternalConfigured) {
 
   var sikapNipSet = {};
   var sikapIdSet = {};
+  var sikapNamaSet = {};
+  var awakHeaders = sheetAwak.getRange(1, 1, 1, sheetAwak.getLastColumn()).getValues()[0];
+  var nowTimestampStr = Utilities.formatDate(now, 'GMT+7', 'yyyy-MM-dd HH:mm:ss');
 
   sikapEmployees.forEach(function (emp) {
     var rawNip = String(emp.NIP || emp.nip || '').trim().replace(/[^0-9]/g, '');
     var pId = String(emp.PegawaiID || emp.pegawaiId || '').trim();
-    var nama = String(emp.Nama || emp.nama || '').trim();
+    var rawNama = String(emp.Nama || emp.nama || '').trim();
+    var nama = typeof sanitizeNamaPersonel === 'function' ? sanitizeNamaPersonel(rawNama) : rawNama.toUpperCase();
     var jab = String(emp.JabatanLengkap || emp.jabatanLengkap || emp.KelompokJabatan || emp.kelompokJabatan || '').trim();
     var kelJab = String(emp.KelompokJabatan || emp.kelompokJabatan || '').trim();
     var rawStatus = String(emp.StatusAktif || emp.statusAktif || 'AKTIF').toUpperCase().trim();
     var isSikapActive = (rawStatus === 'AKTIF' || rawStatus === 'ACTIVE' || rawStatus === '');
     var normalizedStatus = isSikapActive ? 'AKTIF' : 'NONAKTIF';
-    var unitStr = String(emp.PangkalanID || emp.pangkalanId || emp.Unit || emp.unit || '').trim();
+    var unitStr = String(emp.PangkalanID || emp.pangkalanId || emp.UnitKerja || emp.Unit || emp.unit || '').trim();
+
+    // Fokus cakupan: hanya awak kapal armada / AKP yang berkaitan dengan POA atau sudah terdaftar
+    var lingkupEmp = String(emp.LingkupData || '').toUpperCase().trim();
+    if (isSourceFromSheet && lingkupEmp && lingkupEmp !== 'AWAK_KAPAL_ARMADA' &&
+        String(emp.StatusPenempatan || '').toUpperCase() !== 'DIPERBANTUKAN_UPT' &&
+        !(pId && awakMapById[pId]) && !(rawNip && awakMapByNip[rawNip])) {
+      return;
+    }
 
     if (!nama) return;
     if (rawNip) sikapNipSet[rawNip] = true;
     if (pId) sikapIdSet[pId] = true;
+    sikapNamaSet[nama] = true;
 
-    var existing = (rawNip && awakMapByNip[rawNip]) ? awakMapByNip[rawNip] : (pId && awakMapById[pId] ? awakMapById[pId] : null);
+    var existing = (pId && awakMapById[pId]) ? awakMapById[pId]
+      : ((rawNip && awakMapByNip[rawNip]) ? awakMapByNip[rawNip]
+        : (awakMapByNama[nama] || null));
 
     if (existing) {
       matchedCount++;
       var r = existing.row;
       var needsUpdate = false;
-      var patch = { 'UpdatedAt': now, 'UpdatedBy': actorUserId };
+      var patch = { 'UpdatedAt': nowTimestampStr, 'UpdatedBy': actorUserId };
 
       if (nama && r.Nama !== nama) { patch.Nama = nama; needsUpdate = true; }
       if (rawNip && String(r.NIP || '').replace(/[^0-9]/g, '') !== rawNip) { patch.NIP = rawNip; needsUpdate = true; }
       if (jab && r.JabatanLengkap !== jab) { patch.JabatanLengkap = jab; needsUpdate = true; }
       if (kelJab && r.KelompokJabatan !== kelJab) { patch.KelompokJabatan = kelJab; needsUpdate = true; }
       if (unitStr && !String(r.PangkalanID || '').trim()) { patch.PangkalanID = unitStr; needsUpdate = true; }
+      if (emp.UkuranBaju && !r.UkuranBaju) { patch.UkuranBaju = String(emp.UkuranBaju); needsUpdate = true; }
+      if (emp.UkuranSepatu && !r.UkuranSepatu) { patch.UkuranSepatu = String(emp.UkuranSepatu); needsUpdate = true; }
 
       var prevSt = String(r.StatusAktif || 'AKTIF').toUpperCase().trim();
       if (normalizedStatus !== prevSt) {
@@ -727,8 +1351,11 @@ function _runSikapSyncCore(actorUserId, onlyIfExternalConfigured) {
         }
       }
 
-      var kat = String(emp.KategoriKepegawaian || emp.kategori || emp.StatusKepegawaian || '').trim();
-      if (kat && r.KategoriKepegawaian !== kat) { patch.KategoriKepegawaian = kat; needsUpdate = true; }
+      var rawKat = String(emp.KategoriKepegawaian || emp.kategori || emp.StatusKepegawaian || '').trim();
+      if (rawKat) {
+        var normKat = typeof normalizeAknKategori === 'function' ? normalizeAknKategori(rawKat) : rawKat;
+        if (r.KategoriKepegawaian !== normKat) { patch.KategoriKepegawaian = normKat; needsUpdate = true; }
+      }
 
       var syncedKelas = normalizeKelasKapal(emp.TingkatKelas || emp.tingkatKelas || r.KelasKapal, jab || r.JabatanLengkap);
       if (syncedKelas !== 'NON_KAPAL' && String(r.KelasKapal || '').toUpperCase().trim() !== syncedKelas) {
@@ -743,40 +1370,46 @@ function _runSikapSyncCore(actorUserId, onlyIfExternalConfigured) {
     } else {
       var newId = pId || ('PEG-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase());
       var kelas = normalizeKelasKapal(emp.TingkatKelas || emp.tingkatKelas, jab);
-      var rmp = String(emp.Rumpun || emp.rumpun || extractRumpunAwak(jab));
+      var rmp = String(emp.Rumpun || emp.rumpun || emp.KategoriRumpun || extractRumpunAwak(jab));
       if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
-      var katBaru = String(emp.KategoriKepegawaian || emp.kategori || emp.StatusKepegawaian || 'PNS').trim();
-
-      toAppend.push([
-        newId,
-        rawNip || '-',
-        nama,
-        kelJab || 'Awak Kapal',
-        jab || kelJab || 'Awak Kapal Pengawas',
-        kelas || 'NON_KAPAL',
-        rmp || 'DEK',
-        katBaru || 'PNS',
-        normalizedStatus,
-        unitStr,
-        String(emp.KapalID || ''),
-        '',
-        '',
-        '',
-        'Sinkronisasi SIKAP: ' + (isSourceFromSheet ? 'Spreadsheet Master' : 'Dataset Resmi'),
-        now,
-        actorUserId
-      ]);
+      var rawKatBaru = String(emp.KategoriKepegawaian || emp.kategori || emp.StatusKepegawaian || 'PNS').trim();
+      var katBaru = typeof normalizeAknKategori === 'function' ? normalizeAknKategori(rawKatBaru) : rawKatBaru;
+      var newObj = {
+        PegawaiID: newId,
+        NIP: katBaru === 'PJLP' ? '' : rawNip,
+        Nama: nama,
+        KelompokJabatan: kelJab || 'Kelasi',
+        JabatanLengkap: jab || kelJab || 'Awak Kapal Pengawas',
+        KelasKapal: kelas || 'NON_KAPAL',
+        Rumpun: rmp || 'DEK',
+        KategoriKepegawaian: katBaru || 'PNS',
+        StatusAktif: normalizedStatus,
+        StatusPenempatan: _inferStatusPenempatan(unitStr, emp.StatusPenempatan),
+        PangkalanID: unitStr,
+        KapalID: String(emp.KapalPenempatan || emp.KapalID || ''),
+        TanggalMulaiKerja: String(emp.TanggalMulai || ''),
+        TanggalSelesaiKontrak: String(emp.TanggalSelesai || ''),
+        NomorSKPenempatan: '',
+        DokumenPenempatanURL: String(emp.DokumenSK_URL || ''),
+        UkuranBaju: String(emp.UkuranBaju || ''),
+        UkuranSepatu: String(emp.UkuranSepatu || ''),
+        Catatan: 'Sinkronisasi SIKAP: ' + (isSourceFromSheet ? 'Spreadsheet Master' : 'Dataset Resmi'),
+        UpdatedAt: nowTimestampStr,
+        UpdatedBy: actorUserId
+      };
+      toAppend.push(awakHeaders.map(function (h) {
+        return newObj[h] !== undefined ? newObj[h] : '';
+      }));
       addedCount++;
     }
   });
 
   if (toAppend.length > 0) {
     var startRow = sheetAwak.getLastRow() + 1;
-    sheetAwak.getRange(startRow, 1, toAppend.length, toAppend[0].length).setValues(toAppend);
+    sheetAwak.getRange(startRow, 1, toAppend.length, awakHeaders.length).setValues(toAppend);
   }
 
   // 2B. Deteksi pegawai aktif di Master_Awak yang dihapus ("di-kick") dari sheet SIKAP
-  // Guard: hanya aktif saat sumber eksternal SIKAP terbaca valid & tidak kurang dari 30% jumlah awak (mencegah false wipe)
   if (isSourceFromSheet && sikapEmployees.length > 0 && sikapEmployees.length >= Math.floor(awakRows.length * 0.3)) {
     awakRows.forEach(function (r, idx) {
       var st = String(r.StatusAktif || 'AKTIF').toUpperCase().trim();
@@ -784,12 +1417,13 @@ function _runSikapSyncCore(actorUserId, onlyIfExternalConfigured) {
 
       var cNip = String(r.NIP || '').replace(/[^0-9]/g, '');
       var cId = String(r.PegawaiID || '').trim();
-      var foundInSikap = (cNip && sikapNipSet[cNip]) || (cId && sikapIdSet[cId]);
+      var cNama = typeof sanitizeNamaPersonel === 'function' ? sanitizeNamaPersonel(String(r.Nama || '')) : String(r.Nama || '').toUpperCase().trim();
+      var foundInSikap = (cId && sikapIdSet[cId]) || (cNip && sikapNipSet[cNip]) || (cNama && sikapNamaSet[cNama]);
       if (!foundInSikap) {
         updateRowCells(sheetAwak, idx + 2, {
           'StatusAktif': 'NONAKTIF',
           'Catatan': '[KELUAR SIKAP ' + todayIso + '] Tidak lagi terdaftar di data kepegawaian SIKAP',
-          'UpdatedAt': now,
+          'UpdatedAt': nowTimestampStr,
           'UpdatedBy': actorUserId
         });
         missingFromSikapList.push({
@@ -807,7 +1441,7 @@ function _runSikapSyncCore(actorUserId, onlyIfExternalConfigured) {
   if (sikapId && isSourceFromSheet) {
     try {
       var sikapSsCert = SpreadsheetApp.openById(sikapId);
-      var certSheetNames = ['Riwayat_Diklat', 'Sertifikasi', 'Data_Sertifikat', 'Pelatihan', 'Diklat_Pegawai', 'TX_Pelatihan_Awak'];
+      var certSheetNames = ['TX_TU_Pelatihan_Pegawai', 'Riwayat_Diklat', 'Sertifikasi', 'Data_Sertifikat', 'Pelatihan', 'Diklat_Pegawai', 'TX_Pelatihan_Awak'];
       var sCertSheet = null;
       for (var c = 0; c < certSheetNames.length; c++) {
         sCertSheet = sikapSsCert.getSheetByName(certSheetNames[c]);

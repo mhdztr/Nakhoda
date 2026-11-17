@@ -17,6 +17,7 @@ var POS_SIJIL_TOKENS = [
   'SERANG',
   'JURU_MUDI',
   'JURU_MINYAK',
+  'JURU_MASAK',
   'KELASI'
 ];
 
@@ -45,6 +46,7 @@ function normalizePosSijil(str) {
   if (/SERANG/.test(t)) return 'SERANG';
   if (/JURU[_\s]*MUDI|JURU[_\s]*MUDY/.test(t)) return 'JURU_MUDI';
   if (/JURU[_\s]*MINYAK|OILER/.test(t)) return 'JURU_MINYAK';
+  if (/JURU[_\s]*MASAK|KOKI|STEWARD|COOK/.test(t)) return 'JURU_MASAK';
   if (/KELASI/.test(t)) return 'KELASI';
 
   return 'KELASI';
