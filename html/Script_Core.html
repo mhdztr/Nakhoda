@@ -88,12 +88,16 @@ var Modal = (function () {
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       var activeModals = document.querySelectorAll('.modal-overlay.active');
-      activeModals.forEach(function (m) {
+      Array.prototype.forEach.call(activeModals, function (m) {
         m.classList.remove('active');
       });
       var activeSheets = document.querySelectorAll('.sheet-overlay.active');
-      activeSheets.forEach(function (s) {
+      Array.prototype.forEach.call(activeSheets, function (s) {
         s.classList.remove('active');
+      });
+      var openPanels = document.querySelectorAll('.sheet-panel:not(.hidden)');
+      Array.prototype.forEach.call(openPanels, function (p) {
+        p.classList.add('hidden');
       });
       document.body.style.overflow = '';
     }
@@ -200,10 +204,14 @@ var GlobalLoader = (function () {
     var txt = document.getElementById('global-loading-text');
 
     if (bar) bar.classList.remove('hidden');
-    if (txt) txt.textContent = labelOrFunc && labelOrFunc.indexOf(' ') !== -1 ? labelOrFunc : _resolveLabel(labelOrFunc);
+    if (txt) {
+      var isCustom = typeof labelOrFunc === 'string' && labelOrFunc.indexOf(' ') !== -1;
+      txt.textContent = isCustom ? labelOrFunc : _resolveLabel(labelOrFunc);
+    }
 
     // Putar ikon pada tombol Refresh/Sync yang aktif
-    document.querySelectorAll('button[id$="-refresh"], #btn-sync-sikap').forEach(function (btn) {
+    var refreshBtns = document.querySelectorAll('button[id$="-refresh"], #btn-sync-sikap');
+    Array.prototype.forEach.call(refreshBtns, function (btn) {
       btn.classList.add('is-loading-spin');
     });
 
@@ -228,7 +236,8 @@ var GlobalLoader = (function () {
       if (bar) bar.classList.add('hidden');
       if (pill) pill.classList.add('hidden');
 
-      document.querySelectorAll('.is-loading-spin').forEach(function (btn) {
+      var spinBtns = document.querySelectorAll('.is-loading-spin');
+      Array.prototype.forEach.call(spinBtns, function (btn) {
         btn.classList.remove('is-loading-spin');
       });
     }
@@ -242,17 +251,18 @@ var GlobalLoader = (function () {
 
 function rpc(funcName, params) {
   var args = Array.prototype.slice.call(arguments, 1);
+  var skipLoader = (funcName === 'auth_checkRegistrationStatus');
   return new Promise(function (resolve, reject) {
     if (typeof google === 'undefined' || !google.script || !google.script.run) {
       console.warn('[RPC Mock]', funcName, args);
       return reject(new Error('google.script.run tidak tersedia di environment ini.'));
     }
 
-    GlobalLoader.start(funcName);
+    if (!skipLoader) GlobalLoader.start(funcName);
 
     var runner = google.script.run
       .withSuccessHandler(function (response) {
-        GlobalLoader.done();
+        if (!skipLoader) GlobalLoader.done();
         if (!response) {
           return reject(new Error('Empty response from server.'));
         }
@@ -267,7 +277,7 @@ function rpc(funcName, params) {
         resolve(response.data);
       })
       .withFailureHandler(function (err) {
-        GlobalLoader.done();
+        if (!skipLoader) GlobalLoader.done();
         var msg = err && err.message ? err.message : String(err);
         if (msg.indexOf('UNAUTHORIZED') !== -1) {
           Toast.error('Sesi Anda tidak valid. Silakan login kembali.');
@@ -277,7 +287,7 @@ function rpc(funcName, params) {
       });
 
     if (typeof runner[funcName] !== 'function') {
-      GlobalLoader.done();
+      if (!skipLoader) GlobalLoader.done();
       return reject(new Error('Fungsi RPC server "' + funcName + '" tidak ditemukan.'));
     }
 
@@ -294,31 +304,43 @@ var AuthApp = (function () {
   var STORAGE_TOKEN = 'nakhoda_token';
   var STORAGE_USER = 'nakhoda_user';
   var _currentUser = null;
+  var _memoryToken = null;
   var _pendingOtpToken = null;
   var _regEmail = null;
   var _pollingInterval = null;
 
   function getToken() {
-    return localStorage.getItem(STORAGE_TOKEN) || sessionStorage.getItem(STORAGE_TOKEN);
-  }
-
-  function setSession(token, user, remember) {
-    _currentUser = user;
-    if (remember) {
-      localStorage.setItem(STORAGE_TOKEN, token);
-      localStorage.setItem(STORAGE_USER, JSON.stringify(user));
-    } else {
-      sessionStorage.setItem(STORAGE_TOKEN, token);
-      sessionStorage.setItem(STORAGE_USER, JSON.stringify(user));
+    if (_memoryToken) return _memoryToken;
+    try {
+      return localStorage.getItem(STORAGE_TOKEN) || sessionStorage.getItem(STORAGE_TOKEN);
+    } catch (e) {
+      return _memoryToken;
     }
   }
 
+  function setSession(token, user, remember) {
+    _memoryToken = token;
+    _currentUser = user;
+    try {
+      if (remember) {
+        localStorage.setItem(STORAGE_TOKEN, token);
+        localStorage.setItem(STORAGE_USER, JSON.stringify(user));
+      } else {
+        sessionStorage.setItem(STORAGE_TOKEN, token);
+        sessionStorage.setItem(STORAGE_USER, JSON.stringify(user));
+      }
+    } catch (e) {}
+  }
+
   function clearSession() {
+    _memoryToken = null;
     _currentUser = null;
-    localStorage.removeItem(STORAGE_TOKEN);
-    localStorage.removeItem(STORAGE_USER);
-    sessionStorage.removeItem(STORAGE_TOKEN);
-    sessionStorage.removeItem(STORAGE_USER);
+    try {
+      localStorage.removeItem(STORAGE_TOKEN);
+      localStorage.removeItem(STORAGE_USER);
+      sessionStorage.removeItem(STORAGE_TOKEN);
+      sessionStorage.removeItem(STORAGE_USER);
+    } catch (e) {}
     if (_pollingInterval) {
       clearInterval(_pollingInterval);
       _pollingInterval = null;
@@ -327,10 +349,10 @@ var AuthApp = (function () {
 
   function getUser() {
     if (_currentUser) return _currentUser;
-    var raw = localStorage.getItem(STORAGE_USER) || sessionStorage.getItem(STORAGE_USER);
-    if (raw) {
-      try { _currentUser = JSON.parse(raw); } catch (e) {}
-    }
+    try {
+      var raw = localStorage.getItem(STORAGE_USER) || sessionStorage.getItem(STORAGE_USER);
+      if (raw) _currentUser = JSON.parse(raw);
+    } catch (e) {}
     return _currentUser;
   }
 
@@ -499,7 +521,7 @@ var AuthApp = (function () {
       .then(function (result) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Masuk ke Sistem';
+          btnSubmit.textContent = 'Login';
         }
 
         if (!result || !result.user) {
@@ -521,7 +543,7 @@ var AuthApp = (function () {
       .catch(function (err) {
         if (btnSubmit) {
           btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Masuk ke Sistem';
+          btnSubmit.textContent = 'Login';
         }
         _showAlert(err.message || 'Login gagal. Periksa kembali email/NIP dan password.', true);
       });
@@ -563,7 +585,7 @@ var AuthApp = (function () {
       .then(function () {
         if (btnOtp) {
           btnOtp.disabled = false;
-          btnOtp.textContent = 'Kirim Kode Verifikasi';
+          btnOtp.textContent = 'Kirim Kode OTP';
         }
         _regEmail = email;
         var sentEl = document.getElementById('otp-sent-email');
@@ -579,7 +601,7 @@ var AuthApp = (function () {
       .catch(function (err) {
         if (btnOtp) {
           btnOtp.disabled = false;
-          btnOtp.textContent = 'Kirim Kode Verifikasi';
+          btnOtp.textContent = 'Kirim Kode OTP';
         }
         _showAlert(err.message || 'Gagal mengirim kode verifikasi OTP.', true);
       });
@@ -705,6 +727,7 @@ var Router = (function () {
 
   var _routes = {};
   var _currentRoute = null;
+  var _initialized = false;
 
   function register(route, handler) {
     _routes[route] = handler;
@@ -715,12 +738,14 @@ var Router = (function () {
   }
 
   function _handleHashChange() {
+    if (!AuthApp.getToken()) return;
+
     var rawHash = window.location.hash || '#/ringkasan';
     var cleanRoute = rawHash.replace(/^#\/?/, '').split('?')[0] || 'ringkasan';
 
     // Highlight nav item di sidebar
     var navItems = document.querySelectorAll('#app-sidebar .nav-item');
-    navItems.forEach(function (btn) {
+    Array.prototype.forEach.call(navItems, function (btn) {
       var btnRoute = btn.getAttribute('data-route');
       if (btnRoute === cleanRoute) {
         btn.classList.add('active');
@@ -749,7 +774,7 @@ var Router = (function () {
 
     // Sembunyikan seluruh view yang ada di dalam #outlet-content
     var allViews = document.querySelectorAll('#outlet-content > .app-view, #outlet-content > .view-panel');
-    allViews.forEach(function (v) {
+    Array.prototype.forEach.call(allViews, function (v) {
       v.classList.add('hidden');
     });
 
@@ -773,6 +798,12 @@ var Router = (function () {
   }
 
   function init() {
+    if (_initialized) {
+      _handleHashChange();
+      return;
+    }
+    _initialized = true;
+
     // Daftarkan seluruh rute operasional
     register('ringkasan', function () {
       if (typeof RingkasanView !== 'undefined' && RingkasanView.init) {
@@ -830,7 +861,7 @@ var Router = (function () {
 
     // Pasang click listener di tombol navigasi sidebar
     var navItems = document.querySelectorAll('#app-sidebar .nav-item');
-    navItems.forEach(function (btn) {
+    Array.prototype.forEach.call(navItems, function (btn) {
       btn.onclick = function () {
         var r = btn.getAttribute('data-route');
         if (r) navigate(r);
