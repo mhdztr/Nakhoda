@@ -22,7 +22,8 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
 ├── [Fase 7] Sub-Modul E: Penugasan Kapal & Matriks Papan Sijil (Safe Manning)
 ├── [Fase 8] Dasbor Ringkasan Eksekutif, Notifikasi Cron & Generator Laporan
 ├── [Fase 9] Sub-Modul H: Pengelolaan Pengguna, Persetujuan & Log Audit
-└── [Fase 10] Hardening Keamanan, Audit Mutu UI, dan UAT Pengawakan
+├── [Fase 10] Hardening Keamanan, Audit Mutu UI, dan UAT Pengawakan
+└── [Fase 11] Penyelarasan Kepegawaian Terpadu NAKHODA x SIKAP & Sheet Ledger Formal
 ```
 
 ---
@@ -193,6 +194,26 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
   - [ ] Audit linter UI lolos 100% tanpa pelanggaran (`0 errors`).
   - [ ] Seluruh skenario pengujian UAT terpenuhi dan disetujui.
   - [ ] Versi v1.0 siap dirilis untuk operasional resmi Timja Pengawakan Dit. POA.
+
+---
+
+### Fase 11: Penyelarasan Kepegawaian Terpadu NAKHODA × SIKAP & Standarisasi Ledger Formal
+- **Tujuan:** Menyelaraskan alur kerja operasional Pengawakan (Bu Desi / NAKHODA) dengan Subbag Tata Usaha (Bu Ita / SIKAP) sesuai hasil briefing operasional lapangan.
+- **Tugas Utama:**
+  - **Tahap 11.1 — Sinkronisasi Dokumentasi `.md`:** Pembaruan seluruh dokumen acuan (`AGENTS.md`, `PRD.md`, `ARCHITECTURE.md`, `DATA_SCHEMA.md`, `DESIGN.md`, `PHASES.md`) di kedua workspace.
+  - **Tahap 11.2 — Normalizer, 4 Kategori AKN & Formatter Sheet Formal:**
+    - Penambahan `sanitizeNamaPersonel()` (`HURUF BESAR` A-Z & spasi tunggal tanpa gelar/simbol/angka) dan konversi 396 nama di `data/SeedAwak.js`.
+    - Penyederhanaan AKN menjadi 4 kategori (`PNS`, `P3K`, `P3K_PARUH_WAKTU`, `PJLP`) dan dukungan `Juru Masak (Koki)` / `Juru Minyak (Oiler)`.
+    - Penerapan `applyFormalSheetFormatting()` pada `data/SheetAccess.js` untuk tampilan Google Sheet yang formal, human-readable, ber-zebra banding, dan bebas notasi ilmiah pada NIP.
+  - **Tahap 11.3 — Direktori, Sijil, Kalender Anti-Ketik, & Push Sync Disparitas ke SIKAP:**
+    - Validasi kondisional NIP (wajib 18 digit bagi `PNS`/`P3K`/`P3K_PARUH_WAKTU`, tidak wajib/nonaktif bagi `PJLP`).
+    - Penghapusan input `JabatanLengkap` dan `NomorBukuPelaut`; penambahan `StatusPenempatan` (`PUSAT_POA` / `DIPERBANTUKAN_UPT`), `UkuranBaju`, `UkuranSepatu`, upload opsional SK Penempatan, durasi tugas di kapal, serta tabel Rekap per Jabatan.
+    - Penggantian input teks tanggal/periode menjadi *Preset Dropdown* (`TW I`–`TW IV`, `Semester I`–`II`) dan *Calendar Picker* anti-ketik manual (`onkeydown="return false"`).
+    - Otomasi `_pushAwakToSikap()` yang memicu flag `DISPARITAS_NAKHODA` di SIKAP saat data baru/perubahan masuk dari Nakhoda.
+- **Deliverables & Checklist:**
+  - [x] Seluruh dokumen `.md` di NAKHODA & SIKAP tersinkronisasi 100%.
+  - [ ] Unit test normalisasi nama, aturan kondisional NIP, 4 kategori AKN, dan filter periode 100% lulus.
+  - [ ] Linter `node lint_ui.js` (`0 errors`) dan verifikasi visual Playwright lulus di NAKHODA & SIKAP.
 
 ---
 

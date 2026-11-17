@@ -26,13 +26,13 @@ Setiap tabel transaksi (`TX_*`) pada basis data satelit Nakhoda secara wajib mew
 ## 2. Tabel Transaksi Satelit `RadarPOA_Nakhoda_DB`
 
 ### 2.1 `TX_Pengawakan_AKN` — Komposisi Awak Kapal Negara (Snapshot Total)
-Mencatat pelaporan berkala komposisi aparatur pengawakan berbasis 2 Scope dan 5 Kategori Kepegawaian.
+Mencatat pelaporan berkala komposisi aparatur pengawakan berbasis 2 Scope dan **4 Kategori Kepegawaian Baku** (diselaraskan dengan SIKAP).
 
 | # | Nama Kolom | Tipe Data | Nullable | Contoh Nilai | Aturan Bisnis & Validasi |
 |---|---|---|:---:|---|---|
 | 1-10 | *(Kolom Standar)* | — | — | — | `RowID` format `AWAK-AKN-` + 10 hex. |
 | 11 | `Scope` | Enum | Tidak | `AKN_KESELURUHAN` | Nilai: `AKN_KESELURUHAN`, `AKN_POA` (Ref: `Opsi.AWAK_SCOPE`). |
-| 12 | `Kategori` | Enum | Tidak | `PNS` | Nilai: `PNS`, `PPPK_FUNGSIONAL`, `PPPK_PELAKSANA`, `PPPK_PARUH_WAKTU`, `PJLP`. |
+| 12 | `Kategori` | Enum | Tidak | `PNS` | Nilai: `PNS`, `P3K`, `P3K_PARUH_WAKTU`, `PJLP`. *(Data lama `PPPK_FUNGSIONAL`/`PPPK_PELAKSANA` dimigrasi otomatis ke `P3K`; `PPPK_PARUH_WAKTU` ke `P3K_PARUH_WAKTU`).* |
 | 13 | `Jumlah` | Integer | Tidak | `42` | Total personil aktif saat ini ($\ge 0$). Input berupa angka total terkini. |
 | 14 | `Keterangan` | Text | Ya | `2 personil mutasi ke Pangkalan Bitung` | Catatan dinamika perubahan. Wajib diisi jika jumlah personil menurun. |
 | 15 | `BatchID` | Text | Tidak | `BATCH-20261106-01` | Penanda batch transaksi yang di-submit bersamaan dalam 1 sesi dialog form. |
@@ -134,32 +134,39 @@ Menyimpan data pengindeksan file bukti kegiatan dan scan sertifikat.
 ## 3. Tabel Master Data Satelit `RadarPOA_Nakhoda_DB`
 
 ### 3.1 `Master_Awak` — Direktori 396+ Personil Awak Kapal Pengawas
-Buku induk profil seluruh personil awak kapal di lingkungan armada PSDKP.
+Buku induk profil seluruh personil awak kapal di lingkungan armada PSDKP (termasuk AKP Pusat yang diperbantukan di kapal UPT berdasarkan SK/Surat Tugas Pusat).
 
-| # | Nama Kolom | Tipe Data | Nullable | Contoh Nilai | Aturan Bisnis & Validasi |
-|---|---|---|:---:|---|---|
-| 1 | `PegawaiID` | Text (PK) | Tidak | `PEG-0042` | Format unik `PEG-XXXX` 4 digit urut. |
-| 2 | `NIP` | Text | Tidak | `198504122010121002` | 18 digit NIP resmi (diisi `-` jika belum memiliki NIP / non-ASN). |
-| 3 | `Nama` | Text | Tidak | `Capt. Slamet Riyadi, M.Mar` | Nama lengkap beserta gelar resmi aparatur. |
-| 4 | `KelompokJabatan` | Text | Tidak | `Nahkoda` | 9 kelompok jabatan awak kapal armada. |
-| 5 | `JabatanLengkap` | Text | Tidak | `Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan` | Nomenklatur formasi jabatan spesifik. |
-| 6 | `KelasKapal` | Enum | Ya | `KELAS_II` | Kelas kapal penempatan: `KELAS_I`, `KELAS_II`, `KELAS_III`, `KELAS_IV`, `KELAS_V`. |
-| 7 | `Rumpun` | Enum | Tidak | `AWAK_DEK` | Nilai: `AWAK_DEK` atau `AWAK_MESIN`. |
-| 8 | `KategoriKepegawaian`| Enum | Ya | `PNS` | Nilai: `PNS`, `PPPK_FUNGSIONAL`, `PPPK_PELAKSANA`, `PPPK_PARUH_WAKTU`, `PJLP`. |
-| 9 | `StatusAktif` | Enum | Tidak | `AKTIF` | Nilai: `AKTIF`, `TUGAS_BELAJAR`, `MUTASI`, `NON_AKTIF`. |
-| 10 | `PangkalanID` | Text (FK) | Ya | `UPT-BTM` | Pangkalan UPT homebase penempatan. |
-| 11 | `KapalID` | Text (FK) | Ya | `KP-ORCA-01` | Kapal penugasan saat ini (terintegrasi otomatis dari penugasan aktif). |
-| 12 | `TanggalMulaiKerja` | Date | Ya | `2018-02-01` | Tanggal mulai bertugas di kapal pengawas. |
-| 13 | `TanggalSelesaiKontrak`| Date| Ya | `2026-12-31` | Tanggal berakhir masa kontrak (khusus PPPK Paruh Waktu & PJLP). |
-| 14 | `NomorBukuPelaut` | Text | Ya | `C 042981` | Nomor registrasi Buku Pelaut resmi Ditjen Hubla. |
-| 15 | `Catatan` | Text | Ya | `Pemegang sertifikat ANKAPIN I` | Keterangan khusus kualifikasi. |
-| 16 | `UpdatedAt` | DateTime | Tidak | `2026-11-06T09:00:00Z` | Waktu pembaruan data terakhir. |
-| 17 | `UpdatedBy` | Text (FK) | Tidak | `admin@kkp.go.id` | User pelaksana pembaruan data. |
+| # | Nama Kolom | Tipe Data | Format Sheet | Nullable | Contoh Nilai | Aturan Bisnis & Validasi |
+|---|---|---|---|:---:|---|---|
+| 1 | `PegawaiID` | Text (PK) | Plain Text (`CENTER`) | Tidak | `PEG-0042` | Format unik `PEG-XXXX` 4 digit urut. |
+| 2 | `NIP` | Text | Plain Text `@` (`CENTER`) | Kondisional | `198504122010121002` | **Wajib 18 digit angka** untuk `PNS`, `P3K`, `P3K_PARUH_WAKTU`. **Opsional/Kosong** untuk `PJLP`. |
+| 3 | `Nama` | Text | Text (`LEFT`) | Tidak | `SLAMET RIYADI` | **Wajib HURUF BESAR (`A-Z` & spasi tunggal saja)**, tanpa gelar, tanpa tanda petik (`'`), titik, koma, atau angka (`sanitizeNamaPersonel`). |
+| 4 | `KelompokJabatan` | Text | Text (`LEFT`) | Tidak | `Nahkoda` | 10 kelompok jabatan: `Nahkoda`, `Mualim`, `KKM`, `Masinis`, `Markonis`, `Serang`, `Juru Mudi`, `Kelasi`, `Juru Minyak`, `Juru Masak`. |
+| 5 | `JabatanLengkap` | Text | Text (`LEFT`) | Ya | `Nakhoda Kapal Kelas II` | **Tidak diinput di form Nakhoda.** Diisi otomatis dari `KelompokJabatan` + `KelasKapal` untuk kompatibilitas arsip; nomenklatur formal TU dilengkapi di SIKAP via notifikasi disparitas. |
+| 6 | `KelasKapal` | Enum | Text (`CENTER`) | Ya | `KELAS II` | `KELAS I`, `KELAS II`, `KELAS III`, `KELAS IV`, `NON-KELAS`. |
+| 7 | `Rumpun` | Enum | Text (`CENTER`) | Tidak | `DEK` | Nilai: `DEK`, `MESIN`, `PENUNJANG`. |
+| 8 | `KategoriKepegawaian`| Enum | Text (`CENTER`) | Tidak | `PNS` | 4 kategori baku: `PNS`, `P3K`, `P3K_PARUH_WAKTU`, `PJLP`. |
+| 9 | `StatusAktif` | Enum | Text (`CENTER`) | Tidak | `AKTIF` | Nilai: `AKTIF`, `CUTI`, `TUGAS_BELAJAR`, `MUTASI_KELUAR`, `PENSIUN`, `NONAKTIF`. |
+| 10 | `StatusPenempatan` | Enum | Text (`CENTER`) | Tidak | `PUSAT_POA` | `PUSAT_POA` (Organik Pusat) atau `DIPERBANTUKAN_UPT` (AKP Pusat diperbantukan di UPT berdasar ST/SK). |
+| 11 | `PangkalanID` | Text (FK) | Text (`CENTER`) | Ya | `UPT-BTM` | Pangkalan UPT homebase penempatan. |
+| 12 | `KapalID` | Text (FK) | Text (`LEFT`) | Ya | `KP-ORCA-01` | Kapal penugasan saat ini (terintegrasi otomatis dari penugasan Sijil aktif). |
+| 13 | `TanggalMulaiKerja` | Date | `yyyy-mm-dd` (`CENTER`) | Ya | `2018-02-01` | Tanggal mulai bertugas di kapal pengawas (wajib pilih dari kalender). |
+| 14 | `TanggalSelesaiKontrak`| Date | `yyyy-mm-dd` (`CENTER`) | Ya | `2026-12-31` | Tanggal berakhir masa kontrak (khusus `P3K_PARUH_WAKTU` & `PJLP`). |
+| 15 | `NomorSKPenempatan` | Text | Plain Text (`LEFT`) | Ya | `ST-412/PSDKP/2026` | Opsional (diisi bila ada nomor SK Penempatan / Surat Tugas). |
+| 16 | `DokumenPenempatanURL`| Text (URL) | Text (`LEFT`) | Ya | `https://drive.google.com/...` | Opsional (diisi bila ada pindaian SK Penempatan / Surat Tugas di Drive). |
+| 17 | `UkuranBaju` | Enum | Text (`CENTER`) | Ya | `L` | Opsional: `S`, `M`, `L`, `XL`, `XXL`, `XXXL`. |
+| 18 | `UkuranSepatu` | Text | Plain Text (`CENTER`) | Ya | `42` | Opsional: `37` s.d. `46`. |
+| 19 | `Catatan` | Text | Wrap Text (`LEFT`) | Ya | `Penempatan Aktif: KP. Orca 01 (Nahkoda) \| Pemegang sertifikat BST aktif` | Narasi ringkas formal *human-readable* yang terisi rapi untuk pembacaan langsung di Sheet. |
+| 20 | `UpdatedAt` | DateTime | `yyyy-mm-dd hh:mm:ss` (`CENTER`) | Tidak | `2026-11-17 09:00:00` | Waktu pembaruan data terakhir (format terbaca manusia). |
+| 21 | `UpdatedBy` | Text (FK) | Text (`LEFT`) | Tidak | `USR-STAF-AWAK-001` | User pelaksana pembaruan data. |
+
+> [!NOTE]
+> **Kebijakan Penghapusan `NomorBukuPelaut`:** Kolom lama `NomorBukuPelaut` tidak lagi menjadi kolom kanonik, tidak ditampilkan di UI, dan tidak dihitung dalam metrik kelengkapan data. Apabila sheet lama masih memiliki kolom tersebut, kolom dipertahankan secara pasif hanya demi integritas arsip historis.
 
 ---
 
-### 3.2 `Master_Standar_Pelatihan` — Katalog Kurikulum Kompetensi 9 Jabatan Awak
-Memuat 114 butir kurikulum wajib kecakapan awak kapal pengawas.
+### 3.2 `Master_Standar_Pelatihan` — Katalog Kurikulum Kompetensi 10 Jabatan Awak
+Memuat 114+ butir kurikulum wajib kecakapan awak kapal pengawas (dengan **BST / Basic Safety Training** wajib bagi seluruh awak *on board*, termasuk PJLP Juru Minyak dan Juru Masak).
 
 | # | Nama Kolom | Tipe Data | Nullable | Contoh Nilai | Aturan Bisnis & Validasi |
 |---|---|---|:---:|---|---|
@@ -193,4 +200,20 @@ Tabel rujukan formasi personil minimum per kelas kapal pengawas PSDKP.
 1. **`Users`**: Menyimpan akun pengguna, NIP, PasswordHash (HMAC SHA-256 + garam), DivisiID, Role, dan Status persetujuan.
 2. **`Divisi`**: Referensi divisi resmi (`DIV-AWAK` = Subdirektorat Pengawakan / Timja Pengawakan).
 3. **`Kapal`**: Daftar inventaris kapal pengawas armada PSDKP (`KapalID`, `NamaKapal`, `JenisKapal`, `KelasKapal`).
-4. **`Opsi`**: Daftar pilihan dropdown terstandar untuk grup `AWAK_SCOPE`, `AWAK_KATEGORI`, `AWAK_JENIS_KEGIATAN`, `AWAK_POS_SIJIL`, dsb.
+4. **`Opsi`**: Daftar pilihan dropdown terstandar untuk grup `AWAK_SCOPE`, `AWAK_KATEGORI` (`PNS`, `P3K`, `P3K_PARUH_WAKTU`, `PJLP`), `AWAK_JENIS_KEGIATAN`, `AWAK_POS_SIJIL` (termasuk `JURU_MINYAK` dan `JURU_MASAK`), dsb.
+
+---
+
+## 5. Standar Format Fisik Google Spreadsheet (`SheetFormatter` — Formal & Human-Readable)
+
+Untuk mengantisipasi pemeriksaan langsung oleh pimpinan maupun auditor di Google Sheets `RadarPOA_Nakhoda_DB`, setiap sheet wajib memenuhi aturan pemformatan resmi berikut (dieksekusi otomatis oleh `applyFormalSheetFormatting()` di `data/SheetAccess.js`):
+
+| Elemen Sheet | Aturan Standar Formal | Nilai Spesifik |
+|---|---|---|
+| **Tipografi Dasar** | Jenis & ukuran huruf seragam | `Arial` / `Inter`, `10pt` (data), `10pt Bold` (header) |
+| **Header Baris 1** | Kontras tinggi, resmi, & beku saat gulir | Background `#0F172A` (Master) / `#1E293B` (Transaksi), teks `#FFFFFF`, tinggi `34px`, `setFrozenRows(1)` |
+| **Baris Data (Baris 2+)** | Tinggi proporsional, *zebra banding*, batas bersih | Tinggi `26px`, vertikal `MIDDLE`, border `#E2E8F0`, warna baris ganjil `#FFFFFF` & genap `#F8FAFC` |
+| **Anti-Notasi Ilmiah (`@`)** | Kolom NIP & Nomor Seri wajib berformat teks murni | `NIP`, `NomorSertifikat`, `NomorSKPenempatan`, `UkuranSepatu` diformat `.setNumberFormat('@')` |
+| **Tanggal & Waktu** | Standar ISO bersih agar mudah disortir & dibaca | Kolom tanggal: `yyyy-mm-dd` (`CENTER`); Timestamp: `yyyy-mm-dd hh:mm:ss` (`CENTER`) |
+| **Angka & Kuantitas** | Pemisah ribuan dan perataan kanan | `Jumlah`, `Minimum`, `JumlahPeserta`, `MasaBerlakuBulan`: format `#,##0` (`RIGHT`) |
+| **Lebar Kolom Utama** | Tidak memotong teks kunci atau menyisakan ruang kosong berlebih | `PegawaiID`/`RowID`: `140px`, `NIP`: `165px`, `Nama`: `240px`, `KelompokJabatan`: `165px`, `KelasKapal`: `110px`, `KategoriKepegawaian`: `155px`, `StatusPenempatan`: `165px`, `KapalID`: `180px`, `Tanggal*`: `120px`, `UkuranBaju`/`UkuranSepatu`: `105px`, `Catatan`: `300px` (`WRAP`) |

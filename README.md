@@ -40,7 +40,7 @@ Sesuai mandat fungsional, seluruh alur interaksi dan transaksi data di Nakhoda d
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-1. **[AWAK-A] Komposisi AKN:** Pelaporan berkala postur kekuatan personil (Keseluruhan vs POA) untuk 5 kategori kepegawaian berbasis snapshot total angka terkini dengan kalkulasi carry-forward otomatis.
+1. **[AWAK-A] Komposisi AKN:** Pelaporan berkala postur kekuatan personil (Keseluruhan vs POA) untuk 4 kategori kepegawaian baku (`PNS`, `P3K`, `P3K_PARUH_WAKTU`, `PJLP`) berbasis snapshot total angka terkini dengan carry-forward otomatis, filter kalender/triwulan/semester, dan rekap per jabatan.
 2. **[AWAK-B] Log Kegiatan & Pembinaan:** Pencatatan agenda pelatihan, penyegaran menembak, dan bimtek awak kapal dengan dukungan unggah multi-berkas Drive.
 3. **[AWAK-C] Direktori Awak Kapal:** Buku induk 396+ personil awak kapal pengawas lengkap dengan rincian kelas kapal, kategori kepegawaian, dan penyamaran NIP untuk privasi.
 4. **[AWAK-D] Kompetensi & Sertifikat:** Pengawalan pemenuhan kurikulum wajib kecakapan pelaut perikanan dan pemantauan masa berlaku sertifikat (termasuk revalidasi BST/BST-F 5 tahunan).

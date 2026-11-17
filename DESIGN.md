@@ -22,7 +22,7 @@ Setiap layar menjawab **satu pertanyaan** lebih dulu. Elemen terbesar di layar a
 | Layar | Pertanyaan utama | Elemen terbesar |
 |---|---|---|
 | Ringkasan | Apakah kekuatan awak cukup, dan apa yang perlu ditindak minggu ini? | Angka total AKN + kalimat temuan |
-| Komposisi AKN | Berapa awak per kategori kepegawaian minggu ini, dan apa yang berubah dari minggu lalu? | Papan komposisi 2 scope x 5 kategori |
+| Komposisi AKN | Berapa awak per kategori kepegawaian pada periode/triwulan terpilih, dan apa perubahan per jabatan? | Papan komposisi 2 scope x 4 kategori + Rekap per Jabatan |
 | Direktori awak | Siapa saja awak yang aktif, di kapal mana, dan datanya siapa yang belum lengkap? | Tabel direktori |
 | Kompetensi & sertifikat | Siapa yang sertifikatnya habis atau belum memenuhi standar jabatan? | Daftar tindak lanjut, diurutkan dari yang paling mendesak |
 | Papan sijil | Kapal mana yang kurang awak untuk berlayar? | Matriks kapal x jabatan |
@@ -165,7 +165,7 @@ Aturan:
 `h1` (24px) di kiri; kalimat temuan 14px abu di bawahnya; aksi nyata di kanan (satu tombol utama near-black + satu sekunder). Cap waktu "Diperbarui 08.43" dengan tombol muat ulang berikon 16px bila data dari server.
 
 ### 5.2 Filter
-Satu baris tier MD, 12px antar kontrol: periode lebih dulu, lalu filter lain, utilitas (ekspor, muat ulang) di kanan. Rentang tanggal di tingkat halaman **atau** di tiap kartu, tidak keduanya.
+Satu baris tier MD, 12px antar kontrol: pemilih periode/triwulan (`Minggu Kalender`, `TW I`–`TW IV`, `Semester I`–`II`, `Rentang Kalender`) lebih dulu, lalu filter lain, utilitas (ekspor, muat ulang) di kanan. Rentang tanggal di tingkat halaman **atau** di tiap kartu, tidak keduanya. **Larangan ketik manual:** semua kontrol tanggal pada toolbar maupun form wajib berupa *Calendar Picker* (`type="date"`) atau dropdown preset yang tidak dapat diketik manual (`onkeydown="return false"`).
 
 ### 5.3 KPI
 - **Satu kontainer dibagi garis 1px** menjadi kolom sama lebar; tanpa ubin per angka, tanpa ikon, tanpa sparkline. Jumlah kolom sama dengan jumlah KPI (3 atau 4).
@@ -188,7 +188,9 @@ Satu baris tier MD, 12px antar kontrol: periode lebih dulu, lalu filter lain, ut
 - Input tier LG 40px, putih, garis `--control`. Jarak 16px antarbidang; 24px dari deskripsi ke label pertama; 16px ke tombol simpan.
 - Batas yang tersisa (NIP 18 digit, ukuran berkas 15 MB) tampil permanen di sebelah bidang dan terhubung via `aria-describedby`.
 - **Satu model simpan per tampilan**: tombol Simpan per panel (kanan bawah). Tidak dicampur dengan simpan otomatis.
-- Bidang tanggal memakai pemilih tanggal.
+- Bidang tanggal dan pemilih periode minggu **wajib** memakai pemilih kalender (`<input type="date">` dengan penguncian `onkeydown="return false"` & auto-`showPicker()`); dilarang keras membiarkan pengguna mengetik kode minggu atau tanggal secara manual.
+- Input **Nama Lengkap** pada dialog Direktori Awak otomatis dikonversi ke **HURUF BESAR (`A-Z` & spasi tunggal)** tanpa gelar, tanpa tanda petik, titik, koma, maupun angka saat pengguna mengetik.
+- Input **NIP** tampil **kondisional**: wajib 18 digit saat kategori `PNS`, `P3K`, atau `P3K_PARUH_WAKTU`, dan otomatis nonaktif/opsional saat kategori `PJLP`. Form Nakhoda **tidak menampilkan** input `Jabatan Lengkap` maupun `Nomor Buku Pelaut`.
 
 ### 6.3 Pill status
 - Tinggi 20px, 12px/500, bulat penuh, `flex: none; white-space: nowrap`. **Satu penanda status per baris.**
@@ -247,13 +249,15 @@ Pertanyaan: *apakah kekuatan awak cukup dan apa yang perlu ditindak?*
 5. Papan Sijil ringkas: 6 kapal paling kurang awak.
 
 ### 7.2 Komposisi AKN (AWAK-A)
-- **Papan komposisi**: baris = 5 kategori; kolom = `AKN_KESELURUHAN`, `AKN_POA`, selisih dari minggu lalu. Angka tabular rata kanan; bar tipis sebagai trek (`AKN_POA` terisi oranye di atas trek `AKN_KESELURUHAN` abu).
+- **Pemilih Periode & Triwulan:** Menggunakan dropdown mode (`Minggu Kalender`, `TW I`–`TW IV`, `Semester I`–`II`, `Rentang Kalender`) dan *Calendar Picker* anti-ketik manual; memilih tanggal di kalender otomatis menentukan periode minggu `YYYY-MM-W#`.
+- **Papan komposisi**: baris = **4 kategori** (`PNS`, `P3K`, `P3K_PARUH_WAKTU`, `PJLP`); kolom = `AKN_KESELURUHAN`, `AKN_POA`, selisih dari periode lalu. Angka tabular rata kanan; bar tipis sebagai trek (`AKN_POA` terisi oranye di atas trek `AKN_KESELURUHAN` abu).
+- **Rekap Kekuatan per Jabatan (Eksekutif):** Kartu/tabel pendamping yang menampilkan total personel eksisting vs kebutuhan standar minimum *Safe Manning* untuk tiap jabatan (`Nahkoda`, `Mualim`, `KKM`, `Masinis`, `Markonis`, `Serang`, `Juru Mudi`, `Juru Minyak`, `Juru Masak`, `Kelasi`).
 - Nilai dari carry-forward diberi penanda ("dari 2026-10 W04", abu 12px), tidak disembunyikan.
-- Tombol "Input komposisi" membuka dialog **matriks 2 x 5 yang sudah terisi total terkini**; hanya sel yang diubah yang tersimpan (snapshot total, bukan selisih). Sel yang diubah diberi titik penanda dan teks "sebelumnya 41".
+- Tombol "Input komposisi" membuka dialog **matriks 2 x 4 yang sudah terisi total terkini**; hanya sel yang diubah yang tersimpan (snapshot total, bukan selisih). Sel yang diubah diberi titik penanda dan teks "sebelumnya 41".
 - Tabel riwayat di bawah: tier SM untuk Revisi dan Anulir.
 
 ### 7.3 Direktori awak
-Tabel 50 baris/halaman: inisial + nama + NIP (mono), jabatan (kelompok + kelas kapal), kategori kepegawaian, kapal penempatan, status sertifikat paling bermasalah. Filter MD: pencarian, kelompok jabatan, rumpun (Dek/Mesin), kategori, kapal, status. Klik baris membuka lembar samping dengan tab *Profil | Sertifikat | Penugasan | Riwayat*.
+Tabel 50 baris/halaman: inisial + nama (HURUF BESAR tanpa gelar/simbol) + NIP (mono, `-` bila PJLP), jabatan (`KelompokJabatan` + `KelasKapal`), kategori kepegawaian (4 kategori), **Penempatan & Durasi Tugas Kapal** (termasuk badge `Diperbantukan UPT` bila relevan), dan status sertifikat dasar **BST** (kolom lama `Buku Pelaut` dihapus). Filter MD: filter periode (`Semua`, `TW I`–`TW IV`, `Semester I`–`II`, `Rentang Kalender`), pencarian, kelompok jabatan (termasuk `Juru Masak / Koki` & `Juru Minyak / Oiler`), rumpun (`Dek` / `Mesin` / `Penunjang`), kategori, kapal, status penempatan (`Pusat` / `Diperbantukan UPT`), status sertifikat BST. Klik baris membuka lembar samping dengan tab *Profil | Sertifikat | Penugasan | Riwayat* lengkap dengan atribut **Ukuran Baju**, **Ukuran Sepatu**, dan lampiran opsional **SK Penempatan / Surat Tugas**.
 
 ### 7.4 Kompetensi & sertifikat
 Dua tampilan, satu layar: **Daftar tindak lanjut** (default, urut hari tersisa menaik) dan **Matriks kelengkapan** (awak x standar pelatihan wajib; titik terisi = lulus, kosong = belum). Aksi cepat per baris: "Catat sertifikat" (tier SM) membuka dialog dengan nomor, tahun, berlaku sampai, dan unggah bukti.
@@ -289,7 +293,7 @@ Aturan umum (skill): satu pertanyaan, satu seri, satu warna per grafik; tidak ad
 | Kapan kegiatan berlangsung? | Garis waktu per bulan | `Charts.timeline` |
 
 ### 8.1 Papan Sijil (spesifikasi)
-- Baris: kapal, dikelompokkan di bawah subjudul **kelas kapal** (Kelas I-V). Kolom: jabatan standar (Nakhoda, Mualim I-III, KKM, Masinis I-III, Markonis, Serang, Juru Mudi, Kelasi, Juru Minyak). Sel 36x32px.
+- Baris: kapal, dikelompokkan di bawah subjudul **kelas kapal** (Kelas I-V). Kolom: jabatan standar (Nakhoda, Mualim I-III, KKM, Masinis I-III, Markonis, Serang, Juru Mudi, Kelasi, Juru Minyak / Oiler, Juru Masak / Koki). Sel 36x32px.
 - Isi sel: sisa terhadap kebutuhan minimum (`+1`, `0`, `-1`, `-2`), angka tabular 12px. **Satu warna menanjak ke arah negatif**: `0` dan positif = latar `--surface` + teks abu; `-1` = `--pill-negative`; `-2` atau lebih = `--negative` pekat dengan teks putih. Terisi dari kebutuhan muncul saat hover (teks tanpa panah): "Masinis II, KP Hiu 05: terisi 1 dari 2".
 - Tiap baris menyatakan total kekurangan di kolom terakhir. Legenda hanya memuat kategori yang tampil; setiap swatch adalah sel miniatur yang sama.
 - Pada ponsel, kolom pertama (kapal) dan total tetap, sisanya bergeser horizontal.

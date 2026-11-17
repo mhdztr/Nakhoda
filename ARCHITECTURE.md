@@ -107,7 +107,7 @@ Nakhoda/
 │   ├── Script_Admin.html       # Controller manajemen akun, approval, dan audit log
 │   └── views/
 │       ├── Ringkasan.html      # Dasbor eksekutif utama & strip KPI
-│       ├── Komposisi.html      # Sub-modul A (Papan komposisi AKN 2x5)
+│       ├── Komposisi.html      # Sub-modul A (Papan komposisi AKN 2x4 & Rekap Jabatan)
 │       ├── Kegiatan.html       # Sub-modul B (Feed kegiatan & uploader)
 │       ├── Direktori.html      # Sub-modul C (Tabel direktori awak armada)
 │       ├── Kompetensi.html     # Sub-modul D (Daftar tindak lanjut & matriks sertifikat)
@@ -137,7 +137,7 @@ Setiap fungsi publik di backend mengikuti konvensi awalan nama per modul (ADR-12
 - `auth_getSessionInfo(token)`: Pengambilan metadata profil pengguna yang sedang login.
 
 ### 3.2 Sub-Modul A — Komposisi AKN (`akn_*`)
-- `akn_getPapan(token, filter)`: Mengambil matriks komposisi 2x5 terkini (nilai efektif hasil carry-forward, penanda sumber periode, dan delta terhadap minggu lalu).
+- `akn_getPapan(token, filter)`: Mengambil matriks komposisi 2x4 terkini (nilai efektif hasil carry-forward, penanda sumber periode, rekap per jabatan, dan delta terhadap periode lalu) dengan filter `TW1`–`TW4`, `SEM1`–`SEM2`, atau rentang kalender.
 - `akn_getRiwayat(token, filter)`: Mengambil daftar kronologis riwayat baris komposisi.
 - `akn_submit(token, payload)`: Menyimpan baris snapshot perubahan dengan validasi `POA <= Keseluruhan`.
 - `akn_revisi(token, payload)`: Menandai baris lama sebagai `SUPERSEDED` dan meng-append baris baru dengan tautan `SupersedesRowID`.
@@ -154,13 +154,13 @@ Setiap fungsi publik di backend mengikuti konvensi awalan nama per modul (ADR-12
 - `keg_getTimeline(token, filter)`: Mengambil data agenda dalam format sekuensial garis waktu.
 
 ### 3.4 Sub-Modul C — Direktori Awak (`dir_*`)
-- `dir_list(token, params)`: Mengambil daftar filterable awak kapal dengan paginasi virtual (50 per halaman) dan penyamaran NIP bagi non-pengelola.
-- `dir_get(token, pegawaiId)`: Mengambil profil lengkap personil, riwayat penugasan, dan ringkasan sertifikat.
-- `dir_save(token, payload)`: Menyimpan penambahan atau pembaruan profil awak dengan pencatatan audit sebelum/sesudah.
-- `dir_nonaktifkan(token, params)`: Mengubah status personil menjadi `NON_AKTIF` / `MUTASI`.
-- `dir_setKategoriBatch(token, payload)`: Pembaruan kategori kepegawaian secara massal bagi personil terpilih.
-- `dir_getKualitasData(token)`: Mengambil statistik kelengkapan atribut (antrean "Perlu Dilengkapi").
-- `dir_importDariSikap(token, params)`: Skrip migrasi idempoten satu arah dari database SIKAP (khusus Superadmin).
+- `dir_list(token, params)`: Mengambil daftar filterable awak kapal dengan paginasi virtual (50 per halaman), filter periode **Triwulan (`TW1`–`TW4`), Semester (`SEM1`–`SEM2`), Rentang Kalender (`startDate`–`endDate`)**, `StatusPenempatan` (`PUSAT_POA` / `DIPERBANTUKAN_UPT`), kalkulasi **Durasi Tugas Kapal (`durasiKapalTeks`)**, kelengkapan sertifikat dasar **BST**, dan penyamaran NIP bagi non-pengelola.
+- `dir_get(token, pegawaiId)`: Mengambil profil lengkap personil (termasuk ukuran baju/sepatu & SK Penempatan), riwayat penugasan, dan ringkasan sertifikat.
+- `dir_save(token, payload)`: Memvalidasi nama kanonik (`sanitizeNamaPersonel`), menerapkan validasi kondisional **NIP 18 digit wajib untuk `PNS`/`P3K`/`P3K_PARUH_WAKTU` dan non-wajib untuk `PJLP`**, menyimpan ke `Master_Awak`, memformat sheet formal, lalu memanggil `_pushAwakToSikap()` secara otomatis.
+- `dir_nonaktifkan(token, params)`: Mengubah status personil menjadi `NONAKTIF` / `MUTASI_KELUAR` serta menyinkronkan perubahan status ke SIKAP.
+- `dir_setKategoriBatch(token, payload)`: Pembaruan kategori kepegawaian (4 kategori baku) secara massal bagi personil terpilih dan *push sync* ke SIKAP.
+- `dir_getKualitasData(token)`: Mengambil statistik kelengkapan atribut (antrean "Perlu Dilengkapi" berdasarkan kepemilikan **BST** aktif dan kelengkapan NIP non-PJLP).
+- `dir_importDariSikap(token, params)` & `dir_runScheduledSikapSync()`: Rekonsiliasi & deteksi konflik mutasi/penonaktifan pegawai dari database SIKAP (`_getSikapOnboardConflicts`) menggunakan pencocokan prioritas `PegawaiID` $\rightarrow$ `NIP` $\rightarrow$ `Nama Kanonik`.
 
 ### 3.5 Sub-Modul D — Kompetensi & Sertifikat (`kom_*`)
 - `kom_getTindakLanjut(token, filter)`: Mengambil daftar sertifikat yang kedaluwarsa atau segera habis (diurutkan berdasarkan sisa hari kedaluwarsa).
@@ -275,11 +275,25 @@ POA_Evidence_Nakhoda/
 
 Setiap file diindeks pada tabel `TX_Evidence` dengan mencatat `EvidenceID`, `RefSheet`, `RefRowID`, `DriveFileID`, `FileName`, `FileType`, `UploadedBy`, dan `UploadedAt`.
 
+### 5.4 Normalisasi Nama Kanonik & Sinkronisasi Dua Arah ("Bu Desi $\leftrightarrow$ Bu Ita")
+1. **Fungsi Murni `sanitizeNamaPersonel(rawNama)` (`pure/Kelas.js`):**
+   - Menghapus awalan gelar kehormatan (`CAPT.`, `DR.`, `IR.`, `H.`, `HJ.`) dan gelar belakang setelah koma (`, S.St.Pi`, `, A.Md.Pi`, `, M.Mar`, dsb.).
+   - Mengonversi ke `UPPERCASE` dan membuang seluruh tanda petik (`'`, `` ` ``, `’`), titik, koma, tanda hubung, serta digit (`[^A-Z\s]`), lalu merapikan spasi ganda (`"Ma'ruf, S.Pi."` $\rightarrow$ `"MARUF"`).
+2. **Push Sync Otomatis `_pushAwakToSikap(awakRecord)` (`services/DirektoriService.js`):**
+   - Dipanggil otomatis setelah `dir_save()`, `dir_setKategoriBatch()`, `dir_nonaktifkan()`, `sijil_assignAwak()`, `sijil_unassignAwak()`, dan `kom_saveSertifikat()`.
+   - Membuka `RadarPOA_SIKAP_DB` (via Property `SIKAP_SS_ID`), mencocokkan baris pada `Master_Pegawai_POA` menggunakan urutan prioritas `(1) PegawaiID`, `(2) NIP`, `(3) sanitizeNamaPersonel(Nama)`.
+   - Menulis pembaruan `KelompokJabatan`, `TingkatKelas`, `StatusKepegawaian`, `UnitKerja`, `StatusPenempatan`, `KapalPenempatan`, `UkuranBaju`, `UkuranSepatu`, serta menandai **`SumberSinkronisasi = 'PUSH_NAKHODA'`** dan **`StatusKelengkapanTU = 'DISPARITAS_NAKHODA'`** lengkap dengan deskripsi di `CatatanDisparitas` apabila ada perubahan dari Nakhoda atau `JabatanLengkap` TU belum terisi — sehingga Subbag TU di SIKAP menerima banner notifikasi langsung.
+3. **Konversi Filter Periode Dinamis (`resolvePeriodeWindow`):**
+   - Menerjemahkan input kalender atau preset `TW1` (`01-01` s.d. `03-31`), `TW2` (`04-01` s.d. `06-30`), `TW3` (`07-01` s.d. `09-30`), `TW4` (`10-01` s.d. `12-31`), `SEM1` (`01-01` s.d. `06-30`), `SEM2` (`07-01` s.d. `12-31`), atau `CUSTOM` (`startDate` s.d. `endDate`) di server sebelum menyaring riwayat snapshot & penempatan.
+
 ---
 
-## 7. Mekanisme Self-Healing Database Satelit
+## 7. Mekanisme Self-Healing & Pemformatan Formal Spreadsheet (`SheetFormatter`)
 
-Untuk menjamin ketersediaan sistem saat instalasi awal atau pemindahan sheet, modul `data/SheetAccess.js` mengimplementasikan fungsi `openAwakSheet(sheetName)`:
-1. Membaca Script Property `AWAK_SS_ID`.
-2. Jika properti belum ada atau spreadsheet terhapus, fungsi `ensureAwakSpreadsheet()` otomatis membuat spreadsheet baru dengan nama `RadarPOA_Nakhoda_DB` dan menyimpan ID-nya ke Script Properties.
-3. Saat sebuah sheet dibuka, jika sheet tersebut belum ada, `_autoCreateAwakSheet()` langsung membuat sheet tersebut dengan baris header standar relasional lengkap dengan format teks tebal dan baris header beku (*frozen header row*).
+Untuk menjamin ketersediaan sistem dan keterbacaan langsung oleh pimpinan/auditor di Google Sheets, modul `data/SheetAccess.js` mengimplementasikan `openAwakSheet(sheetName)` dan **`applyFormalSheetFormatting(sheet, sheetName)`**:
+1. Membaca Script Property `AWAK_SS_ID` (atau membuat `RadarPOA_Nakhoda_DB` via `ensureAwakSpreadsheet()` jika belum ada).
+2. Mengatur gaya visual tabel formal di Google Sheets setiap inisialisasi maupun setelah pembaruan data:
+   - **Header Baris 1:** Latar `#0F172A` (Master) / `#1E293B` (Transaksi), teks putih `#FFFFFF` tebal, tinggi `34px`, dan baris beku (`setFrozenRows(1)`).
+   - **Data Baris 2+:** Tinggi `26px`, perataan vertikal `MIDDLE`, garis batas lembut `#E2E8F0`, dan *zebra banding* (`#FFFFFF` / `#F8FAFC`).
+   - **Kolom Kode & Identitas Anti-Notasi Ilmiah (`NIP`, `NomorSertifikat`):** Diformat sebagai **Plain Text (`@`)** agar 18 digit NIP tidak pernah terkonversi menjadi `1.985E+17`.
+   - **Tanggal & Timestamp:** Format ISO bersih `yyyy-mm-dd` dan `yyyy-mm-dd hh:mm:ss` (`CENTER`), serta lebar kolom eksplisit sesuai tabel di `DATA_SCHEMA.md §5`.

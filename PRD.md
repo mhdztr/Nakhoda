@@ -47,21 +47,22 @@ Sistem menerapkan prinsip pelestarian data:
 ## 3. Spesifikasi Fungsional Sub-Modul
 
 ### 3.1 Sub-Modul [AWAK-A]: Komposisi Awak Kapal Negara (AKN)
-- **Tujuan:** Monitoring postur kekuatan personil pengawakan kapal pengawas berbasis 2 Scope dan 5 Kategori Kepegawaian resmi.
+- **Tujuan:** Monitoring postur kekuatan personil pengawakan kapal pengawas berbasis 2 Scope dan 4 Kategori Kepegawaian resmi yang selaras dengan database induk SIKAP.
 - **Scope Pelaporan:**
   1. `AKN_KESELURUHAN`: Seluruh personil awak kapal di bawah lingkup pembinaan Direktorat POA.
-  2. `AKN_POA`: Personil awak kapal yang aktif langsung dalam penugasan operasi patroli armada Dit. POA.
-- **5 Kategori Kepegawaian Resmi:**
+  2. `AKN_POA`: Personil awak kapal yang aktif langsung dalam penugasan operasi patroli armada Dit. POA (termasuk AKP Pusat yang diperbantukan di kapal UPT berdasarkan SK/Surat Tugas Pusat).
+- **4 Kategori Kepegawaian Resmi:**
   1. `PNS`: Pegawai Negeri Sipil Fungsional Pelaut / Pengawas.
-  2. `PPPK_FUNGSIONAL`: PPPK Tenaga Teknis Jabatan Fungsional.
-  3. `PPPK_PELAKSANA`: PPPK Tenaga Teknis Jabatan Pelaksana.
-  4. `PPPK_PARUH_WAKTU`: PPPK Paruh Waktu (kebijakan reformasi MenPAN-RB).
-  5. `PJLP`: Penyedia Jasa Lainnya Perorangan / ABK Kontrak.
-- **Mekanisme Kerja & Validasi:**
-  - Form dialog menampilkan matriks 2x5 yang terisi nilai aktif terkini (*carry-forward*).
+  2. `P3K`: Pegawai Pemerintah dengan Perjanjian Kerja (menggabungkan fungsional dan pelaksana agar selaras 1:1 dengan SIKAP).
+  3. `P3K_PARUH_WAKTU`: PPPK Paruh Waktu (kebijakan reformasi MenPAN-RB).
+  4. `PJLP`: Penyedia Jasa Lainnya Perorangan / ABK Kontrak (termasuk Juru Minyak / Oiler dan Juru Masak / Koki).
+- **Mekanisme Kerja, Pemilih Kalender & Validasi:**
+  - **Pemilih Periode Kalender (Anti-Ketik Manual):** Operator memilih mode filter/periode melalui dropdown **`Minggu Kalender`**, **`TW I` (1 Jan–31 Mar)**, **`TW II` (1 Apr–30 Jun)**, **`TW III` (1 Jul–30 Sep)**, **`TW IV` (1 Okt–31 Des)**, **`Semester I` (1 Jan–30 Jun)**, **`Semester II` (1 Jul–31 Des)**, atau **`Rentang Kalender`**. Tanggal wajib dipilih dari *Calendar Picker* (`onkeydown="return false"`) dan dikonversi otomatis menjadi kode minggu ISO (`YYYY-MM-WW`).
+  - Form dialog menampilkan matriks 2x4 yang terisi nilai aktif terkini (*carry-forward*).
   - Pengguna hanya mengubah sel yang mengalami mutasi. Sistem hanya mencatat baris baru untuk sel yang berubah dengan penanda `BatchID` yang sama.
   - Validasi ketat: Nilai `Jumlah` bilangan bulat $\ge 0$. Nilai `AKN_POA` secara logis tidak boleh melebihi `AKN_KESELURUHAN` pada kategori yang sama.
   - Tersedia fitur *Konfirmasi Tanpa Mutasi* jika minggu berjalan tidak memiliki perubahan personil.
+  - **Rekap Kekuatan per Jabatan (Eksekutif):** Menampilkan perbandingan total awak eksisting vs standar kebutuhan minimum (*Safe Manning*) per jabatan (`Nahkoda`, `Mualim`, `KKM`, `Masinis`, `Markonis`, `Serang`, `Juru Mudi`, `Juru Minyak`, `Juru Masak`, `Kelasi`) agar pimpinan dapat melihat defisit/surplus tiap posisi secara langsung.
 
 ### 3.2 Sub-Modul [AWAK-B]: Log Kegiatan & Pembinaan Personil
 - **Tujuan:** Pencatatan komprehensif agenda pelatihan, bimbingan teknis kepelautan, penyegaran menembak, simulasi olah gerak, dan pembinaan disiplin awak kapal.
@@ -76,26 +77,31 @@ Sistem menerapkan prinsip pelestarian data:
 - **Peserta Terkait (Opsional):** Integrasi penandaan personil awak dari Direktori yang mengikuti kegiatan terkait via junction table.
 
 ### 3.3 Sub-Modul [AWAK-C]: Direktori Awak Kapal Armada
-- **Tujuan:** Buku induk personil 396+ Awak Kapal Pengawas PSDKP seluruh Indonesia.
-- **Atribut Personel:**
-  - `PegawaiID` (format `PEG-XXXX`), `NIP` (18 digit atau `-` bagi non-ASN), `NamaLengkap`.
-  - `KelompokJabatan`: 9 kelompok awak armada (Nahkoda, Mualim, KKM, Masinis, Markonis, Serang, Juru Mudi, Kelasi, Juru Minyak).
-  - `JabatanLengkap`: Nomenklatur formatur resmi KKP.
-  - `KelasKapal`: Kelas kapal pengawas penempatan (Kelas I, II, III, IV, V).
-  - `Rumpun`: `AWAK_DEK` vs `AWAK_MESIN`.
-  - `KategoriKepegawaian`: 5 kategori resmi pemerintah (PNS, PPPK Fungsional, PPPK Pelaksana, PPPK Paruh Waktu, PJLP).
-  - `StatusAktif`: `AKTIF`, `TUGAS_BELAJAR`, `MUTASI`, `NON_AKTIF`.
-  - `KapalID`: Kapal penugasan saat ini (terintegrasi otomatis dari status Sijil aktif).
-  - `NomorBukuPelaut` & Masa Berlaku Kontrak (khusus PPPK Paruh Waktu & PJLP).
-- **Fitur Khusus:**
-  - Filter cepat antrean **"Perlu Dilengkapi"** untuk data profil yang belum memiliki NIP valid, belum terpetakan kelas kapal, atau belum ditetapkan kategori kepegawaiannya.
-  - Fitur penyesuaian kategori kepegawaian massal (*batch assign*) bagi Kadiv/Superadmin.
+- **Tujuan:** Buku induk operasional 396+ Awak Kapal Pengawas PSDKP serta AKP Pusat yang diperbantukan di UPT berdasarkan SK/Surat Tugas Pusat (stasiun luar SK pusat tidak dicatat).
+- **Atribut Personel & Aturan Validasi Ketat:**
+  - `PegawaiID` (format `PEG-XXXX`).
+  - `Nama`: Wajib **HURUF BESAR (`A-Z` dan spasi tunggal saja)**, tanpa gelar, tanpa tanda petik (`'`, `` ` ``, `’`), titik, koma, atau angka (contoh: `"MA'RUF, S.Pi."` dinormalisasi menjadi `"MARUF"`).
+  - `NIP` (Aturan Kondisional):
+    - Untuk kategori **`PNS`, `P3K`, dan `P3K_PARUH_WAKTU`**: **`NIP` WAJIB diisi tepat 18 digit angka** (`/^\d{18}$/`).
+    - Untuk kategori **`PJLP`**: **`NIP` TIDAK WAJIB** (dikosongkan dan kolom input dinonaktifkan karena personel PJLP tidak memiliki NIP).
+  - `KelompokJabatan`: Operator Nakhoda hanya memilih kelompok jabatan (`Nahkoda`, `Mualim`, `KKM`, `Masinis`, `Markonis`, `Serang`, `Juru Mudi`, `Kelasi`, `Juru Minyak (Oiler)`, `Juru Masak (Koki)`). **Tidak ada input manual `JabatanLengkap`** maupun **`NomorBukuPelaut`** di form Nakhoda.
+  - `KelasKapal`: Kelas kapal pengawas penempatan (`KELAS I`, `KELAS II`, `KELAS III`, `KELAS IV`, `NON-KELAS`).
+  - `Rumpun`: `DEK`, `MESIN`, atau `PENUNJANG`.
+  - `KategoriKepegawaian`: 4 kategori resmi (`PNS`, `P3K`, `P3K_PARUH_WAKTU`, `PJLP`).
+  - `StatusAktif`: `AKTIF`, `CUTI`, `TUGAS_BELAJAR`, `MUTASI_KELUAR`, `PENSIUN`, `NONAKTIF`.
+  - `StatusPenempatan`: `PUSAT_POA` (Organik Dit. POA Pusat) atau `DIPERBANTUKAN_UPT` (AKP Pusat diperbantukan di kapal/UPT daerah), dilengkapi `NomorSKPenempatan` & `DokumenPenempatanURL` yang bersifat **opsional (*diisi bila ada*)**.
+  - `KapalID`: Kapal penugasan saat ini beserta perhitungan **Durasi Tugas di Kapal Saat Ini** (`durasiKapalTeks` dihitung otomatis dari `TanggalNaik` aktif di Sijil).
+  - `UkuranBaju` (`S`, `M`, `L`, `XL`, `XXL`, `XXXL`) & `UkuranSepatu` (`37`–`46`): Atribut logistik operasional opsional yang dibutuhkan secara berkala.
+- **Fitur Khusus & Sinkronisasi SIKAP:**
+  - **Filter Periode Penempatan (TW/Semester/Kalender):** Memungkinkan pencarian awak yang aktif/bermutasi pada periode `TW I`–`TW IV`, `Semester I`–`II`, atau rentang tanggal dari kalender (*anti-ketik manual*).
+  - **Antrean "Perlu Dilengkapi":** Memfokuskan data yang belum memiliki sertifikat dasar **BST (*Basic Safety Training*)** aktif atau non-PJLP yang NIP-nya belum 18 digit (indikator lama *Buku Pelaut* dihapus).
+  - **Push Sync Otomatis ke SIKAP ("Bu Desi $\rightarrow$ Bu Ita"):** Setiap tambah/ubah awak di Nakhoda langsung memperbarui `Master_Pegawai_POA` di SIKAP dengan penanda `StatusKelengkapanTU = 'DISPARITAS_NAKHODA'` agar memicu notifikasi di SIKAP bila nomenklatur jabatan lengkap/atribut TU perlu dilengkapi Subbag TU.
   - Penyembunyian NIP (*masking*) untuk menjaga privasi personil bagi akun non-pengelola.
 
 ### 3.4 Sub-Modul [AWAK-D]: Kompetensi & Sertifikat Kepelautan
-- **Tujuan:** Standarisasi kurikulum kecakapan awak kapal dan pengawalan masa berlaku sertifikat (termasuk sertifikat berkala 5 tahunan seperti BST/BST-F).
-- **Struktur Kurikulum Resmi:** Mengelola 114 butir standar kompetensi resmi pada 9 kelompok jabatan awak kapal:
-  - Sertifikasi Laut (STCW-F: ANKAPIN, ATKAPIN, BST-F, AFF, SCRB, MFA, Radar/ARPA, ECDIS, GMDSS/ORU, ERM/BRM).
+- **Tujuan:** Standarisasi kurikulum kecakapan awak kapal dan pengawalan masa berlaku sertifikat, dengan menempatkan **BST (*Basic Safety Training*)** sebagai sertifikat dasar wajib bagi seluruh awak kapal *on board* (termasuk PJLP).
+- **Struktur Kurikulum Resmi:** Mengelola 114+ butir standar kompetensi resmi pada kelompok jabatan awak kapal (termasuk penunjang kapal seperti Juru Masak/Oiler untuk BST):
+  - Sertifikasi Laut (STCW-F: ANKAPIN, ATKAPIN, **BST-F [Wajib Semua Awak]**, AFF, SCRB, MFA, Radar/ARPA, ECDIS, GMDSS/ORU, ERM/BRM).
   - Kompetensi Teknis (Boarding Officer VBSS, Olah Gerak Taktis, Penembakan Senjata Api Kapal Pengawas, K3 Kamar Mesin, Mesin Induk & Bantu).
   - Manajerial & Dinas Jaga (Dinas Jaga Laut, Engine Watchkeeping, Budaya Integritas & Loyalitas).
 - **Manajemen Masa Berlaku Sertifikat:**
@@ -105,18 +111,19 @@ Sistem menerapkan prinsip pelestarian data:
     2. `SEGERA_HABIS`: Sisa masa berlaku $\le 90$ hari (peringatan dini revalidasi).
     3. `KEDALUWARSA`: Telah melampaui tanggal `BerlakuSampai`.
     4. `BELUM_ADA`: Belum pernah mengunggah sertifikat kelulusan.
-- **Tindak Lanjut Cepat:** Panel kerja "Antrean Tindak Lanjut" mengurutkan sertifikat yang paling mendesak kedaluwarsa beserta tombol cepat revalidasi.
+- **Tindak Lanjut Cepat:** Panel kerja "Antrean Tindak Lanjut" mengurutkan sertifikat yang paling mendesak kedaluwarsa beserta tombol cepat revalidasi, dan otomatis menyinkronkan catatan BST/sertifikat ke `TX_TU_Pelatihan_Pegawai` di SIKAP.
 
 ### 3.5 Sub-Modul [AWAK-E]: Penugasan Kapal & Papan Sijil (Safe Manning)
-- **Tujuan:** Memantau keterisian dan kelaikan formasi awak di setiap kapal pengawas armada Ditjen PSDKP.
+- **Tujuan:** Memantau keterisian dan kelaikan formasi awak di setiap kapal pengawas armada Ditjen PSDKP, termasuk posisi PJLP seperti **Juru Minyak (Oiler)** dan **Juru Masak (Koki)**.
 - **Matriks Papan Sijil:**
-  - Visualisasi 2 dimensi: Kapal Pengawas (baris) x Formasi Jabatan (kolom).
+  - Visualisasi 2 dimensi: Kapal Pengawas (baris) x Formasi Jabatan (kolom, mencakup `NAKHODA`, `MUALIM`, `KKM`, `MASINIS`, `MARKONIS`, `SERANG`, `JURU_MUDI`, `KELASI`, `JURU_MINYAK`, `JURU_MASAK`).
   - Sel menampilkan deviasi personil terhadap standar kebutuhan minimum (*Safe Manning*): `+1`, `0`, `-1`, `-2`.
   - Warna menanjak ke arah negatif: `0` dan surplus berwarna netral; `-1` kuning peringatan; $\le -2$ merah kritis.
-- **Logika Penugasan Personel:**
-  - Perekaman riwayat penugasan (`TX_Penugasan_Kapal`): tanggal naik kapal, pos sijil, dan tanggal turun kapal.
-  - Setiap personil hanya boleh memiliki 1 penugasan kapal aktif pada satu waktu.
-  - Personil yang memiliki sertifikat keselamatan wajib berstatus `KEDALUWARSA` tetap dihitung dalam formasi kapal namun diberi penanda visual **"Tidak Laik Berlayar"**.
+- **Logika Penugasan Personel & Rekap per Jabatan:**
+  - Perekaman riwayat penugasan (`TX_Penugasan_Kapal`): tanggal naik kapal (wajib pilih dari kalender), pos sijil, tanggal turun kapal, beserta durasi penempatan aktif.
+  - Setiap personil hanya boleh memiliki 1 penugasan kapal aktif pada satu waktu dan setiap mutasi naik/turun otomatis di-*push sync* ke SIKAP.
+  - Menyediakan ringkasan **Postur Kekuatan per Jabatan** (jumlah eksisting dibanding kebutuhan ideal seluruh armada).
+  - Personil yang memiliki sertifikat keselamatan wajib (termasuk BST) berstatus `KEDALUWARSA` tetap dihitung dalam formasi kapal namun diberi penanda visual **"Tidak Laik Berlayar"**.
 
 ### 3.6 Sub-Modul [AWAK-F]: Notifikasi & Pengingat Otomatis
 - **Tujuan:** Menjaga proaktivitas pengawasan masa berlaku dokumen dan kedisiplinan pelaporan mingguan.
