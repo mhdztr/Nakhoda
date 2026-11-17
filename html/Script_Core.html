@@ -249,6 +249,46 @@ var GlobalLoader = (function () {
   };
 })();
 
+function _resolveViewIdFromRpc(funcName) {
+  var map = {
+    'ringkasan_': 'view-ringkasan',
+    'akn_': 'view-komposisi',
+    'dir_': 'view-direktori',
+    'kom_': 'view-kompetensi',
+    'sijil_': 'view-sijil',
+    'keg_': 'view-kegiatan',
+    'lap_': 'view-laporan',
+    'admin_': 'view-admin'
+  };
+  var fn = String(funcName || '');
+  for (var prefix in map) {
+    if (Object.prototype.hasOwnProperty.call(map, prefix) && fn.indexOf(prefix) === 0) {
+      return map[prefix];
+    }
+  }
+  return '';
+}
+
+function _markViewSynced(funcName) {
+  var viewId = _resolveViewIdFromRpc(funcName);
+  var targetView = viewId
+    ? document.getElementById(viewId)
+    : document.querySelector('#outlet-content > .app-view:not(.hidden)');
+  if (!targetView) return;
+  var actions = targetView.querySelector('.page-actions');
+  if (!actions) return;
+  var el = actions.querySelector('.page-sync-time');
+  if (!el) {
+    el = document.createElement('span');
+    el.className = 'page-sync-time';
+    actions.insertBefore(el, actions.firstChild);
+  }
+  var now = new Date();
+  var h = now.getHours();
+  var m = now.getMinutes();
+  el.textContent = 'Updated ' + (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
+}
+
 function rpc(funcName, params) {
   var args = Array.prototype.slice.call(arguments, 1);
   var skipLoader = (funcName === 'auth_checkRegistrationStatus');
@@ -273,6 +313,9 @@ function rpc(funcName, params) {
             AuthApp.logout(false);
           }
           return reject(new Error(err));
+        }
+        if (funcName.indexOf('auth_') !== 0) {
+          _markViewSynced(funcName);
         }
         resolve(response.data);
       })
