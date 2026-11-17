@@ -169,7 +169,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -181,7 +181,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -193,7 +193,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -205,7 +205,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -217,7 +217,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -229,7 +229,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -241,7 +241,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -253,7 +253,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -265,7 +265,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -277,7 +277,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -289,7 +289,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -301,7 +301,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -313,7 +313,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -325,7 +325,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -337,7 +337,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -349,7 +349,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -361,7 +361,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -373,7 +373,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -385,7 +385,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -397,7 +397,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -409,7 +409,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -421,7 +421,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -433,7 +433,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -445,7 +445,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -457,7 +457,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -469,7 +469,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -481,7 +481,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -493,7 +493,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -505,7 +505,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -517,7 +517,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -721,7 +721,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -733,7 +733,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -745,7 +745,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -757,7 +757,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -769,7 +769,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -781,7 +781,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -793,7 +793,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -805,7 +805,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -817,7 +817,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -829,7 +829,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -841,7 +841,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -853,7 +853,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -865,7 +865,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -877,7 +877,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -889,7 +889,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -901,7 +901,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -913,7 +913,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -925,7 +925,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -937,7 +937,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -949,7 +949,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -961,7 +961,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -973,7 +973,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -985,7 +985,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -997,7 +997,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1009,7 +1009,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1201,7 +1201,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1213,7 +1213,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1225,7 +1225,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1237,7 +1237,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1249,7 +1249,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1261,7 +1261,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas IV",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1273,7 +1273,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1285,7 +1285,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1297,7 +1297,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1309,7 +1309,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1321,7 +1321,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1333,7 +1333,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1345,7 +1345,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1357,7 +1357,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1369,7 +1369,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1381,7 +1381,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1393,7 +1393,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1405,7 +1405,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1417,7 +1417,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1429,7 +1429,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -1705,7 +1705,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1717,7 +1717,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1729,7 +1729,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1741,7 +1741,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1753,7 +1753,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1765,7 +1765,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1777,7 +1777,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1789,7 +1789,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1801,7 +1801,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1813,7 +1813,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1825,7 +1825,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1837,7 +1837,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1849,7 +1849,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1861,7 +1861,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1873,7 +1873,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1885,7 +1885,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1897,7 +1897,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1909,7 +1909,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1981,7 +1981,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -1993,7 +1993,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2005,7 +2005,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2017,7 +2017,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2029,7 +2029,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2041,7 +2041,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2053,7 +2053,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2065,7 +2065,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2077,7 +2077,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2089,7 +2089,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2101,7 +2101,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2113,7 +2113,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2125,7 +2125,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2137,7 +2137,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2149,7 +2149,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2161,7 +2161,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2173,7 +2173,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2185,7 +2185,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2197,7 +2197,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2209,7 +2209,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2221,7 +2221,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2233,7 +2233,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -2317,7 +2317,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2329,7 +2329,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2341,7 +2341,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2353,7 +2353,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2437,7 +2437,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2449,7 +2449,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2461,7 +2461,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2545,7 +2545,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2557,7 +2557,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2569,7 +2569,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2581,7 +2581,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2593,7 +2593,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2605,7 +2605,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2617,7 +2617,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2629,7 +2629,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2641,7 +2641,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2653,7 +2653,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2665,7 +2665,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2677,7 +2677,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2689,7 +2689,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2701,7 +2701,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2713,7 +2713,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2725,7 +2725,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2737,7 +2737,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2749,7 +2749,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2761,7 +2761,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2773,7 +2773,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2785,7 +2785,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2797,7 +2797,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2809,7 +2809,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2821,7 +2821,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2833,7 +2833,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2845,7 +2845,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2857,7 +2857,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2869,7 +2869,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2881,7 +2881,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2893,7 +2893,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2905,7 +2905,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2917,7 +2917,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2929,7 +2929,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2941,7 +2941,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2953,7 +2953,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2965,7 +2965,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2977,7 +2977,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -2989,7 +2989,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3001,7 +3001,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3013,7 +3013,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3025,7 +3025,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3037,7 +3037,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3049,7 +3049,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3061,7 +3061,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3073,7 +3073,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3085,7 +3085,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
     "statusAktif": "AKTIF"
   },
@@ -3121,7 +3121,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3133,7 +3133,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3145,7 +3145,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3229,7 +3229,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3241,7 +3241,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3253,7 +3253,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3337,7 +3337,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3373,7 +3373,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3397,7 +3397,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3409,7 +3409,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3421,7 +3421,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3433,7 +3433,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3445,7 +3445,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3457,7 +3457,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3469,7 +3469,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3481,7 +3481,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3493,7 +3493,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3505,7 +3505,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3517,7 +3517,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3529,7 +3529,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3541,7 +3541,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3553,7 +3553,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3565,7 +3565,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3577,7 +3577,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3589,7 +3589,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3601,7 +3601,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3613,7 +3613,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3625,7 +3625,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3637,7 +3637,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3649,7 +3649,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3661,7 +3661,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3673,7 +3673,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3685,7 +3685,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3697,7 +3697,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3709,7 +3709,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3721,7 +3721,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3733,7 +3733,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3745,7 +3745,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3757,7 +3757,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3769,7 +3769,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3853,7 +3853,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3865,7 +3865,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3877,7 +3877,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3889,7 +3889,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3901,7 +3901,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3913,7 +3913,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3925,7 +3925,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3937,7 +3937,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3949,7 +3949,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3961,7 +3961,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3973,7 +3973,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3985,7 +3985,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -3997,7 +3997,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4009,7 +4009,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4021,7 +4021,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4033,7 +4033,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4045,7 +4045,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4057,7 +4057,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4069,7 +4069,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4081,7 +4081,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4093,7 +4093,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4105,7 +4105,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4117,7 +4117,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4129,7 +4129,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4141,7 +4141,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4153,7 +4153,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4165,7 +4165,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4177,7 +4177,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4189,7 +4189,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4201,7 +4201,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4213,7 +4213,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4225,7 +4225,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4237,7 +4237,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4249,7 +4249,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4261,7 +4261,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4273,7 +4273,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4285,7 +4285,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4297,7 +4297,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4309,7 +4309,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4321,7 +4321,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4333,7 +4333,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4345,7 +4345,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4357,7 +4357,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "NON_JENJANG",
+    "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4441,7 +4441,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4453,7 +4453,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4465,7 +4465,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4477,7 +4477,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4489,7 +4489,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4501,7 +4501,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4513,7 +4513,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4525,7 +4525,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4537,7 +4537,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4549,7 +4549,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4561,7 +4561,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4573,7 +4573,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4585,7 +4585,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4597,7 +4597,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4609,7 +4609,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4621,7 +4621,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4633,7 +4633,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4645,7 +4645,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4657,7 +4657,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4669,7 +4669,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4681,7 +4681,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4693,7 +4693,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4705,7 +4705,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4717,7 +4717,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4729,7 +4729,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4741,7 +4741,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   },
@@ -4753,7 +4753,7 @@ var SEED_AWAK_ARMADA = [
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_I",
+    "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
     "statusAktif": "AKTIF"
   }

@@ -24,30 +24,46 @@ function extractKelasKapal(jabatanText) {
 
   var text = jabatanText.toUpperCase();
 
-  // Pola pencocokan angka romawi kelas
-  if (/KELAS\s+(I|1)\b/i.test(text) && !/KELAS\s+(II|III|IV|V)/i.test(text)) {
-    return 'KELAS_I';
-  }
-  if (/KELAS\s+(II|2)\b/i.test(text)) {
-    return 'KELAS_II';
-  }
-  if (/KELAS\s+(III|3)\b/i.test(text)) {
+  // Urutan dari romawi terpanjang (III, II, IV, V, I) agar "Kelas II/III" tidak pernah cocok sebagai "Kelas I"
+  if (/(?:KELAS|KLS)[\s._-]*(?:III|3)(?![IVX0-9])/i.test(text)) {
     return 'KELAS_III';
   }
-  if (/KELAS\s+(IV|4)\b/i.test(text)) {
+  if (/(?:KELAS|KLS)[\s._-]*(?:II|2)(?![IVX0-9])/i.test(text)) {
+    return 'KELAS_II';
+  }
+  if (/(?:KELAS|KLS)[\s._-]*(?:IV|4)(?![IVX0-9])/i.test(text)) {
     return 'KELAS_IV';
   }
-  if (/KELAS\s+(V|5)\b/i.test(text)) {
+  if (/(?:KELAS|KLS)[\s._-]*(?:V|5)(?![IVX0-9])/i.test(text)) {
     return 'KELAS_V';
   }
+  if (/(?:KELAS|KLS)[\s._-]*(?:I|1)(?![IVX0-9])/i.test(text)) {
+    return 'KELAS_I';
+  }
 
-  // Cek jika ada penyebutan nama kapal kelas tertentu
-  if (/KELAS\s*I\b/.test(text)) return 'KELAS_I';
-  if (/KELAS\s*II\b/.test(text)) return 'KELAS_II';
-  if (/KELAS\s*III\b/.test(text)) return 'KELAS_III';
-  if (/KELAS\s*IV\b/.test(text)) return 'KELAS_IV';
-  if (/KELAS\s*V\b/.test(text)) return 'KELAS_V';
+  return 'NON_KAPAL';
+}
 
+/**
+ * Menormalisasi token kelas kapal dari nilai tersimpan maupun teks jabatan.
+ * Mengutamakan kelas eksplisit pada jabatan bila terdeteksi agar tidak mewarisi bug substring lama.
+ *
+ * @param {string} rawKelas
+ * @param {string} [jabatanText]
+ * @returns {string}
+ */
+function normalizeKelasKapal(rawKelas, jabatanText) {
+  var fromJab = extractKelasKapal(jabatanText || '');
+  if (fromJab !== 'NON_KAPAL') return fromJab;
+
+  var raw = String(rawKelas || '').toUpperCase().trim().replace(/\s+/g, '_');
+  if (raw === 'KELAS_1') raw = 'KELAS_I';
+  else if (raw === 'KELAS_2') raw = 'KELAS_II';
+  else if (raw === 'KELAS_3') raw = 'KELAS_III';
+  else if (raw === 'KELAS_4') raw = 'KELAS_IV';
+  else if (raw === 'KELAS_5') raw = 'KELAS_V';
+
+  if (/^KELAS_(I|II|III|IV|V)$/.test(raw)) return raw;
   return 'NON_KAPAL';
 }
 
@@ -96,6 +112,7 @@ function maskNip(nip, isPrivileged) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     extractKelasKapal: extractKelasKapal,
+    normalizeKelasKapal: normalizeKelasKapal,
     extractRumpunAwak: extractRumpunAwak,
     maskNip: maskNip
   };

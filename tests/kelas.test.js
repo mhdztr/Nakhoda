@@ -1,7 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
 const {
   extractKelasKapal,
+  normalizeKelasKapal,
   extractRumpunAwak,
   maskNip
 } = require('../pure/Kelas.js');
@@ -12,7 +16,28 @@ test('Kelas — Ekstraksi Kelas I s.d. V dari teks jabatan', () => {
   assert.equal(extractKelasKapal('Kepala Kamar Mesin Kapal Pengawas Kelas III'), 'KELAS_III');
   assert.equal(extractKelasKapal('Juru Mudi KP Kelas IV'), 'KELAS_IV');
   assert.equal(extractKelasKapal('Kelasi Kapal Pengawas Kelas V'), 'KELAS_V');
+  assert.equal(extractKelasKapal('Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan'), 'KELAS_II');
+  assert.equal(extractKelasKapal('Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan'), 'KELAS_III');
+  assert.equal(extractKelasKapal('Masinis I Kapal Kelas IV'), 'KELAS_IV');
+  assert.equal(extractKelasKapal('Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan'), 'KELAS_V');
   assert.equal(extractKelasKapal('Staf Administrasi Pangkalan'), 'NON_KAPAL');
+});
+
+test('Kelas — Normalisasi token dan koreksi tingkatKelas SeedAwak.js', () => {
+  assert.equal(normalizeKelasKapal('KELAS_I', 'Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan'), 'KELAS_II');
+  assert.equal(normalizeKelasKapal('NON_JENJANG', 'Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan'), 'KELAS_V');
+  assert.equal(normalizeKelasKapal('Kelas III', 'Awak Kapal'), 'KELAS_III');
+
+  const ctx = {};
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', 'data', 'SeedAwak.js'), 'utf8'), ctx);
+  const seed = ctx.SEED_AWAK_ARMADA;
+  assert.ok(Array.isArray(seed) && seed.length > 0);
+  seed.forEach((a) => {
+    const expected = extractKelasKapal(a.jabatanLengkap);
+    if (expected !== 'NON_KAPAL') {
+      assert.equal(a.tingkatKelas, expected, `Mismatch for ${a.pegawaiId} (${a.jabatanLengkap})`);
+    }
+  });
 });
 
 test('Kelas — Penentuan Rumpun Dek vs Mesin', () => {

@@ -17,6 +17,44 @@
  * @param {number} [params.limit]         - Default 50
  * @param {number} [params.offset]        - Default 0
  */
+/**
+ * Memperbaiki data KelasKapal lawas yang korup akibat bug pencocokan substring lama
+ * (misal Kelas II/III/IV tersimpan KELAs_I atau Kelas V tersimpan NON_JENJANG).
+ */
+function _healMasterAwakKelasIfNeeded(sheet, rows) {
+  if (!sheet || !rows || rows.length === 0) return;
+  var hasHeal = false;
+  rows.forEach(function (r) {
+    var cur = String(r.KelasKapal || '').toUpperCase().trim();
+    var jab = String(r.JabatanLengkap || r.KelompokJabatan || '');
+    var extracted = extractKelasKapal(jab);
+    if (extracted !== 'NON_KAPAL' && (
+      !cur ||
+      cur === 'NON_JENJANG' ||
+      cur === 'NON_KAPAL' ||
+      (cur === 'KELAS_I' && extracted !== 'KELAS_I')
+    )) {
+      r.KelasKapal = extracted;
+      hasHeal = true;
+    }
+  });
+
+  if (hasHeal) {
+    try {
+      var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      var colIdx = headers.indexOf('KelasKapal');
+      if (colIdx !== -1) {
+        var colValues = rows.map(function (r) {
+          return [String(r.KelasKapal || 'NON_KAPAL')];
+        });
+        sheet.getRange(2, colIdx + 1, rows.length, 1).setValues(colValues);
+      }
+    } catch (eHeal) {
+      Logger.log('[_healMasterAwakKelasIfNeeded] ' + eHeal.message);
+    }
+  }
+}
+
 function dir_list(params) {
   try {
     var p = params || {};
@@ -32,8 +70,10 @@ function dir_list(params) {
       rows = sheetToObjects(sheet);
     }
 
+    _healMasterAwakKelasIfNeeded(sheet, rows);
+
     var rumpunFilter = String(p.rumpun || '').toUpperCase().trim();
-    var kelasFilter = String(p.kelasKapal || '').toUpperCase().trim();
+    var kelasFilter = p.kelasKapal ? normalizeKelasKapal(p.kelasKapal, '') : '';
     var statusFilter = String(p.statusAktif || '').toUpperCase().trim();
     var searchStr = String(p.search || '').toLowerCase().trim();
     var filterPerluDilengkapi = p.perluDilengkapi === true;
@@ -60,8 +100,9 @@ function dir_list(params) {
         var rmp = String(r.Rumpun || '').toUpperCase();
         if (rmp !== rumpunFilter && rmp !== ('AWAK_' + rumpunFilter)) return false;
       }
-      if (kelasFilter && String(r.KelasKapal || '').toUpperCase() !== kelasFilter) {
-        return false;
+      if (kelasFilter) {
+        var rowKelas = normalizeKelasKapal(r.KelasKapal, r.JabatanLengkap || r.KelompokJabatan);
+        if (rowKelas !== kelasFilter) return false;
       }
       if (statusFilter && String(r.StatusAktif || 'AKTIF').toUpperCase() !== statusFilter) {
         return false;
@@ -99,7 +140,7 @@ function dir_list(params) {
         nama: String(r.Nama || ''),
         kelompokJabatan: String(r.KelompokJabatan || ''),
         jabatanLengkap: String(r.JabatanLengkap || ''),
-        kelasKapal: String(r.KelasKapal || 'NON_KAPAL'),
+        kelasKapal: normalizeKelasKapal(r.KelasKapal, r.JabatanLengkap || r.KelompokJabatan),
         rumpun: rmp || 'DEK',
         kategoriKepegawaian: String(r.KategoriKepegawaian || '-'),
         statusAktif: String(r.StatusAktif || 'AKTIF'),
@@ -201,7 +242,7 @@ function dir_getDetail(token, pegawaiId) {
         nama: String(a.Nama || ''),
         kelompokJabatan: String(a.KelompokJabatan || ''),
         jabatanLengkap: String(a.JabatanLengkap || ''),
-        kelasKapal: String(a.KelasKapal || 'NON_KAPAL'),
+        kelasKapal: normalizeKelasKapal(a.KelasKapal, a.JabatanLengkap || a.KelompokJabatan),
         rumpun: rmp || 'DEK',
         kategoriKepegawaian: String(a.KategoriKepegawaian || ''),
         statusAktif: String(a.StatusAktif || 'AKTIF'),
@@ -245,7 +286,9 @@ function dir_save(params) {
       var found = pId ? findRowByField(sheet, 'PegawaiID', pId) : null;
 
       var jabLengkap = String(params.jabatanLengkap || params.kelompokJabatan || '').trim();
-      var kelasKapal = String(params.kelasKapal || extractKelasKapal(jabLengkap)).trim();
+      var kelasKapal = params.kelasKapal
+        ? normalizeKelasKapal(params.kelasKapal, '')
+        : extractKelasKapal(jabLengkap);
       var rumpun = String(params.rumpun || extractRumpunAwak(jabLengkap)).trim();
 
       var record = {
@@ -387,7 +430,7 @@ function dir_ensureSeeded() {
       if (existingIds[pId]) return;
 
       var jabLengkap = String(a.jabatanLengkap || a.kelompokJabatan || '');
-      var kelas = String(a.tingkatKelas || extractKelasKapal(jabLengkap));
+      var kelas = normalizeKelasKapal(a.tingkatKelas, jabLengkap);
       var rmp = String(a.rumpun || extractRumpunAwak(jabLengkap));
       if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
 
@@ -533,6 +576,12 @@ function dir_syncSikap(tokenOrParams) {
           var kat = String(emp.KategoriKepegawaian || emp.kategori || emp.StatusKepegawaian || '').trim();
           if (kat && r.KategoriKepegawaian !== kat) { patch.KategoriKepegawaian = kat; needsUpdate = true; }
 
+          var syncedKelas = normalizeKelasKapal(emp.TingkatKelas || emp.tingkatKelas || r.KelasKapal, jab || r.JabatanLengkap);
+          if (syncedKelas !== 'NON_KAPAL' && String(r.KelasKapal || '').toUpperCase().trim() !== syncedKelas) {
+            patch.KelasKapal = syncedKelas;
+            needsUpdate = true;
+          }
+
           if (needsUpdate) {
             updateRowCells(sheetAwak, existing.rowIndex, patch);
             updatedCount++;
@@ -540,7 +589,7 @@ function dir_syncSikap(tokenOrParams) {
         } else {
           // Personil baru di SIKAP yang masuk ke awak armada
           var newId = pId || ('PEG-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase());
-          var kelas = String(emp.TingkatKelas || emp.tingkatKelas || extractKelasKapal(jab));
+          var kelas = normalizeKelasKapal(emp.TingkatKelas || emp.tingkatKelas, jab);
           var rmp = String(emp.Rumpun || emp.rumpun || extractRumpunAwak(jab));
           if (rmp.indexOf('AWAK_') === 0) rmp = rmp.substring(5);
           var katBaru = String(emp.KategoriKepegawaian || emp.kategori || emp.StatusKepegawaian || 'PNS').trim();
