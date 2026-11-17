@@ -1,8 +1,52 @@
 /**
  * pure/Kelas.js
- * Ekstraksi Kelas Kapal Pengawas (Kelas I s.d. V) dari formatur jabatan lengkap.
+ * Ekstraksi Kelas Kapal Pengawas (Kelas I s.d. V), Rumpun, Masking NIP,
+ * dan Normalisasi Nama Kanonik (HURUF BESAR A-Z tanpa gelar/simbol).
  * Nakhoda — Timja Pengawakan Dit. POA KKP RI
  */
+
+var KELOMPOK_JABATAN_STD = [
+  'Nahkoda', 'Mualim', 'KKM', 'Masinis', 'Markonis',
+  'Serang', 'Juru Mudi', 'Kelasi', 'Juru Minyak', 'Juru Masak'
+];
+
+/**
+ * Membersihkan & menormalisasi nama personel menjadi HURUF BESAR (A-Z dan spasi tunggal saja):
+ * - Menghapus awalan gelar kehormatan/akademik (Capt., Prof., Dr., Drs., Dra., Ir., H., Hj.)
+ * - Menghapus gelar akademik/pelaut di belakang nama (koma + gelar, S.Tr.Pi, A.Md, M.Mar, ANT/ATT, dll.)
+ * - Menghapus tanda petik/apostrof tanpa spasi tambahan ("Ma'ruf" -> "MARUF")
+ * - Menghapus titik, koma, tanda hubung, dan angka
+ *
+ * @param {string} rawNama
+ * @returns {string}
+ */
+function sanitizeNamaPersonel(rawNama) {
+  if (!rawNama || typeof rawNama !== 'string') return '';
+  var s = String(rawNama).toUpperCase().trim();
+
+  // Hapus gelar kehormatan/akademik di awal nama (diulang maks 3x untuk gelar bertumpuk mis. Dr. Hj.)
+  for (var i = 0; i < 3; i++) {
+    s = s.replace(/^(?:CAPT|PROF|DR|DRS|DRA|IR|HJ|H)(?:\.|\s+)+(?=[A-Z])/i, '');
+  }
+
+  // Hapus gelar setelah tanda koma (mis. ", S.Tr.Pi", ", A.Md, S.P.", ", A.Md, S.PKP")
+  s = s.replace(/,\s*(?:S\.?|M\.?|A\.?|D\.?|P\.?|B\.?|L\.?|DR|IR|SE|SH|ST|MM|MH|MSI|MT|SP|ANT|ATT).*$/i, '');
+  s = s.replace(/,\s*[A-Z.\s]{2,15}$/, function (m) {
+    return /\b(?:AMD|SST|STR|SPI|SIK|SKEL|SPD|SKOM|SSOS|SPKP|MMAR|MSI|SE|SH|ST|SP|MM|MH)\b/.test(m.replace(/\./g, '')) ? '' : m;
+  });
+
+  // Hapus gelar akademik/profesi yang menempel di akhir tanpa koma (ulang 2x untuk gelar ganda)
+  for (var j = 0; j < 2; j++) {
+    s = s.replace(/\s+(?:A\.?\s*MD(?:\.?\s*PI)?|S\.?\s*ST(?:\.?\s*PI)?|S\.?\s*TR(?:\.?\s*PI)?|S\.?\s*PI|S\.?\s*IK|S\.?\s*KEL|S\.?\s*PKP|S\.?\s*KOM|S\.?\s*SOS|S\.?\s*PD|S\.?\s*H|S\.?\s*E|S\.?\s*T|S\.?\s*P|M\.?\s*MAR|M\.?\s*SI|M\.?\s*M|M\.?\s*H|ANT[\s-]*[IV1-4]+|ATT[\s-]*[IV1-4]+)\.?$/i, '');
+  }
+
+  // Hapus apostrof/petik tanpa spasi tambahan agar "Ma'ruf" -> "MARUF"
+  s = s.replace(/['’`´]/g, '');
+
+  // Karakter non A-Z lainnya (titik, koma, angka, simbol) diubah ke spasi lalu dirapikan
+  s = s.replace(/[^A-Z\s]/g, ' ');
+  return s.replace(/\s+/g, ' ').trim();
+}
 
 /**
  * Mengekstrak Kelas Kapal (KELAS_I, KELAS_II, KELAS_III, KELAS_IV, KELAS_V)
@@ -68,23 +112,28 @@ function normalizeKelasKapal(rawKelas, jabatanText) {
 }
 
 /**
- * Menentukan rumpun awak (DEK / MESIN / NON_AWAK) berdasarkan jabatan.
+ * Menentukan rumpun awak (DEK / MESIN / PENUNJANG / NON_AWAK) berdasarkan jabatan.
  *
  * @param {string} jabatanText
- * @returns {string} 'DEK' | 'MESIN' | 'NON_AWAK'
+ * @returns {string} 'DEK' | 'MESIN' | 'PENUNJANG' | 'NON_AWAK'
  */
 function extractRumpunAwak(jabatanText) {
   if (!jabatanText || typeof jabatanText !== 'string') return 'NON_AWAK';
 
   var t = jabatanText.toUpperCase();
 
-  // Rumpun Mesin
-  if (/MESIN|KKM|MASINIS|JURU MINYAK|MOTORIS|LISTRIK/i.test(t)) {
+  // Rumpun Penunjang Kapal (Juru Masak / Koki / Steward)
+  if (/JURU[\s_-]*MASAK|KOKI|STEWARD|PELAYAN[\s_-]*KAPAL|COOK/i.test(t)) {
+    return 'PENUNJANG';
+  }
+
+  // Rumpun Mesin (termasuk Oiler / Juru Minyak)
+  if (/MESIN|KKM|MASINIS|JURU[\s_-]*MINYAK|OILER|MOTORIS|LISTRIK/i.test(t)) {
     return 'MESIN';
   }
 
   // Rumpun Dek
-  if (/NAHKODA|NAKHODA|MUALIM|MARKONIS|SERANG|JURU MUDI|KELASI|DEK|JURU MUDY/i.test(t)) {
+  if (/NAHKODA|NAKHODA|MUALIM|MARKONIS|SERANG|JURU[\s_-]*MUDI|KELASI|DEK|JURU[\s_-]*MUDY/i.test(t)) {
     return 'DEK';
   }
 
@@ -111,6 +160,8 @@ function maskNip(nip, isPrivileged) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
+    KELOMPOK_JABATAN_STD: KELOMPOK_JABATAN_STD,
+    sanitizeNamaPersonel: sanitizeNamaPersonel,
     extractKelasKapal: extractKelasKapal,
     normalizeKelasKapal: normalizeKelasKapal,
     extractRumpunAwak: extractRumpunAwak,

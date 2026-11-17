@@ -283,9 +283,10 @@ function _autoCreateAwakSheet(ss, sheetName) {
   } else if (sheetName === SHEET_AWAK.MASTER_AWAK) {
     headers = [
       'PegawaiID', 'NIP', 'Nama', 'KelompokJabatan', 'JabatanLengkap',
-      'KelasKapal', 'Rumpun', 'KategoriKepegawaian', 'StatusAktif',
+      'KelasKapal', 'Rumpun', 'KategoriKepegawaian', 'StatusAktif', 'StatusPenempatan',
       'PangkalanID', 'KapalID', 'TanggalMulaiKerja', 'TanggalSelesaiKontrak',
-      'NomorBukuPelaut', 'Catatan', 'UpdatedAt', 'UpdatedBy'
+      'NomorSKPenempatan', 'DokumenPenempatanURL', 'UkuranBaju', 'UkuranSepatu',
+      'Catatan', 'UpdatedAt', 'UpdatedBy'
     ];
   } else if (sheetName === SHEET_AWAK.PELATIHAN_AWAK) {
     headers = STD_COLS.concat([
@@ -316,11 +317,8 @@ function _autoCreateAwakSheet(ss, sheetName) {
   }
 
   var created = ss.insertSheet(sheetName);
-  created.getRange(1, 1, 1, headers.length)
-    .setValues([headers])
-    .setFontWeight('bold')
-    .setBackground('#E8EAF6');
-  created.setFrozenRows(1);
+  created.getRange(1, 1, 1, headers.length).setValues([headers]);
+  applyFormalSheetFormatting(created, sheetName);
   Logger.log('[_autoCreateAwakSheet] Sheet ' + sheetName + ' dibuat otomatis di DB Nakhoda.');
   return created;
 }
@@ -352,15 +350,12 @@ function _autoCreateMasterSheet(ss, sheetName) {
   }
 
   var created = ss.insertSheet(sheetName);
-  created.getRange(1, 1, 1, headers.length)
-    .setValues([headers])
-    .setFontWeight('bold')
-    .setBackground('#E8EAF6');
-  created.setFrozenRows(1);
+  created.getRange(1, 1, 1, headers.length).setValues([headers]);
 
   if (seedRows.length > 0) {
     created.getRange(2, 1, seedRows.length, seedRows[0].length).setValues(seedRows);
   }
+  applyFormalSheetFormatting(created, sheetName);
   return created;
 }
 
@@ -383,12 +378,204 @@ function _autoCreateLogSheet(ss, sheetName) {
   }
 
   var created = ss.insertSheet(sheetName);
-  created.getRange(1, 1, 1, headers.length)
-    .setValues([headers])
-    .setFontWeight('bold')
-    .setBackground('#F1F5F9');
-  created.setFrozenRows(1);
+  created.getRange(1, 1, 1, headers.length).setValues([headers]);
+  applyFormalSheetFormatting(created, sheetName);
   return created;
+}
+
+// ===========================================================================
+// STANDAR FORMAT SHEET FORMAL & HUMAN-READABLE (SheetFormatter)
+// ===========================================================================
+
+var _FMT_COL_WIDTHS = {
+  RowID: 145, PegawaiID: 120, QueueID: 140, LogID: 140, NotifID: 140,
+  EvidenceID: 140, ManningID: 125, UserID: 145, BatchID: 175, ParentRowID: 145,
+  DivisiID: 100, Periode: 115, NIP: 165, NomorSertifikat: 165, NomorSKPenempatan: 175,
+  Nama: 240, Email: 210, KelompokJabatan: 165, JabatanLengkap: 260, PosSijil: 145,
+  KelasKapal: 110, TingkatKelas: 110, Rumpun: 110, KategoriKepegawaian: 155,
+  Kategori: 155, Scope: 150, Status: 115, StatusAktif: 120, StatusPenempatan: 165,
+  StatusKelulusan: 140, PangkalanID: 120, KapalID: 160, NamaKapal: 185, Wilayah: 180,
+  JudulKegiatan: 260, JenisKegiatan: 160, KodePelatihan: 125, NamaPelatihan: 260,
+  PenerbitLembaga: 220, DokumenPenempatanURL: 220, EvidenceUrl: 220,
+  UkuranBaju: 105, UkuranSepatu: 105, Jumlah: 95, Minimum: 95, JumlahPeserta: 115,
+  TahunPelatihan: 115, MasaBerlakuBulan: 125, Urutan: 80,
+  TanggalMulai: 120, TanggalSelesai: 120, TanggalMulaiKerja: 120, TanggalSelesaiKontrak: 135,
+  TanggalTerbit: 120, BerlakuSampai: 120, TanggalNaik: 120, TanggalTurun: 120, BerlakuMulai: 120,
+  Timestamp: 155, UpdatedAt: 155, UploadedAt: 155, VoidedAt: 155, RegisteredAt: 155, ApprovedAt: 155,
+  Catatan: 300, Keterangan: 300, Deskripsi: 320, VoidReason: 240, Alasan: 240, Sumber: 220
+};
+
+var _FMT_PLAIN_TEXT_COLS = {
+  NIP: true, NomorSertifikat: true, NomorSKPenempatan: true, UkuranSepatu: true,
+  PegawaiID: true, RowID: true, BatchID: true, ParentRowID: true, EvidenceID: true,
+  KodePelatihan: true, ManningID: true
+};
+
+var _FMT_ISO_DATE_COLS = {
+  TanggalMulai: true, TanggalSelesai: true, TanggalMulaiKerja: true,
+  TanggalSelesaiKontrak: true, TanggalTerbit: true, BerlakuSampai: true,
+  TanggalNaik: true, TanggalTurun: true, BerlakuMulai: true
+};
+
+var _FMT_TIMESTAMP_COLS = {
+  Timestamp: true, UpdatedAt: true, UploadedAt: true, VoidedAt: true,
+  RegisteredAt: true, ApprovedAt: true, CreatedAt: true, KeputusanAt: true
+};
+
+var _FMT_NUMBER_COLS = {
+  Jumlah: true, Minimum: true, JumlahPeserta: true,
+  TahunPelatihan: true, MasaBerlakuBulan: true, Urutan: true
+};
+
+var _FMT_CENTER_COLS = {
+  PegawaiID: true, NIP: true, DivisiID: true, Periode: true, Status: true,
+  StatusAktif: true, StatusPenempatan: true, KelasKapal: true, TingkatKelas: true,
+  Rumpun: true, Kategori: true, KategoriKepegawaian: true, Scope: true,
+  UkuranBaju: true, UkuranSepatu: true, KodePelatihan: true, ManningID: true,
+  TanggalMulai: true, TanggalSelesai: true, TanggalMulaiKerja: true,
+  TanggalSelesaiKontrak: true, TanggalTerbit: true, BerlakuSampai: true,
+  TanggalNaik: true, TanggalTurun: true, BerlakuMulai: true,
+  Timestamp: true, UpdatedAt: true, UploadedAt: true, VoidedAt: true
+};
+
+var _FMT_WRAP_COLS = {
+  Catatan: true, Keterangan: true, Deskripsi: true, VoidReason: true,
+  Alasan: true, Sumber: true, JabatanLengkap: true, NamaPelatihan: true
+};
+
+function _formatIsoDateString(val) {
+  if (!val && val !== 0) return '';
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    if (typeof Utilities !== 'undefined' && Utilities && typeof Utilities.formatDate === 'function') {
+      return Utilities.formatDate(val, 'GMT+7', 'yyyy-MM-dd');
+    }
+    var y = val.getFullYear();
+    var m = val.getMonth() + 1;
+    var d = val.getDate();
+    return y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
+  }
+  var s = String(val).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+  return s;
+}
+
+function _normalizeWriteValue(colName, val) {
+  if (val === undefined || val === null) return '';
+  if (_FMT_ISO_DATE_COLS[colName] && val !== '') {
+    return _formatIsoDateString(val);
+  }
+  if (_FMT_PLAIN_TEXT_COLS[colName] && val !== '') {
+    return String(val);
+  }
+  return val;
+}
+
+/**
+ * Menerapkan pemformatan Google Sheet formal & human-readable pada suatu sheet:
+ * - Header Slate (#0F172A untuk Master, #1E293B untuk Transaksi), teks putih tebal, tinggi 34px, baris beku
+ * - Data 26px, zebra banding (#FFFFFF / #F8FAFC), border #E2E8F0, vertikal MIDDLE
+ * - Format teks '@' untuk NIP & nomor seri agar tidak menjadi notasi ilmiah
+ * - Tanggal ISO yyyy-mm-dd, angka #,##0, lebar kolom proporsional
+ *
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet
+ * @param {string} [sheetName]
+ */
+function applyFormalSheetFormatting(sheet, sheetName) {
+  try {
+    if (!sheet || typeof sheet.getLastColumn !== 'function') return;
+    var lastCol = sheet.getLastColumn();
+    var lastRow = typeof sheet.getLastRow === 'function' ? sheet.getLastRow() : 1;
+    if (lastCol < 1 || lastRow < 1) return;
+
+    var name = String(sheetName || (typeof sheet.getName === 'function' ? sheet.getName() : '')).trim();
+    var isMaster = name.indexOf('Master') === 0 || name === 'Users' || name === 'Divisi' || name === 'Opsi' || name === 'Kapal';
+    var headerBg = isMaster ? '#0F172A' : '#1E293B';
+
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0] || [];
+    var headerRange = sheet.getRange(1, 1, 1, lastCol);
+
+    if (typeof headerRange.setBackground === 'function') headerRange.setBackground(headerBg);
+    if (typeof headerRange.setFontColor === 'function') headerRange.setFontColor('#FFFFFF');
+    if (typeof headerRange.setFontFamily === 'function') headerRange.setFontFamily('Arial');
+    if (typeof headerRange.setFontSize === 'function') headerRange.setFontSize(10);
+    if (typeof headerRange.setFontWeight === 'function') headerRange.setFontWeight('bold');
+    if (typeof headerRange.setVerticalAlignment === 'function') headerRange.setVerticalAlignment('middle');
+    if (typeof headerRange.setWrap === 'function') headerRange.setWrap(true);
+    if (typeof sheet.setFrozenRows === 'function') sheet.setFrozenRows(1);
+    if (typeof sheet.setRowHeight === 'function') sheet.setRowHeight(1, 34);
+
+    // Atur perataan header & lebar kolom
+    for (var c = 0; c < headers.length; c++) {
+      var h = String(headers[c] || '').trim();
+      var colIdx = c + 1;
+      var colWidth = _FMT_COL_WIDTHS[h] || 140;
+      if (typeof sheet.setColumnWidth === 'function') {
+        sheet.setColumnWidth(colIdx, colWidth);
+      }
+      var align = _FMT_NUMBER_COLS[h] ? 'right' : (_FMT_CENTER_COLS[h] ? 'center' : 'left');
+      var hCell = sheet.getRange(1, colIdx);
+      if (typeof hCell.setHorizontalAlignment === 'function') hCell.setHorizontalAlignment(align);
+    }
+
+    if (lastRow < 2) return;
+    var numDataRows = lastRow - 1;
+    var dataRange = sheet.getRange(2, 1, numDataRows, lastCol);
+
+    if (typeof dataRange.setFontFamily === 'function') dataRange.setFontFamily('Arial');
+    if (typeof dataRange.setFontSize === 'function') dataRange.setFontSize(10);
+    if (typeof dataRange.setFontColor === 'function') dataRange.setFontColor('#0F172A');
+    if (typeof dataRange.setVerticalAlignment === 'function') dataRange.setVerticalAlignment('middle');
+    if (typeof dataRange.setBorder === 'function') {
+      dataRange.setBorder(true, true, true, true, true, true, '#E2E8F0', null);
+    }
+
+    // Zebra banding
+    if (typeof dataRange.setBackgrounds === 'function') {
+      var bgs = [];
+      for (var r = 0; r < numDataRows; r++) {
+        var rowBg = (r % 2 === 1) ? '#F8FAFC' : '#FFFFFF';
+        var rowColors = [];
+        for (var k = 0; k < lastCol; k++) rowColors.push(rowBg);
+        bgs.push(rowColors);
+      }
+      dataRange.setBackgrounds(bgs);
+    }
+
+    if (typeof sheet.setRowHeights === 'function') {
+      sheet.setRowHeights(2, numDataRows, 26);
+    } else if (typeof sheet.setRowHeight === 'function') {
+      var maxRowHeightApply = Math.min(numDataRows, 200);
+      for (var ri = 2; ri < 2 + maxRowHeightApply; ri++) {
+        sheet.setRowHeight(ri, 26);
+      }
+    }
+
+    // Format kolom data secara batch per kolom
+    for (var ci = 0; ci < headers.length; ci++) {
+      var colName = String(headers[ci] || '').trim();
+      var colRange = sheet.getRange(2, ci + 1, numDataRows, 1);
+
+      if (_FMT_PLAIN_TEXT_COLS[colName] && typeof colRange.setNumberFormat === 'function') {
+        colRange.setNumberFormat('@');
+      } else if (_FMT_ISO_DATE_COLS[colName] && typeof colRange.setNumberFormat === 'function') {
+        colRange.setNumberFormat('yyyy-mm-dd');
+      } else if (_FMT_TIMESTAMP_COLS[colName] && typeof colRange.setNumberFormat === 'function') {
+        colRange.setNumberFormat('yyyy-mm-dd hh:mm:ss');
+      } else if (_FMT_NUMBER_COLS[colName] && typeof colRange.setNumberFormat === 'function') {
+        colRange.setNumberFormat('#,##0');
+      }
+
+      if (typeof colRange.setHorizontalAlignment === 'function') {
+        var colAlign = _FMT_NUMBER_COLS[colName] ? 'right' : (_FMT_CENTER_COLS[colName] ? 'center' : 'left');
+        colRange.setHorizontalAlignment(colAlign);
+      }
+      if (typeof colRange.setWrap === 'function') {
+        colRange.setWrap(!!_FMT_WRAP_COLS[colName]);
+      }
+    }
+  } catch (eFmt) {
+    Logger.log('[applyFormalSheetFormatting] Notice: ' + eFmt.message);
+  }
 }
 
 // ===========================================================================
@@ -442,9 +629,18 @@ function bumpTxVersion(sheetName) {
 function appendRowData(sheet, dataObj) {
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   var newRow = headers.map(function (h) {
-    return dataObj[h] !== undefined ? dataObj[h] : '';
+    return _normalizeWriteValue(h, dataObj[h]);
   });
   sheet.appendRow(newRow);
+  var newRowIdx = typeof sheet.getLastRow === 'function' ? sheet.getLastRow() : 0;
+  if (newRowIdx >= 2) {
+    for (var i = 0; i < headers.length; i++) {
+      if (_FMT_PLAIN_TEXT_COLS[headers[i]]) {
+        var c = sheet.getRange(newRowIdx, i + 1);
+        if (typeof c.setNumberFormat === 'function') c.setNumberFormat('@');
+      }
+    }
+  }
   bumpTxVersion(sheet.getName());
 }
 
@@ -453,7 +649,11 @@ function updateRowCells(sheet, rowIndex, updates) {
   Object.keys(updates).forEach(function (key) {
     var colIdx = headers.indexOf(key);
     if (colIdx !== -1) {
-      sheet.getRange(rowIndex, colIdx + 1).setValue(updates[key]);
+      var cell = sheet.getRange(rowIndex, colIdx + 1);
+      if (_FMT_PLAIN_TEXT_COLS[key] && typeof cell.setNumberFormat === 'function') {
+        cell.setNumberFormat('@');
+      }
+      cell.setValue(_normalizeWriteValue(key, updates[key]));
     }
   });
   bumpTxVersion(sheet.getName());

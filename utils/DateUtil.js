@@ -149,6 +149,116 @@ function utils_getTrendMonths(filter) {
 
 // ── HELPER INTERNAL ───────────────────────────────────────
 
+/**
+ * Mengonversi Date atau string ISO YYYY-MM-DD menjadi kode periode AKN (YYYY-MM-W01..W04).
+ *
+ * @param {Date|string} dateOrIso
+ * @returns {string}
+ */
+function dateToAknPeriode(dateOrIso) {
+  var d = dateOrIso ? new Date(dateOrIso) : new Date();
+  if (isNaN(d.getTime())) d = new Date();
+  var yyyy = d.getFullYear();
+  var mm = d.getMonth() + 1;
+  var weekOfMonth = Math.ceil(d.getDate() / 7);
+  if (weekOfMonth > 4) weekOfMonth = 4;
+  return yyyy + '-' + _pad(mm) + '-W0' + weekOfMonth;
+}
+
+/**
+ * Menerjemahkan parameter filter periode (TW1-TW4, SEM1-SEM2, CUSTOM kalender, WEEK, ALL)
+ * ke rentang tanggal terstruktur dan targetPeriode AKN.
+ *
+ * @param {Object} [params] { mode, tahun, periode, date, startDate, endDate }
+ * @returns {{ mode: string, tahun: number, startDateStr: string, endDateStr: string, startMs: number, endMs: number, targetPeriode: string, label: string }}
+ */
+function resolvePeriodeWindow(params) {
+  var p = params || {};
+  var mode = String(p.mode || p.periodeMode || 'ALL').toUpperCase().trim();
+  var now = new Date();
+  var tahun = parseInt(p.tahun, 10) || now.getFullYear();
+
+  var startStr = '';
+  var endStr = '';
+  var label = 'Semua Periode';
+  var targetPeriode = dateToAknPeriode(now);
+
+  if (mode === 'TW1') {
+    startStr = tahun + '-01-01';
+    endStr = tahun + '-03-31';
+    targetPeriode = tahun + '-03-W04';
+    label = 'TW I ' + tahun + ' (1 Jan - 31 Mar)';
+  } else if (mode === 'TW2') {
+    startStr = tahun + '-04-01';
+    endStr = tahun + '-06-30';
+    targetPeriode = tahun + '-06-W04';
+    label = 'TW II ' + tahun + ' (1 Apr - 30 Jun)';
+  } else if (mode === 'TW3') {
+    startStr = tahun + '-07-01';
+    endStr = tahun + '-09-30';
+    targetPeriode = tahun + '-09-W04';
+    label = 'TW III ' + tahun + ' (1 Jul - 30 Sep)';
+  } else if (mode === 'TW4') {
+    startStr = tahun + '-10-01';
+    endStr = tahun + '-12-31';
+    targetPeriode = tahun + '-12-W04';
+    label = 'TW IV ' + tahun + ' (1 Okt - 31 Des)';
+  } else if (mode === 'SEM1') {
+    startStr = tahun + '-01-01';
+    endStr = tahun + '-06-30';
+    targetPeriode = tahun + '-06-W04';
+    label = 'Semester I ' + tahun + ' (1 Jan - 30 Jun)';
+  } else if (mode === 'SEM2') {
+    startStr = tahun + '-07-01';
+    endStr = tahun + '-12-31';
+    targetPeriode = tahun + '-12-W04';
+    label = 'Semester II ' + tahun + ' (1 Jul - 31 Des)';
+  } else if (mode === 'CUSTOM') {
+    startStr = String(p.startDate || '').trim();
+    endStr = String(p.endDate || '').trim();
+    if (!startStr && endStr) startStr = endStr;
+    if (startStr && !endStr) endStr = startStr;
+    if (endStr) targetPeriode = dateToAknPeriode(endStr);
+    label = (startStr || '...') + ' s.d. ' + (endStr || '...');
+  } else if (mode === 'WEEK' || p.date || p.periode) {
+    if (p.date) {
+      targetPeriode = dateToAknPeriode(p.date);
+    } else if (p.periode) {
+      targetPeriode = String(p.periode).trim();
+    }
+    var range = periodeToDateRange(targetPeriode);
+    if (range) {
+      startStr = range.startDate.getFullYear() + '-' + _pad(range.startDate.getMonth() + 1) + '-' + _pad(range.startDate.getDate());
+      endStr = range.endDate.getFullYear() + '-' + _pad(range.endDate.getMonth() + 1) + '-' + _pad(range.endDate.getDate());
+    }
+    mode = 'WEEK';
+    label = 'Periode ' + targetPeriode;
+  }
+
+  var startMs = startStr ? new Date(startStr + 'T00:00:00').getTime() : 0;
+  var endMs = endStr ? new Date(endStr + 'T23:59:59.999').getTime() : 0;
+
+  return {
+    mode: mode,
+    tahun: tahun,
+    startDateStr: startStr,
+    endDateStr: endStr,
+    startMs: isNaN(startMs) ? 0 : startMs,
+    endMs: isNaN(endMs) ? 0 : endMs,
+    targetPeriode: targetPeriode,
+    label: label
+  };
+}
+
 function _pad(n) {
   return n < 10 ? '0' + n : String(n);
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    dateToPeriode: dateToPeriode,
+    dateToAknPeriode: dateToAknPeriode,
+    resolvePeriodeWindow: resolvePeriodeWindow,
+    periodeToDateRange: periodeToDateRange
+  };
 }

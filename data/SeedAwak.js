@@ -1,14 +1,14 @@
 /**
  * data/SeedAwak.js
  * Dataset Resmi 396 Awak Kapal Pengawas Armada Ditjen PSDKP KKP RI
- * (Dek: 249, Mesin: 147)
+ * (Seluruh nama telah dinormalisasi menjadi HURUF BESAR A-Z tanpa gelar/simbol)
  */
 
 var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0013",
     "nip": "199711082020121004",
-    "nama": "Rijal Arif Fadhli",
+    "nama": "RIJAL ARIF FADHLI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -20,7 +20,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0014",
     "nip": "198409162008011001",
-    "nama": "Budi Setyawan",
+    "nama": "BUDI SETYAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -32,7 +32,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0015",
     "nip": "198209012015031002",
-    "nama": "Irwan Syahputra",
+    "nama": "IRWAN SYAHPUTRA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -44,7 +44,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0016",
     "nip": "198808122019021003",
-    "nama": "Deden Afriyos",
+    "nama": "DEDEN AFRIYOS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -56,7 +56,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0017",
     "nip": "199608132015031002",
-    "nama": "Muhammad Nur Afliq",
+    "nama": "MUHAMMAD NUR AFLIQ",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -68,7 +68,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0018",
     "nip": "199710212020121003",
-    "nama": "Agrein Richard Piisi",
+    "nama": "AGREIN RICHARD PIISI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -80,7 +80,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0019",
     "nip": "198906152018011001",
-    "nama": "Musdalifah M",
+    "nama": "MUSDALIFAH M",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -92,7 +92,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0020",
     "nip": "199003202015031003",
-    "nama": "Muhammad Yunus S",
+    "nama": "MUHAMMAD YUNUS S",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -104,7 +104,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0021",
     "nip": "199605162020121001",
-    "nama": "Zul Faisal",
+    "nama": "ZUL FAISAL",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -116,7 +116,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0022",
     "nip": "198106032015031002",
-    "nama": "Windiyana",
+    "nama": "WINDIYANA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -128,7 +128,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0023",
     "nip": "200003272019021001",
-    "nama": "Arfian Huda Pratama",
+    "nama": "ARFIAN HUDA PRATAMA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -140,7 +140,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0024",
     "nip": "199308082020121002",
-    "nama": "Safrudin",
+    "nama": "SAFRUDIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -152,7 +152,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0025",
     "nip": "199504152018011003",
-    "nama": "Abdi Sabrin Rifaldi Lagga",
+    "nama": "ABDI SABRIN RIFALDI LAGGA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -164,7 +164,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0026",
     "nip": "198907012019021001",
-    "nama": "Bedi Arif Yulianto",
+    "nama": "BEDI ARIF YULIANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -176,7 +176,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0027",
     "nip": "198901272020121001",
-    "nama": "Fransisco Januar Guneliyanto",
+    "nama": "FRANSISCO JANUAR GUNELIYANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -188,7 +188,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0028",
     "nip": "199005032019021001",
-    "nama": "Ismal Arif",
+    "nama": "ISMAL ARIF",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -200,7 +200,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0029",
     "nip": "199808072020121003",
-    "nama": "Muhammad Firman Islam",
+    "nama": "MUHAMMAD FIRMAN ISLAM",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -212,7 +212,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0030",
     "nip": "200010242025061001",
-    "nama": "Dani Prana Dinata",
+    "nama": "DANI PRANA DINATA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -224,7 +224,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0031",
     "nip": "199010242025061001",
-    "nama": "Hendri Kurniawan",
+    "nama": "HENDRI KURNIAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -236,7 +236,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0032",
     "nip": "198505292020121001",
-    "nama": "Yafet Meyer Lalensang",
+    "nama": "YAFET MEYER LALENSANG",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -248,7 +248,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0033",
     "nip": "199405072020121004",
-    "nama": "Rikson Pandra Siburian",
+    "nama": "RIKSON PANDRA SIBURIAN",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -260,7 +260,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0034",
     "nip": "199712112020121002",
-    "nama": "Sukma Putra Maulana",
+    "nama": "SUKMA PUTRA MAULANA",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -272,7 +272,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0035",
     "nip": "200302162025061001",
-    "nama": "Andi Muhammad Farhan Isba",
+    "nama": "ANDI MUHAMMAD FARHAN ISBA",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -284,7 +284,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0036",
     "nip": "199903092025061001",
-    "nama": "Ifan Nur Alwi",
+    "nama": "IFAN NUR ALWI",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -296,7 +296,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0037",
     "nip": "200112282025061001",
-    "nama": "Syahrul Syah",
+    "nama": "SYAHRUL SYAH",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -308,7 +308,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0038",
     "nip": "198202182015031001",
-    "nama": "Ari Nugroho",
+    "nama": "ARI NUGROHO",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -320,7 +320,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0039",
     "nip": "199312202020121003",
-    "nama": "Hari Widodo",
+    "nama": "HARI WIDODO",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -332,7 +332,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0040",
     "nip": "198411162018011001",
-    "nama": "Noce Stefanus Lessy",
+    "nama": "NOCE STEFANUS LESSY",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -344,7 +344,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0041",
     "nip": "199503232018011007",
-    "nama": "Arman Maulana",
+    "nama": "ARMAN MAULANA",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -356,7 +356,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0042",
     "nip": "199401232018011005",
-    "nama": "Heri Imam Setiawan",
+    "nama": "HERI IMAM SETIAWAN",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -368,7 +368,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0043",
     "nip": "198407272018011001",
-    "nama": "Jembrels Rikumahu",
+    "nama": "JEMBRELS RIKUMAHU",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -380,7 +380,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0044",
     "nip": "199712112020121002",
-    "nama": "Sukma Putra Maulana",
+    "nama": "SUKMA PUTRA MAULANA",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -392,7 +392,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0045",
     "nip": "199412232020121001",
-    "nama": "Aas Priono",
+    "nama": "AAS PRIONO",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -404,7 +404,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0046",
     "nip": "198607022018011003",
-    "nama": "Ignasius Richardo Kerans",
+    "nama": "IGNASIUS RICHARDO KERANS",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -416,7 +416,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0047",
     "nip": "199609072018011002",
-    "nama": "Harfis Edo Putra",
+    "nama": "HARFIS EDO PUTRA",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -428,7 +428,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0048",
     "nip": "199402282020121002",
-    "nama": "ADE RAROTA NATANAEL  S A.Md",
+    "nama": "ADE RAROTA NATANAEL S",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -440,7 +440,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0049",
     "nip": "199808242020121002",
-    "nama": "Muh. Syakur Agung",
+    "nama": "MUH SYAKUR AGUNG",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -452,7 +452,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0050",
     "nip": "199209052019021004",
-    "nama": "Ryan Shiddeqi",
+    "nama": "RYAN SHIDDEQI",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -464,7 +464,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0051",
     "nip": "198805182020121001",
-    "nama": "Meykel Alelo",
+    "nama": "MEYKEL ALELO",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -476,7 +476,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0052",
     "nip": "199811042025061001",
-    "nama": "Emmanuel Lintang Cakrawala",
+    "nama": "EMMANUEL LINTANG CAKRAWALA",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -488,7 +488,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0053",
     "nip": "199602072025061001",
-    "nama": "Mohamad Risman",
+    "nama": "MOHAMAD RISMAN",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -500,7 +500,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0054",
     "nip": "199611072020121002",
-    "nama": "Risky Dwi Novrianto",
+    "nama": "RISKY DWI NOVRIANTO",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -512,7 +512,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0055",
     "nip": "199410142022031003",
-    "nama": "Nendy Wisnu Wardana",
+    "nama": "NENDY WISNU WARDANA",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Mudi",
@@ -524,7 +524,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0057",
     "nip": "198409062018011002",
-    "nama": "Lola Widodo",
+    "nama": "LOLA WIDODO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -536,7 +536,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0058",
     "nip": "199805082022031005",
-    "nama": "Marsuji Saputro",
+    "nama": "MARSUJI SAPUTRO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -548,7 +548,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0059",
     "nip": "198605192019021001",
-    "nama": "I Komang Kariyasa",
+    "nama": "I KOMANG KARIYASA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -560,7 +560,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0060",
     "nip": "198804142015031003",
-    "nama": "Bodro Mulyono",
+    "nama": "BODRO MULYONO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -572,7 +572,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0061",
     "nip": "199104272018011007",
-    "nama": "Hendra Wiguna",
+    "nama": "HENDRA WIGUNA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -584,7 +584,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0062",
     "nip": "197604122007011002",
-    "nama": "Harsadi",
+    "nama": "HARSADI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -596,7 +596,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0063",
     "nip": "199012252018011001",
-    "nama": "Didin Saripudin",
+    "nama": "DIDIN SARIPUDIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -608,7 +608,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0064",
     "nip": "198604262006041001",
-    "nama": "Syahid",
+    "nama": "SYAHID",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -620,7 +620,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0065",
     "nip": "198712252015031003",
-    "nama": "Bontor Christianus Sitompul",
+    "nama": "BONTOR CHRISTIANUS SITOMPUL",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -632,7 +632,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0066",
     "nip": "199111052015031002",
-    "nama": "Nuzwar Miran",
+    "nama": "NUZWAR MIRAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -644,7 +644,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0067",
     "nip": "199003232018011002",
-    "nama": "Jusman",
+    "nama": "JUSMAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -656,7 +656,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0068",
     "nip": "199102232015031004",
-    "nama": "Santang Yuana Putra",
+    "nama": "SANTANG YUANA PUTRA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -668,7 +668,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0069",
     "nip": "199308312025061001",
-    "nama": "Angga Wijayanto",
+    "nama": "ANGGA WIJAYANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -680,7 +680,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0070",
     "nip": "200305052025061001",
-    "nama": "Irgi Maylandi",
+    "nama": "IRGI MAYLANDI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -692,7 +692,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0071",
     "nip": "199104232025061001",
-    "nama": "Nurtriyanto",
+    "nama": "NURTRIYANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -704,7 +704,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0072",
     "nip": "200304052025061001",
-    "nama": "Alfian Bakhtiar",
+    "nama": "ALFIAN BAKHTIAR",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -716,7 +716,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0073",
     "nip": "198104032015031002",
-    "nama": "Eko Wahyu Sulistyono",
+    "nama": "EKO WAHYU SULISTYONO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -728,7 +728,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0074",
     "nip": "198912162020121001",
-    "nama": "Desryanto Allo Rante",
+    "nama": "DESRYANTO ALLO RANTE",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -740,7 +740,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0075",
     "nip": "199104142019021001",
-    "nama": "Marko Pagestu",
+    "nama": "MARKO PAGESTU",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -752,7 +752,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0076",
     "nip": "198209102006041018",
-    "nama": "Syafarudin",
+    "nama": "SYAFARUDIN",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -764,7 +764,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0077",
     "nip": "198710042015031003",
-    "nama": "Muhammad Fajar",
+    "nama": "MUHAMMAD FAJAR",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -776,7 +776,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0078",
     "nip": "197507042009121001",
-    "nama": "Adhi Krisna Totoyulianto",
+    "nama": "ADHI KRISNA TOTOYULIANTO",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -788,7 +788,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0079",
     "nip": "199011122018011001",
-    "nama": "Nur Rakim",
+    "nama": "NUR RAKIM",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -800,7 +800,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0080",
     "nip": "198703162020121003",
-    "nama": "Endri Nur Hadi",
+    "nama": "ENDRI NUR HADI",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -812,7 +812,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0081",
     "nip": "199608012022031003",
-    "nama": "Ahmad Afifur Rahman",
+    "nama": "AHMAD AFIFUR RAHMAN",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -824,7 +824,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0082",
     "nip": "199401052022031002",
-    "nama": "Amir Ma'Ruf",
+    "nama": "AMIR MARUF",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -836,7 +836,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0083",
     "nip": "199106162022031001",
-    "nama": "Ermas Sukoco",
+    "nama": "ERMAS SUKOCO",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -848,7 +848,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0084",
     "nip": "199504302018011002",
-    "nama": "Yahya Aditama",
+    "nama": "YAHYA ADITAMA",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -860,7 +860,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0085",
     "nip": "199610262020121002",
-    "nama": "Guntur Oktavian",
+    "nama": "GUNTUR OKTAVIAN",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -872,7 +872,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0086",
     "nip": "200007302025061001",
-    "nama": "Titose",
+    "nama": "TITOSE",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -884,7 +884,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0087",
     "nip": "199102012015031002",
-    "nama": "Jati Aliandra Santoso",
+    "nama": "JATI ALIANDRA SANTOSO",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -896,7 +896,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0088",
     "nip": "199404222022031001",
-    "nama": "Mohammad Ifals Apriadi",
+    "nama": "MOHAMMAD IFALS APRIADI",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -908,7 +908,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0089",
     "nip": "199311302018011002",
-    "nama": "Subekti",
+    "nama": "SUBEKTI",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -920,7 +920,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0090",
     "nip": "198908202015031002",
-    "nama": "Amdani",
+    "nama": "AMDANI",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -932,7 +932,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0091",
     "nip": "198506042020121001",
-    "nama": "Notosusanto Damogalad",
+    "nama": "NOTOSUSANTO DAMOGALAD",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -944,7 +944,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0092",
     "nip": "199305052018011002",
-    "nama": "Indra Dwi Cahyo",
+    "nama": "INDRA DWI CAHYO",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -956,7 +956,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0093",
     "nip": "199104292022031001",
-    "nama": "Candra Nurdiansyah",
+    "nama": "CANDRA NURDIANSYAH",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -968,7 +968,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0094",
     "nip": "200002202019021001",
-    "nama": "Taufik Ismail",
+    "nama": "TAUFIK ISMAIL",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -980,7 +980,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0095",
     "nip": "198408252008021001",
-    "nama": "Suriadi",
+    "nama": "SURIADI",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -992,7 +992,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0096",
     "nip": "198609092015031003",
-    "nama": "Dedi Kurniawan Pohan",
+    "nama": "DEDI KURNIAWAN POHAN",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -1004,7 +1004,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0097",
     "nip": "199809152022031003",
-    "nama": "Bayu Ade Putra",
+    "nama": "BAYU ADE PUTRA",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Juru Minyak",
@@ -1016,7 +1016,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0098",
     "nip": "197903042003121005",
-    "nama": "Obrin Victor Pungus",
+    "nama": "OBRIN VICTOR PUNGUS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1028,7 +1028,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0099",
     "nip": "197909142003121002",
-    "nama": "Nanang Agus Suyanto",
+    "nama": "NANANG AGUS SUYANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1040,7 +1040,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0100",
     "nip": "197607082008111001",
-    "nama": "Ali Imran",
+    "nama": "ALI IMRAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1052,7 +1052,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0101",
     "nip": "197901102002121002",
-    "nama": "Tommy Lala",
+    "nama": "TOMMY LALA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1064,7 +1064,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0102",
     "nip": "198108062007011001",
-    "nama": "Anggoro Sutrisno",
+    "nama": "ANGGORO SUTRISNO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1076,7 +1076,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0103",
     "nip": "198007252005021001",
-    "nama": "Angga Jafar Akasah",
+    "nama": "ANGGA JAFAR AKASAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1088,7 +1088,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0104",
     "nip": "198301012005021002",
-    "nama": "Abdul Mu`In",
+    "nama": "ABDUL MUIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1100,7 +1100,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0105",
     "nip": "198201292003121001",
-    "nama": "Ardhian Arie Wibowo",
+    "nama": "ARDHIAN ARIE WIBOWO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1112,7 +1112,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0106",
     "nip": "198008192005021002",
-    "nama": "Gabriel Gerald Malonda",
+    "nama": "GABRIEL GERALD MALONDA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1124,7 +1124,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0107",
     "nip": "197911282005021001",
-    "nama": "Novein Ernst Brando Repi",
+    "nama": "NOVEIN ERNST BRANDO REPI",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1136,7 +1136,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0108",
     "nip": "198102062006041004",
-    "nama": "La Ucu",
+    "nama": "LA UCU",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1148,7 +1148,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0109",
     "nip": "198003232005021002",
-    "nama": "Roy Stevanus Supit",
+    "nama": "ROY STEVANUS SUPIT",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1160,7 +1160,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0110",
     "nip": "198305012003121001",
-    "nama": "Edison Vallen Weyai",
+    "nama": "EDISON VALLEN WEYAI",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1172,7 +1172,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0111",
     "nip": "197704272002121004",
-    "nama": "Charles Audi Katili",
+    "nama": "CHARLES AUDI KATILI",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1184,7 +1184,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0112",
     "nip": "198003292002121002",
-    "nama": "Hendra Pakaya",
+    "nama": "HENDRA PAKAYA",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1196,7 +1196,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0113",
     "nip": "198309212007011001",
-    "nama": "Johan Sulistianto",
+    "nama": "JOHAN SULISTIANTO",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1208,7 +1208,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0114",
     "nip": "198109182005021003",
-    "nama": "LUCKY MICHAEL NAJOAN, S.Tr.Pi",
+    "nama": "LUCKY MICHAEL NAJOAN",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1220,7 +1220,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0115",
     "nip": "198409262006041004",
-    "nama": "Fahri Mokodongan",
+    "nama": "FAHRI MOKODONGAN",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1232,7 +1232,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0116",
     "nip": "198007052005021002",
-    "nama": "Ronaldi Said",
+    "nama": "RONALDI SAID",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1244,7 +1244,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0117",
     "nip": "198008282005021001",
-    "nama": "Audy Welly Mamangkey",
+    "nama": "AUDY WELLY MAMANGKEY",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1256,7 +1256,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0118",
     "nip": "198110012003121003",
-    "nama": "Hari Sakti Eka Putra",
+    "nama": "HARI SAKTI EKA PUTRA",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1268,7 +1268,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0119",
     "nip": "198304142014031001",
-    "nama": "Ipung Dermawan",
+    "nama": "IPUNG DERMAWAN",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1280,7 +1280,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0120",
     "nip": "198302192006041003",
-    "nama": "Vendy Reygant Rei",
+    "nama": "VENDY REYGANT REI",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1292,7 +1292,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0121",
     "nip": "198206242003121001",
-    "nama": "Jakob Thomas Edison Bothmir",
+    "nama": "JAKOB THOMAS EDISON BOTHMIR",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1304,7 +1304,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0122",
     "nip": "198108012005021001",
-    "nama": "Satrio Hari Prambodo",
+    "nama": "SATRIO HARI PRAMBODO",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1316,7 +1316,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0123",
     "nip": "198109182005021003",
-    "nama": "Lucky Michael Najoan",
+    "nama": "LUCKY MICHAEL NAJOAN",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1328,7 +1328,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0124",
     "nip": "198012242005021001",
-    "nama": "Donny Adrianus Sulu",
+    "nama": "DONNY ADRIANUS SULU",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1340,7 +1340,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0125",
     "nip": "198003082002121001",
-    "nama": "Warso",
+    "nama": "WARSO",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1352,7 +1352,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0126",
     "nip": "197910112006041004",
-    "nama": "Felix Paduli",
+    "nama": "FELIX PADULI",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1364,7 +1364,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0127",
     "nip": "197904252005021003",
-    "nama": "Arfian Iroth",
+    "nama": "ARFIAN IROTH",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1376,7 +1376,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0128",
     "nip": "197903122006041002",
-    "nama": "Marthy Arny Toemigoloeng",
+    "nama": "MARTHY ARNY TOEMIGOLOENG",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1388,7 +1388,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0129",
     "nip": "198711112014031001",
-    "nama": "Jensson",
+    "nama": "JENSSON",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1400,7 +1400,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0130",
     "nip": "198812142015031002",
-    "nama": "Alfian Rio Susanto",
+    "nama": "ALFIAN RIO SUSANTO",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1412,7 +1412,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0131",
     "nip": "198510162005021001",
-    "nama": "M.Arsyu Makin",
+    "nama": "M ARSYU MAKIN",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1424,7 +1424,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0132",
     "nip": "198406162006041001",
-    "nama": "Abdul Rahman Baluntu",
+    "nama": "ABDUL RAHMAN BALUNTU",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kepala Kamar Mesin Kapal",
@@ -1436,7 +1436,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0133",
     "nip": "199911052022031001",
-    "nama": "Muhammad Edwin",
+    "nama": "MUHAMMAD EDWIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1448,7 +1448,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0134",
     "nip": "199606092022031002",
-    "nama": "Tedi Taufik Effendi",
+    "nama": "TEDI TAUFIK EFFENDI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1460,7 +1460,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0135",
     "nip": "199505132022031001",
-    "nama": "Eka Surya Wijaya. B",
+    "nama": "EKA SURYA WIJAYA B",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1472,7 +1472,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0136",
     "nip": "199701082022031002",
-    "nama": "Heru Arisandi",
+    "nama": "HERU ARISANDI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1484,7 +1484,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0137",
     "nip": "199805262022031002",
-    "nama": "Yoga Permana Muhidin",
+    "nama": "YOGA PERMANA MUHIDIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1496,7 +1496,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0138",
     "nip": "198901192022031001",
-    "nama": "Junaidi",
+    "nama": "JUNAIDI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1508,7 +1508,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0139",
     "nip": "199406152022031003",
-    "nama": "Davit Daly Berty",
+    "nama": "DAVIT DALY BERTY",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1520,7 +1520,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0140",
     "nip": "199401192022031001",
-    "nama": "Renggo Pahlevy",
+    "nama": "RENGGO PAHLEVY",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1532,7 +1532,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0141",
     "nip": "199808092022031002",
-    "nama": "Handiko Krismanjoyo",
+    "nama": "HANDIKO KRISMANJOYO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1544,7 +1544,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0142",
     "nip": "199609122025061001",
-    "nama": "Ahmad Baihaqi",
+    "nama": "AHMAD BAIHAQI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1556,7 +1556,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0143",
     "nip": "199302192025061001",
-    "nama": "Febi Arifianto",
+    "nama": "FEBI ARIFIANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1568,7 +1568,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0144",
     "nip": "200303232025061001",
-    "nama": "Harith",
+    "nama": "HARITH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1580,7 +1580,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0145",
     "nip": "200505082025061001",
-    "nama": "Hazmi Nurahman",
+    "nama": "HAZMI NURAHMAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1592,7 +1592,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0146",
     "nip": "200403142025061001",
-    "nama": "Marcellino Akhmad",
+    "nama": "MARCELLINO AKHMAD",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1604,7 +1604,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0147",
     "nip": "200104172025061001",
-    "nama": "Muhammad Ichsan Dedi Aprivian",
+    "nama": "MUHAMMAD ICHSAN DEDI APRIVIAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1616,7 +1616,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0148",
     "nip": "199712272025061001",
-    "nama": "Muhammad Nizar",
+    "nama": "MUHAMMAD NIZAR",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1628,7 +1628,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0149",
     "nip": "200111102025061001",
-    "nama": "Nursyaiful",
+    "nama": "NURSYAIFUL",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1640,7 +1640,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0150",
     "nip": "200112272025061001",
-    "nama": "Tri Kandias Hasifuro'I",
+    "nama": "TRI KANDIAS HASIFUROI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1652,7 +1652,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0151",
     "nip": "200002022025061001",
-    "nama": "Zulfikar",
+    "nama": "ZULFIKAR",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1664,7 +1664,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0152",
     "nip": "199406242022031001",
-    "nama": "Sunaryo",
+    "nama": "SUNARYO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1676,7 +1676,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0153",
     "nip": "198704112015031002",
-    "nama": "Untung Kurniawan",
+    "nama": "UNTUNG KURNIAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1688,7 +1688,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0154",
     "nip": "199104192015031001",
-    "nama": "Dede Handoyo",
+    "nama": "DEDE HANDOYO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1700,7 +1700,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0155",
     "nip": "198403282015031001",
-    "nama": "Lucky Hermanto",
+    "nama": "LUCKY HERMANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1712,7 +1712,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0156",
     "nip": "199802132022031004",
-    "nama": "Dimas Ade Virgiawan",
+    "nama": "DIMAS ADE VIRGIAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1724,7 +1724,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0157",
     "nip": "200111302022031002",
-    "nama": "Rahmad Idris",
+    "nama": "RAHMAD IDRIS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1736,7 +1736,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0158",
     "nip": "199810262022031001",
-    "nama": "Agung Nugraha",
+    "nama": "AGUNG NUGRAHA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1748,7 +1748,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0159",
     "nip": "198011192008011005",
-    "nama": "Hermanto",
+    "nama": "HERMANTO",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1760,7 +1760,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0160",
     "nip": "199607262022031001",
-    "nama": "Ahyar Ardiansyah",
+    "nama": "AHYAR ARDIANSYAH",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1772,7 +1772,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0161",
     "nip": "200304132022031001",
-    "nama": "Nurazikin Yusra",
+    "nama": "NURAZIKIN YUSRA",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1784,7 +1784,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0162",
     "nip": "199608152022031002",
-    "nama": "Agung Nugraha",
+    "nama": "AGUNG NUGRAHA",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1795,8 +1795,8 @@ var SEED_AWAK_ARMADA = [
   },
   {
     "pegawaiId": "PEG-0163",
-    "nip": "Agus Abdul Hofir",
-    "nama": "198608282008011002",
+    "nip": "198608282008011002",
+    "nama": "AGUS ABDUL HOFIR",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1807,8 +1807,8 @@ var SEED_AWAK_ARMADA = [
   },
   {
     "pegawaiId": "PEG-0164",
-    "nip": "Muhamad Mizanul Abror",
-    "nama": "200108132022031003",
+    "nip": "200108132022031003",
+    "nama": "MUHAMAD MIZANUL ABROR",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1820,7 +1820,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0165",
     "nip": "200305032025061001",
-    "nama": "Muh. Syafaat",
+    "nama": "MUH SYAFAAT",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1832,7 +1832,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0166",
     "nip": "198308062008011002",
-    "nama": "M Nasir",
+    "nama": "M NASIR",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1844,7 +1844,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0167",
     "nip": "199105222010121002",
-    "nama": "Danu Pramana",
+    "nama": "DANU PRAMANA",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1856,7 +1856,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0168",
     "nip": "200305192025061001",
-    "nama": "Akhmad Yudha Aryandi",
+    "nama": "AKHMAD YUDHA ARYANDI",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1868,7 +1868,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0169",
     "nip": "198607222007011001",
-    "nama": "Asep Sarkani",
+    "nama": "ASEP SARKANI",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1880,7 +1880,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0170",
     "nip": "199504072025061001",
-    "nama": "Zulkibli",
+    "nama": "ZULKIBLI",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1892,7 +1892,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0171",
     "nip": "200109102025061001",
-    "nama": "Rizki Muliyadi",
+    "nama": "RIZKI MULIYADI",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1904,7 +1904,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0172",
     "nip": "199203272025061001",
-    "nama": "Eko Suryanto",
+    "nama": "EKO SURYANTO",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Kelasi Kapal",
@@ -1916,7 +1916,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0173",
     "nip": "-",
-    "nama": "Azer Apner Pate",
+    "nama": "AZER APNER PATE",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -1928,7 +1928,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0174",
     "nip": "-",
-    "nama": "Rudi Sudarmaji",
+    "nama": "RUDI SUDARMAJI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -1940,7 +1940,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0175",
     "nip": "-",
-    "nama": "Agus Solihin",
+    "nama": "AGUS SOLIHIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -1952,7 +1952,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0176",
     "nip": "-",
-    "nama": "Ronny John Ferdinand Paulus",
+    "nama": "RONNY JOHN FERDINAND PAULUS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -1964,7 +1964,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0177",
     "nip": "-",
-    "nama": "Totong Winarto",
+    "nama": "TOTONG WINARTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -1976,7 +1976,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0178",
     "nip": "-",
-    "nama": "Singgih Aji Nosa",
+    "nama": "SINGGIH AJI NOSA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -1988,7 +1988,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0179",
     "nip": "-",
-    "nama": "Syafari Ardiansyah",
+    "nama": "SYAFARI ARDIANSYAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2000,7 +2000,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0180",
     "nip": "-",
-    "nama": "Oka Reli Purwono",
+    "nama": "OKA RELI PURWONO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2012,7 +2012,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0181",
     "nip": "-",
-    "nama": "Ary Sumaryadi",
+    "nama": "ARY SUMARYADI",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2024,7 +2024,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0182",
     "nip": "-",
-    "nama": "Moh. Abdulloh",
+    "nama": "MOH ABDULLOH",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2036,7 +2036,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0183",
     "nip": "-",
-    "nama": "Oky Riansyah",
+    "nama": "OKY RIANSYAH",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2048,7 +2048,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0184",
     "nip": "-",
-    "nama": "Nurkoyo",
+    "nama": "NURKOYO",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2060,7 +2060,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0185",
     "nip": "-",
-    "nama": "James Bagensa",
+    "nama": "JAMES BAGENSA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2072,7 +2072,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0186",
     "nip": "-",
-    "nama": "Ruddy Alfianus Mamahit",
+    "nama": "RUDDY ALFIANUS MAMAHIT",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2084,7 +2084,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0187",
     "nip": "-",
-    "nama": "La Mane",
+    "nama": "LA MANE",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2096,7 +2096,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0188",
     "nip": "-",
-    "nama": "Muslih",
+    "nama": "MUSLIH",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2108,7 +2108,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0189",
     "nip": "-",
-    "nama": "Hanudin",
+    "nama": "HANUDIN",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2120,7 +2120,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0190",
     "nip": "-",
-    "nama": "Umar Ali Salampessy",
+    "nama": "UMAR ALI SALAMPESSY",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2132,7 +2132,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0191",
     "nip": "-",
-    "nama": "Tedy Umalucky",
+    "nama": "TEDY UMALUCKY",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2144,7 +2144,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0192",
     "nip": "-",
-    "nama": "Dhidit Setiawan",
+    "nama": "DHIDIT SETIAWAN",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2156,7 +2156,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0193",
     "nip": "-",
-    "nama": "Nurholis",
+    "nama": "NURHOLIS",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2168,7 +2168,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0194",
     "nip": "-",
-    "nama": "Puji Tri Laksono",
+    "nama": "PUJI TRI LAKSONO",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2180,7 +2180,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0195",
     "nip": "-",
-    "nama": "Sugeng Riadi",
+    "nama": "SUGENG RIADI",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2192,7 +2192,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0196",
     "nip": "-",
-    "nama": "James Roberto Sihombing",
+    "nama": "JAMES ROBERTO SIHOMBING",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2204,7 +2204,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0197",
     "nip": "198102052003121003",
-    "nama": "Bustami",
+    "nama": "BUSTAMI",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2216,7 +2216,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0198",
     "nip": "-",
-    "nama": "Nofry Endey",
+    "nama": "NOFRY ENDEY",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2228,7 +2228,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0199",
     "nip": "-",
-    "nama": "Tri Hariyanto",
+    "nama": "TRI HARIYANTO",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Markonis",
@@ -2240,7 +2240,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0200",
     "nip": "-",
-    "nama": "Dedy Aryanto",
+    "nama": "DEDY ARYANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2252,7 +2252,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0201",
     "nip": "-",
-    "nama": "Rizki Sutardi",
+    "nama": "RIZKI SUTARDI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2264,7 +2264,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0202",
     "nip": "-",
-    "nama": "Rusli",
+    "nama": "RUSLI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2276,7 +2276,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0203",
     "nip": "-",
-    "nama": "Rusli",
+    "nama": "RUSLI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2288,7 +2288,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0204",
     "nip": "-",
-    "nama": "Ade Subhan",
+    "nama": "ADE SUBHAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2300,7 +2300,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0205",
     "nip": "-",
-    "nama": "Ismail Lubis",
+    "nama": "ISMAIL LUBIS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2312,7 +2312,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0206",
     "nip": "-",
-    "nama": "Joesuf",
+    "nama": "JOESUF",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2324,7 +2324,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0207",
     "nip": "-",
-    "nama": "Abdul Razak Usemahu",
+    "nama": "ABDUL RAZAK USEMAHU",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2336,7 +2336,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0208",
     "nip": "-",
-    "nama": "Jabornok Situmorang",
+    "nama": "JABORNOK SITUMORANG",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2348,7 +2348,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0209",
     "nip": "-",
-    "nama": "Muh. Nasrul Latulanit",
+    "nama": "MUH NASRUL LATULANIT",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2360,7 +2360,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0210",
     "nip": "-",
-    "nama": "Frangky Richard Supit",
+    "nama": "FRANGKY RICHARD SUPIT",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2372,7 +2372,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0211",
     "nip": "-",
-    "nama": "Dwi Nazarudin Amrullah",
+    "nama": "DWI NAZARUDIN AMRULLAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2384,7 +2384,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0212",
     "nip": "-",
-    "nama": "Gian Luca Vialli Pakpahan",
+    "nama": "GIAN LUCA VIALLI PAKPAHAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2396,7 +2396,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0213",
     "nip": "-",
-    "nama": "Eko Prasetyo",
+    "nama": "EKO PRASETYO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2408,7 +2408,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0214",
     "nip": "-",
-    "nama": "Hari Rustaman",
+    "nama": "HARI RUSTAMAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2420,7 +2420,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0215",
     "nip": "-",
-    "nama": "Rajib Ahmad",
+    "nama": "RAJIB AHMAD",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2432,7 +2432,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0216",
     "nip": "-",
-    "nama": "Triyono",
+    "nama": "TRIYONO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2444,7 +2444,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0217",
     "nip": "-",
-    "nama": "Rama Angga Saputra",
+    "nama": "RAMA ANGGA SAPUTRA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2456,7 +2456,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0218",
     "nip": "-",
-    "nama": "Apyam Mei Kabarek",
+    "nama": "APYAM MEI KABAREK",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2468,7 +2468,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0219",
     "nip": "-",
-    "nama": "Acep Fery Sugiarto",
+    "nama": "ACEP FERY SUGIARTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2480,7 +2480,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0220",
     "nip": "-",
-    "nama": "Ahmad Tholib",
+    "nama": "AHMAD THOLIB",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2492,7 +2492,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0221",
     "nip": "-",
-    "nama": "Sukriyadi Mawardi",
+    "nama": "SUKRIYADI MAWARDI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2504,7 +2504,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0222",
     "nip": "-",
-    "nama": "Dwi Hartono Gobel",
+    "nama": "DWI HARTONO GOBEL",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2516,7 +2516,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0223",
     "nip": "-",
-    "nama": "Arkalaus D",
+    "nama": "ARKALAUS D",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2528,7 +2528,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0224",
     "nip": "-",
-    "nama": "Dwi Hendarto",
+    "nama": "DWI HENDARTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2540,7 +2540,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0225",
     "nip": "-",
-    "nama": "Sodik",
+    "nama": "SODIK",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2552,7 +2552,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0226",
     "nip": "-",
-    "nama": "Feri Supriadi",
+    "nama": "FERI SUPRIADI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2564,7 +2564,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0227",
     "nip": "-",
-    "nama": "SETYO WIJATMIKO, A.Md",
+    "nama": "SETYO WIJATMIKO",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2576,7 +2576,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0228",
     "nip": "-",
-    "nama": "Dwi Agus Triyanto",
+    "nama": "DWI AGUS TRIYANTO",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2588,7 +2588,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0229",
     "nip": "-",
-    "nama": "WAWAN SETIAWAN, A.Md",
+    "nama": "WAWAN SETIAWAN",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2600,7 +2600,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0230",
     "nip": "-",
-    "nama": "David Permadi Zaen",
+    "nama": "DAVID PERMADI ZAEN",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2612,7 +2612,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0231",
     "nip": "-",
-    "nama": "Muhammad Hanafi Zulfikar",
+    "nama": "MUHAMMAD HANAFI ZULFIKAR",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2624,7 +2624,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0232",
     "nip": "-",
-    "nama": "Nehemia Bothmir",
+    "nama": "NEHEMIA BOTHMIR",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2636,7 +2636,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0233",
     "nip": "-",
-    "nama": "Febri Valentino",
+    "nama": "FEBRI VALENTINO",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2648,7 +2648,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0234",
     "nip": "-",
-    "nama": "Aji Setiyawan",
+    "nama": "AJI SETIYAWAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2660,7 +2660,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0235",
     "nip": "-",
-    "nama": "Suharyanto",
+    "nama": "SUHARYANTO",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2672,7 +2672,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0236",
     "nip": "-",
-    "nama": "Hazlan",
+    "nama": "HAZLAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2684,7 +2684,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0237",
     "nip": "-",
-    "nama": "Dedi Nofriadi",
+    "nama": "DEDI NOFRIADI",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2696,7 +2696,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0238",
     "nip": "-",
-    "nama": "Dedi Irawan",
+    "nama": "DEDI IRAWAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2708,7 +2708,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0239",
     "nip": "-",
-    "nama": "Muryono",
+    "nama": "MURYONO",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2720,7 +2720,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0240",
     "nip": "-",
-    "nama": "Eman Sujarwo",
+    "nama": "EMAN SUJARWO",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2732,7 +2732,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0241",
     "nip": "-",
-    "nama": "Mareiner S. Katiandagho",
+    "nama": "MAREINER S KATIANDAGHO",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2744,7 +2744,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0242",
     "nip": "-",
-    "nama": "Asep Satria Yudha Bhermana",
+    "nama": "ASEP SATRIA YUDHA BHERMANA",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2756,7 +2756,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0243",
     "nip": "-",
-    "nama": "Jeep Usman",
+    "nama": "JEEP USMAN",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2768,7 +2768,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0244",
     "nip": "-",
-    "nama": "Yeyen Nofriwan Putra",
+    "nama": "YEYEN NOFRIWAN PUTRA",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2780,7 +2780,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0245",
     "nip": "-",
-    "nama": "Arfan Mahendra Tarigan",
+    "nama": "ARFAN MAHENDRA TARIGAN",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2792,7 +2792,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0246",
     "nip": "197805022005021002",
-    "nama": "Suriadi",
+    "nama": "SURIADI",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2804,7 +2804,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0247",
     "nip": "-",
-    "nama": "Amrul M. Asmin",
+    "nama": "AMRUL M ASMIN",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2816,7 +2816,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0248",
     "nip": "-",
-    "nama": "Nurhadi",
+    "nama": "NURHADI",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2828,7 +2828,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0249",
     "nip": "-",
-    "nama": "Rolling Wattimena",
+    "nama": "ROLLING WATTIMENA",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2840,7 +2840,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0250",
     "nip": "-",
-    "nama": "Muhammad Asri Umarella",
+    "nama": "MUHAMMAD ASRI UMARELLA",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2852,7 +2852,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0251",
     "nip": "-",
-    "nama": "Fredrik Patty",
+    "nama": "FREDRIK PATTY",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2864,7 +2864,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0252",
     "nip": "-",
-    "nama": "Eko Setiawan",
+    "nama": "EKO SETIAWAN",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2876,7 +2876,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0253",
     "nip": "-",
-    "nama": "Nurhaidir Malik",
+    "nama": "NURHAIDIR MALIK",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2888,7 +2888,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0254",
     "nip": "198807162014071001",
-    "nama": "Muhammad Iqbal",
+    "nama": "MUHAMMAD IQBAL",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2900,7 +2900,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0255",
     "nip": "-",
-    "nama": "Mashuri",
+    "nama": "MASHURI",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2912,7 +2912,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0256",
     "nip": "-",
-    "nama": "Siswo Wijanarko",
+    "nama": "SISWO WIJANARKO",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2924,7 +2924,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0257",
     "nip": "-",
-    "nama": "Praminto",
+    "nama": "PRAMINTO",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2936,7 +2936,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0258",
     "nip": "-",
-    "nama": "Hamzah Hilal Fakaubun",
+    "nama": "HAMZAH HILAL FAKAUBUN",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2948,7 +2948,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0259",
     "nip": "-",
-    "nama": "Fanly Jeiner Ilat",
+    "nama": "FANLY JEINER ILAT",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2960,7 +2960,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0260",
     "nip": "-",
-    "nama": "Nurhidayanto",
+    "nama": "NURHIDAYANTO",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2972,7 +2972,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0261",
     "nip": "-",
-    "nama": "Taufik Ikhsan",
+    "nama": "TAUFIK IKHSAN",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2984,7 +2984,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0262",
     "nip": "-",
-    "nama": "Abraham Besitimur Yongkom",
+    "nama": "ABRAHAM BESITIMUR YONGKOM",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -2996,7 +2996,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0263",
     "nip": "-",
-    "nama": "Muh Ruslan",
+    "nama": "MUH RUSLAN",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -3008,7 +3008,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0264",
     "nip": "-",
-    "nama": "Singgih Tri Utomo",
+    "nama": "SINGGIH TRI UTOMO",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -3020,7 +3020,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0265",
     "nip": "-",
-    "nama": "Wijaya Lesmana",
+    "nama": "WIJAYA LESMANA",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -3032,7 +3032,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0266",
     "nip": "-",
-    "nama": "Maryoko",
+    "nama": "MARYOKO",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -3044,7 +3044,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0267",
     "nip": "-",
-    "nama": "Justang",
+    "nama": "JUSTANG",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -3056,7 +3056,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0268",
     "nip": "-",
-    "nama": "Edy Purwanto",
+    "nama": "EDY PURWANTO",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -3068,7 +3068,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0269",
     "nip": "-",
-    "nama": "Bernadus Ronny Koeswibowo Irwanto",
+    "nama": "BERNADUS RONNY KOESWIBOWO IRWANTO",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -3080,7 +3080,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0270",
     "nip": "-",
-    "nama": "Gazali",
+    "nama": "GAZALI",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Masinis",
@@ -3092,7 +3092,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0271",
     "nip": "-",
-    "nama": "Marcelino Willobrordus Maturbongs",
+    "nama": "MARCELINO WILLOBRORDUS MATURBONGS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3104,7 +3104,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0272",
     "nip": "-",
-    "nama": "Heryoko",
+    "nama": "HERYOKO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3116,7 +3116,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0273",
     "nip": "-",
-    "nama": "Franky Fian Kumesan",
+    "nama": "FRANKY FIAN KUMESAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3128,7 +3128,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0274",
     "nip": "-",
-    "nama": "Ronald Rabung",
+    "nama": "RONALD RABUNG",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3140,7 +3140,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0275",
     "nip": "-",
-    "nama": "Wawan Gunawan",
+    "nama": "WAWAN GUNAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3152,7 +3152,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0276",
     "nip": "-",
-    "nama": "Syamsuddin Syaria Kubi",
+    "nama": "SYAMSUDDIN SYARIA KUBI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3164,7 +3164,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0277",
     "nip": "-",
-    "nama": "Zulrhizki Mahardhika",
+    "nama": "ZULRHIZKI MAHARDHIKA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3176,7 +3176,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0278",
     "nip": "-",
-    "nama": "Satria Teguh Sembada",
+    "nama": "SATRIA TEGUH SEMBADA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3188,7 +3188,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0279",
     "nip": "-",
-    "nama": "Rizaldi Rahman",
+    "nama": "RIZALDI RAHMAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3200,7 +3200,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0280",
     "nip": "-",
-    "nama": "Anggy Yudha Pradana",
+    "nama": "ANGGY YUDHA PRADANA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3212,7 +3212,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0281",
     "nip": "-",
-    "nama": "Remy Raymond Rotinsulu",
+    "nama": "REMY RAYMOND ROTINSULU",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3224,7 +3224,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0282",
     "nip": "-",
-    "nama": "Iwan Kurniawan",
+    "nama": "IWAN KURNIAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3236,7 +3236,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0283",
     "nip": "-",
-    "nama": "Abdullah Budiman Firmansyah",
+    "nama": "ABDULLAH BUDIMAN FIRMANSYAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3248,7 +3248,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0284",
     "nip": "-",
-    "nama": "Zainudin",
+    "nama": "ZAINUDIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3260,7 +3260,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0285",
     "nip": "-",
-    "nama": "Abjan Faruk",
+    "nama": "ABJAN FARUK",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3272,7 +3272,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0286",
     "nip": "-",
-    "nama": "Golden Israel Suma",
+    "nama": "GOLDEN ISRAEL SUMA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3284,7 +3284,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0287",
     "nip": "-",
-    "nama": "Berkat Niatman Gulo",
+    "nama": "BERKAT NIATMAN GULO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3296,7 +3296,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0288",
     "nip": "-",
-    "nama": "Mickael Chimilov Tolosang",
+    "nama": "MICKAEL CHIMILOV TOLOSANG",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3308,7 +3308,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0289",
     "nip": "-",
-    "nama": "Sanggoro Nur Iman",
+    "nama": "SANGGORO NUR IMAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3320,7 +3320,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0290",
     "nip": "-",
-    "nama": "Idil Ardiansyah",
+    "nama": "IDIL ARDIANSYAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3332,7 +3332,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0291",
     "nip": "-",
-    "nama": "Noven Afrindo",
+    "nama": "NOVEN AFRINDO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3344,7 +3344,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0292",
     "nip": "-",
-    "nama": "Muhammad Nasrul",
+    "nama": "MUHAMMAD NASRUL",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3356,7 +3356,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0293",
     "nip": "-",
-    "nama": "Eko Marsiano Putra Tangkawarouw",
+    "nama": "EKO MARSIANO PUTRA TANGKAWAROUW",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3368,7 +3368,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0294",
     "nip": "-",
-    "nama": "Romi Chandra",
+    "nama": "ROMI CHANDRA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3380,7 +3380,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0295",
     "nip": "-",
-    "nama": "Ida Bagus Kade Adi Suambara",
+    "nama": "IDA BAGUS KADE ADI SUAMBARA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3392,7 +3392,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0296",
     "nip": "-",
-    "nama": "BENI ASBA PUTRA, S.Tr.Pi",
+    "nama": "BENI ASBA PUTRA",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3404,7 +3404,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0297",
     "nip": "-",
-    "nama": "Deistiawan Farisi",
+    "nama": "DEISTIAWAN FARISI",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3416,7 +3416,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0298",
     "nip": "-",
-    "nama": "Rahmat Arba",
+    "nama": "RAHMAT ARBA",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3428,7 +3428,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0299",
     "nip": "-",
-    "nama": "Muhammad Leonardo",
+    "nama": "MUHAMMAD LEONARDO",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3440,7 +3440,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0300",
     "nip": "199308082020121002",
-    "nama": "Safrudin",
+    "nama": "SAFRUDIN",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3452,7 +3452,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0301",
     "nip": "197912312010121001",
-    "nama": "Wahyudi",
+    "nama": "WAHYUDI",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3464,7 +3464,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0302",
     "nip": "-",
-    "nama": "Putra Kusuma",
+    "nama": "PUTRA KUSUMA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3476,7 +3476,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0303",
     "nip": "-",
-    "nama": "Hery Poernama",
+    "nama": "HERY POERNAMA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3488,7 +3488,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0304",
     "nip": "-",
-    "nama": "Manuel Langi Runtulalo",
+    "nama": "MANUEL LANGI RUNTULALO",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3500,7 +3500,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0305",
     "nip": "197711142008011005",
-    "nama": "Sudirman",
+    "nama": "SUDIRMAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3512,7 +3512,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0306",
     "nip": "-",
-    "nama": "Sutarjo",
+    "nama": "SUTARJO",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3524,7 +3524,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0307",
     "nip": "196805221994031009",
-    "nama": "Surono",
+    "nama": "SURONO",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3536,7 +3536,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0308",
     "nip": "-",
-    "nama": "Ariyanto Lubis",
+    "nama": "ARIYANTO LUBIS",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3548,7 +3548,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0309",
     "nip": "-",
-    "nama": "Heri Ariyanto",
+    "nama": "HERI ARIYANTO",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3560,7 +3560,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0310",
     "nip": "-",
-    "nama": "Tofik Ariyanto",
+    "nama": "TOFIK ARIYANTO",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3572,7 +3572,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0311",
     "nip": "-",
-    "nama": "Hendra Tambariki",
+    "nama": "HENDRA TAMBARIKI",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3584,7 +3584,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0312",
     "nip": "-",
-    "nama": "M Marchinov Vianthas Saleh",
+    "nama": "M MARCHINOV VIANTHAS SALEH",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3596,7 +3596,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0313",
     "nip": "-",
-    "nama": "Semoel Siruru",
+    "nama": "SEMOEL SIRURU",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3608,7 +3608,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0314",
     "nip": "-",
-    "nama": "Rahman Ali Salampessy",
+    "nama": "RAHMAN ALI SALAMPESSY",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3620,7 +3620,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0315",
     "nip": "-",
-    "nama": "Neru Purnawan",
+    "nama": "NERU PURNAWAN",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3632,7 +3632,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0316",
     "nip": "-",
-    "nama": "Oktafiandi Fajrin",
+    "nama": "OKTAFIANDI FAJRIN",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3644,7 +3644,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0317",
     "nip": "-",
-    "nama": "Bahrudin",
+    "nama": "BAHRUDIN",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3656,7 +3656,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0318",
     "nip": "-",
-    "nama": "Novry Ronald Lukow",
+    "nama": "NOVRY RONALD LUKOW",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3668,7 +3668,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0319",
     "nip": "-",
-    "nama": "Roberth",
+    "nama": "ROBERTH",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3680,7 +3680,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0320",
     "nip": "-",
-    "nama": "Agung Yanuar Priyambodo",
+    "nama": "AGUNG YANUAR PRIYAMBODO",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3692,7 +3692,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0321",
     "nip": "-",
-    "nama": "Dhimas Eki Septiawan",
+    "nama": "DHIMAS EKI SEPTIAWAN",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3704,7 +3704,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0322",
     "nip": "-",
-    "nama": "Jajang Ridwan",
+    "nama": "JAJANG RIDWAN",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3716,7 +3716,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0323",
     "nip": "-",
-    "nama": "Irwan Hidayat",
+    "nama": "IRWAN HIDAYAT",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3728,7 +3728,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0324",
     "nip": "-",
-    "nama": "Adhi Susanto",
+    "nama": "ADHI SUSANTO",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3740,7 +3740,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0325",
     "nip": "-",
-    "nama": "Subhan Hafandy",
+    "nama": "SUBHAN HAFANDY",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3752,7 +3752,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0326",
     "nip": "-",
-    "nama": "Jonny Robby Rondonuwu",
+    "nama": "JONNY ROBBY RONDONUWU",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3764,7 +3764,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0327",
     "nip": "-",
-    "nama": "Kristanto",
+    "nama": "KRISTANTO",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
@@ -3776,7 +3776,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0328",
     "nip": "-",
-    "nama": "Ismail Marzuki",
+    "nama": "ISMAIL MARZUKI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3788,7 +3788,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0329",
     "nip": "-",
-    "nama": "Ilman Rustam",
+    "nama": "ILMAN RUSTAM",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3800,7 +3800,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0330",
     "nip": "-",
-    "nama": "Muhammad Ma`Ruf",
+    "nama": "MUHAMMAD MARUF",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3812,7 +3812,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0331",
     "nip": "-",
-    "nama": "Priyo Kurniawan",
+    "nama": "PRIYO KURNIAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3824,7 +3824,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0332",
     "nip": "-",
-    "nama": "Sutisna Wijaya",
+    "nama": "SUTISNA WIJAYA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3836,7 +3836,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0333",
     "nip": "-",
-    "nama": "Eko Priyono",
+    "nama": "EKO PRIYONO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3848,7 +3848,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0334",
     "nip": "-",
-    "nama": "Lathalansyah Hade",
+    "nama": "LATHALANSYAH HADE",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3860,7 +3860,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0335",
     "nip": "-",
-    "nama": "Lingga Budi Kusuma",
+    "nama": "LINGGA BUDI KUSUMA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3872,7 +3872,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0336",
     "nip": "-",
-    "nama": "Aldi Firmansyah",
+    "nama": "ALDI FIRMANSYAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3884,7 +3884,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0337",
     "nip": "-",
-    "nama": "Manuel Auparai",
+    "nama": "MANUEL AUPARAI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3896,7 +3896,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0338",
     "nip": "-",
-    "nama": "EDUARDO DA COSTA FERNANDES, A.Md, S.P.",
+    "nama": "EDUARDO DA COSTA FERNANDES",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3908,7 +3908,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0339",
     "nip": "-",
-    "nama": "ALBERT ESSING, A.Md, S.PKP",
+    "nama": "ALBERT ESSING",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3920,7 +3920,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0340",
     "nip": "-",
-    "nama": "Mohamad Slamet",
+    "nama": "MOHAMAD SLAMET",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3932,7 +3932,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0341",
     "nip": "-",
-    "nama": "Anggoro Corneawan Premono",
+    "nama": "ANGGORO CORNEAWAN PREMONO",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3944,7 +3944,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0342",
     "nip": "199003132022031001",
-    "nama": "Ardhy Tri Hartono",
+    "nama": "ARDHY TRI HARTONO",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3956,7 +3956,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0343",
     "nip": "-",
-    "nama": "Yusdi Ode Manangin",
+    "nama": "YUSDI ODE MANANGIN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3968,7 +3968,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0344",
     "nip": "-",
-    "nama": "Japaruddin Lalla",
+    "nama": "JAPARUDDIN LALLA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3980,7 +3980,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0345",
     "nip": "-",
-    "nama": "Ruslan Saman",
+    "nama": "RUSLAN SAMAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -3992,7 +3992,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0346",
     "nip": "-",
-    "nama": "Sultan",
+    "nama": "SULTAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4004,7 +4004,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0347",
     "nip": "-",
-    "nama": "Alfian Kiay Baderan",
+    "nama": "ALFIAN KIAY BADERAN",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4016,7 +4016,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0348",
     "nip": "-",
-    "nama": "Hendra Wollah",
+    "nama": "HENDRA WOLLAH",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4028,7 +4028,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0349",
     "nip": "-",
-    "nama": "Novry Sangian",
+    "nama": "NOVRY SANGIAN",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4040,7 +4040,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0350",
     "nip": "-",
-    "nama": "La Dedi",
+    "nama": "LA DEDI",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4052,7 +4052,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0351",
     "nip": "199903122022031001",
-    "nama": "Fikriyansyah",
+    "nama": "FIKRIYANSYAH",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4064,7 +4064,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0352",
     "nip": "-",
-    "nama": "Ardiansyah Pamuji",
+    "nama": "ARDIANSYAH PAMUJI",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4076,7 +4076,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0353",
     "nip": "-",
-    "nama": "Hendro Andaria",
+    "nama": "HENDRO ANDARIA",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4088,7 +4088,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0354",
     "nip": "-",
-    "nama": "Muhammad Nurdarwansyah",
+    "nama": "MUHAMMAD NURDARWANSYAH",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4100,7 +4100,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0355",
     "nip": "-",
-    "nama": "Ranito",
+    "nama": "RANITO",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4112,7 +4112,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0356",
     "nip": "-",
-    "nama": "Yohanes Lan Tielung",
+    "nama": "YOHANES LAN TIELUNG",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4124,7 +4124,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0357",
     "nip": "-",
-    "nama": "Zulkarnain",
+    "nama": "ZULKARNAIN",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4136,7 +4136,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0358",
     "nip": "-",
-    "nama": "Erin Boy Rajagukguk",
+    "nama": "ERIN BOY RAJAGUKGUK",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4148,7 +4148,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0359",
     "nip": "-",
-    "nama": "Susanto Manggopa",
+    "nama": "SUSANTO MANGGOPA",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4160,7 +4160,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0360",
     "nip": "-",
-    "nama": "Mukani",
+    "nama": "MUKANI",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4172,7 +4172,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0361",
     "nip": "-",
-    "nama": "Rinondang Panggabean",
+    "nama": "RINONDANG PANGGABEAN",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4184,7 +4184,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0362",
     "nip": "198807162014071001",
-    "nama": "Muhammad Iqbal",
+    "nama": "MUHAMMAD IQBAL",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4196,7 +4196,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0363",
     "nip": "-",
-    "nama": "Jendri Erwin Mamahit",
+    "nama": "JENDRI ERWIN MAMAHIT",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4208,7 +4208,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0364",
     "nip": "-",
-    "nama": "Budi Waluyo",
+    "nama": "BUDI WALUYO",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4220,7 +4220,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0365",
     "nip": "-",
-    "nama": "Andra Aulia Pratama",
+    "nama": "ANDRA AULIA PRATAMA",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4232,7 +4232,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0366",
     "nip": "-",
-    "nama": "Iswandi Wahid",
+    "nama": "ISWANDI WAHID",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4244,7 +4244,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0367",
     "nip": "-",
-    "nama": "Sugiyono",
+    "nama": "SUGIYONO",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4256,7 +4256,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0368",
     "nip": "-",
-    "nama": "Jonly Jacob",
+    "nama": "JONLY JACOB",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4268,7 +4268,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0369",
     "nip": "-",
-    "nama": "Samson",
+    "nama": "SAMSON",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4280,7 +4280,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0370",
     "nip": "-",
-    "nama": "Fauji Nyinga Mura",
+    "nama": "FAUJI NYINGA MURA",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4292,7 +4292,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0371",
     "nip": "-",
-    "nama": "Rachmat Muharyakinsyah",
+    "nama": "RACHMAT MUHARYAKINSYAH",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4304,7 +4304,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0372",
     "nip": "-",
-    "nama": "Nova Setiadi",
+    "nama": "NOVA SETIADI",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4316,7 +4316,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0373",
     "nip": "-",
-    "nama": "Jently Martino Rembet",
+    "nama": "JENTLY MARTINO REMBET",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4328,7 +4328,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0374",
     "nip": "-",
-    "nama": "Donnycius Pudihang",
+    "nama": "DONNYCIUS PUDIHANG",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4340,7 +4340,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0375",
     "nip": "-",
-    "nama": "Hasrun Paputungan",
+    "nama": "HASRUN PAPUTUNGAN",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4352,7 +4352,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0376",
     "nip": "-",
-    "nama": "M. Nandy Hidayat",
+    "nama": "M NANDY HIDAYAT",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Nahkoda",
@@ -4364,7 +4364,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0472",
     "nip": "198506252008011001",
-    "nama": "Sukarim",
+    "nama": "SUKARIM",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4376,7 +4376,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0473",
     "nip": "198506112008011002",
-    "nama": "Anton Arisiyanto",
+    "nama": "ANTON ARISIYANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4388,7 +4388,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0474",
     "nip": "198507052014031001",
-    "nama": "Moh. Nur Nawawi",
+    "nama": "MOH NUR NAWAWI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4400,7 +4400,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0475",
     "nip": "198804142007011004",
-    "nama": "Hajudin Talaohu",
+    "nama": "HAJUDIN TALAOHU",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4412,7 +4412,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0476",
     "nip": "198705152008011003",
-    "nama": "Dominggus Paulus Huwae",
+    "nama": "DOMINGGUS PAULUS HUWAE",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4424,7 +4424,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0477",
     "nip": "198710152008011001",
-    "nama": "Topandi Basta",
+    "nama": "TOPANDI BASTA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4436,7 +4436,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0478",
     "nip": "199208212010121001",
-    "nama": "Suigit Duki Wibowo",
+    "nama": "SUIGIT DUKI WIBOWO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4448,7 +4448,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0479",
     "nip": "199305202018011002",
-    "nama": "Fendy Gunawan",
+    "nama": "FENDY GUNAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4460,7 +4460,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0480",
     "nip": "198911122019021004",
-    "nama": "Roni",
+    "nama": "RONI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4472,7 +4472,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0481",
     "nip": "198103052015031002",
-    "nama": "Muhammad Hasan",
+    "nama": "MUHAMMAD HASAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4484,7 +4484,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0482",
     "nip": "198301292006041002",
-    "nama": "Moch Tobiin",
+    "nama": "MOCH TOBIIN",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4496,7 +4496,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0483",
     "nip": "198501042008011002",
-    "nama": "Moh Abd Karim",
+    "nama": "MOH ABD KARIM",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4508,7 +4508,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0484",
     "nip": "198703182019021003",
-    "nama": "Pipiet Aditya",
+    "nama": "PIPIET ADITYA",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4520,7 +4520,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0485",
     "nip": "198303202005021001",
-    "nama": "Rommy Sanday Musak",
+    "nama": "ROMMY SANDAY MUSAK",
     "unit": "Stasiun PSDKP Kupang",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4532,7 +4532,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0486",
     "nip": "198607272007011002",
-    "nama": "Aldi Tubalawony",
+    "nama": "ALDI TUBALAWONY",
     "unit": "Stasiun PSDKP Biak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4544,7 +4544,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0487",
     "nip": "198803292018011001",
-    "nama": "Riza Darledy",
+    "nama": "RIZA DARLEDY",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4556,7 +4556,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0488",
     "nip": "199707182020121002",
-    "nama": "Dany Maulana Dwi Jayanto",
+    "nama": "DANY MAULANA DWI JAYANTO",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4568,7 +4568,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0489",
     "nip": "198409082006041001",
-    "nama": "Wagino",
+    "nama": "WAGINO",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4580,7 +4580,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0490",
     "nip": "199510102020121003",
-    "nama": "Angga Nugraha",
+    "nama": "ANGGA NUGRAHA",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4592,7 +4592,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0491",
     "nip": "199001052015031001",
-    "nama": "Khoirul Anam",
+    "nama": "KHOIRUL ANAM",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4604,7 +4604,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0492",
     "nip": "199001012015031002",
-    "nama": "Herwing",
+    "nama": "HERWING",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4616,7 +4616,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0493",
     "nip": "198211072015031002",
-    "nama": "Kusnindito",
+    "nama": "KUSNINDITO",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4628,7 +4628,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0494",
     "nip": "199009252014031001",
-    "nama": "Suhendra Yuda",
+    "nama": "SUHENDRA YUDA",
     "unit": "Pangkalan PSDKP Jakarta",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4640,7 +4640,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0495",
     "nip": "199001162018011001",
-    "nama": "Muhamad Samsul Ma`Arif",
+    "nama": "MUHAMAD SAMSUL MAARIF",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4652,7 +4652,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0496",
     "nip": "199204202020121002",
-    "nama": "Fadly Djunaidy",
+    "nama": "FADLY DJUNAIDY",
     "unit": "Pangkalan PSDKP Tual",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4664,7 +4664,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0497",
     "nip": "198911172019021004",
-    "nama": "Syamsuddin Nurarosid",
+    "nama": "SYAMSUDDIN NURAROSID",
     "unit": "Stasiun PSDKP Ambon",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4676,7 +4676,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0498",
     "nip": "197905282009011004",
-    "nama": "Anton Sukrida",
+    "nama": "ANTON SUKRIDA",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4688,7 +4688,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0499",
     "nip": "198809272008011001",
-    "nama": "Budi Setiawan Pangaribuan",
+    "nama": "BUDI SETIAWAN PANGARIBUAN",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4700,7 +4700,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0500",
     "nip": "199308052020121003",
-    "nama": "Gustiya Dwi Laksono",
+    "nama": "GUSTIYA DWI LAKSONO",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4712,7 +4712,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0501",
     "nip": "199411202015031001",
-    "nama": "Vellyk Wijayanto",
+    "nama": "VELLYK WIJAYANTO",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4724,7 +4724,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0502",
     "nip": "198501132007011002",
-    "nama": "Yansen Hilarius Lagus",
+    "nama": "YANSEN HILARIUS LAGUS",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4736,7 +4736,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0503",
     "nip": "199211192018011006",
-    "nama": "Cornelius Tulong",
+    "nama": "CORNELIUS TULONG",
     "unit": "Stasiun PSDKP Tahuna",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",
@@ -4748,7 +4748,7 @@ var SEED_AWAK_ARMADA = [
   {
     "pegawaiId": "PEG-0504",
     "nip": "199201062020121002",
-    "nama": "Baktiar B",
+    "nama": "BAKTIAR B",
     "unit": "Stasiun PSDKP Tarakan",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Serang",

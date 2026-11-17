@@ -119,8 +119,8 @@ test('resolveMatrix — Menyusun matriks 2x5 dan menghitung total masing-masing 
 
 test('validateAknMatrix — Menolak bila POA > Keseluruhan', () => {
   const invalidMatrix = {
-    AKN_KESELURUHAN: { PNS: 10, PPPK_FUNGSIONAL: 5, PPPK_PELAKSANA: 0, PPPK_PARUH_WAKTU: 0, PJLP: 0 },
-    AKN_POA: { PNS: 15, PPPK_FUNGSIONAL: 5, PPPK_PELAKSANA: 0, PPPK_PARUH_WAKTU: 0, PJLP: 0 } // PNS 15 > 10
+    AKN_KESELURUHAN: { PNS: 10, P3K: 5, P3K_PARUH_WAKTU: 0, PJLP: 0 },
+    AKN_POA: { PNS: 15, P3K: 5, P3K_PARUH_WAKTU: 0, PJLP: 0 } // PNS 15 > 10
   };
 
   const check = validateAknMatrix(invalidMatrix);
@@ -128,10 +128,11 @@ test('validateAknMatrix — Menolak bila POA > Keseluruhan', () => {
   assert.match(check.errors[0], /tidak boleh melebihi Keseluruhan/);
 });
 
-test('validateAknMatrix — Lolos jika semua nilai valid dan POA <= Keseluruhan', () => {
+test('validateAknMatrix — Lolos jika semua nilai valid 4 kategori dan POA <= Keseluruhan', () => {
+  assert.deepEqual(AKN_KATEGORIS, ['PNS', 'P3K', 'P3K_PARUH_WAKTU', 'PJLP']);
   const validMatrix = {
-    AKN_KESELURUHAN: { PNS: 100, PPPK_FUNGSIONAL: 50, PPPK_PELAKSANA: 30, PPPK_PARUH_WAKTU: 10, PJLP: 20 },
-    AKN_POA: { PNS: 40, PPPK_FUNGSIONAL: 20, PPPK_PELAKSANA: 15, PPPK_PARUH_WAKTU: 5, PJLP: 10 }
+    AKN_KESELURUHAN: { PNS: 100, P3K: 80, P3K_PARUH_WAKTU: 10, PJLP: 20 },
+    AKN_POA: { PNS: 40, P3K: 35, P3K_PARUH_WAKTU: 5, PJLP: 10 }
   };
 
   const check = validateAknMatrix(validMatrix);
@@ -141,23 +142,35 @@ test('validateAknMatrix — Lolos jika semua nilai valid dan POA <= Keseluruhan'
   assert.equal(check.totalPoa, 90);
 });
 
-test('akn_aggregateAwakRows — Mengagregasi data pegawai aktif dan memisahkan Dit. POA vs Keseluruhan', () => {
+test('CarryForward — Menggabungkan data historis PPPK_FUNGSIONAL + PPPK_PELAKSANA ke P3K', () => {
+  const rows = [
+    { Scope: 'AKN_KESELURUHAN', Kategori: 'PPPK_FUNGSIONAL', Jumlah: 74, Periode: '2026-10-W04', Status: 'ACTIVE' },
+    { Scope: 'AKN_KESELURUHAN', Kategori: 'PPPK_PELAKSANA', Jumlah: 48, Periode: '2026-10-W04', Status: 'ACTIVE' }
+  ];
+  const res = resolveCarryForward(rows, 'AKN_KESELURUHAN', 'P3K', '2026-11-W01');
+  assert.equal(res.jumlah, 122);
+  assert.equal(res.periodeSumber, '2026-10-W04');
+  assert.equal(res.carried, true);
+});
+
+test('akn_aggregateAwakRows — Mengagregasi data pegawai aktif ke 4 kategori dan StatusPenempatan', () => {
   const { akn_aggregateAwakRows } = require('../pure/Carry.js');
   const sampleAwak = [
-    { Nama: 'Awak 1', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PNS', Unit: 'Armada Kapal Pengawas (Pusat)' },
-    { Nama: 'Awak 2', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PNS', Unit: 'Pangkalan PSDKP Batam' },
-    { Nama: 'Awak 3', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PPPK_FUNGSIONAL', Unit: 'Armada Kapal Pengawas (Pusat)' },
-    { Nama: 'Awak 4', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PJLP', Unit: 'Stasiun PSDKP Pontianak' },
-    { Nama: 'Awak 5', StatusAktif: 'NON_AKTIF', KategoriKepegawaian: 'PNS', Unit: 'Armada Kapal Pengawas (Pusat)' } // Non-aktif diabaikan
+    { Nama: 'AWAK SATU', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PNS', StatusPenempatan: 'PUSAT_POA' },
+    { Nama: 'AWAK DUA', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PNS', Unit: 'Pangkalan PSDKP Batam' },
+    { Nama: 'AWAK TIGA', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PPPK_FUNGSIONAL', Unit: 'Armada Kapal Pengawas (Pusat)' },
+    { Nama: 'AWAK EMPAT', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PPPK_PELAKSANA', StatusPenempatan: 'DIPERBANTUKAN_UPT' },
+    { Nama: 'AWAK LIMA', StatusAktif: 'AKTIF', KategoriKepegawaian: 'PJLP', Unit: 'Stasiun PSDKP Pontianak' },
+    { Nama: 'AWAK ENAM', StatusAktif: 'NON_AKTIF', KategoriKepegawaian: 'PNS', StatusPenempatan: 'PUSAT_POA' }
   ];
 
   const res = akn_aggregateAwakRows(sampleAwak);
-  assert.equal(res.totalAktif, 4);
-  assert.equal(res.totalPoa, 2);
+  assert.equal(res.totalAktif, 5);
+  assert.equal(res.totalPoa, 3);
   assert.equal(res.AKN_KESELURUHAN.PNS, 2);
   assert.equal(res.AKN_POA.PNS, 1);
-  assert.equal(res.AKN_KESELURUHAN.PPPK_FUNGSIONAL, 1);
-  assert.equal(res.AKN_POA.PPPK_FUNGSIONAL, 1);
+  assert.equal(res.AKN_KESELURUHAN.P3K, 2);
+  assert.equal(res.AKN_POA.P3K, 2);
   assert.equal(res.AKN_KESELURUHAN.PJLP, 1);
   assert.equal(res.AKN_POA.PJLP, 0);
 });
