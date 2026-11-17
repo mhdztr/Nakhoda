@@ -297,7 +297,7 @@ var DirektoriView = (function () {
     switchSheetTab('profil');
 
     var nameEl = document.getElementById('sheet-dir-nama');
-    if (nameEl) nameEl.textContent = 'Memuat profil...';
+    if (nameEl) nameEl.textContent = 'Loading profil...';
 
     rpc('dir_getDetail', token, pegawaiId)
       .then(function (res) {

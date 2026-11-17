@@ -9,11 +9,11 @@
     <div class="page-actions">
       <button type="button" id="btn-kom-refresh" class="btn btn-secondary-md">
         <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        <span>Segarkan</span>
+        <span>Refresh</span>
       </button>
       <button type="button" id="btn-kom-open-catat-new" class="btn btn-primary-md">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span>Catat sertifikat</span>
+        <span>Input sertifikat</span>
       </button>
     </div>
   </div>
@@ -43,8 +43,8 @@
 
   <!-- Tab Garis Bawah Navigasi Sub-Modul (DESIGN.md §5.2) -->
   <div class="tab-strip" style="margin-bottom:16px;">
-    <button type="button" id="tab-kom-antrean" class="tab-btn active">Antrean tindak lanjut revalidasi</button>
-    <button type="button" id="tab-kom-matriks" class="tab-btn">Matriks kelengkapan personil</button>
+    <button type="button" id="tab-kom-antrean" class="tab-btn active">Prioritas revalidasi</button>
+    <button type="button" id="tab-kom-matriks" class="tab-btn">Compliance matrix personil</button>
   </div>
 
   <!-- PANE 1: ANTREAN TINDAK LANJUT REVALIDASI -->
@@ -68,7 +68,7 @@
         </thead>
         <tbody id="kom-antrean-tbody">
           <tr>
-            <td colspan="6" style="text-align:center; padding:32px 0; color:var(--muted);">Memuat antrean tindak lanjut...</td>
+            <td colspan="6" style="text-align:center; padding:32px 0; color:var(--muted);">Loading prioritas revalidasi...</td>
           </tr>
         </tbody>
       </table>
@@ -113,7 +113,7 @@
         </thead>
         <tbody id="kom-matriks-tbody">
           <tr>
-            <td colspan="5" style="text-align:center; padding:32px 0; color:var(--muted);">Memuat matriks kompetensi awak...</td>
+            <td colspan="5" style="text-align:center; padding:32px 0; color:var(--muted);">Loading compliance matrix...</td>
           </tr>
         </tbody>
       </table>
@@ -151,7 +151,7 @@
 
       <div style="font-size:12px; font-weight:600; color:var(--muted); margin-bottom:10px;">Daftar butir sertifikat wajib &amp; keahlian:</div>
       <div id="sheet-kom-items-list" style="display:flex; flex-direction:column; gap:8px;">
-        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat matriks standar...</div>
+        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Loading standar kompetensi...</div>
       </div>
     </div>
 
@@ -167,8 +167,8 @@
   <div class="modal-box modal-box-lg">
     <div class="modal-header">
       <div>
-        <div class="modal-title" id="modal-kom-title">Rekam / revalidasi sertifikat</div>
-        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Mencatat STTPP &amp; sertifikasi kepelautan berdasarkan katalog SIKAP serta standar STCW-F.</div>
+        <div class="modal-title" id="modal-kom-title">Input / revalidasi sertifikat</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Mencatat sertifikasi kepelautan personil berdasarkan katalog SIKAP &amp; standar STCW-F.</div>
       </div>
       <button type="button" class="modal-close" onclick="Modal.close('modal-kom-save')">&times;</button>
     </div>
@@ -275,13 +275,13 @@
 
         <!-- Berkas Bukti Evidence Upload (DESIGN.md §5.8) -->
         <div class="form-group">
-          <label class="form-label" for="kom-save-file">Pindaian berkas sertifikat (PDF / JPG &le; 15 MB)</label>
+          <label class="form-label" for="kom-save-file">Upload scan sertifikat (PDF / JPG &le; 15 MB)</label>
           <div class="upload-dropzone" id="kom-save-dropzone">
             <input type="file" id="kom-save-file" accept=".pdf,image/png,image/jpeg" style="display:none;">
             <div id="kom-save-file-prompt" class="dropzone-prompt">
               <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--muted)" fill="none" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk memilih berkas sertifikat</div>
-              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maksimal 15 MB · Disimpan ke Google Drive satelit Nakhoda)</div>
+              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk upload atau drag &amp; drop file sertifikat</div>
+              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maks 15 MB · Disimpan ke Google Drive satelit Nakhoda)</div>
             </div>
             <div id="kom-save-file-selected" class="dropzone-selected hidden">
               <div style="display:flex; align-items:center; gap:8px; min-width:0;">

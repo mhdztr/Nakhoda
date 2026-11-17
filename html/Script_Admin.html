@@ -202,7 +202,7 @@ var AdminView = (function () {
         btnRefresh.disabled = false;
         btnRefresh.classList.remove('loading');
       }
-      Toast.error(err.message || 'Galat memuat data pengguna.');
+      Toast.error(err.message || 'Gagal memuat data user.');
     });
   }
 
@@ -311,7 +311,7 @@ var AdminView = (function () {
         '<td style="text-align:right;">' +
           '<div style="display:flex; justify-content:flex-end; gap:6px;">' +
             '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openEditUserModal(\'' + u.userId + '\')">Ubah</button>' +
-            '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openResetPwdModal(\'' + u.userId + '\')">Reset sandi</button>' +
+            '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openResetPwdModal(\'' + u.userId + '\')">Reset password</button>' +
           '</div>' +
         '</td>' +
       '</tr>';
@@ -352,7 +352,7 @@ var AdminView = (function () {
           btnRefresh.disabled = false;
           btnRefresh.classList.remove('loading');
         }
-        Toast.error(err.message || 'Galat memuat catatan audit.');
+        Toast.error(err.message || 'Gagal memuat audit log.');
       });
   }
 

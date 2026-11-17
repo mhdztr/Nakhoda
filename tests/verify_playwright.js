@@ -854,6 +854,18 @@ async function runVisualTests() {
     console.log('  [Screen 01] Ringkasan Eksekutif');
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '01_ringkasan_desktop.png') });
 
+    // 1b. Verifikasi Global Loading Indicator (Top Bar + Floating Status Pill + Refresh Spin)
+    console.log('  [Screen 01b] Global Loading Indicator Active');
+    await page.evaluate(() => {
+      if (typeof GlobalLoader !== 'undefined') GlobalLoader.start('Syncing data SIKAP...');
+    });
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '01b_loading_indicator.png') });
+    await page.evaluate(() => {
+      if (typeof GlobalLoader !== 'undefined') GlobalLoader.done();
+    });
+    await page.waitForTimeout(100);
+
     // 2. Komposisi AKN
     console.log('  [Screen 02] Komposisi AKN');
     await page.click('button[data-route="komposisi"]');

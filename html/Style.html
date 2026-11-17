@@ -1693,6 +1693,70 @@ th.text-center {
   }
 }
 
+/* ── Indikator Loading Global (Top Bar + Floating Status Pill) ── */
+.global-top-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(217, 72, 15, 0.14);
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.global-top-loader-bar {
+  height: 100%;
+  width: 35%;
+  background-color: var(--accent);
+  animation: topLoaderSlide 1.05s infinite ease-in-out;
+}
+
+@keyframes topLoaderSlide {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(350%); }
+}
+
+.global-loading-pill {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9998;
+  background-color: #FFFFFF;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-chip);
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(15, 18, 20, 0.12);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  pointer-events: none;
+}
+
+.loader-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: loaderSpin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes loaderSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.is-loading-spin svg {
+  animation: loaderSpin 0.75s linear infinite;
+}
+
 /* ── Mode Cetak A4 Resmi ── */
 @media print {
   body {
@@ -1703,6 +1767,8 @@ th.text-center {
   .no-print,
   .page-header,
   .filter-bar,
+  #global-top-loader,
+  #global-loading-pill,
   #toaster {
     display: none !important;
   }

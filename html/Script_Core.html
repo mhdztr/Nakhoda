@@ -160,25 +160,106 @@ var ShellUI = (function () {
 })();
 
 // ===========================================================================
-// 5. RPC BRIDGE (google.script.run Wrapper Multi-Argument)
+// 5. GLOBAL LOADING CONTROLLER & RPC BRIDGE (google.script.run Wrapper)
 // ===========================================================================
+var GlobalLoader = (function () {
+  'use strict';
+  var _activeCount = 0;
+  var _pillTimer = null;
+
+  var LABEL_MAP = {
+    'ringkasan_': 'Loading Ringkasan...',
+    'akn_': 'Loading Komposisi AKN...',
+    'dir_syncSikap': 'Syncing data SIKAP...',
+    'dir_': 'Loading Direktori Awak...',
+    'kom_saveSertifikat': 'Saving sertifikat...',
+    'kom_': 'Loading Kompetensi...',
+    'sijil_assignAwak': 'Menempatkan awak kapal...',
+    'sijil_uploadSuratTugas': 'Uploading Surat Tugas...',
+    'sijil_': 'Loading Papan Sijil...',
+    'keg_': 'Loading Log Kegiatan...',
+    'lap_': 'Loading Executive Report...',
+    'admin_': 'Loading Admin & Audit Log...',
+    'auth_': 'Authenticating...'
+  };
+
+  function _resolveLabel(funcName) {
+    var fn = String(funcName || '');
+    for (var prefix in LABEL_MAP) {
+      if (Object.prototype.hasOwnProperty.call(LABEL_MAP, prefix) && fn.indexOf(prefix) === 0) {
+        return LABEL_MAP[prefix];
+      }
+    }
+    return 'Loading data...';
+  }
+
+  function start(labelOrFunc) {
+    _activeCount++;
+    var bar = document.getElementById('global-top-loader');
+    var pill = document.getElementById('global-loading-pill');
+    var txt = document.getElementById('global-loading-text');
+
+    if (bar) bar.classList.remove('hidden');
+    if (txt) txt.textContent = labelOrFunc && labelOrFunc.indexOf(' ') !== -1 ? labelOrFunc : _resolveLabel(labelOrFunc);
+
+    // Putar ikon pada tombol Refresh/Sync yang aktif
+    document.querySelectorAll('button[id$="-refresh"], #btn-sync-sikap').forEach(function (btn) {
+      btn.classList.add('is-loading-spin');
+    });
+
+    if (!_pillTimer && pill) {
+      _pillTimer = setTimeout(function () {
+        if (_activeCount > 0 && pill) {
+          pill.classList.remove('hidden');
+        }
+      }, 120);
+    }
+  }
+
+  function done() {
+    _activeCount = Math.max(0, _activeCount - 1);
+    if (_activeCount === 0) {
+      if (_pillTimer) {
+        clearTimeout(_pillTimer);
+        _pillTimer = null;
+      }
+      var bar = document.getElementById('global-top-loader');
+      var pill = document.getElementById('global-loading-pill');
+      if (bar) bar.classList.add('hidden');
+      if (pill) pill.classList.add('hidden');
+
+      document.querySelectorAll('.is-loading-spin').forEach(function (btn) {
+        btn.classList.remove('is-loading-spin');
+      });
+    }
+  }
+
+  return {
+    start: start,
+    done: done
+  };
+})();
+
 function rpc(funcName, params) {
   var args = Array.prototype.slice.call(arguments, 1);
   return new Promise(function (resolve, reject) {
     if (typeof google === 'undefined' || !google.script || !google.script.run) {
       console.warn('[RPC Mock]', funcName, args);
-      return reject(new Error('google.script.run tidak tersedia di lingkungan ini.'));
+      return reject(new Error('google.script.run tidak tersedia di environment ini.'));
     }
+
+    GlobalLoader.start(funcName);
 
     var runner = google.script.run
       .withSuccessHandler(function (response) {
+        GlobalLoader.done();
         if (!response) {
-          return reject(new Error('Respon server kosong.'));
+          return reject(new Error('Empty response from server.'));
         }
         if (response.success === false) {
-          var err = response.error || 'Terjadi kesalahan pada server.';
+          var err = response.error || 'Terjadi error pada server.';
           if (err.indexOf('UNAUTHORIZED') !== -1) {
-            Toast.error('Sesi Anda telah kedaluwarsa. Silakan masuk kembali.');
+            Toast.error('Sesi Anda expired. Silakan login kembali.');
             AuthApp.logout(false);
           }
           return reject(new Error(err));
@@ -186,15 +267,17 @@ function rpc(funcName, params) {
         resolve(response.data);
       })
       .withFailureHandler(function (err) {
+        GlobalLoader.done();
         var msg = err && err.message ? err.message : String(err);
         if (msg.indexOf('UNAUTHORIZED') !== -1) {
-          Toast.error('Sesi Anda tidak valid. Silakan masuk kembali.');
+          Toast.error('Sesi Anda tidak valid. Silakan login kembali.');
           AuthApp.logout(false);
         }
         reject(new Error(msg));
       });
 
     if (typeof runner[funcName] !== 'function') {
+      GlobalLoader.done();
       return reject(new Error('Fungsi RPC server "' + funcName + '" tidak ditemukan.'));
     }
 
@@ -403,7 +486,7 @@ var AuthApp = (function () {
     var pass = passInput ? passInput.value : '';
 
     if (!ident || !pass) {
-      _showAlert('Email atau NIP dan kata sandi wajib diisi.', true);
+      _showAlert('Email atau NIP dan password wajib diisi.', true);
       return;
     }
 
@@ -440,7 +523,7 @@ var AuthApp = (function () {
           btnSubmit.disabled = false;
           btnSubmit.textContent = 'Masuk ke Sistem';
         }
-        _showAlert(err.message || 'Gagal masuk. Periksa kembali email/NIP dan kata sandi.', true);
+        _showAlert(err.message || 'Login gagal. Periksa kembali email/NIP dan password.', true);
       });
   }
 
@@ -650,13 +733,13 @@ var Router = (function () {
     var routeLabels = {
       'ringkasan': 'Ringkasan',
       'komposisi': 'Komposisi AKN',
-      'direktori': 'Direktori awak',
+      'direktori': 'Direktori Awak',
       'kompetensi': 'Kompetensi & BST',
-      'sijil': 'Papan sijil kapal',
-      'kegiatan': 'Log kegiatan',
-      'laporan': 'Laporan eksekutif',
-      'admin-users': 'Pengguna & akses',
-      'admin-audit': 'Catatan audit'
+      'sijil': 'Papan Sijil Kapal',
+      'kegiatan': 'Log Kegiatan',
+      'laporan': 'Executive Report',
+      'admin-users': 'User & Access',
+      'admin-audit': 'Audit Log'
     };
     var lblEl = document.getElementById('mobile-route-label');
     if (lblEl) lblEl.textContent = routeLabels[cleanRoute] || 'Nakhoda';

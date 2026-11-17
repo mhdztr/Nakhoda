@@ -335,7 +335,7 @@ var KompetensiView = (function () {
     Sheet.open('sheet-kom-panel', 'sheet-kom-overlay');
 
     var nameEl = document.getElementById('sheet-kom-nama');
-    if (nameEl) nameEl.textContent = 'Memuat matriks personil...';
+    if (nameEl) nameEl.textContent = 'Loading matriks personil...';
 
     rpc('kom_getAwakMatriks', token, pegawaiId)
       .then(function (res) {
@@ -820,8 +820,8 @@ var KompetensiView = (function () {
     var token = AuthApp.getToken();
     var crewSearch = document.getElementById('kom-save-crew-search-input');
     var certSearch = document.getElementById('kom-save-cert-search-input');
-    if (crewSearch && !pegawaiId) crewSearch.placeholder = 'Memuat data personil armada...';
-    if (certSearch && !kodePelatihan) certSearch.placeholder = 'Memuat daftar sertifikat dari SIKAP...';
+    if (crewSearch && !pegawaiId) crewSearch.placeholder = 'Loading data personil armada...';
+    if (certSearch && !kodePelatihan) certSearch.placeholder = 'Loading daftar sertifikat dari SIKAP...';
 
     rpc('kom_getFormOptions', token)
       .then(function (res) {

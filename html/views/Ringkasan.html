@@ -9,11 +9,11 @@
     <div class="page-actions">
       <button type="button" class="btn btn-secondary-md" id="btn-ringkasan-refresh">
         <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        <span>Segarkan data</span>
+        <span>Refresh</span>
       </button>
       <button type="button" class="btn btn-primary-md" id="btn-ringkasan-ke-laporan">
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <span>Buka laporan dinas</span>
+        <span>Executive Report</span>
       </button>
     </div>
   </div>
@@ -74,7 +74,7 @@
 
       <!-- Daftar 5 Kategori Kepegawaian dengan Bilah Proporsi -->
       <div class="track-list" id="ringkasan-track-list">
-        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat distribusi komposisi AKN...</div>
+        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Loading distribusi komposisi AKN...</div>
       </div>
 
       <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--muted);">
@@ -92,10 +92,10 @@
       </div>
     </div>
 
-    <!-- Kolom Kanan: Antrean Tindak Lanjut Sertifikasi (<= 90 Hari) -->
+    <!-- Kolom Kanan: Prioritas Revalidasi Sertifikasi (<= 90 Hari) -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">Antrean revalidasi sertifikasi (&le; 90 hari)</h2>
+        <h2 class="card-title">Prioritas revalidasi sertifikasi (&le; 90 hari)</h2>
         <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('kompetensi')">
           <span>Semua sertifikat &rarr;</span>
         </button>
@@ -113,7 +113,7 @@
           </thead>
           <tbody id="tbody-ringkasan-sertifikat">
             <tr>
-              <td colspan="4" style="text-align:center; padding:24px; color:var(--muted);">Memuat antrean sertifikat...</td>
+              <td colspan="4" style="text-align:center; padding:24px; color:var(--muted);">Loading data sertifikat...</td>
             </tr>
           </tbody>
         </table>
@@ -148,7 +148,7 @@
           </thead>
           <tbody id="tbody-ringkasan-sijil">
             <tr>
-              <td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Memuat data kapal...</td>
+              <td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Loading data kapal...</td>
             </tr>
           </tbody>
         </table>
@@ -165,7 +165,7 @@
       </div>
 
       <div id="ringkasan-kegiatan-container" style="display:flex; flex-direction:column; gap:12px;">
-        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat agenda kegiatan...</div>
+        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Loading agenda kegiatan...</div>
       </div>
     </div>
 

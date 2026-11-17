@@ -9,11 +9,11 @@
     <div class="page-actions">
       <button type="button" id="btn-keg-refresh" class="btn btn-secondary-md">
         <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        <span>Segarkan</span>
+        <span>Refresh</span>
       </button>
       <button type="button" id="btn-tambah-kegiatan" class="btn btn-primary-md">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span>Catat kegiatan baru</span>
+        <span>Input kegiatan baru</span>
       </button>
     </div>
   </div>
@@ -44,7 +44,7 @@
   <!-- Tab Garis Bawah Navigasi Sub-Modul (DESIGN.md §5.2) -->
   <div class="tab-strip" style="margin-bottom:16px;">
     <button type="button" class="tab-item active" id="tab-keg-daftar">Daftar agenda kegiatan</button>
-    <button type="button" class="tab-item" id="tab-keg-timeline">Garis waktu pelaksanaan</button>
+    <button type="button" class="tab-item" id="tab-keg-timeline">Timeline pelaksanaan</button>
   </div>
 
   <!-- Panel 1: Daftar Kegiatan -->
@@ -84,7 +84,7 @@
           </thead>
           <tbody id="keg-list-tbody">
             <tr>
-              <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat log kegiatan...</td>
+              <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Loading log kegiatan...</td>
             </tr>
           </tbody>
         </table>
@@ -92,11 +92,11 @@
     </div>
   </div>
 
-  <!-- Panel 2: Garis Waktu Pelaksanaan -->
+  <!-- Panel 2: Timeline Pelaksanaan -->
   <div id="keg-pane-timeline" class="hidden">
     <div class="card" style="padding:24px;">
       <div id="keg-timeline-container" style="display:flex; flex-direction:column; gap:20px;">
-        <div style="text-align:center; color:var(--muted); padding:32px 0;">Memuat garis waktu pelaksanaan...</div>
+        <div style="text-align:center; color:var(--muted); padding:32px 0;">Loading timeline kegiatan...</div>
       </div>
     </div>
   </div>
@@ -197,14 +197,14 @@
 <div id="modal-keg-anulir" class="modal-overlay">
   <div class="modal-box" style="max-width:480px;">
     <div class="modal-header">
-      <h3 class="modal-title">Anulir agenda kegiatan</h3>
+      <h3 class="modal-title">Void agenda kegiatan</h3>
       <button type="button" class="modal-close" onclick="Modal.close('modal-keg-anulir')" aria-label="Tutup modal">&times;</button>
     </div>
     <form id="form-keg-anulir">
       <input type="hidden" id="anulir-keg-rowid" value="">
 
       <div style="font-size:13px; line-height:1.5; color:var(--text); margin-bottom:12px;">
-        Anda akan menandai agenda berikut sebagai <strong>DIANULIR</strong> (tidak dihitung dalam ringkasan eksekutif):
+        Anda akan menandai agenda berikut sebagai <strong>VOID / DIBATALKAN</strong> (tidak dihitung dalam ringkasan eksekutif):
       </div>
 
       <div id="anulir-keg-judul" style="font-size:13px; font-weight:600; padding:10px 12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:16px;">
@@ -212,13 +212,13 @@
       </div>
 
       <div class="form-group" style="margin-bottom:16px;">
-        <label class="form-label" for="anulir-keg-alasan">Alasan pembatalan / anulir <span style="color:var(--negative)">*</span></label>
+        <label class="form-label" for="anulir-keg-alasan">Alasan pembatalan / void <span style="color:var(--negative)">*</span></label>
         <textarea id="anulir-keg-alasan" class="form-control-md" rows="3" required placeholder="Contoh: Jadwal dialihkan ke TW II karena cuaca ekstrem perairan..."></textarea>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-keg-anulir')">Batal</button>
-        <button type="submit" id="btn-keg-anulir-submit" class="btn btn-negative-md">Konfirmasi anulir</button>
+        <button type="submit" id="btn-keg-anulir-submit" class="btn btn-negative-md">Konfirmasi void</button>
       </div>
     </form>
   </div>

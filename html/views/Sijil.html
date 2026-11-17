@@ -9,7 +9,7 @@
     <div class="page-actions">
       <button type="button" id="btn-sijil-refresh" class="btn btn-secondary-md">
         <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        <span>Segarkan</span>
+        <span>Refresh</span>
       </button>
       <button type="button" id="btn-sijil-quick-assign" class="btn btn-primary-md">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -109,7 +109,7 @@
         </thead>
         <tbody id="sijil-2d-matrix-tbody">
           <tr>
-            <td colspan="14" style="text-align:center; padding:32px 0; color:var(--muted);">Memuat matriks 2D papan sijil armada...</td>
+            <td colspan="14" style="text-align:center; padding:32px 0; color:var(--muted);">Loading matriks 2D papan sijil armada...</td>
           </tr>
         </tbody>
       </table>
@@ -172,7 +172,7 @@
             </tr>
           </thead>
           <tbody id="sheet-sijil-manning-tbody">
-            <tr><td colspan="4" style="text-align:center; padding:16px; color:var(--muted);">Memuat standar manning...</td></tr>
+            <tr><td colspan="4" style="text-align:center; padding:16px; color:var(--muted);">Loading standar manning...</td></tr>
           </tbody>
         </table>
       </div>
@@ -271,8 +271,8 @@
             <input type="file" id="assign-spt-file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
             <div id="assign-spt-prompt" class="dropzone-prompt">
               <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--muted)" fill="none" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk memilih berkas Surat Tugas</div>
-              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maksimal 15 MB)</div>
+              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk upload file Surat Tugas</div>
+              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maks 15 MB)</div>
             </div>
             <div id="assign-spt-selected" class="dropzone-selected hidden">
               <div style="display:flex; align-items:center; gap:8px; min-width:0;">
@@ -287,7 +287,7 @@
           </div>
 
           <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-            <span style="font-size:11px; color:var(--muted); flex-shrink:0;">Atau tautan Google Drive:</span>
+            <span style="font-size:11px; color:var(--muted); flex-shrink:0;">Atau link Google Drive:</span>
             <input type="url" id="assign-spt-drive-url" class="form-control-md" placeholder="https://drive.google.com/file/d/..." style="font-size:11px; flex:1; min-width:0;">
           </div>
         </div>
@@ -305,8 +305,8 @@
   <div class="modal-box">
     <div class="modal-header">
       <div>
-        <div class="modal-title">Unggah Surat Perintah Tugas (SPT)</div>
-        <div id="upload-spt-target-info" style="font-size:11px; color:var(--muted); margin-top:2px;">Memuat target personil...</div>
+        <div class="modal-title">Upload Surat Perintah Tugas (SPT)</div>
+        <div id="upload-spt-target-info" style="font-size:11px; color:var(--muted); margin-top:2px;">Loading info personil...</div>
       </div>
       <button type="button" class="modal-close" onclick="Modal.close('modal-sijil-upload-spt')">&times;</button>
     </div>
@@ -314,13 +314,13 @@
       <input type="hidden" id="upload-spt-row-id">
       <div class="modal-body">
         <div class="form-group">
-          <label class="form-label">Pilih berkas Surat Tugas</label>
+          <label class="form-label">Pilih file Surat Tugas</label>
           <div class="upload-dropzone" id="quick-spt-dropzone">
             <input type="file" id="quick-spt-file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
             <div id="quick-spt-prompt" class="dropzone-prompt">
               <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--muted)" fill="none" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk memilih berkas Surat Tugas</div>
-              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maksimal 15 MB)</div>
+              <div style="font-size:12px; font-weight:500; color:var(--text); margin-top:4px;">Klik untuk upload file Surat Tugas</div>
+              <div style="font-size:11px; color:var(--muted);">Format PDF, JPG, PNG (Maks 15 MB)</div>
             </div>
             <div id="quick-spt-selected" class="dropzone-selected hidden">
               <div style="display:flex; align-items:center; gap:8px; min-width:0;">
@@ -335,14 +335,14 @@
           </div>
 
           <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-            <span style="font-size:11px; color:var(--muted); flex-shrink:0;">Atau tautan Google Drive:</span>
+            <span style="font-size:11px; color:var(--muted); flex-shrink:0;">Atau link Google Drive:</span>
             <input type="url" id="quick-spt-drive-url" class="form-control-md" placeholder="https://drive.google.com/file/d/..." style="font-size:11px; flex:1; min-width:0;">
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-sijil-upload-spt')">Batal</button>
-        <button type="submit" id="btn-submit-quick-spt" class="btn btn-primary-md">Unggah surat tugas</button>
+        <button type="submit" id="btn-submit-quick-spt" class="btn btn-primary-md">Upload surat tugas</button>
       </div>
     </form>
   </div>

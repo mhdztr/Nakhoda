@@ -68,7 +68,7 @@ var LaporanView = (function () {
       })
       .catch(function (err) {
         if (btnPrint) btnPrint.classList.remove('loading');
-        Toast.error(err.message || 'Galat memuat pratinjau laporan.');
+        Toast.error(err.message || 'Gagal memuat preview laporan.');
       });
   }
 

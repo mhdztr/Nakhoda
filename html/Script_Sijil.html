@@ -572,7 +572,7 @@ var SijilView = (function () {
     Sheet.open('sheet-sijil-panel', 'sheet-sijil-overlay');
 
     var nameEl = document.getElementById('sheet-sijil-nama-kapal');
-    if (nameEl) nameEl.textContent = 'Memuat formasi ' + kapalId + '...';
+    if (nameEl) nameEl.textContent = 'Loading formasi ' + kapalId + '...';
 
     rpc('sijil_getDetailKapal', token, kapalId)
       .then(function (res) {
@@ -750,7 +750,7 @@ var SijilView = (function () {
     // Muat daftar lengkap seluruh personil awak aktif untuk pencarian (396+ personil)
     var token = AuthApp.getToken();
     var searchInp = document.getElementById('assign-crew-search-input');
-    if (searchInp) searchInp.placeholder = 'Memuat data personil armada...';
+    if (searchInp) searchInp.placeholder = 'Loading data personil armada...';
 
     rpc('sijil_getAwakOptions', token)
       .then(function (res) {

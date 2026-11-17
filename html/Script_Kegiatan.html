@@ -237,7 +237,7 @@ var KegiatanView = (function () {
       if (!isVoid) {
         actions += '<button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.openEditModal(\'' + keg.rowId + '\')">Revisi</button>';
         if (isPrivileged) {
-          actions += '<button type="button" class="btn btn-negative-sm" onclick="KegiatanView.openAnulirModal(\'' + keg.rowId + '\')">Anulir</button>';
+          actions += '<button type="button" class="btn btn-negative-sm" onclick="KegiatanView.openAnulirModal(\'' + keg.rowId + '\')">Void</button>';
         }
       }
       actions += '</div>';
@@ -318,7 +318,7 @@ var KegiatanView = (function () {
     Sheet.open('sheet-keg-detail', 'sheet-keg-overlay');
     var body = document.getElementById('sheet-keg-body');
     if (body) {
-      body.innerHTML = '<div style="text-align:center; color:var(--muted); padding:32px 0;">Memuat rincian kegiatan...</div>';
+      body.innerHTML = '<div style="text-align:center; color:var(--muted); padding:32px 0;">Loading detail kegiatan...</div>';
     }
 
     rpc('keg_getDetail', token, rowId)
@@ -406,7 +406,7 @@ var KegiatanView = (function () {
         if (body) body.innerHTML = bHtml;
       })
       .catch(function (err) {
-        if (body) body.innerHTML = '<div style="text-align:center; color:var(--negative); padding:32px 0;">Galat: ' + err.message + '</div>';
+        if (body) body.innerHTML = '<div style="text-align:center; color:var(--negative); padding:32px 0;">Error: ' + err.message + '</div>';
       });
   }
 

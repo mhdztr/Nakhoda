@@ -22,13 +22,13 @@
 
       <div style="margin-bottom:24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label for="login-password" style="font-size:12px; font-weight:500; color:var(--text);">Kata Sandi</label>
+          <label for="login-password" style="font-size:12px; font-weight:500; color:var(--text);">Password</label>
         </div>
-        <input type="password" id="login-password" class="input-lg ctl-fill" placeholder="Masukkan kata sandi" required autocomplete="current-password">
+        <input type="password" id="login-password" class="input-lg ctl-fill" placeholder="Masukkan password" required autocomplete="current-password">
       </div>
 
       <div class="ctl-row ctl-lg ctl-fill">
-        <button type="submit" id="btn-submit-login" class="btn btn-primary ctl-fill btn-control-lg">Masuk ke Sistem</button>
+        <button type="submit" id="btn-submit-login" class="btn btn-primary ctl-fill btn-control-lg">Login</button>
       </div>
 
       <div style="margin-top:20px; text-align:center; font-size:12px; color:var(--muted);">
@@ -62,15 +62,15 @@
       </div>
 
       <div style="margin-bottom:20px;">
-        <label for="reg-password" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Kata Sandi Baru</label>
+        <label for="reg-password" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Password Baru</label>
         <input type="password" id="reg-password" class="input-lg ctl-fill" placeholder="Minimal 8 karakter" required>
       </div>
 
       <div class="ctl-row ctl-lg ctl-fill" style="margin-bottom:10px;">
-        <button type="submit" id="btn-request-otp" class="btn btn-primary ctl-fill btn-control-lg">Kirim Kode Verifikasi</button>
+        <button type="submit" id="btn-request-otp" class="btn btn-primary ctl-fill btn-control-lg">Kirim Kode OTP</button>
       </div>
       <div class="ctl-row ctl-lg ctl-fill">
-        <button type="button" class="btn btn-secondary ctl-fill btn-control-md" onclick="AuthApp.showLogin()">Kembali ke Halaman Masuk</button>
+        <button type="button" class="btn btn-secondary ctl-fill btn-control-md" onclick="AuthApp.showLogin()">Kembali ke Login</button>
       </div>
     </form>
 
@@ -101,11 +101,11 @@
       <div style="width:44px; height:44px; border-radius:50%; background-color:#FFF4E6; color:#D9480F; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto;">
         <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
-      <h3 style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px;">Menunggu Persetujuan Akun</h3>
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px;">Pending Account Approval</h3>
       <div style="font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:16px;">
         Pendaftaran akun atas nama <strong id="pending-user-name" style="color:var(--text);">-</strong> telah tercatat. Silakan hubungi Ketua Timja Pengawakan atau Superadmin untuk aktivasi akses.
       </div>
-      <button type="button" class="btn btn-secondary ctl-fill btn-control-md" onclick="AuthApp.showLogin()">Kembali ke Halaman Masuk</button>
+      <button type="button" class="btn btn-secondary ctl-fill btn-control-md" onclick="AuthApp.showLogin()">Kembali ke Login</button>
     </div>
 
   </div>

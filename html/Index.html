@@ -11,6 +11,15 @@
 </head>
 <body>
 
+<!-- ── INDIKATOR LOADING GLOBAL ── -->
+<div id="global-top-loader" class="global-top-loader hidden" aria-hidden="true">
+  <div class="global-top-loader-bar"></div>
+</div>
+<div id="global-loading-pill" class="global-loading-pill hidden" role="status" aria-live="polite">
+  <span class="loader-spinner"></span>
+  <span id="global-loading-text">Loading...</span>
+</div>
+
 <!-- ── LAYAR MASUK & REGISTRASI (AUTH) ── -->
 <div id="auth-root" class="hidden">
   <?!= html_include('html/Auth'); ?>
@@ -89,33 +98,33 @@
 
       <button type="button" class="nav-item" data-route="laporan">
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        <span>Laporan eksekutif</span>
+        <span>Executive Report</span>
       </button>
     </nav>
 
     <!-- Menu Pengelolaan Sistem -->
-    <div class="nav-group-title" id="nav-group-admin">Pengelolaan</div>
+    <div class="nav-group-title" id="nav-group-admin">Admin &amp; System</div>
     <nav class="nav-list" id="nav-list-admin">
       <button type="button" class="nav-item" data-route="admin-users">
         <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-        <span>Pengguna &amp; akses</span>
+        <span>User &amp; Access</span>
         <span class="nav-badge hidden" id="nav-badge-users">0</span>
       </button>
       <button type="button" class="nav-item" data-route="admin-audit">
         <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        <span>Catatan audit</span>
+        <span>Audit Log</span>
       </button>
     </nav>
 
-    <!-- Dasar Sidebar (Profil Staf & Tombol Keluar — Sharp Ledger Card) -->
+    <!-- Dasar Sidebar (Profil Staf & Tombol Logout — Sharp Ledger Card) -->
     <div class="sidebar-footer">
       <div class="sidebar-account-box">
-        <div class="user-avatar" id="shell-user-avatar" title="Inisial pengguna">--</div>
+        <div class="user-avatar" id="shell-user-avatar" title="Inisial user">--</div>
         <div class="user-info">
-          <div class="user-name" id="shell-user-name" title="Pengguna">Memuat...</div>
-          <div class="user-role" id="shell-user-role" title="Peran">Staf Pengawakan</div>
+          <div class="user-name" id="shell-user-name" title="User">Loading...</div>
+          <div class="user-role" id="shell-user-role" title="Role">Staf Pengawakan</div>
         </div>
-        <button type="button" id="btn-logout" class="btn-logout-box" title="Keluar dari sistem" aria-label="Keluar dari sistem">
+        <button type="button" id="btn-logout" class="btn-logout-box" title="Logout" aria-label="Logout">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
       </div>

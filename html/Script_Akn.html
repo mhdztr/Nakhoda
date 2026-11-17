@@ -294,7 +294,7 @@ var AknView = (function () {
         '<td class="text-center">' +
           '<div style="display:inline-flex; gap:4px;">' +
             (canRevisi ? '<button type="button" class="btn btn-secondary-sm btn-revisi" data-id="' + r.rowId + '" data-desc="' + scopeLabel + ' ' + (KATEGORI_LABELS[r.kategori] || r.kategori) + '" data-val="' + r.jumlah + '">Revisi</button>' : '') +
-            (canAnulir ? '<button type="button" class="btn btn-danger-sm btn-anulir" data-id="' + r.rowId + '">Anulir</button>' : '') +
+            (canAnulir ? '<button type="button" class="btn btn-danger-sm btn-anulir" data-id="' + r.rowId + '">Void</button>' : '') +
           '</div>' +
         '</td>' +
       '</tr>';
