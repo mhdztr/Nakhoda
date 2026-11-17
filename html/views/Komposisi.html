@@ -4,24 +4,26 @@
   <!-- Baris Judul & Temuan Data (DESIGN.md §5.1) -->
   <div class="page-header">
     <div class="page-title-group">
+      <div class="page-eyebrow">
+        <span class="page-code">OPR-02</span>
+        <span class="page-section">Dit. POA &middot; Operasional pengawakan</span>
+      </div>
       <h1 class="page-title">Komposisi awak kapal negara (AKN)</h1>
     </div>
     <div class="page-actions">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <input type="text" id="akn-periode-select" class="form-control-md mono" style="width:130px; text-align:center;" placeholder="YYYY-MM-W#" aria-label="Periode mingguan AKN">
-        <button type="button" id="btn-akn-refresh" class="btn btn-secondary-md" title="Refresh data periode">
-          <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-          <span>Load</span>
-        </button>
-        <button type="button" id="btn-akn-recalculate" class="btn btn-secondary-md" title="Recalculate komposisi langsung dari database pegawai">
-          <svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          <span>Recalculate</span>
-        </button>
-        <button type="button" class="btn btn-primary-md" onclick="Router.navigate('direktori')">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          <span>Kelola pegawai &rarr;</span>
-        </button>
-      </div>
+      <input type="text" id="akn-periode-select" class="form-control-md mono" style="width:130px; text-align:center;" placeholder="YYYY-MM-W#" aria-label="Periode mingguan AKN">
+      <button type="button" id="btn-akn-refresh" class="btn btn-secondary-md" title="Refresh data periode">
+        <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Load</span>
+      </button>
+      <button type="button" id="btn-akn-recalculate" class="btn btn-secondary-md" title="Recalculate komposisi langsung dari database pegawai">
+        <svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        <span>Recalculate</span>
+      </button>
+      <button type="button" class="btn btn-primary-md" onclick="Router.navigate('direktori')">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Kelola pegawai &rarr;</span>
+      </button>
     </div>
   </div>
 
