@@ -409,12 +409,43 @@ var SijilView = (function () {
             : ('Seluruh ' + totKapal + ' kapal pengawas armada Ditjen PSDKP memenuhi standar formasi Safe Manning Kepmen KP.');
         }
 
+        // 1B. Render Peringatan Konflik Awak Nonaktif SIKAP Masih Onboard
+        _renderSikapConflicts(res.sikapOnboardConflicts || []);
+
         // 2. Render Matriks 2D Table
         _renderMatrixTable();
       })
       .catch(function (err) {
         Toast.error('Gagal memuat papan sijil armada: ' + err.message);
       });
+  }
+
+  function _renderSikapConflicts(conflicts) {
+    var banner = document.getElementById('sijil-sikap-conflict-banner');
+    var descEl = document.getElementById('sijil-conflict-desc');
+    var actEl = document.getElementById('sijil-conflict-actions');
+    if (!banner) return;
+
+    if (!conflicts || conflicts.length === 0) {
+      banner.classList.add('hidden');
+      return;
+    }
+
+    banner.classList.remove('hidden');
+    var summary = conflicts.slice(0, 3).map(function (c) {
+      return Format.escape(c.nama) + ' (' + Format.escape(c.namaKapal || c.kapalId) + (c.posSijil ? ' · ' + Format.escape(c.posSijil) : '') + ')';
+    }).join(', ');
+    if (conflicts.length > 3) summary += ' dan ' + (conflicts.length - 3) + ' lainnya';
+
+    if (descEl) {
+      descEl.innerHTML = conflicts.length + ' awak berstatus Nonaktif/Keluar SIKAP masih menempati formasi aktif kapal: ' + summary + '. Segera turunkan atau lakukan pergantian awak.';
+    }
+    if (actEl) {
+      var firstKId = conflicts[0].kapalId || '';
+      actEl.innerHTML = firstKId
+        ? '<button type="button" class="btn btn-secondary-sm" onclick="SijilView.openKapalSheet(\'' + Format.escape(firstKId) + '\')">Tinjau ' + Format.escape(conflicts[0].namaKapal || firstKId) + '</button>'
+        : '';
+    }
   }
 
   function _renderDevCell(colObj) {

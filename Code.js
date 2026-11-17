@@ -78,6 +78,9 @@ function setup_installTriggers() {
  * Handler Trigger Harian: Scan sertifikat kedaluwarsa & kontrak
  */
 function trigger_dailyScan() {
+  if (typeof dir_runScheduledSikapSync === 'function') {
+    try { dir_runScheduledSikapSync(); } catch (eSync) {}
+  }
   if (typeof notif_runDailyScan === 'function') {
     return notif_runDailyScan();
   }

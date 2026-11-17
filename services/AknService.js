@@ -13,6 +13,43 @@
  * @param {string} targetPeriode - Format YYYY-MM-W# atau YYYY-MM
  * @returns {Object}
  */
+/**
+ * Memperbaiki baris TX_Pengawakan_AKN yang terlanjur tertukar kolom DivisiID <-> Periode
+ * akibat bug urutan STD_COLS pada versi seed/auto-sync sebelumnya.
+ */
+function _healSwappedAknRows(sheet, rows) {
+  if (!sheet || !rows || rows.length === 0) return;
+  var hasSwap = false;
+  rows.forEach(function (r) {
+    var d = String(r.DivisiID || '').trim();
+    var p = String(r.Periode || '').trim();
+    if (/^\d{4}-\d{2}/.test(d) && p.indexOf('DIV-') === 0) {
+      r.DivisiID = p;
+      r.Periode = d;
+      hasSwap = true;
+    }
+  });
+  if (hasSwap) {
+    try {
+      var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      var colDiv = headers.indexOf('DivisiID');
+      var colPer = headers.indexOf('Periode');
+      if (colDiv !== -1) {
+        sheet.getRange(2, colDiv + 1, rows.length, 1).setValues(rows.map(function (r) {
+          return [String(r.DivisiID || DIVISI_ID.AWAK)];
+        }));
+      }
+      if (colPer !== -1) {
+        sheet.getRange(2, colPer + 1, rows.length, 1).setValues(rows.map(function (r) {
+          return [String(r.Periode || '')];
+        }));
+      }
+    } catch (eHeal) {
+      Logger.log('[_healSwappedAknRows] ' + eHeal.message);
+    }
+  }
+}
+
 function akn_getPapan(token, targetPeriode) {
   try {
     var session = _requireSession(token);
@@ -29,8 +66,32 @@ function akn_getPapan(token, targetPeriode) {
       rowsAkn = sheetToObjects(sheetAkn);
     }
 
+    _healSwappedAknRows(sheetAkn, rowsAkn);
+
     // Hitung matriks dengan pure/Carry.js
     var resolved = resolveMatrix(rowsAkn, p);
+
+    // Auto-simpulkan dari Master_Awak bila periode berjalan/sheet belum memiliki snapshot aktif
+    if (resolved.totals.AKN_KESELURUHAN === 0 && p >= akn_getCurrentPeriode()) {
+      var autoSync = akn_syncFromAwak(session.userId, 'Sinkronisasi otomatis komposisi dari Direktori Awak');
+      if (autoSync && autoSync.success) {
+        rowsAkn = sheetToObjects(sheetAkn);
+        resolved = resolveMatrix(rowsAkn, p);
+      }
+    }
+
+    // Cari sumber periode carry-forward bila diwarisi
+    var sourcePeriode = '';
+    if (resolved.isFullyCarried && resolved.matrix && resolved.matrix.AKN_KESELURUHAN) {
+      var cats = Object.keys(resolved.matrix.AKN_KESELURUHAN);
+      for (var ci = 0; ci < cats.length; ci++) {
+        var cellSrc = resolved.matrix.AKN_KESELURUHAN[cats[ci]];
+        if (cellSrc && cellSrc.periodeSumber) {
+          sourcePeriode = cellSrc.periodeSumber;
+          break;
+        }
+      }
+    }
 
     // Cari periode sebelumnya untuk hitung selisih (delta)
     var allPeriodes = {};
@@ -92,6 +153,7 @@ function akn_getPapan(token, targetPeriode) {
       data: {
         periode: p,
         prevPeriode: prevPeriode,
+        sourcePeriode: sourcePeriode || prevPeriode || '',
         matrix: resolved.matrix,
         totals: resolved.totals,
         prevMatrix: prevResolved ? prevResolved.matrix : null,
@@ -418,6 +480,7 @@ function akn_getTren(token, limit) {
       akn_ensureSeeded();
       rows = sheetToObjects(sheet);
     }
+    _healSwappedAknRows(sheet, rows);
 
     // Kumpulkan seluruh periode unik yang ada
     var periodeSet = {};
@@ -505,7 +568,7 @@ function akn_ensureSeeded() {
       }
     ];
 
-    var headers = ['RowID', 'Periode', 'DivisiID', 'SubmittedBy', 'Timestamp', 'Status', 'SupersedesRowID', 'VoidedBy', 'VoidedAt', 'VoidReason', 'Scope', 'Kategori', 'Jumlah', 'Keterangan', 'BatchID'];
+    var headers = STD_COLS.concat(['Scope', 'Kategori', 'Jumlah', 'Keterangan', 'BatchID']);
     var outRows = [];
     var now = new Date();
 
@@ -513,11 +576,11 @@ function akn_ensureSeeded() {
       var bId = 'BATCH-SEED-0' + (sIdx + 1);
       ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'].forEach(function (kat, kIdx) {
         outRows.push([
-          'AKN-SEED-' + (sIdx + 1) + '-K' + (kIdx + 1), snap.periode, DIVISI_ID.AWAK, 'USR-KATIMJA-AWAK-001',
+          'AKN-SEED-' + (sIdx + 1) + '-K' + (kIdx + 1), DIVISI_ID.AWAK, snap.periode, 'USR-KATIMJA-AWAK-001',
           now, 'ACTIVE', '', '', '', '', 'AKN_KESELURUHAN', kat, snap.kes[kat], snap.ket, bId
         ]);
         outRows.push([
-          'AKN-SEED-' + (sIdx + 1) + '-P' + (kIdx + 1), snap.periode, DIVISI_ID.AWAK, 'USR-KATIMJA-AWAK-001',
+          'AKN-SEED-' + (sIdx + 1) + '-P' + (kIdx + 1), DIVISI_ID.AWAK, snap.periode, 'USR-KATIMJA-AWAK-001',
           now, 'ACTIVE', '', '', '', '', 'AKN_POA', kat, snap.poa[kat], snap.ket, bId
         ]);
       });
@@ -544,6 +607,10 @@ function akn_syncFromAwak(userId, keteranganMutasi) {
   try {
     var sheetAwak = openAwakSheet(SHEET_AWAK.MASTER_AWAK);
     var rowsAwak = sheetToObjects(sheetAwak);
+    if ((!rowsAwak || rowsAwak.length === 0) && typeof dir_ensureSeeded === 'function') {
+      dir_ensureSeeded();
+      rowsAwak = sheetToObjects(sheetAwak);
+    }
     if (!rowsAwak || rowsAwak.length === 0) {
       return { success: false, error: 'Data direktori awak kosong.' };
     }
@@ -559,8 +626,9 @@ function akn_syncFromAwak(userId, keteranganMutasi) {
     var categories = ['PNS', 'PPPK_FUNGSIONAL', 'PPPK_PELAKSANA', 'PPPK_PARUH_WAKTU', 'PJLP'];
     var toAppend = [];
 
-    // Tandai baris aktif periode berjalan sebelumnya sebagai SUPERSEDED jika ada
+    // Perbaiki baris tertukar bila ada, lalu tandai baris aktif periode berjalan sebagai SUPERSEDED
     var existingAknRows = sheetToObjects(sheetAkn);
+    _healSwappedAknRows(sheetAkn, existingAknRows);
     for (var i = 0; i < existingAknRows.length; i++) {
       var r = existingAknRows[i];
       if (String(r.Periode || '') === curPeriode && String(r.Status || '').toUpperCase() === 'ACTIVE') {
@@ -571,8 +639,8 @@ function akn_syncFromAwak(userId, keteranganMutasi) {
     categories.forEach(function (k) {
       toAppend.push([
         'AKN-AUTO-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase(),
-        curPeriode,
         DIVISI_ID.AWAK,
+        curPeriode,
         userId || 'SYSTEM',
         now,
         'ACTIVE',
@@ -586,8 +654,8 @@ function akn_syncFromAwak(userId, keteranganMutasi) {
 
       toAppend.push([
         'AKN-AUTO-' + Utilities.getUuid().replace(/-/g, '').substring(0, 8).toUpperCase(),
-        curPeriode,
         DIVISI_ID.AWAK,
+        curPeriode,
         userId || 'SYSTEM',
         now,
         'ACTIVE',

@@ -34,9 +34,11 @@ function ringkasan_get(token, filter) {
     var aknData = (aknResult && aknResult.success && aknResult.data) ? aknResult.data : null;
 
     var trenResult = akn_getTren(token, 12);
-    var aknTren = (trenResult && trenResult.success && trenResult.data && Array.isArray(trenResult.data.series))
-      ? trenResult.data.series
-      : [];
+    var aknTren = [];
+    if (trenResult && trenResult.success && trenResult.data) {
+      if (Array.isArray(trenResult.data)) aknTren = trenResult.data;
+      else if (Array.isArray(trenResult.data.series)) aknTren = trenResult.data.series;
+    }
 
     // 2. Ambil Statistik Direktori Awak Kapal
     var dirResult = dir_list({ token: token, limit: 500 });

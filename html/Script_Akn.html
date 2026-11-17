@@ -152,7 +152,10 @@ var AknView = (function () {
       kpiStatusText.style.color = data.isConfirmed ? 'var(--positive)' : (data.isFullyCarried ? 'var(--accent)' : 'var(--text)');
     }
     if (kpiStatusSub) {
-      kpiStatusSub.textContent = data.isFullyCarried ? ('Sumber: ' + (data.sourcePeriode || data.prevPeriode)) : 'Tercatat di periode ini';
+      var sumberLabel = data.sourcePeriode || data.prevPeriode;
+      kpiStatusSub.textContent = data.isFullyCarried
+        ? (sumberLabel ? ('Sumber: ' + sumberLabel) : 'Belum ada data komposisi sebelumnya')
+        : 'Tercatat di periode ini';
     }
 
     var kpiPnsTotal = document.getElementById('kpi-akn-pns-total');

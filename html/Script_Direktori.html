@@ -26,8 +26,11 @@ var DirektoriView = (function () {
 
     var filterRumpun = document.getElementById('dir-filter-rumpun');
     var filterKelas = document.getElementById('dir-filter-kelas');
+    var filterStatus = document.getElementById('dir-filter-status');
     var searchInput = document.getElementById('dir-search-input');
     var btnSearch = document.getElementById('btn-dir-search');
+    var btnFilterNonaktif = document.getElementById('btn-dir-filter-nonaktif');
+    var btnDismissAlert = document.getElementById('btn-dir-dismiss-alert');
     var btnPrev = document.getElementById('btn-dir-prev');
     var btnNext = document.getElementById('btn-dir-next');
     var btnTogglePerlu = document.getElementById('btn-toggle-perlu');
@@ -48,7 +51,23 @@ var DirektoriView = (function () {
 
     if (filterRumpun) filterRumpun.onchange = function () { load(0); };
     if (filterKelas) filterKelas.onchange = function () { load(0); };
+    if (filterStatus) filterStatus.onchange = function () { load(0); };
     if (btnSearch) btnSearch.onclick = function () { load(0); };
+    if (btnFilterNonaktif) {
+      btnFilterNonaktif.onclick = function () {
+        if (filterStatus) filterStatus.value = 'NONAKTIF';
+        load(0);
+      };
+    }
+    if (btnDismissAlert) {
+      btnDismissAlert.onclick = function () {
+        var token = AuthApp.getToken();
+        if (!token) return;
+        rpc('dir_dismissSikapAlerts', token).then(function (alerts) {
+          _renderSikapAlerts(alerts);
+        }).catch(function () {});
+      };
+    }
     if (searchInput) {
       searchInput.onkeydown = function (e) {
         if (e.key === 'Enter') load(0);
@@ -145,12 +164,14 @@ var DirektoriView = (function () {
     _offset = offset || 0;
     var rumpun = (document.getElementById('dir-filter-rumpun') || {}).value || '';
     var kelas = (document.getElementById('dir-filter-kelas') || {}).value || '';
+    var statusAktif = (document.getElementById('dir-filter-status') || {}).value || '';
     var search = (document.getElementById('dir-search-input') || {}).value || '';
 
     rpc('dir_list', {
       token: token,
       rumpun: rumpun,
       kelasKapal: kelas,
+      statusAktif: statusAktif,
       search: search,
       perluDilengkapi: _perluDilengkapiOnly,
       limit: _limit,
@@ -158,6 +179,8 @@ var DirektoriView = (function () {
     })
       .then(function (res) {
         _total = res.total || 0;
+
+        _renderSikapAlerts(res.sikapAlerts || null);
 
         // 1. Update KPI Stat Cards
         var stTot = document.getElementById('stat-total-awak');
@@ -199,6 +222,50 @@ var DirektoriView = (function () {
       });
   }
 
+  function _renderSikapAlerts(alerts) {
+    var banner = document.getElementById('dir-sikap-alert-banner');
+    var titleEl = document.getElementById('dir-sikap-alert-title');
+    var descEl = document.getElementById('dir-sikap-alert-desc');
+    var pillEl = document.getElementById('dir-sikap-alert-pill');
+    var btnDismiss = document.getElementById('btn-dir-dismiss-alert');
+    if (!banner) return;
+
+    if (!alerts || !alerts.hasAlert) {
+      banner.classList.add('hidden');
+      return;
+    }
+
+    var conflicts = alerts.onboardConflicts || [];
+    var missingCnt = alerts.missingCount || 0;
+    var deactCnt = alerts.deactivatedCount || 0;
+    var parts = [];
+    if (missingCnt > 0) parts.push(missingCnt + ' personil tidak lagi ditemukan/keluar dari SIKAP');
+    if (deactCnt > 0) parts.push(deactCnt + ' personil berstatus nonaktif di SIKAP');
+    if (conflicts.length > 0) {
+      var names = conflicts.slice(0, 3).map(function (c) {
+        return c.nama + ' (' + (c.namaKapal || c.kapalId) + ')';
+      }).join(', ');
+      parts.push(conflicts.length + ' awak nonaktif masih tercatat onboard di Sijil: ' + names + (conflicts.length > 3 ? ', dll.' : ''));
+    }
+
+    if (pillEl) {
+      pillEl.className = conflicts.length > 0 ? 'pill pill-negative' : 'pill pill-warning';
+      pillEl.innerHTML = '<span class="pill-dot"></span>' + (conflicts.length > 0 ? 'Konflik Sijil & SIKAP' : 'Perhatian SIKAP');
+    }
+    if (titleEl) {
+      titleEl.textContent = conflicts.length > 0
+        ? 'Awak nonaktif/keluar SIKAP masih terdaftar aktif di kapal'
+        : 'Perubahan status kepegawaian terdeteksi di SIKAP';
+    }
+    if (descEl) {
+      descEl.textContent = parts.join(' · ') + (alerts.syncedAt ? (' (Sync: ' + Format.dateTime(alerts.syncedAt) + ')') : '');
+    }
+    if (btnDismiss) {
+      btnDismiss.style.display = conflicts.length > 0 ? 'none' : '';
+    }
+    banner.classList.remove('hidden');
+  }
+
   function _renderTable(items) {
     var tbody = document.getElementById('dir-list-tbody');
     if (!tbody) return;
@@ -214,9 +281,11 @@ var DirektoriView = (function () {
       var klsLabel = String(a.kelasKapal || '').replace('_', ' ');
       var bg = Format.avatarBg(a.nama);
       var inis = Format.initials(a.nama);
+      var isNonAktif = String(a.statusAktif || 'AKTIF').toUpperCase() !== 'AKTIF';
+      var statusNote = isNonAktif ? ' <span class="pill pill-neutral" style="margin-left:6px;">Nonaktif SIKAP</span>' : '';
 
       html +=
-        '<tr class="clickable" data-id="' + a.pegawaiId + '">' +
+        '<tr class="clickable" data-id="' + a.pegawaiId + '" style="' + (isNonAktif ? 'opacity:0.75;' : '') + '">' +
           '<td style="text-align:center;" onclick="event.stopPropagation();">' +
             '<input type="checkbox" class="cb-select-awak" data-id="' + a.pegawaiId + '" aria-label="Pilih personil ' + Format.escape(a.nama) + '" ' + (isChecked ? 'checked' : '') + '>' +
           '</td>' +
@@ -224,7 +293,7 @@ var DirektoriView = (function () {
             '<div style="display:flex; align-items:center; gap:10px;">' +
               '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
               '<div>' +
-                '<div class="cell-primary">' + Format.escape(a.nama) + '</div>' +
+                '<div class="cell-primary">' + Format.escape(a.nama) + statusNote + '</div>' +
                 '<div class="cell-sub mono">NIP: ' + Format.escape(a.nipDisplay) + '</div>' +
               '</div>' +
             '</div>' +
@@ -561,7 +630,16 @@ var DirektoriView = (function () {
         if (d.sertifikatSynced) {
           msg += ' (' + d.sertifikatSynced + ' sertifikat terbarui)';
         }
-        Toast.success(msg);
+        var totalNonaktif = (d.deactivatedCount || 0) + (d.missingCount || 0);
+        if (totalNonaktif > 0 || (d.onboardConflicts && d.onboardConflicts.length > 0)) {
+          var warnMsg = msg + ' Peringatan: ' + totalNonaktif + ' personil dinonaktifkan/tidak lagi terdaftar di SIKAP';
+          if (d.onboardConflicts && d.onboardConflicts.length > 0) {
+            warnMsg += ' dan ' + d.onboardConflicts.length + ' di antaranya masih aktif di formasi kapal (perlu diturunkan dari Papan Sijil)';
+          }
+          Toast.error(warnMsg + '.');
+        } else {
+          Toast.success(msg);
+        }
         load(_offset);
       })
       .catch(function (err) {

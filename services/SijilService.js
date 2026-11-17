@@ -143,6 +143,7 @@ function sijil_getPapanArmada(token) {
           totalKekuranganKursi: totalKekuranganKursi
         },
         kapal: kapalEvaluasi,
+        sikapOnboardConflicts: (typeof dir_getOnboardConflicts === 'function') ? dir_getOnboardConflicts() : [],
         userRole: session.role
       }
     };
