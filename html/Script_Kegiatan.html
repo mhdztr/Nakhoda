@@ -205,8 +205,8 @@ var KegiatanView = (function () {
     _items.forEach(function (keg) {
       var isVoid = String(keg.status || '').toUpperCase() === 'VOID';
       var statusBadgeHtml = isVoid
-        ? Format.statusBadge('Dianulir', 'negative')
-        : Format.statusBadge('Aktif', 'positive');
+        ? Format.statusBadge('VOID')
+        : Format.statusBadge('ACTIVE');
 
       var dateDisplay = Format.date(keg.tanggalMulai);
       if (keg.tanggalSelesai && keg.tanggalSelesai !== keg.tanggalMulai) {

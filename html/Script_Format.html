@@ -124,14 +124,14 @@ var Format = (function () {
       case 'ACTIVE':
       case 'AKTIF':
       case 'APPROVED':
+        return '<span class="status-plain">Aktif</span>';
+
       case 'BERLAKU':
       case 'SELESAI':
       case 'LENGKAP':
       case 'LAIK_OPERASI':
         pillClass = 'pill-positive';
-        if (s === 'ACTIVE' || s === 'AKTIF') label = 'Aktif';
-        else if (s === 'APPROVED') label = 'Disetujui';
-        else if (s === 'BERLAKU') label = 'Berlaku';
+        if (s === 'BERLAKU') label = 'Berlaku';
         else if (s === 'LENGKAP') label = 'Lengkap';
         else if (s === 'LAIK_OPERASI') label = 'Laik operasi';
         else label = 'Selesai';
@@ -152,21 +152,24 @@ var Format = (function () {
       case 'REJECTED':
       case 'KEDALUWARSA':
       case 'VOID':
-      case 'NONAKTIF':
       case 'BELUM_LENGKAP':
       case 'KURANG_AWAK':
         pillClass = 'pill-negative';
         if (s === 'REJECTED') label = 'Ditolak';
         else if (s === 'KEDALUWARSA') label = 'Kedaluwarsa';
         else if (s === 'VOID') label = 'Dianulir';
-        else if (s === 'NONAKTIF') label = 'Nonaktif';
         else if (s === 'KURANG_AWAK') label = 'Kurang awak';
         else label = 'Belum lengkap';
         break;
 
+      case 'NONAKTIF':
+        pillClass = 'pill-neutral';
+        label = 'Nonaktif';
+        break;
+
       case 'SUPERSEDED':
         pillClass = 'pill-neutral';
-        label = 'Direvisi';
+        label = 'Diganti';
         break;
 
       default:

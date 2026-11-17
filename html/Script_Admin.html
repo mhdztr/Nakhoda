@@ -225,13 +225,13 @@ var AdminView = (function () {
       var avatarBg = Format.avatarBg(u.nama);
 
       html += '<tr>' +
-        '<td class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.date(u.registeredAt) + '</td>' +
+        '<td class="mono tnum" style="font-size:11px; color:var(--muted); white-space:nowrap;">' + Format.date(u.registeredAt) + '</td>' +
         '<td>' +
-          '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<div class="avatar mono" style="background:' + avatarBg + '; width:28px; height:28px; font-size:11px;">' + initials + '</div>' +
-            '<div>' +
-              '<div style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(u.nama) + '</div>' +
-              '<div class="mono tnum" style="font-size:11px; color:var(--muted);">' + (u.nip || '—') + '</div>' +
+          '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<div class="avatar-sm" style="background-color:' + avatarBg + ';">' + initials + '</div>' +
+            '<div style="min-width:0;">' +
+              '<div class="cell-primary">' + Format.escape(u.nama) + '</div>' +
+              '<div class="cell-sub mono tnum">' + (u.nip || '—') + '</div>' +
             '</div>' +
           '</div>' +
         '</td>' +
@@ -240,8 +240,8 @@ var AdminView = (function () {
           '<div style="font-size:12px; font-weight:600; color:var(--text);">' + Format.escape(ROLE_LABELS[u.role] || u.role) + '</div>' +
           '<div style="font-size:11px; color:var(--muted);">' + Format.escape(u.namaDivisi || u.divisiId || '—') + '</div>' +
         '</td>' +
-        '<td style="text-align:right;">' +
-          '<div style="display:flex; justify-content:flex-end; gap:6px;">' +
+        '<td style="text-align:right; white-space:nowrap;">' +
+          '<div style="display:inline-flex; justify-content:flex-end; gap:6px;">' +
             '<button type="button" class="btn btn-primary-sm" onclick="AdminView.openApprovalModal(\'' + u.userId + '\', \'APPROVED\')">Setujui</button>' +
             '<button type="button" class="btn btn-negative-sm" onclick="AdminView.openApprovalModal(\'' + u.userId + '\', \'REJECTED\')">Tolak</button>' +
           '</div>' +
@@ -287,29 +287,26 @@ var AdminView = (function () {
     var html = '';
     filtered.forEach(function (u) {
       var st = String(u.status || '').toUpperCase();
-      var badgeStatus = Format.statusBadge(
-        st === 'APPROVED' ? 'Aktif' : (st === 'PENDING' ? 'Menunggu' : (st === 'REJECTED' ? 'Ditolak' : 'Nonaktif')),
-        st === 'APPROVED' ? 'positive' : (st === 'PENDING' ? 'warning' : 'negative')
-      );
+      var badgeStatus = Format.statusBadge(st || 'NONAKTIF');
 
       var initials = Format.initials(u.nama);
       var avatarBg = Format.avatarBg(u.nama);
       var roleName = ROLE_LABELS[u.role] || u.role;
 
       html += '<tr>' +
-        '<td>' + badgeStatus + '</td>' +
+        '<td style="white-space:nowrap;">' + badgeStatus + '</td>' +
         '<td>' +
-          '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<div class="avatar mono" style="background:' + avatarBg + '; width:28px; height:28px; font-size:11px;">' + initials + '</div>' +
-            '<div class="cell-primary" style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(u.nama) + '</div>' +
+          '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<div class="avatar-sm" style="background-color:' + avatarBg + ';">' + initials + '</div>' +
+            '<div class="cell-primary" style="min-width:0;">' + Format.escape(u.nama) + '</div>' +
           '</div>' +
         '</td>' +
-        '<td><span class="mono tnum" style="font-size:12px; color:var(--muted);">' + (u.nip || '—') + '</span></td>' +
-        '<td><span class="mono" style="font-size:12px; color:var(--text);">' + Format.escape(u.email) + '</span></td>' +
-        '<td><span style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(roleName) + '</span></td>' +
+        '<td style="white-space:nowrap;"><span class="mono tnum" style="font-size:12px; color:var(--muted);">' + (u.nip || '—') + '</span></td>' +
+        '<td style="white-space:nowrap;"><span class="mono" style="font-size:12px; color:var(--text);">' + Format.escape(u.email) + '</span></td>' +
+        '<td style="white-space:nowrap;"><span style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(roleName) + '</span></td>' +
         '<td><span style="font-size:12px; color:var(--muted);">' + Format.escape(u.namaDivisi || u.divisiId || '—') + '</span></td>' +
-        '<td style="text-align:right;">' +
-          '<div style="display:flex; justify-content:flex-end; gap:6px;">' +
+        '<td style="text-align:right; white-space:nowrap;">' +
+          '<div style="display:inline-flex; justify-content:flex-end; gap:6px;">' +
             '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openEditUserModal(\'' + u.userId + '\')">Ubah</button>' +
             '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openResetPwdModal(\'' + u.userId + '\')">Reset password</button>' +
           '</div>' +
