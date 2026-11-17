@@ -525,15 +525,27 @@ button.nav-item,
 
 .page-header,
 .screen-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  min-height: 67px;
+  min-height: var(--header-datum-h, 76px);
   padding: 0 0 14px 0;
   margin-bottom: 0;
   border-bottom: 1px solid var(--border);
+}
+
+.page-header::after,
+.screen-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 44px;
+  height: 2px;
+  background-color: var(--accent);
 }
 
 .page-title-group,

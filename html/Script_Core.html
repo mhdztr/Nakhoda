@@ -157,9 +157,21 @@ var ShellUI = (function () {
     if (bd) bd.classList.remove('mobile-open');
   }
 
+  function syncHeaderDatum() {
+    if (window.innerWidth <= 768) {
+      document.documentElement.style.removeProperty('--header-datum-h');
+      return;
+    }
+    var brand = document.querySelector('#app-sidebar .brand-box');
+    if (brand && brand.offsetHeight > 0) {
+      document.documentElement.style.setProperty('--header-datum-h', brand.offsetHeight + 'px');
+    }
+  }
+
   return {
     toggleMobileNav: toggleMobileNav,
-    closeMobileNav: closeMobileNav
+    closeMobileNav: closeMobileNav,
+    syncHeaderDatum: syncHeaderDatum
   };
 })();
 
@@ -412,6 +424,14 @@ var AuthApp = (function () {
     if (authRoot) authRoot.classList.add('hidden');
     if (appShell) appShell.classList.remove('hidden');
     _updateShellProfile();
+    ShellUI.syncHeaderDatum();
+    if (!ShellUI._datumBound) {
+      ShellUI._datumBound = true;
+      window.addEventListener('resize', ShellUI.syncHeaderDatum);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(ShellUI.syncHeaderDatum);
+      }
+    }
   }
 
   function _updateShellProfile() {
