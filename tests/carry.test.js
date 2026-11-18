@@ -173,4 +173,13 @@ test('akn_aggregateAwakRows — Mengagregasi data pegawai aktif ke 4 kategori da
   assert.equal(res.AKN_POA.P3K, 2);
   assert.equal(res.AKN_KESELURUHAN.PJLP, 1);
   assert.equal(res.AKN_POA.PJLP, 0);
+
+  // Pastikan data seed UPT dengan Catatan 'Data Induk Armada PSDKP' tidak meledak ke POA 100% dan Pusat POA terhitung benar
+  const seedMixed = [
+    { StatusAktif: 'AKTIF', KategoriKepegawaian: 'PNS', StatusPenempatan: 'PUSAT_POA', PangkalanID: 'Armada Kapal Pengawas (Pusat)', Catatan: 'Data Induk Armada PSDKP' },
+    { StatusAktif: 'AKTIF', KategoriKepegawaian: 'PNS', StatusPenempatan: 'DIPERBANTUKAN_UPT', PangkalanID: 'Pangkalan PSDKP Batam', Catatan: 'Data Induk Armada PSDKP' }
+  ];
+  const seedRes = akn_aggregateAwakRows(seedMixed);
+  assert.equal(seedRes.AKN_KESELURUHAN.PNS, 2);
+  assert.equal(seedRes.AKN_POA.PNS, 1);
 });

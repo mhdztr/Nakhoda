@@ -126,6 +126,32 @@ function _healAknKategori4(sheet, rows) {
     });
   }
 
+  // Pastikan setiap periode maksimal hanya memiliki 1 batch aktif (hindari akumulasi ganda antar batch lama & baru)
+  var latestBatchPerPeriode = {};
+  rows.forEach(function (r) {
+    if (String(r.Status || '').toUpperCase() !== ROW_STATUS.ACTIVE) return;
+    var rp = String(r.Periode || '');
+    if (!rp) return;
+    var ts = r.Timestamp ? new Date(r.Timestamp).getTime() : 0;
+    var bId = String(r.BatchID || '');
+    var cur = latestBatchPerPeriode[rp];
+    if (!cur || ts > cur.ts || (ts === cur.ts && bId && bId !== cur.batchId && bId.indexOf('AUTO') !== -1)) {
+      latestBatchPerPeriode[rp] = { ts: ts, batchId: bId };
+    }
+  });
+  rows.forEach(function (r, idx) {
+    if (String(r.Status || '').toUpperCase() !== ROW_STATUS.ACTIVE) return;
+    var rp = String(r.Periode || '');
+    var best = latestBatchPerPeriode[rp];
+    if (!best || !best.batchId) return;
+    var bId = String(r.BatchID || '');
+    if (bId && bId !== best.batchId) {
+      updateRowCells(sheet, idx + 2, { 'Status': ROW_STATUS.SUPERSEDED });
+      r.Status = ROW_STATUS.SUPERSEDED;
+      changed = true;
+    }
+  });
+
   return changed;
 }
 
@@ -158,8 +184,8 @@ function akn_getPapan(token, filterOrPeriode) {
     // Hitung matriks 2x4 dengan pure/Carry.js
     var resolved = resolveMatrix(rowsAkn, p);
 
-    // Auto-simpulkan dari Master_Awak bila periode berjalan/sheet belum memiliki snapshot aktif
-    if (resolved.totals.AKN_KESELURUHAN === 0 && p >= akn_getCurrentPeriode()) {
+    // Auto-simpulkan dari Master_Awak bila periode berjalan belum memiliki snapshot aktif atau POA masih 0
+    if ((resolved.totals.AKN_KESELURUHAN === 0 || resolved.totals.AKN_POA === 0) && p >= akn_getCurrentPeriode()) {
       var autoSync = akn_syncFromAwak(session.userId, 'Sinkronisasi otomatis komposisi dari Direktori Awak');
       if (autoSync && autoSync.success) {
         rowsAkn = sheetToObjects(sheetAkn);
@@ -725,6 +751,10 @@ function akn_syncFromAwak(userId, keteranganMutasi) {
       return { success: false, error: 'Data direktori awak kosong.' };
     }
 
+    if (typeof _healMasterAwakKelasIfNeeded === 'function') {
+      _healMasterAwakKelasIfNeeded(sheetAwak, rowsAwak);
+    }
+
     var curPeriode = akn_getCurrentPeriode();
     var counts = akn_aggregateAwakRows(rowsAwak);
 
@@ -736,10 +766,12 @@ function akn_syncFromAwak(userId, keteranganMutasi) {
     var categories = AKN_KATEGORIS;
     var toAppend = [];
 
-    // Perbaiki baris tertukar bila ada, migrasi 4 kategori, lalu tandai baris aktif periode berjalan sebagai SUPERSEDED
+    // Perbaiki baris tertukar bila ada, migrasi 4 kategori, lalu tandai seluruh baris aktif periode berjalan sebagai SUPERSEDED
     var existingAknRows = sheetToObjects(sheetAkn);
     _healSwappedAknRows(sheetAkn, existingAknRows);
-    _healAknKategori4(sheetAkn, existingAknRows);
+    if (_healAknKategori4(sheetAkn, existingAknRows)) {
+      existingAknRows = sheetToObjects(sheetAkn);
+    }
     for (var i = 0; i < existingAknRows.length; i++) {
       var r = existingAknRows[i];
       if (String(r.Periode || '') === curPeriode && String(r.Status || '').toUpperCase() === 'ACTIVE') {

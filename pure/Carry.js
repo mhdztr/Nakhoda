@@ -236,8 +236,11 @@ function akn_aggregateAwakRows(awakRows) {
     counts.totalAktif++;
 
     var statusPenempatan = String(a.StatusPenempatan || '').trim().toUpperCase();
-    var unit = String(a.Unit || a.PangkalanID || a.Catatan || a.JabatanLengkap || '').toLowerCase();
-    var isPoa = (statusPenempatan === 'PUSAT_POA' || statusPenempatan === 'DIPERBANTUKAN_UPT') ||
+    var unit = String(a.Unit || a.PangkalanID || a.JabatanLengkap || '').toLowerCase();
+    var catatanLower = String(a.Catatan || '').toLowerCase();
+    var isSeedUptNote = catatanLower === 'data induk armada psdkp';
+    var isPoa = (statusPenempatan === 'PUSAT_POA') ||
+      (statusPenempatan === 'DIPERBANTUKAN_UPT' && !isSeedUptNote) ||
       unit.indexOf('pusat') !== -1 ||
       unit.indexOf('poa') !== -1 ||
       unit.indexOf('armada kapal pengawas (pusat)') !== -1;
