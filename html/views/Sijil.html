@@ -66,7 +66,7 @@
         <option value="KELAS_IV">Kelas IV (18 &ndash; 28m)</option>
         <option value="KELAS_V">Kelas V (Speedboat)</option>
       </select>
-      <select id="sijil-filter-status" class="form-control-md" style="width:160px;" aria-label="Filter status kelaikan safe manning">
+      <select id="sijil-filter-status" class="form-control-md" style="min-width:190px; width:auto;" aria-label="Filter status kelaikan safe manning">
         <option value="">Semua status kelaikan</option>
         <option value="LAIK_OPERASI">Siap laik operasi</option>
         <option value="KURANG_AWAK">Kurang awak</option>
@@ -83,7 +83,7 @@
   <div class="card card-flush">
     <div class="card-header">
       <h2 class="card-title">Matriks deviasi formasi safe manning per kapal</h2>
-      <div style="display:flex; align-items:center; gap:12px; font-size:11px; color:var(--muted);">
+      <div style="display:flex; align-items:center; gap:10px 12px; flex-wrap:wrap; font-size:11px; color:var(--muted);">
         <div style="display:flex; align-items:center; gap:4px;">
           <span class="sijil-cell sijil-cell-ok mono">0</span>
           <span>Sesuai standar</span>
@@ -97,6 +97,19 @@
           <span>Kurang &ge;2 (Kritis)</span>
         </div>
       </div>
+    </div>
+
+    <div class="sijil-legend-glossary" aria-label="Keterangan singkatan kolom jabatan">
+      <span><strong>NKH:</strong> Nahkoda</span>
+      <span><strong>MLM:</strong> Mualim</span>
+      <span><strong>KKM:</strong> KKM</span>
+      <span><strong>MSN:</strong> Masinis</span>
+      <span><strong>MRK:</strong> Markonis</span>
+      <span><strong>SRG:</strong> Serang</span>
+      <span><strong>JMD:</strong> Juru Mudi</span>
+      <span><strong>KLS:</strong> Kelasi</span>
+      <span><strong>JMY:</strong> Juru Minyak</span>
+      <span><strong>JMK:</strong> Juru Masak</span>
     </div>
 
     <div class="table-wrap">
@@ -122,7 +135,7 @@
         </thead>
         <tbody id="sijil-2d-matrix-tbody">
           <tr>
-            <td colspan="15" style="text-align:center; padding:32px 0; color:var(--muted);">Loading matriks 2D papan sijil armada...</td>
+            <td colspan="15" style="text-align:center; padding:32px 0; color:var(--muted);">Memuat matriks 2D papan sijil armada...</td>
           </tr>
         </tbody>
       </table>
@@ -137,7 +150,7 @@
         <div style="font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;">Papan Sijil Kapal</div>
         <h2 id="sheet-sijil-nama-kapal" style="font-size:18px; font-weight:600; color:var(--text); margin-top:2px;">-</h2>
       </div>
-      <button type="button" class="modal-close" onclick="Sheet.close('sheet-sijil-panel', 'sheet-sijil-overlay')">&times;</button>
+      <button type="button" class="modal-close" aria-label="Tutup panel kapal" onclick="Sheet.close('sheet-sijil-panel', 'sheet-sijil-overlay')">&times;</button>
     </div>
 
     <div class="sheet-body">
@@ -185,7 +198,7 @@
             </tr>
           </thead>
           <tbody id="sheet-sijil-manning-tbody">
-            <tr><td colspan="4" style="text-align:center; padding:16px; color:var(--muted);">Loading standar manning...</td></tr>
+            <tr><td colspan="4" style="text-align:center; padding:16px; color:var(--muted);">Memuat standar manning...</td></tr>
           </tbody>
         </table>
       </div>
@@ -203,7 +216,7 @@
   <div class="modal-box">
     <div class="modal-header">
       <div class="modal-title">Penempatan personil ke kapal (sijil)</div>
-      <button type="button" class="modal-close" onclick="Modal.close('modal-sijil-assign')">&times;</button>
+      <button type="button" class="modal-close" aria-label="Tutup modal" onclick="SijilView.closeAssignModal()">&times;</button>
     </div>
     <form id="form-sijil-assign">
       <div class="modal-body">
@@ -264,8 +277,8 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label" for="assign-input-tgl-naik">Tanggal naik kapal (pilih kalender)</label>
-            <input type="date" id="assign-input-tgl-naik" class="form-control-md mono" onkeydown="return false" required>
+            <label class="form-label" for="assign-input-tgl-naik">Tanggal naik kapal (pilih ikon kalender)</label>
+            <input type="date" id="assign-input-tgl-naik" class="form-control-md mono" onkeydown="if(event.key==='Tab'||event.key==='Escape')return true; return false;" required>
           </div>
         </div>
 
@@ -307,7 +320,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-sijil-assign')">Batal</button>
+        <button type="button" class="btn btn-secondary-md" onclick="SijilView.closeAssignModal()">Batal</button>
         <button type="submit" id="btn-submit-sijil-assign" class="btn btn-primary-md">Tempatkan personil</button>
       </div>
     </form>
@@ -320,9 +333,9 @@
     <div class="modal-header">
       <div>
         <div class="modal-title">Upload Surat Perintah Tugas (SPT)</div>
-        <div id="upload-spt-target-info" style="font-size:11px; color:var(--muted); margin-top:2px;">Loading info personil...</div>
+        <div id="upload-spt-target-info" style="font-size:11px; color:var(--muted); margin-top:2px;">Memuat info personil...</div>
       </div>
-      <button type="button" class="modal-close" onclick="Modal.close('modal-sijil-upload-spt')">&times;</button>
+      <button type="button" class="modal-close" aria-label="Tutup modal" onclick="Modal.close('modal-sijil-upload-spt')">&times;</button>
     </div>
     <form id="form-sijil-upload-spt">
       <input type="hidden" id="upload-spt-row-id">

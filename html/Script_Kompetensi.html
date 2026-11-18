@@ -185,7 +185,12 @@ var KompetensiView = (function () {
         _renderAntreanTable(res.antrean || []);
       })
       .catch(function (err) {
-        Toast.error('Gagal memuat dasbor kompetensi: ' + err.message);
+        var msg = (err && err.message) ? err.message : 'Gagal memuat dasbor kompetensi.';
+        Toast.error('Gagal memuat dasbor kompetensi: ' + msg);
+        var tbody = document.getElementById('kom-antrean-tbody');
+        if (tbody) {
+          tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state-box"><div class="empty-state-title">Data kompetensi gagal dimuat</div><div class="empty-state-desc">' + Format.escape(msg) + '</div><div class="empty-state-actions"><button type="button" class="btn btn-secondary-sm" onclick="KompetensiView.loadAntrean()">Coba lagi</button></div></div></td></tr>';
+        }
       });
   }
 
@@ -208,7 +213,7 @@ var KompetensiView = (function () {
 
       html +=
         '<tr>' +
-          '<td>' + Format.statusBadge(it.status) + '</td>' +
+          '<td data-label="Status">' + Format.statusBadge(it.status) + '</td>' +
           '<td>' +
             '<div style="display:flex; align-items:center; gap:10px;">' +
               '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
@@ -218,12 +223,12 @@ var KompetensiView = (function () {
               '</div>' +
             '</div>' +
           '</td>' +
-          '<td>' +
+          '<td data-label="Pelatihan">' +
             '<div class="cell-primary">' + Format.escape(it.namaPelatihan) + '</div>' +
             '<div class="cell-sub mono">No: ' + Format.escape(it.nomorSertifikat) + '</div>' +
           '</td>' +
-          '<td class="mono tnum">' + Format.date(it.berlakuSampai) + '</td>' +
-          '<td class="text-right">' + sisaHtml + '</td>' +
+          '<td class="mono tnum" data-label="Berlaku">' + Format.date(it.berlakuSampai) + '</td>' +
+          '<td class="text-right" data-label="Sisa waktu">' + sisaHtml + '</td>' +
           '<td class="text-center">' +
             '<button type="button" class="btn btn-secondary-sm btn-reval" ' +
               'data-peg="' + it.pegawaiId + '" ' +
@@ -270,13 +275,20 @@ var KompetensiView = (function () {
 
         var items = res.items || [];
         if (items.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada personil yang sesuai dengan filter kelompok jabatan.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state-box"><div class="empty-state-title">Tidak ada personil yang sesuai filter</div><div class="empty-state-desc">Ubah filter kelompok jabatan atau kata kunci pencarian.</div><div class="empty-state-actions"><button type="button" class="btn btn-secondary-sm" onclick="document.getElementById(\'kom-matriks-filter-jabatan\').value=\'\'; document.getElementById(\'kom-matriks-search\').value=\'\'; KompetensiView.loadMatriks();">Reset filter</button></div></div></td></tr>';
           return;
         }
 
         var html = '';
         items.forEach(function (a) {
-          var k = a.kelaikan || { persen: 100, terpenuhi: 0, totalWajib: 0, isLaik: true };
+          var k = a.kelaikan || { persen: 0, terpenuhi: 0, totalWajib: 0, isLaik: false };
+          var hasStandards = (k.totalWajib || 0) > 0;
+          var barPct = hasStandards ? k.persen : 0;
+          var statusPill = !hasStandards
+            ? '<span class="pill pill-neutral"><span class="pill-dot"></span>Belum dipetakan</span>'
+            : (k.isLaik
+              ? '<span class="pill pill-positive"><span class="pill-dot"></span>Lengkap</span>'
+              : '<span class="pill pill-warning"><span class="pill-dot"></span>Belum lengkap</span>');
           var bg = Format.avatarBg(a.nama);
           var inis = Format.initials(a.nama);
 
@@ -291,22 +303,22 @@ var KompetensiView = (function () {
                   '</div>' +
                 '</div>' +
               '</td>' +
-              '<td>' +
+              '<td data-label="Jabatan">' +
                 '<div class="cell-primary">' + Format.escape(a.kelompokJabatan) + '</div>' +
                 '<div class="cell-sub">' + Format.kelompokBadge(a.rumpun) + ' · ' + Format.escape(String(a.kelasKapal).replace('_', ' ')) + '</div>' +
               '</td>' +
-              '<td>' +
+              '<td data-label="Kelaikan wajib">' +
                 '<div style="display:flex; align-items:center; gap:8px;">' +
                   '<div class="track-bar" style="flex:1;">' +
-                    '<div class="track-fill" style="width:' + k.persen + '%;"></div>' +
+                    '<div class="track-fill" style="width:' + barPct + '%;"></div>' +
                   '</div>' +
-                  '<span class="mono tnum" style="font-size:11px; width:65px; text-align:right;">' +
-                    k.terpenuhi + ' / ' + k.totalWajib + ' (' + k.persen + '%)' +
+                  '<span class="mono tnum" style="font-size:11px; width:72px; text-align:right; color:' + (hasStandards ? 'var(--text)' : 'var(--muted)') + ';">' +
+                    (hasStandards ? (k.terpenuhi + ' / ' + k.totalWajib + ' (' + k.persen + '%)') : '0 standar') +
                   '</span>' +
                 '</div>' +
               '</td>' +
-              '<td class="text-center">' +
-                (k.isLaik ? '<span class="pill pill-positive"><span class="pill-dot"></span>Lengkap</span>' : '<span class="pill pill-warning"><span class="pill-dot"></span>Belum lengkap</span>') +
+              '<td class="text-center" data-label="Status">' +
+                statusPill +
               '</td>' +
               '<td class="text-center">' +
                 '<button type="button" class="btn btn-secondary-sm btn-matriks-detail" data-id="' + a.pegawaiId + '">Matriks</button>' +
@@ -335,7 +347,7 @@ var KompetensiView = (function () {
     Sheet.open('sheet-kom-panel', 'sheet-kom-overlay');
 
     var nameEl = document.getElementById('sheet-kom-nama');
-    if (nameEl) nameEl.textContent = 'Loading matriks personil...';
+    if (nameEl) nameEl.textContent = 'Memuat matriks personil...';
 
     rpc('kom_getAwakMatriks', token, pegawaiId)
       .then(function (res) {
@@ -820,8 +832,8 @@ var KompetensiView = (function () {
     var token = AuthApp.getToken();
     var crewSearch = document.getElementById('kom-save-crew-search-input');
     var certSearch = document.getElementById('kom-save-cert-search-input');
-    if (crewSearch && !pegawaiId) crewSearch.placeholder = 'Loading data personil armada...';
-    if (certSearch && !kodePelatihan) certSearch.placeholder = 'Loading daftar sertifikat dari SIKAP...';
+    if (crewSearch && !pegawaiId) crewSearch.placeholder = 'Memuat data personil armada...';
+    if (certSearch && !kodePelatihan) certSearch.placeholder = 'Memuat daftar sertifikat dari SIKAP...';
 
     rpc('kom_getFormOptions', token)
       .then(function (res) {

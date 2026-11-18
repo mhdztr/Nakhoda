@@ -461,8 +461,8 @@ button.nav-item,
 .user-avatar,
 .avatar-sm,
 .avatar {
-  width: 28px;
-  height: 28px;
+  width: var(--ctl-h-sm);
+  height: var(--ctl-h-sm);
   border-radius: var(--radius-chip);
   display: inline-flex;
   align-items: center;
@@ -590,7 +590,9 @@ button.nav-item,
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 100%;
   flex-wrap: wrap;
 }
 
@@ -654,6 +656,7 @@ button svg,
 .btn-primary-lg,
 .btn-secondary-lg,
 .btn-danger-lg,
+.btn-negative-lg,
 .input-lg,
 .select-lg,
 .form-control-lg,
@@ -673,6 +676,7 @@ button svg,
 .btn-primary-md,
 .btn-secondary-md,
 .btn-danger-md,
+.btn-negative-md,
 .input-md,
 .select-md,
 .form-control-md,
@@ -692,6 +696,7 @@ button svg,
 .btn-primary-sm,
 .btn-secondary-sm,
 .btn-danger-sm,
+.btn-negative-sm,
 .input-sm,
 .select-sm,
 .form-control-sm,
@@ -739,7 +744,11 @@ button svg,
 .btn-danger,
 .btn-danger-lg,
 .btn-danger-md,
-.btn-danger-sm {
+.btn-danger-sm,
+.btn-negative,
+.btn-negative-lg,
+.btn-negative-md,
+.btn-negative-sm {
   background-color: var(--surface);
   color: var(--negative);
   border-color: var(--control);
@@ -748,7 +757,11 @@ button svg,
 .btn-danger:hover,
 .btn-danger-lg:hover,
 .btn-danger-md:hover,
-.btn-danger-sm:hover {
+.btn-danger-sm:hover,
+.btn-negative:hover,
+.btn-negative-lg:hover,
+.btn-negative-md:hover,
+.btn-negative-sm:hover {
   background-color: var(--pill-negative-bg);
   border-color: var(--negative);
 }
@@ -908,6 +921,8 @@ textarea::placeholder {
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   padding: var(--card-pad);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .card-flush {
@@ -920,7 +935,8 @@ textarea::placeholder {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 10px 12px;
   margin-bottom: 16px;
 }
 
@@ -936,6 +952,7 @@ textarea::placeholder {
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
+  min-width: 0;
 }
 
 .card-subtitle {
@@ -956,6 +973,11 @@ textarea::placeholder {
   gap: var(--gap);
 }
 
+.grid-2col > *,
+.grid-2fr-1fr > * {
+  min-width: 0;
+}
+
 /* ── Bilah Tab Garis Bawah & Bilah Saring (DESIGN.md §5.2) ── */
 .tab-strip {
   display: flex;
@@ -963,11 +985,12 @@ textarea::placeholder {
   gap: 20px;
   border-bottom: 1px solid var(--border);
   padding: 0 4px;
+  overflow-x: auto;
 }
 
 .tab-btn,
 .tab-item {
-  height: 36px;
+  height: var(--ctl-h-md);
   padding: 0 4px;
   font-size: 13px;
   font-weight: 400;
@@ -1119,6 +1142,13 @@ tbody tr:hover,
 tbody tr.clickable,
 .table tbody tr.clickable {
   cursor: pointer;
+}
+
+tbody tr.clickable:focus-visible,
+.table tbody tr.clickable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background-color: var(--raised);
 }
 
 tbody tr.selected,
@@ -1337,8 +1367,8 @@ th.text-center {
 }
 
 .modal-close {
-  width: 28px;
-  height: 28px;
+  width: var(--ctl-h-sm);
+  height: var(--ctl-h-sm);
   padding: 0;
   border-radius: var(--radius-control);
   color: var(--muted);
@@ -1354,10 +1384,26 @@ th.text-center {
   color: var(--text);
 }
 
+.modal-box > form,
+.modal-dialog > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .modal-body {
   padding: 20px;
   overflow-y: auto;
   flex: 1;
+  min-height: 0;
+}
+
+.modal-header,
+.modal-footer,
+.modal-actions {
+  flex-shrink: 0;
 }
 
 .modal-footer,
@@ -1735,6 +1781,183 @@ th.text-center {
   .timeline-item {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+  .lap-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  #lembar-cetak-dinas {
+    padding: 20px 14px !important;
+  }
+  .onboard-steps {
+    grid-template-columns: 1fr !important;
+  }
+  .card-header > div {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  /* Sticky nama kapal di Papan Sijil 2D saat scroll horizontal di layar sempit */
+  .sijil-matrix th:first-child,
+  .sijil-matrix td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background-color: var(--surface);
+    border-right: 1px solid var(--border);
+    min-width: 150px !important;
+  }
+  /* Daftar tabel standar beralih ke kartu dua-baris pada ponsel (DESIGN.md §12) */
+  .table-mobile-cards thead {
+    display: none;
+  }
+  .table-mobile-cards,
+  .table-mobile-cards tbody,
+  .table-mobile-cards tr,
+  .table-mobile-cards td {
+    display: block;
+    width: 100%;
+  }
+  .table-mobile-cards tbody tr {
+    height: auto;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-mobile-cards td {
+    padding: 4px 0;
+    border: none;
+    text-align: left !important;
+    white-space: normal !important;
+  }
+  .table-mobile-cards td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+}
+
+/* ── Panduan Onboarding Ringkas, Pemulihan Error, & Pembagi Form ── */
+.onboard-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.onboard-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.onboard-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.onboard-step {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  background-color: var(--ground);
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+  height: auto !important;
+  white-space: normal !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
+
+.onboard-step:hover {
+  border-color: var(--control);
+  background-color: var(--raised);
+}
+
+.onboard-step-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+}
+
+.onboard-step-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.onboard-step-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.form-section-divider {
+  padding-top: 12px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.empty-state-box {
+  padding: 28px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-state-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.empty-state-desc {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 46ch;
+  line-height: 1.45;
+}
+
+.empty-state-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sijil-legend-glossary {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--rule);
+  background-color: var(--ground);
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

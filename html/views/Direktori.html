@@ -82,9 +82,9 @@
         <option value="2027">2027</option>
       </select>
       <div id="dir-filter-range-wrap" class="hidden" style="display:flex; align-items:center; gap:6px;">
-        <input type="date" id="dir-filter-date-start" class="form-control-md mono" onkeydown="return false" style="width:140px;" aria-label="Tanggal mulai dari kalender">
+        <input type="date" id="dir-filter-date-start" class="form-control-md mono" onkeydown="if(event.key==='Tab'||event.key==='Escape')return true; return false;" style="width:140px;" aria-label="Tanggal mulai dari kalender">
         <span style="font-size:12px; color:var(--muted);">s.d.</span>
-        <input type="date" id="dir-filter-date-end" class="form-control-md mono" onkeydown="return false" style="width:140px;" aria-label="Tanggal selesai dari kalender">
+        <input type="date" id="dir-filter-date-end" class="form-control-md mono" onkeydown="if(event.key==='Tab'||event.key==='Escape')return true; return false;" style="width:140px;" aria-label="Tanggal selesai dari kalender">
       </div>
       <select id="dir-filter-rumpun" class="form-control-md" style="width:145px;" aria-label="Filter rumpun personil">
         <option value="">Semua rumpun</option>
@@ -122,7 +122,7 @@
   <!-- Tabel Data Direktori (Tanpa Zebra — DESIGN.md §5.5) -->
   <div class="card card-flush">
     <div class="table-wrap">
-      <table class="table">
+      <table class="table table-mobile-cards">
         <thead>
           <tr>
             <th style="width:36px; text-align:center;">
@@ -139,7 +139,7 @@
         </thead>
         <tbody id="dir-list-tbody">
           <tr>
-            <td colspan="8" style="text-align:center; padding:32px 0; color:var(--muted);">Loading direktori awak kapal...</td>
+            <td colspan="8" style="text-align:center; padding:32px 0; color:var(--muted);">Memuat direktori awak kapal...</td>
           </tr>
         </tbody>
       </table>
@@ -160,7 +160,7 @@
   <aside id="sheet-dir-panel" class="sheet-panel hidden">
     <div class="sheet-header">
       <h2 id="sheet-dir-nama" style="font-size:18px; font-weight:600; color:var(--text); margin:0;">-</h2>
-      <button type="button" class="modal-close" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')">&times;</button>
+      <button type="button" class="modal-close" aria-label="Tutup panel detail" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')">&times;</button>
     </div>
 
     <!-- Tab Garis Bawah Lembar Samping -->
@@ -252,9 +252,15 @@
       </div>
     </div>
 
-    <div class="sheet-footer">
-      <button type="button" class="btn btn-secondary-md" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')">Tutup</button>
-      <button type="button" id="btn-sheet-edit-awak" class="btn btn-primary-md">Edit profil personil</button>
+    <div class="sheet-footer" style="flex-wrap:wrap; justify-content:space-between;">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-secondary-sm" onclick="DirektoriView.openCatatSertifikatFromSheet()">+ Sertifikat</button>
+        <button type="button" class="btn btn-secondary-sm" onclick="DirektoriView.openAssignSijilFromSheet()">+ Sijil kapal</button>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn btn-secondary-md" onclick="Sheet.close('sheet-dir-panel', 'sheet-dir-overlay')">Tutup</button>
+        <button type="button" id="btn-sheet-edit-awak" class="btn btn-primary-md">Edit profil</button>
+      </div>
     </div>
   </aside>
 
@@ -265,7 +271,7 @@
   <div class="modal-box modal-box-lg">
     <div class="modal-header">
       <div class="modal-title" id="modal-awak-title">Tambah personil baru</div>
-      <button type="button" class="modal-close" onclick="Modal.close('modal-dir-awak')">&times;</button>
+      <button type="button" class="modal-close" aria-label="Tutup modal" onclick="Modal.close('modal-dir-awak')">&times;</button>
     </div>
     <form id="form-dir-awak">
       <input type="hidden" id="awak-input-id">
@@ -343,6 +349,8 @@
           </div>
         </div>
 
+        <div class="form-section-divider">Penempatan, Perlengkapan &amp; Dokumen SK (Opsional)</div>
+
         <div class="form-grid-2">
           <div class="form-group">
             <label class="form-label" for="awak-input-status-penempatan">Status penempatan</label>
@@ -359,12 +367,12 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label" for="awak-input-tgl-mulai">Tanggal mulai tugas (pilih kalender, opsional)</label>
-            <input type="date" id="awak-input-tgl-mulai" class="form-control-md mono" onkeydown="return false">
+            <label class="form-label" for="awak-input-tgl-mulai">Tanggal mulai tugas (pilih ikon kalender, opsional)</label>
+            <input type="date" id="awak-input-tgl-mulai" class="form-control-md mono" onkeydown="if(event.key==='Tab'||event.key==='Escape')return true; return false;">
           </div>
           <div class="form-group">
-            <label class="form-label" for="awak-input-tgl-selesai">Tanggal selesai kontrak (pilih kalender, opsional)</label>
-            <input type="date" id="awak-input-tgl-selesai" class="form-control-md mono" onkeydown="return false">
+            <label class="form-label" for="awak-input-tgl-selesai">Tanggal selesai kontrak (pilih ikon kalender, opsional)</label>
+            <input type="date" id="awak-input-tgl-selesai" class="form-control-md mono" onkeydown="if(event.key==='Tab'||event.key==='Escape')return true; return false;">
           </div>
         </div>
 

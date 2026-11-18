@@ -7,6 +7,10 @@
       <h1 class="page-title">Ringkasan Eksekutif Pengawakan</h1>
     </div>
     <div class="page-actions">
+      <button type="button" class="btn btn-secondary-md" id="btn-ringkasan-onboard-open" title="Lihat panduan alur kerja operasional Nakhoda">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Panduan alur</span>
+      </button>
       <button type="button" class="btn btn-secondary-md" id="btn-ringkasan-refresh">
         <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         <span>Refresh</span>
@@ -15,6 +19,39 @@
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         <span>Executive Report</span>
       </button>
+    </div>
+  </div>
+
+  <!-- Panduan Alur Operasional Pengguna Baru (Dismissible & Replayable) -->
+  <div id="ringkasan-onboard-card" class="onboard-card hidden">
+    <div class="onboard-head">
+      <div>
+        <div style="font-size:14px; font-weight:600; color:var(--text);">Alur kerja operasional Nakhoda</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Urutan kerja harian Timja Pengawakan dari pendataan personel hingga pelaporan armada. Klik langkah untuk langsung menuju menu.</div>
+      </div>
+      <button type="button" class="btn btn-secondary-sm" id="btn-ringkasan-onboard-dismiss">Tutup panduan</button>
+    </div>
+    <div class="onboard-steps">
+      <a href="#/direktori" class="onboard-step" onclick="event.preventDefault(); Router.navigate('direktori');">
+        <span class="onboard-step-num">01 · Direktori Awak</span>
+        <span class="onboard-step-title">Data &amp; Sync SIKAP</span>
+        <span class="onboard-step-desc">Tambahkan awak baru atau Sync SIKAP agar profil personel masuk ke basis data.</span>
+      </a>
+      <a href="#/kompetensi" class="onboard-step" onclick="event.preventDefault(); Router.navigate('kompetensi');">
+        <span class="onboard-step-num">02 · Kompetensi &amp; BST</span>
+        <span class="onboard-step-title">Catat Sertifikat</span>
+        <span class="onboard-step-desc">Rekam sertifikat wajib STCW-F &amp; BST serta pantau yang habis dalam 90 hari.</span>
+      </a>
+      <a href="#/sijil" class="onboard-step" onclick="event.preventDefault(); Router.navigate('sijil');">
+        <span class="onboard-step-num">03 · Papan Sijil</span>
+        <span class="onboard-step-title">Tempatkan ke Kapal</span>
+        <span class="onboard-step-desc">Isi kursi kosong Safe Manning kapal pengawas dan lampirkan Surat Tugas.</span>
+      </a>
+      <a href="#/kegiatan" class="onboard-step" onclick="event.preventDefault(); Router.navigate('kegiatan');">
+        <span class="onboard-step-num">04 · Log &amp; Laporan</span>
+        <span class="onboard-step-title">Pembinaan &amp; Ekspor</span>
+        <span class="onboard-step-desc">Catat kegiatan pembinaan beserta bukti, lalu cetak Executive Report.</span>
+      </a>
     </div>
   </div>
 
@@ -63,7 +100,7 @@
     <!-- Kolom Kiri: Distribusi Kekuatan AKN (Track Bar Oranye Keselamatan) -->
     <div class="card">
       <div class="card-header">
-        <div style="display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
           <h2 class="card-title">Komposisi awak kapal negara (AKN)</h2>
           <span class="badge badge-neutral mono" id="label-ringkasan-akn-periode">Periode --</span>
         </div>
@@ -74,10 +111,10 @@
 
       <!-- Daftar 5 Kategori Kepegawaian dengan Bilah Proporsi -->
       <div class="track-list" id="ringkasan-track-list">
-        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Loading distribusi komposisi AKN...</div>
+        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat distribusi komposisi AKN...</div>
       </div>
 
-      <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--muted);">
+      <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px 12px; font-size:12px; color:var(--muted);">
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="display:flex; align-items:center; gap:6px;">
             <div style="width:10px; height:10px; background-color:var(--accent); border-radius:2px;"></div>
@@ -113,7 +150,7 @@
           </thead>
           <tbody id="tbody-ringkasan-sertifikat">
             <tr>
-              <td colspan="4" style="text-align:center; padding:24px; color:var(--muted);">Loading data sertifikat...</td>
+              <td colspan="4" style="text-align:center; padding:24px; color:var(--muted);">Memuat data sertifikat...</td>
             </tr>
           </tbody>
         </table>
@@ -148,7 +185,7 @@
           </thead>
           <tbody id="tbody-ringkasan-sijil">
             <tr>
-              <td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Loading data kapal...</td>
+              <td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Memuat data kapal...</td>
             </tr>
           </tbody>
         </table>
@@ -165,7 +202,7 @@
       </div>
 
       <div id="ringkasan-kegiatan-container" style="display:flex; flex-direction:column; gap:12px;">
-        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Loading agenda kegiatan...</div>
+        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat agenda kegiatan...</div>
       </div>
     </div>
 
@@ -192,7 +229,7 @@
         </thead>
         <tbody id="tbody-ringkasan-jabatan">
           <tr>
-            <td colspan="5" style="text-align:center; padding:24px; color:var(--muted);">Loading postur jabatan awak...</td>
+            <td colspan="5" style="text-align:center; padding:24px; color:var(--muted);">Memuat postur jabatan awak...</td>
           </tr>
         </tbody>
       </table>

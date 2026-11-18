@@ -23,58 +23,58 @@
   </div>
 
   <!-- Pratinjau Lembar Dinas Cetak A4 (DESIGN.md §6.5 — Achromatic Ledger Official Print) -->
-  <div class="card" style="max-width:840px; margin:0 auto; padding:40px; background:#FFFFFF; color:#15181B; box-shadow:0 1px 3px rgba(0,0,0,0.06); font-family:var(--font-sans);" id="lembar-cetak-dinas">
+  <div class="card" style="width:100%; max-width:840px; margin:0 auto; padding:32px 24px; background:#FFFFFF; color:#15181B; box-shadow:0 1px 3px rgba(0,0,0,0.06); font-family:var(--font-sans); overflow-x:auto;" id="lembar-cetak-dinas">
     
     <!-- Kop Surat Resmi -->
     <div style="border-bottom:2px solid #15181B; padding-bottom:16px; margin-bottom:24px; text-align:center;">
       <div style="display:flex; justify-content:center; align-items:center; gap:12px; margin-bottom:8px;">
-        <svg viewBox="0 0 24 24" fill="none" style="width:24px; height:24px;">
+        <svg viewBox="0 0 24 24" fill="none" style="width:24px; height:24px; flex-shrink:0;">
           <rect x="0" y="0" width="12" height="12" fill="#D9480F"/>
           <rect x="12" y="0" width="12" height="12" fill="#15181B"/>
           <rect x="0" y="12" width="12" height="12" fill="#15181B"/>
           <rect x="12" y="12" width="12" height="12" fill="#D9480F"/>
         </svg>
-        <span style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#595E65;">Kementerian Kelautan dan Perikanan Republik Indonesia</span>
+        <span style="font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#4A5058;">Kementerian Kelautan dan Perikanan Republik Indonesia</span>
       </div>
-      <div style="font-size:14px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:#15181B; margin:2px 0;">Direktorat Jenderal Pengawasan Sumber Daya Kelautan dan Perikanan</div>
-      <div style="font-size:13px; font-weight:600; text-transform:uppercase; color:#D9480F;">Direktorat Pemantauan dan Operasi Armada · Tim Kerja Pengawakan</div>
-      <div style="font-size:10px; color:#7E848D; margin-top:4px;">Gedung Mina Bahari IV Lt. 10, Jl. Medan Merdeka Timur No. 16, Jakarta Pusat 10110</div>
+      <div style="font-size:14px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; color:#15181B; margin:2px 0;">Direktorat Jenderal Pengawasan Sumber Daya Kelautan dan Perikanan</div>
+      <div style="font-size:13px; font-weight:600; text-transform:uppercase; color:var(--accent-ink);">Direktorat Pemantauan dan Operasi Armada · Tim Kerja Pengawakan</div>
+      <div style="font-size:11px; color:#5B626A; margin-top:4px;">Gedung Mina Bahari IV Lt. 10, Jl. Medan Merdeka Timur No. 16, Jakarta Pusat 10110</div>
     </div>
 
     <!-- Judul Dokumen -->
     <div style="text-align:center; margin-bottom:24px;">
       <h2 style="font-size:16px; font-weight:700; text-transform:uppercase; margin:0 0 4px 0; color:#15181B;">Laporan Konsolidasi Situasi Pengawakan Armada</h2>
-      <div style="font-size:11px; color:#595E65;" id="lap-meta-info" class="mono tnum">Nomor: ND.AWAK/2026/POA-PSDKP · Tanggal: --</div>
+      <div style="font-size:11px; color:#5B626A;" id="lap-meta-info" class="mono tnum">Nomor: ND.AWAK/2026/POA-PSDKP · Tanggal: --</div>
     </div>
 
     <!-- Bagian 1: Ringkasan Eksekutif & Kelaikan Safe Manning -->
     <div style="margin-bottom:24px;">
       <h3 style="font-size:12px; font-weight:700; text-transform:uppercase; border-bottom:1px solid #D0D5DD; padding-bottom:4px; margin-bottom:12px; color:#15181B;">I. Status Formasi Safe Manning Armada</h3>
-      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:14px; text-align:center;">
-        <div style="border:1px solid #E4E7EC; padding:8px 12px; border-radius:4px; background:#FAFAFA;">
-          <div style="font-size:10px; color:#595E65;">Total personil AKN</div>
+      <div class="lap-kpi-grid" style="display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; margin-bottom:14px; text-align:center;">
+        <div style="border:1px solid #E4E7EC; padding:8px 10px; border-radius:4px; background:#FAFAFA;">
+          <div style="font-size:11px; color:#5B626A;">Total personil AKN</div>
           <div class="mono tnum" style="font-size:18px; font-weight:700; color:#15181B;" id="lap-total-awak">--</div>
         </div>
-        <div style="border:1px solid #E4E7EC; padding:8px 12px; border-radius:4px; background:#FAFAFA;">
-          <div style="font-size:10px; color:#595E65;">Armada kapal</div>
+        <div style="border:1px solid #E4E7EC; padding:8px 10px; border-radius:4px; background:#FAFAFA;">
+          <div style="font-size:11px; color:#5B626A;">Armada kapal</div>
           <div class="mono tnum" style="font-size:18px; font-weight:700; color:#15181B;" id="lap-total-kapal">--</div>
         </div>
-        <div style="border:1px solid #E4E7EC; padding:8px 12px; border-radius:4px; background:#FAFAFA;">
-          <div style="font-size:10px; color:#595E65;">Kapal laik operasi</div>
+        <div style="border:1px solid #E4E7EC; padding:8px 10px; border-radius:4px; background:#FAFAFA;">
+          <div style="font-size:11px; color:#5B626A;">Kapal laik operasi</div>
           <div class="mono tnum" style="font-size:18px; font-weight:700; color:#15181B;" id="lap-kapal-laik">--</div>
         </div>
-        <div style="border:1px solid #E4E7EC; padding:8px 12px; border-radius:4px; background:#FAFAFA;">
-          <div style="font-size:10px; color:#595E65;">Kepatuhan STCW-F</div>
-          <div class="mono tnum" style="font-size:18px; font-weight:700; color:#D9480F;" id="lap-kelaikan-sertifikat">--%</div>
+        <div style="border:1px solid #E4E7EC; padding:8px 10px; border-radius:4px; background:#FAFAFA;">
+          <div style="font-size:11px; color:#5B626A;">Kepatuhan STCW-F</div>
+          <div class="mono tnum" style="font-size:18px; font-weight:700; color:var(--accent-ink);" id="lap-kelaikan-sertifikat">--%</div>
         </div>
       </div>
       <div style="font-size:12px; line-height:1.6; color:#344054; margin:0;" id="lap-narasi-temuan">
-        Loading analisis data situasi pengawakan armada...
+        Memuat analisis data situasi pengawakan armada...
       </div>
     </div>
 
     <!-- Bagian 2: Matriks Komposisi Pegawai (AKN) -->
-    <div style="margin-bottom:24px;">
+    <div style="margin-bottom:24px; overflow-x:auto;">
       <h3 style="font-size:12px; font-weight:700; text-transform:uppercase; border-bottom:1px solid #D0D5DD; padding-bottom:4px; margin-bottom:12px; color:#15181B;">II. Komposisi Awak Kapal Negara Terkini</h3>
       <table style="width:100%; border-collapse:collapse; font-size:11px;" id="lap-table-akn">
         <thead>
@@ -85,13 +85,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td colspan="3" style="text-align:center; padding:10px; color:#595E65;">Loading komposisi kepegawaian...</td></tr>
+          <tr><td colspan="3" style="text-align:center; padding:10px; color:#595E65;">Memuat komposisi kepegawaian...</td></tr>
         </tbody>
       </table>
     </div>
 
     <!-- Bagian 3: Tabel Kelaikan Kapal Pengawas Armada -->
-    <div style="margin-bottom:32px;">
+    <div style="margin-bottom:32px; overflow-x:auto;">
       <h3 style="font-size:12px; font-weight:700; text-transform:uppercase; border-bottom:1px solid #D0D5DD; padding-bottom:4px; margin-bottom:12px; color:#15181B;">III. Matriks Kelaikan Formasi Armada Kapal Pengawas</h3>
       <table style="width:100%; border-collapse:collapse; font-size:11px;" id="lap-table-armada">
         <thead>
@@ -105,13 +105,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td colspan="6" style="text-align:center; padding:10px; color:#595E65;">Loading status armada...</td></tr>
+          <tr><td colspan="6" style="text-align:center; padding:10px; color:#595E65;">Memuat status armada...</td></tr>
         </tbody>
       </table>
     </div>
 
     <!-- Bagian Tanda Tangan Resmi -->
-    <div style="display:flex; justify-content:space-between; margin-top:40px; page-break-inside:avoid; font-size:11px;">
+    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; margin-top:40px; page-break-inside:avoid; font-size:11px;">
       <div style="width:240px; text-align:center;">
         <div>Mengetahui,</div>
         <div style="font-weight:700; margin-top:2px;">Ketua Tim Kerja Pengawakan</div>

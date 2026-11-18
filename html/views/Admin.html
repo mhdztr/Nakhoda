@@ -47,16 +47,16 @@
   <div id="admin-pane-users">
 
     <!-- Antrean Persetujuan Pengguna Baru (Muncul jika ada pending) -->
-    <div id="admin-approval-section" class="card" style="margin-bottom:20px; border-left:3px solid var(--accent); padding:16px 20px;">
+    <div id="admin-approval-section" class="card" style="margin-bottom:20px; border-color:var(--control); padding:16px 20px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <div style="display:flex; align-items:center; gap:8px;">
-          <h2 style="font-size:14px; font-weight:700; color:var(--text); margin:0;">Pending user approval</h2>
-          <span id="badge-admin-pending-count" class="badge-neutral mono tnum" style="background:var(--accent-subtle); color:var(--accent); font-weight:600; padding:2px 8px; border-radius:12px; font-size:11px;">0</span>
+          <h2 style="font-size:14px; font-weight:700; color:var(--text); margin:0;">Antrean persetujuan akun</h2>
+          <span id="badge-admin-pending-count" class="badge-accent mono tnum" style="font-weight:600; padding:2px 8px; border-radius:12px; font-size:11px;">0</span>
         </div>
       </div>
 
       <div class="table-wrap" style="border:none;">
-        <table class="table">
+        <table class="table table-mobile-cards">
           <thead>
             <tr>
               <th style="width:120px;">Waktu daftar</th>
@@ -68,7 +68,7 @@
           </thead>
           <tbody id="admin-pending-tbody">
             <tr>
-              <td colspan="5" style="text-align:center; color:var(--muted); padding:20px 0;">Loading pending approval...</td>
+              <td colspan="5" style="text-align:center; color:var(--muted); padding:20px 0;">Memuat antrean persetujuan...</td>
             </tr>
           </tbody>
         </table>
@@ -102,7 +102,7 @@
     <!-- Tabel Daftar Pengguna -->
     <div class="card card-flush">
       <div class="table-wrap">
-        <table class="table">
+        <table class="table table-mobile-cards">
           <thead>
             <tr>
               <th style="width:96px; white-space:nowrap;">Status</th>
@@ -116,7 +116,7 @@
           </thead>
           <tbody id="admin-user-tbody">
             <tr>
-              <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Loading daftar user...</td>
+              <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat daftar pengguna...</td>
             </tr>
           </tbody>
         </table>
@@ -167,7 +167,7 @@
           </thead>
           <tbody id="admin-audit-tbody">
             <tr>
-              <td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Loading audit log...</td>
+              <td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat audit log...</td>
             </tr>
           </tbody>
         </table>
@@ -187,43 +187,45 @@
     <form id="form-admin-user-edit">
       <input type="hidden" id="edit-user-id" value="">
 
-      <!-- Info ringkas pengguna -->
-      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:16px;">
-        <div class="avatar mono" id="edit-user-avatar" style="width:36px; height:36px; font-size:13px;">--</div>
-        <div style="overflow:hidden;">
-          <div style="font-size:13px; font-weight:600; color:var(--text);" id="edit-user-name">--</div>
-          <div class="mono tnum" style="font-size:11px; color:var(--muted);" id="edit-user-nip">--</div>
-          <div style="font-size:11px; color:var(--muted);" id="edit-user-email">--</div>
+      <div class="modal-body">
+        <!-- Info ringkas pengguna -->
+        <div style="display:flex; align-items:center; gap:12px; padding:12px; background:var(--ground); border:1px solid var(--border); border-radius:var(--radius-control); margin-bottom:16px;">
+          <div class="avatar mono" id="edit-user-avatar" style="width:36px; height:36px; font-size:13px;">--</div>
+          <div style="overflow:hidden;">
+            <div style="font-size:13px; font-weight:600; color:var(--text);" id="edit-user-name">--</div>
+            <div class="mono tnum" style="font-size:11px; color:var(--muted);" id="edit-user-nip">--</div>
+            <div style="font-size:11px; color:var(--muted);" id="edit-user-email">--</div>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group" style="margin-bottom:12px;">
-        <label class="form-label" for="edit-user-role">Peran sistem (Role) <span style="color:var(--negative)">*</span></label>
-        <select id="edit-user-role" class="form-control-md" required>
-          <option value="SUPERADMIN">Super Administrator (Akses Penuh)</option>
-          <option value="DIREKTUR">Direktur Armada (Persetujuan &amp; Laporan)</option>
-          <option value="KADIV">Katimja Awak (Manajerial &amp; Persetujuan)</option>
-          <option value="STAF">Staf Pengawakan (Perekaman Operasional)</option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-user-role">Peran sistem (Role) <span style="color:var(--negative)">*</span></label>
+          <select id="edit-user-role" class="form-control-md" required>
+            <option value="SUPERADMIN">Super Administrator (Akses Penuh)</option>
+            <option value="DIREKTUR">Direktur Armada (Persetujuan &amp; Laporan)</option>
+            <option value="KADIV">Katimja Awak (Manajerial &amp; Persetujuan)</option>
+            <option value="STAF">Staf Pengawakan (Perekaman Operasional)</option>
+          </select>
+        </div>
 
-      <div class="form-group" style="margin-bottom:12px;">
-        <label class="form-label" for="edit-user-divisi">Unit kerja / Divisi</label>
-        <select id="edit-user-divisi" class="form-control-md">
-          <option value="DIV-AWAK">Tim Kerja Pengawakan (Dit. POA)</option>
-          <option value="DIV-OPERASI">Tim Kerja Operasi Armada</option>
-          <option value="DIV-SARANA">Tim Kerja Sarana &amp; Prasarana</option>
-          <option value="DITJEN-PSDKP">Ditjen PSDKP Pusat</option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-user-divisi">Unit kerja / Divisi</label>
+          <select id="edit-user-divisi" class="form-control-md">
+            <option value="DIV-AWAK">Tim Kerja Pengawakan (Dit. POA)</option>
+            <option value="DIV-OPERASI">Tim Kerja Operasi Armada</option>
+            <option value="DIV-SARANA">Tim Kerja Sarana &amp; Prasarana</option>
+            <option value="DITJEN-PSDKP">Ditjen PSDKP Pusat</option>
+          </select>
+        </div>
 
-      <div class="form-group" style="margin-bottom:16px;">
-        <label class="form-label" for="edit-user-status">Status akun <span style="color:var(--negative)">*</span></label>
-        <select id="edit-user-status" class="form-control-md" required>
-          <option value="APPROVED">Aktif (Approved)</option>
-          <option value="REJECTED">Ditolak (Rejected)</option>
-          <option value="NONAKTIF">Dinonaktifkan</option>
-        </select>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="edit-user-status">Status akun <span style="color:var(--negative)">*</span></label>
+          <select id="edit-user-status" class="form-control-md" required>
+            <option value="APPROVED">Aktif (Approved)</option>
+            <option value="REJECTED">Ditolak (Rejected)</option>
+            <option value="NONAKTIF">Dinonaktifkan</option>
+          </select>
+        </div>
       </div>
 
       <div class="modal-footer">
@@ -244,13 +246,15 @@
     <form id="form-admin-reset-pwd">
       <input type="hidden" id="reset-pwd-user-id" value="">
 
-      <div style="font-size:13px; color:var(--text); margin-bottom:12px;">
-        Atur password baru untuk user: <strong id="reset-pwd-user-name">--</strong>
-      </div>
+      <div class="modal-body">
+        <div style="font-size:13px; color:var(--text); margin-bottom:12px;">
+          Atur password baru untuk user: <strong id="reset-pwd-user-name">--</strong>
+        </div>
 
-      <div class="form-group" style="margin-bottom:16px;">
-        <label class="form-label" for="reset-pwd-new">Password baru (Minimal 8 karakter) <span style="color:var(--negative)">*</span></label>
-        <input type="password" id="reset-pwd-new" class="form-control-md" minlength="8" required placeholder="Masukkan password baru">
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="reset-pwd-new">Password baru (Minimal 8 karakter) <span style="color:var(--negative)">*</span></label>
+          <input type="password" id="reset-pwd-new" class="form-control-md" minlength="8" required placeholder="Masukkan password baru">
+        </div>
       </div>
 
       <div class="modal-footer">
@@ -272,23 +276,25 @@
       <input type="hidden" id="decide-user-id" value="">
       <input type="hidden" id="decide-action" value="APPROVED">
 
-      <div style="font-size:13px; color:var(--text); margin-bottom:12px;" id="decide-prompt-text">
-        --
-      </div>
+      <div class="modal-body">
+        <div style="font-size:13px; color:var(--text); margin-bottom:12px;" id="decide-prompt-text">
+          --
+        </div>
 
-      <div id="decide-role-group" class="form-group" style="margin-bottom:12px;">
-        <label class="form-label" for="decide-role">Penetapan peran (Role)</label>
-        <select id="decide-role" class="form-control-md">
-          <option value="STAF">Staf Pengawakan</option>
-          <option value="KADIV">Katimja Awak</option>
-          <option value="DIREKTUR">Direktur Armada</option>
-          <option value="SUPERADMIN">Super Administrator</option>
-        </select>
-      </div>
+        <div id="decide-role-group" class="form-group">
+          <label class="form-label" for="decide-role">Penetapan peran (Role)</label>
+          <select id="decide-role" class="form-control-md">
+            <option value="STAF">Staf Pengawakan</option>
+            <option value="KADIV">Katimja Awak</option>
+            <option value="DIREKTUR">Direktur Armada</option>
+            <option value="SUPERADMIN">Super Administrator</option>
+          </select>
+        </div>
 
-      <div id="decide-reason-group" class="form-group hidden" style="margin-bottom:16px;">
-        <label class="form-label" for="decide-reason">Alasan penolakan <span style="color:var(--negative)">*</span></label>
-        <textarea id="decide-reason" class="form-control-md" rows="3" placeholder="Contoh: NIP tidak sesuai data BKN atau bukan personil Ditjen PSDKP..."></textarea>
+        <div id="decide-reason-group" class="form-group hidden" style="margin-bottom:0;">
+          <label class="form-label" for="decide-reason">Alasan penolakan <span style="color:var(--negative)">*</span></label>
+          <textarea id="decide-reason" class="form-control-md" rows="3" placeholder="Contoh: NIP tidak sesuai data BKN atau bukan personil Ditjen PSDKP..."></textarea>
+        </div>
       </div>
 
       <div class="modal-footer">

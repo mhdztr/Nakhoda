@@ -70,7 +70,7 @@
     <!-- Tabel Daftar Kegiatan (Two-Line Rows & Tabular Figures) -->
     <div class="card" style="padding:0; overflow:hidden;">
       <div style="overflow-x:auto;">
-        <table class="data-table">
+        <table class="data-table table-mobile-cards">
           <thead>
             <tr>
               <th style="width:90px;">Status</th>
@@ -84,7 +84,7 @@
           </thead>
           <tbody id="keg-list-tbody">
             <tr>
-              <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Loading log kegiatan...</td>
+              <td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Memuat log kegiatan...</td>
             </tr>
           </tbody>
         </table>
@@ -96,7 +96,7 @@
   <div id="keg-pane-timeline" class="hidden">
     <div class="card" style="padding:24px;">
       <div id="keg-timeline-container" style="display:flex; flex-direction:column; gap:20px;">
-        <div style="text-align:center; color:var(--muted); padding:32px 0;">Loading timeline kegiatan...</div>
+        <div style="text-align:center; color:var(--muted); padding:32px 0;">Memuat timeline kegiatan...</div>
       </div>
     </div>
   </div>
@@ -111,10 +111,10 @@
       <h2 class="sheet-title" id="sheet-keg-title">Detail agenda kegiatan</h2>
       <p class="sheet-subtitle" id="sheet-keg-subtitle">Informasi lengkap pelaksanaan, kehadiran personil, dan berkas bukti.</p>
     </div>
-    <button type="button" class="sheet-close" onclick="KegiatanView.closeDetailSheet()" aria-label="Tutup panel detail">&times;</button>
+    <button type="button" class="modal-close" onclick="KegiatanView.closeDetailSheet()" aria-label="Tutup panel detail">&times;</button>
   </div>
 
-  <div class="sheet-content" id="sheet-keg-body">
+  <div class="sheet-body" id="sheet-keg-body">
     <!-- Diisi secara dinamis -->
   </div>
 </aside>
@@ -130,59 +130,61 @@
       <input type="hidden" id="keg-form-mode" value="create">
       <input type="hidden" id="keg-form-rowid" value="">
 
-      <div class="form-group" style="margin-bottom:12px;">
-        <label class="form-label" for="keg-judul">Nama agenda kegiatan <span style="color:var(--negative)">*</span></label>
-        <input type="text" id="keg-judul" class="form-control-lg" required placeholder="Contoh: Penyegaran keterampilan menembak awak TW I">
-      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="keg-judul">Nama agenda kegiatan <span style="color:var(--negative)">*</span></label>
+          <input type="text" id="keg-judul" class="form-control-lg" required placeholder="Contoh: Penyegaran keterampilan menembak awak TW I">
+        </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label" for="keg-jenis">Jenis kegiatan <span style="color:var(--negative)">*</span></label>
-          <select id="keg-jenis" class="form-control-md" required>
-            <option value="PELATIHAN_TEKNIS">Pelatihan teknis</option>
-            <option value="SERTIFIKASI_LAUT">Sertifikasi laut (STCW-F)</option>
-            <option value="PENYEGARAN_TAKTIK">Penyegaran taktik</option>
-            <option value="PEMBINAAN_DISIPLIN">Pembinaan disiplin</option>
-          </select>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="keg-jenis">Jenis kegiatan <span style="color:var(--negative)">*</span></label>
+            <select id="keg-jenis" class="form-control-md" required>
+              <option value="PELATIHAN_TEKNIS">Pelatihan teknis</option>
+              <option value="SERTIFIKASI_LAUT">Sertifikasi laut (STCW-F)</option>
+              <option value="PENYEGARAN_TAKTIK">Penyegaran taktik</option>
+              <option value="PEMBINAAN_DISIPLIN">Pembinaan disiplin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="keg-wilayah">Lokasi / pangkalan</label>
+            <input type="text" id="keg-wilayah" class="form-control-md" placeholder="Contoh: Pangkalan PSDKP Batam">
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="keg-wilayah">Lokasi / pangkalan</label>
-          <input type="text" id="keg-wilayah" class="form-control-md" placeholder="Contoh: Pangkalan PSDKP Batam">
-        </div>
-      </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label" for="keg-tgl-mulai">Tanggal mulai <span style="color:var(--negative)">*</span></label>
-          <input type="date" id="keg-tgl-mulai" class="form-control-md" onkeydown="return false" required>
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label" for="keg-tgl-mulai">Tanggal mulai <span style="color:var(--negative)">*</span></label>
+            <input type="date" id="keg-tgl-mulai" class="form-control-md" onkeydown="if(event.key==='Tab'||event.key==='Escape')return true; return false;" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="keg-tgl-selesai">Tanggal selesai</label>
+            <input type="date" id="keg-tgl-selesai" class="form-control-md" onkeydown="if(event.key==='Tab'||event.key==='Escape')return true; return false;">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="keg-peserta">Jumlah peserta</label>
+            <input type="number" id="keg-peserta" class="form-control-md mono tnum" min="0" placeholder="0">
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="keg-tgl-selesai">Tanggal selesai</label>
-          <input type="date" id="keg-tgl-selesai" class="form-control-md" onkeydown="return false">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="keg-peserta">Jumlah peserta</label>
-          <input type="number" id="keg-peserta" class="form-control-md mono tnum" min="0" placeholder="0">
-        </div>
-      </div>
 
-      <div class="form-group" style="margin-bottom:12px;">
-        <label class="form-label" for="keg-deskripsi">Ringkasan notula / materi pembahasan</label>
-        <textarea id="keg-deskripsi" class="form-control-md" rows="3" placeholder="Uraikan ringkasan materi, capaian instruktur, atau instruksi tindak lanjut..."></textarea>
-      </div>
-
-      <!-- Unggah Dokumen Bukti Multi-Evidence (Maks 15 MB) -->
-      <div class="form-group" style="margin-bottom:16px;">
-        <label class="form-label">Dokumen lampiran bukti (PDF / JPG &le; 15 MB)</label>
-        <div style="border:1px dashed var(--border); border-radius:var(--radius-sm); padding:16px; text-align:center; background:var(--surface);">
-          <input type="file" id="keg-file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;" aria-label="Pilih dokumen bukti lampiran">
-          <button type="button" class="btn btn-secondary-md" onclick="document.getElementById('keg-file-input').click()">
-            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <span>Pilih berkas bukti</span>
-          </button>
-          <div style="font-size:11px; color:var(--muted); margin-top:6px;">Format didukung: PDF, PNG, JPG (maksimal 15 MB per berkas).</div>
+        <div class="form-group">
+          <label class="form-label" for="keg-deskripsi">Ringkasan notula / materi pembahasan</label>
+          <textarea id="keg-deskripsi" class="form-control-md" rows="3" placeholder="Uraikan ringkasan materi, capaian instruktur, atau instruksi tindak lanjut..."></textarea>
         </div>
-        <div id="keg-staged-files" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
+
+        <!-- Unggah Dokumen Bukti Multi-Evidence (Maks 15 MB) -->
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Dokumen lampiran bukti (PDF / JPG &le; 15 MB)</label>
+          <div class="upload-dropzone" style="padding:16px; text-align:center;">
+            <input type="file" id="keg-file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;" aria-label="Pilih dokumen bukti lampiran">
+            <button type="button" class="btn btn-secondary-md" onclick="document.getElementById('keg-file-input').click()">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Pilih berkas bukti</span>
+            </button>
+            <div style="font-size:11px; color:var(--muted); margin-top:6px;">Format didukung: PDF, PNG, JPG (maksimal 15 MB per berkas).</div>
+          </div>
+          <div id="keg-staged-files" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
       </div>
 
       <div class="modal-footer">
@@ -197,28 +199,30 @@
 <div id="modal-keg-anulir" class="modal-overlay">
   <div class="modal-box" style="max-width:480px;">
     <div class="modal-header">
-      <h3 class="modal-title">Void agenda kegiatan</h3>
+      <h3 class="modal-title">Anulir agenda kegiatan</h3>
       <button type="button" class="modal-close" onclick="Modal.close('modal-keg-anulir')" aria-label="Tutup modal">&times;</button>
     </div>
     <form id="form-keg-anulir">
       <input type="hidden" id="anulir-keg-rowid" value="">
 
-      <div style="font-size:13px; line-height:1.5; color:var(--text); margin-bottom:12px;">
-        Anda akan menandai agenda berikut sebagai <strong>VOID / DIBATALKAN</strong> (tidak dihitung dalam ringkasan eksekutif):
-      </div>
+      <div class="modal-body">
+        <div style="font-size:13px; line-height:1.5; color:var(--text); margin-bottom:12px;">
+          Anda akan menandai agenda berikut sebagai <strong>ANULIR (DIBATALKAN)</strong> (tidak dihitung dalam ringkasan eksekutif):
+        </div>
 
-      <div id="anulir-keg-judul" style="font-size:13px; font-weight:600; padding:10px 12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:16px;">
-        --
-      </div>
+        <div id="anulir-keg-judul" style="font-size:13px; font-weight:600; padding:10px 12px; background:var(--ground); border:1px solid var(--border); border-radius:var(--radius-control); margin-bottom:14px;">
+          --
+        </div>
 
-      <div class="form-group" style="margin-bottom:16px;">
-        <label class="form-label" for="anulir-keg-alasan">Alasan pembatalan / void <span style="color:var(--negative)">*</span></label>
-        <textarea id="anulir-keg-alasan" class="form-control-md" rows="3" required placeholder="Contoh: Jadwal dialihkan ke TW II karena cuaca ekstrem perairan..."></textarea>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="anulir-keg-alasan">Alasan pembatalan / anulir <span style="color:var(--negative)">*</span></label>
+          <textarea id="anulir-keg-alasan" class="form-control-md" rows="3" required placeholder="Contoh: Jadwal dialihkan ke TW II karena cuaca ekstrem perairan..."></textarea>
+        </div>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary-md" onclick="Modal.close('modal-keg-anulir')">Batal</button>
-        <button type="submit" id="btn-keg-anulir-submit" class="btn btn-negative-md">Konfirmasi void</button>
+        <button type="submit" id="btn-keg-anulir-submit" class="btn btn-negative-md">Konfirmasi anulir</button>
       </div>
     </form>
   </div>

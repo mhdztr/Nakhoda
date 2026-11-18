@@ -163,7 +163,12 @@ var AknView = (function () {
         _loadTren();
       })
       .catch(function (err) {
-        Toast.error('Gagal memuat komposisi AKN: ' + err.message);
+        var msg = (err && err.message) ? err.message : 'Gagal memuat komposisi AKN.';
+        Toast.error('Gagal memuat komposisi AKN: ' + msg);
+        var tbM = document.getElementById('tbody-akn-matrix-display');
+        if (tbM && !_data) {
+          tbM.innerHTML = '<tr><td colspan="5"><div class="empty-state-box"><div class="empty-state-title">Gagal memuat komposisi AKN</div><div class="empty-state-desc">' + Format.escape(msg) + '</div><button type="button" class="btn btn-secondary-sm" onclick="AknView.load()">Coba lagi</button></div></td></tr>';
+        }
       });
   }
 
@@ -184,27 +189,11 @@ var AknView = (function () {
 
     if (findingEl) {
       findingEl.textContent = 'Total kekuatan personil ' + Format.number(totKes) + ' aparatur (' +
-        Format.number(totPoa) + ' Dit. POA). Status ' + (data.isConfirmed ? 'terkonfirmasi' : (data.isFullyCarried ? 'diwarisi (carry-forward)' : 'tercatat aktif')) + '.';
+        Format.number(totPoa) + ' Dit. POA). Status ' + (data.isConfirmed ? 'terkonfirmasi' : 'tercatat aktif') + '.';
     }
 
     if (banner) {
-      if (data.isConfirmed) {
-        banner.classList.remove('hidden');
-        banner.style.borderLeft = '4px solid var(--positive)';
-        if (bannerTitle) bannerTitle.textContent = 'Status terkonfirmasi tanpa mutasi';
-        if (bannerDesc) bannerDesc.textContent = 'Periode ini telah dikonfirmasi tidak memiliki perubahan mutasi personil (' + (data.konfirmasiCatatan || 'Tetap') + ').';
-        var btnNoChange = document.getElementById('btn-akn-confirm-nochange');
-        if (btnNoChange) btnNoChange.style.display = 'none';
-      } else if (data.isFullyCarried) {
-        banner.classList.remove('hidden');
-        banner.style.borderLeft = '4px solid var(--accent)';
-        if (bannerTitle) bannerTitle.textContent = 'Data diwarisi dari periode sebelumnya (carry-forward)';
-        if (bannerDesc) bannerDesc.textContent = 'Belum ada mutasi baru pada ' + data.periode + '. Anda dapat mengonfirmasi tanpa mutasi atau menyimpan snapshot baru.';
-        var btnNoChange2 = document.getElementById('btn-akn-confirm-nochange');
-        if (btnNoChange2) btnNoChange2.style.display = 'inline-block';
-      } else {
-        banner.classList.add('hidden');
-      }
+      banner.classList.add('hidden');
     }
 
     // 2. Strip KPI Satu Kontainer
@@ -226,14 +215,11 @@ var AknView = (function () {
     var kpiStatusText = document.getElementById('kpi-akn-status-text');
     var kpiStatusSub = document.getElementById('kpi-akn-status-sub');
     if (kpiStatusText) {
-      kpiStatusText.textContent = data.isConfirmed ? 'Terkonfirmasi' : (data.isFullyCarried ? 'Diwarisi (Carry)' : 'Snapshot Baru');
-      kpiStatusText.style.color = data.isConfirmed ? 'var(--positive)' : (data.isFullyCarried ? 'var(--accent)' : 'var(--text)');
+      kpiStatusText.textContent = data.isConfirmed ? 'Terkonfirmasi' : 'Terkalkulasi';
+      kpiStatusText.style.color = data.isConfirmed ? 'var(--positive)' : 'var(--text)';
     }
     if (kpiStatusSub) {
-      var sumberLabel = data.sourcePeriode || data.prevPeriode;
-      kpiStatusSub.textContent = data.isFullyCarried
-        ? (sumberLabel ? ('Sumber: ' + sumberLabel) : 'Belum ada data komposisi sebelumnya')
-        : 'Tercatat di periode ini';
+      kpiStatusSub.textContent = data.sourcePeriode ? ('Periode acuan: ' + data.sourcePeriode) : 'Tercatat di periode ini';
     }
 
     var kpiPnsTotal = document.getElementById('kpi-akn-pns-total');
@@ -406,7 +392,7 @@ var AknView = (function () {
         '<td class="text-center">' +
           '<div style="display:inline-flex; gap:4px;">' +
             (canRevisi ? '<button type="button" class="btn btn-secondary-sm btn-revisi" data-id="' + r.rowId + '" data-desc="' + scopeLabel + ' ' + (KATEGORI_LABELS[r.kategori] || r.kategori) + '" data-val="' + r.jumlah + '">Revisi</button>' : '') +
-            (canAnulir ? '<button type="button" class="btn btn-danger-sm btn-anulir" data-id="' + r.rowId + '">Void</button>' : '') +
+            (canAnulir ? '<button type="button" class="btn btn-danger-sm btn-anulir" data-id="' + r.rowId + '">Anulir</button>' : '') +
           '</div>' +
         '</td>' +
       '</tr>';

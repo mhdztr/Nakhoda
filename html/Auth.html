@@ -32,15 +32,18 @@
       </div>
 
       <div style="margin-top:20px; text-align:center; font-size:12px; color:var(--muted);">
-        Belum memiliki akun? <a href="javascript:void(0)" onclick="AuthApp.showRegister()" style="color:var(--accent); text-decoration:none; font-weight:500;">Daftar Akun Staf</a>
+        Belum memiliki akun? <a href="javascript:void(0)" onclick="AuthApp.showRegister()" style="color:var(--accent-ink); text-decoration:none; font-weight:500;">Daftar Akun Staf</a>
+      </div>
+      <div style="margin-top:10px; text-align:center; font-size:11px; color:var(--faint); line-height:1.4;">
+        Lupa password? Hubungi Admin / Katimja Pengawakan untuk Reset password di menu User &amp; Access.
       </div>
     </form>
 
     <!-- Form 2: Registrasi Staf Tahap 1 (Data & Request OTP) -->
     <form id="form-register-step1" class="hidden" onsubmit="event.preventDefault(); AuthApp.submitRegisterStep1();">
       <div style="margin-bottom:14px;">
-        <label for="reg-nama" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Nama Lengkap</label>
-        <input type="text" id="reg-nama" class="input-lg ctl-fill" placeholder="Nama beserta gelar" required>
+        <label for="reg-nama" style="display:block; font-size:12px; font-weight:500; color:var(--text); margin-bottom:6px;">Nama Lengkap (Tanpa Gelar)</label>
+        <input type="text" id="reg-nama" class="input-lg ctl-fill" placeholder="HURUF BESAR tanpa gelar (cth: BUDI SANTOSO)" required>
       </div>
 
       <div style="margin-bottom:14px;">
@@ -101,9 +104,9 @@
       <div style="width:44px; height:44px; border-radius:50%; background-color:#FFF4E6; color:#D9480F; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto;">
         <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
-      <h3 style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px;">Pending Account Approval</h3>
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px;">Menunggu Persetujuan Admin</h3>
       <div style="font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:16px;">
-        Pendaftaran akun atas nama <strong id="pending-user-name" style="color:var(--text);">-</strong> telah tercatat. Silakan hubungi Ketua Timja Pengawakan atau Superadmin untuk aktivasi akses.
+        Pendaftaran akun atas nama <strong id="pending-user-name" style="color:var(--text);">-</strong> telah tercatat. Silakan hubungi Ketua Timja Pengawakan atau Superadmin untuk menyetujui akun Anda di menu User &amp; Access.
       </div>
       <button type="button" class="btn btn-secondary ctl-fill btn-control-md" onclick="AuthApp.showLogin()">Kembali ke Login</button>
     </div>

@@ -188,7 +188,12 @@ var KegiatanView = (function () {
           btnRefresh.disabled = false;
           btnRefresh.classList.remove('loading');
         }
-        Toast.error(err.message || 'Gagal memuat log kegiatan.');
+        var msg = (err && err.message) ? err.message : 'Gagal memuat log kegiatan.';
+        Toast.error(msg);
+        var tbody = document.getElementById('keg-list-tbody');
+        if (tbody && _items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state-box"><div class="empty-state-title">Log kegiatan gagal dimuat</div><div class="empty-state-desc">' + Format.escape(msg) + '</div><div class="empty-state-actions"><button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.load()">Coba lagi</button></div></div></td></tr>';
+        }
       });
   }
 
@@ -197,7 +202,14 @@ var KegiatanView = (function () {
     if (!tbody) return;
 
     if (_items.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada agenda kegiatan yang cocok dengan filter.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state-box">' +
+        '<div class="empty-state-title">Belum ada agenda kegiatan yang cocok</div>' +
+        '<div class="empty-state-desc">Catat kegiatan pembinaan, pelatihan teknis, atau revalidasi untuk melacak peserta dan dokumen bukti.</div>' +
+        '<div class="empty-state-actions">' +
+          '<button type="button" class="btn btn-secondary-sm" onclick="document.getElementById(\'keg-filter-jenis\').value=\'\'; document.getElementById(\'keg-search-input\').value=\'\'; KegiatanView.load();">Reset filter</button>' +
+          '<button type="button" class="btn btn-primary-sm" onclick="document.getElementById(\'btn-tambah-kegiatan\')?.click()">+ Input kegiatan baru</button>' +
+        '</div>' +
+      '</div></td></tr>';
       return;
     }
 
@@ -237,7 +249,7 @@ var KegiatanView = (function () {
       if (!isVoid) {
         actions += '<button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.openEditModal(\'' + keg.rowId + '\')">Revisi</button>';
         if (isPrivileged) {
-          actions += '<button type="button" class="btn btn-negative-sm" onclick="KegiatanView.openAnulirModal(\'' + keg.rowId + '\')">Void</button>';
+          actions += '<button type="button" class="btn btn-negative-sm" onclick="KegiatanView.openAnulirModal(\'' + keg.rowId + '\')">Anulir</button>';
         }
       }
       actions += '</div>';
@@ -318,7 +330,7 @@ var KegiatanView = (function () {
     Sheet.open('sheet-keg-detail', 'sheet-keg-overlay');
     var body = document.getElementById('sheet-keg-body');
     if (body) {
-      body.innerHTML = '<div style="text-align:center; color:var(--muted); padding:32px 0;">Loading detail kegiatan...</div>';
+      body.innerHTML = '<div style="text-align:center; color:var(--muted); padding:32px 0;">Memuat detail kegiatan...</div>';
     }
 
     rpc('keg_getDetail', token, rowId)

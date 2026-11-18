@@ -14,6 +14,9 @@ var SijilView = (function () {
   var _selectedAwak = null;
   var _assignFile = null;
   var _quickFile = null;
+  var _pendingKapalId = '';
+  var _pendingAssignPegawai = null;
+  var _restoreSheetKapalId = '';
 
   var KELAS_GROUPS = [
     { key: 'KELAS_I', label: 'Kapal Pengawas Kelas I (Panjang > 60 meter / ZEE)' },
@@ -24,6 +27,9 @@ var SijilView = (function () {
   ];
 
   function init() {
+    var st = (typeof Router.consumeState === 'function') ? Router.consumeState() : null;
+    if (st && st.openKapalId) _pendingKapalId = st.openKapalId;
+    if (st && st.openAssignPegawai) _pendingAssignPegawai = st.openAssignPegawai;
     _bindEvents();
     load();
   }
@@ -415,9 +421,29 @@ var SijilView = (function () {
 
         // 2. Render Matriks 2D Table
         _renderMatrixTable();
+
+        // 3. Jalankan deep-link lintas modul jika ada
+        if (_pendingKapalId) {
+          var kTarget = _pendingKapalId;
+          _pendingKapalId = '';
+          openKapalSheet(kTarget);
+        }
+        if (_pendingAssignPegawai) {
+          var pTarget = _pendingAssignPegawai;
+          _pendingAssignPegawai = null;
+          openAssignModal('');
+          if (pTarget.pegawaiId && pTarget.nama) {
+            _selectAwak({ pegawaiId: pTarget.pegawaiId, nama: pTarget.nama });
+          }
+        }
       })
       .catch(function (err) {
-        Toast.error('Gagal memuat papan sijil armada: ' + err.message);
+        var msg = (err && err.message) ? err.message : 'Gagal memuat papan sijil armada.';
+        Toast.error('Gagal memuat papan sijil armada: ' + msg);
+        var tbody = document.getElementById('sijil-2d-matrix-tbody');
+        if (tbody && !_data) {
+          tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state-box"><div class="empty-state-title">Papan sijil gagal dimuat</div><div class="empty-state-desc">' + Format.escape(msg) + '</div><div class="empty-state-actions"><button type="button" class="btn btn-secondary-sm" onclick="SijilView.load()">Coba lagi</button></div></div></td></tr>';
+        }
       });
   }
 
@@ -469,6 +495,14 @@ var SijilView = (function () {
     }
   }
 
+  function resetFilters() {
+    ['sijil-filter-kelas', 'sijil-filter-status', 'sijil-search-input'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    _renderMatrixTable();
+  }
+
   function _renderMatrixTable() {
     if (!_data || !_data.kapal) return;
 
@@ -495,7 +529,7 @@ var SijilView = (function () {
     if (countInfo) countInfo.textContent = filtered.length + ' kapal cocok';
 
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada kapal pengawas yang cocok dengan kriteria pencarian.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state-box"><div class="empty-state-title">Tidak ada kapal pengawas yang cocok</div><div class="empty-state-desc">Ubah kelas kapal, status kelaikan, atau kata kunci pencarian.</div><div class="empty-state-actions"><button type="button" class="btn btn-secondary-sm" onclick="SijilView.resetFilters()">Reset filter</button></div></div></td></tr>';
       return;
     }
 
@@ -589,12 +623,15 @@ var SijilView = (function () {
 
     tbody.innerHTML = html;
 
-    // Pasang click listener di seluruh baris tabel
+    // Pasang click + keyboard Enter listener di seluruh baris tabel
     tbody.querySelectorAll('tr.clickable[data-id]').forEach(function (tr) {
+      var id = tr.getAttribute('data-id');
       tr.onclick = function () {
-        var id = tr.getAttribute('data-id');
         openKapalSheet(id);
       };
+      ShellUI.bindRowKeyboard(tr, function () {
+        openKapalSheet(id);
+      });
     });
   }
 
@@ -606,7 +643,7 @@ var SijilView = (function () {
     Sheet.open('sheet-sijil-panel', 'sheet-sijil-overlay');
 
     var nameEl = document.getElementById('sheet-sijil-nama-kapal');
-    if (nameEl) nameEl.textContent = 'Loading formasi ' + kapalId + '...';
+    if (nameEl) nameEl.textContent = 'Memuat formasi ' + kapalId + '...';
 
     rpc('sijil_getDetailKapal', token, kapalId)
       .then(function (res) {
@@ -757,7 +794,23 @@ var SijilView = (function () {
       });
   }
 
+  function closeAssignModal() {
+    Modal.close('modal-sijil-assign');
+    if (_restoreSheetKapalId) {
+      var kId = _restoreSheetKapalId;
+      _restoreSheetKapalId = '';
+      openKapalSheet(kId);
+    }
+  }
+
   function openAssignModal(prefillKapalId) {
+    var sheetEl = document.getElementById('sheet-sijil-panel');
+    if (sheetEl && !sheetEl.classList.contains('hidden')) {
+      _restoreSheetKapalId = _currentKapalId || prefillKapalId || '';
+      Sheet.close('sheet-sijil-panel', 'sheet-sijil-overlay');
+    } else {
+      _restoreSheetKapalId = '';
+    }
     var selKapal = document.getElementById('assign-select-kapal');
     var tglNaik = document.getElementById('assign-input-tgl-naik');
     var ketInp = document.getElementById('assign-input-keterangan');
@@ -784,7 +837,7 @@ var SijilView = (function () {
     // Muat daftar lengkap seluruh personil awak aktif untuk pencarian (396+ personil)
     var token = AuthApp.getToken();
     var searchInp = document.getElementById('assign-crew-search-input');
-    if (searchInp) searchInp.placeholder = 'Loading data personil armada...';
+    if (searchInp) searchInp.placeholder = 'Memuat data personil armada...';
 
     rpc('sijil_getAwakOptions', token)
       .then(function (res) {
@@ -865,6 +918,7 @@ var SijilView = (function () {
           btnSubmit.textContent = 'Tempatkan personil';
         }
         Modal.close('modal-sijil-assign');
+        _restoreSheetKapalId = '';
         Toast.success(res.message || 'Personil berhasil ditempatkan ke papan sijil.');
         load();
         if (_currentKapalId === kapalId) {
@@ -945,8 +999,10 @@ var SijilView = (function () {
   return {
     init: init,
     load: load,
+    resetFilters: resetFilters,
     openKapalSheet: openKapalSheet,
     openAssignModal: openAssignModal,
+    closeAssignModal: closeAssignModal,
     openUploadSptModal: openUploadSptModal
   };
 })();

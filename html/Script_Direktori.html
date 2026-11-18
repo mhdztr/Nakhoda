@@ -291,7 +291,12 @@ var DirektoriView = (function () {
         if (btnNext) btnNext.disabled = (_offset + _limit) >= _total;
       })
       .catch(function (err) {
-        Toast.error('Gagal memuat direktori awak: ' + err.message);
+        var msg = (err && err.message) ? err.message : 'Gagal memuat direktori awak.';
+        Toast.error('Gagal memuat direktori awak: ' + msg);
+        var tbody = document.getElementById('dir-list-tbody');
+        if (tbody) {
+          tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state-box"><div class="empty-state-title">Direktori gagal dimuat</div><div class="empty-state-desc">' + Format.escape(msg) + '</div><div class="empty-state-actions"><button type="button" class="btn btn-secondary-sm" onclick="DirektoriView.load(0)">Coba lagi</button></div></div></td></tr>';
+        }
       });
   }
 
@@ -339,12 +344,33 @@ var DirektoriView = (function () {
     banner.classList.remove('hidden');
   }
 
+  function resetFilters() {
+    ['dir-filter-rumpun', 'dir-filter-kelas', 'dir-filter-penempatan', 'dir-filter-status', 'dir-search-input'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    var pm = document.getElementById('dir-filter-periode-mode');
+    if (pm) pm.value = 'ALL';
+    _perluDilengkapiOnly = false;
+    var btnPerlu = document.getElementById('btn-toggle-perlu');
+    if (btnPerlu) btnPerlu.textContent = 'Semua personil';
+    _syncPeriodeRangeVisibility();
+    load(0);
+  }
+
   function _renderTable(items) {
     var tbody = document.getElementById('dir-list-tbody');
     if (!tbody) return;
 
     if (!items || items.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:32px 0; color:var(--muted);">Tidak ada data personil awak yang cocok dengan kriteria saring.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state-box">' +
+        '<div class="empty-state-title">Belum ada personil awak yang cocok</div>' +
+        '<div class="empty-state-desc">Tidak ada personel yang sesuai dengan filter atau kata kunci pencarian saat ini.</div>' +
+        '<div class="empty-state-actions">' +
+          '<button type="button" class="btn btn-secondary-sm" onclick="DirektoriView.resetFilters()">Reset filter</button>' +
+          '<button type="button" class="btn btn-primary-sm" onclick="document.getElementById(\'btn-tambah-awak\')?.click()">+ Tambah personil baru</button>' +
+        '</div>' +
+      '</div></td></tr>';
       return;
     }
 
@@ -379,20 +405,20 @@ var DirektoriView = (function () {
               '</div>' +
             '</div>' +
           '</td>' +
-          '<td>' +
+          '<td data-label="Jabatan">' +
             '<div class="cell-primary">' + Format.escape(a.kelompokJabatan || '-') + '</div>' +
             '<div class="cell-sub">' + Format.escape(klsLabel) + '</div>' +
           '</td>' +
-          '<td>' + Format.kelompokBadge(a.rumpun) + '</td>' +
-          '<td>' +
+          '<td data-label="Rumpun">' + Format.kelompokBadge(a.rumpun) + '</td>' +
+          '<td data-label="Kategori">' +
             '<div class="mono">' + Format.escape(a.kategoriKepegawaian || 'PNS') + '</div>' +
             sizeTag +
           '</td>' +
-          '<td>' +
+          '<td data-label="Penempatan">' +
             '<div class="cell-primary" style="font-size:12px;">' + Format.escape(kapalText) + uptTag + '</div>' +
             '<div class="cell-sub mono">' + Format.escape(durasiSub) + '</div>' +
           '</td>' +
-          '<td>' + bstPill + '</td>' +
+          '<td data-label="BST">' + bstPill + '</td>' +
           '<td class="text-center" onclick="event.stopPropagation();">' +
             '<button type="button" class="btn btn-secondary-sm btn-row-detail" data-id="' + a.pegawaiId + '">Buka</button>' +
           '</td>' +
@@ -401,12 +427,15 @@ var DirektoriView = (function () {
 
     tbody.innerHTML = html;
 
-    // Pasang click listener di seluruh baris tabel untuk membuka slide-over sheet
+    // Pasang click + keyboard Enter listener di seluruh baris tabel
     tbody.querySelectorAll('tr[data-id]').forEach(function (tr) {
+      var id = tr.getAttribute('data-id');
       tr.onclick = function () {
-        var id = tr.getAttribute('data-id');
         openDetailSheet(id);
       };
+      ShellUI.bindRowKeyboard(tr, function () {
+        openDetailSheet(id);
+      });
     });
 
     // Pasang listener di tombol "Buka"
@@ -453,7 +482,7 @@ var DirektoriView = (function () {
     switchSheetTab('profil');
 
     var nameEl = document.getElementById('sheet-dir-nama');
-    if (nameEl) nameEl.textContent = 'Loading profil...';
+    if (nameEl) nameEl.textContent = 'Memuat profil...';
 
     rpc('dir_getDetail', token, pegawaiId)
       .then(function (res) {
@@ -580,6 +609,13 @@ var DirektoriView = (function () {
     if (typeof KompetensiView !== 'undefined' && KompetensiView.openModalCatat) {
       KompetensiView.openModalCatat(_currentDetailAwak.pegawaiId, _currentDetailAwak.nama);
     }
+  }
+
+  function openAssignSijilFromSheet() {
+    if (!_currentDetailAwak) return;
+    var target = { pegawaiId: _currentDetailAwak.pegawaiId, nama: _currentDetailAwak.nama };
+    Sheet.close('sheet-dir-panel', 'sheet-dir-overlay');
+    Router.navigate('sijil', { openAssignPegawai: target });
   }
 
   function sanitizeNamaInput(inp) {
@@ -844,12 +880,14 @@ var DirektoriView = (function () {
   return {
     init: init,
     load: load,
+    resetFilters: resetFilters,
     sanitizeNamaInput: sanitizeNamaInput,
     syncKategoriRules: syncKategoriRules,
     autoMatchRumpun: autoMatchRumpun,
     openDetailSheet: openDetailSheet,
     switchSheetTab: switchSheetTab,
-    openCatatSertifikatFromSheet: openCatatSertifikatFromSheet
+    openCatatSertifikatFromSheet: openCatatSertifikatFromSheet,
+    openAssignSijilFromSheet: openAssignSijilFromSheet
   };
 })();
 </script>

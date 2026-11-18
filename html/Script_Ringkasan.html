@@ -16,8 +16,31 @@ var RingkasanView = (function () {
     'PJLP': 'PJLP / pegawai non-ASN'
   };
 
+  var ONBOARD_KEY = 'nakhoda_onboard_dismissed';
+
+  function _syncOnboardVisibility() {
+    var card = document.getElementById('ringkasan-onboard-card');
+    if (!card) return;
+    var dismissed = false;
+    try { dismissed = localStorage.getItem(ONBOARD_KEY) === '1'; } catch (e) {}
+    card.classList.toggle('hidden', dismissed);
+  }
+
+  function dismissOnboard() {
+    try { localStorage.setItem(ONBOARD_KEY, '1'); } catch (e) {}
+    _syncOnboardVisibility();
+  }
+
+  function openOnboard() {
+    try { localStorage.removeItem(ONBOARD_KEY); } catch (e) {}
+    _syncOnboardVisibility();
+    var card = document.getElementById('ringkasan-onboard-card');
+    if (card && card.scrollIntoView) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
   function init() {
     _bindEvents();
+    _syncOnboardVisibility();
     loadData();
   }
 
@@ -38,6 +61,19 @@ var RingkasanView = (function () {
         Router.navigate('laporan');
       };
     }
+
+    var btnOnbDismiss = document.getElementById('btn-ringkasan-onboard-dismiss');
+    if (btnOnbDismiss) {
+      btnOnbDismiss.onclick = dismissOnboard;
+    }
+    var btnOnbOpen = document.getElementById('btn-ringkasan-onboard-open');
+    if (btnOnbOpen) {
+      btnOnbOpen.onclick = openOnboard;
+    }
+  }
+
+  function openKapalSijil(kapalId) {
+    Router.navigate('sijil', { openKapalId: kapalId || '' });
   }
 
   function loadData() {
@@ -68,7 +104,13 @@ var RingkasanView = (function () {
           btnRefresh.disabled = false;
           btnRefresh.classList.remove('loading');
         }
-        Toast.error(err.message || 'Gagal memuat ringkasan eksekutif.');
+        var msg = (err && err.message) ? err.message : 'Gagal memuat ringkasan eksekutif.';
+        Toast.error(msg);
+        if (!_data) {
+          var retryHtml = '<tr><td colspan="6"><div class="empty-state-box"><div class="empty-state-title">Gagal memuat data ringkasan</div><div class="empty-state-desc">' + Format.escape(msg) + '</div><button type="button" class="btn btn-secondary-sm" onclick="RingkasanView.loadData()">Coba lagi</button></div></td></tr>';
+          var tbs = document.getElementById('tbody-ringkasan-sijil');
+          if (tbs) tbs.innerHTML = retryHtml;
+        }
       });
   }
 
@@ -97,13 +139,15 @@ var RingkasanView = (function () {
 
     var kpiAwakLengkap = document.getElementById('kpi-awak-lengkap');
     var kpiSubKompetensi = document.getElementById('kpi-sub-kompetensi');
+    var nLengkapVal = _data.kpi.awakKompetensiLengkap !== undefined ? _data.kpi.awakKompetensiLengkap : (_data.kpi.awakLengkap || 0);
+    var nTotalVal = _data.kpi.totalAwak || _data.kpi.totalAknKeseluruhan || 0;
     if (kpiAwakLengkap) {
-      var nLengkap = _data.kpi.awakKompetensiLengkap !== undefined ? _data.kpi.awakKompetensiLengkap : (_data.kpi.awakLengkap || 0);
-      var nTotal = _data.kpi.totalAwak || _data.kpi.totalAknKeseluruhan || 0;
-      kpiAwakLengkap.textContent = Format.number(nLengkap) + ' / ' + Format.number(nTotal);
+      kpiAwakLengkap.textContent = Format.number(nLengkapVal) + ' / ' + Format.number(nTotalVal);
     }
     if (kpiSubKompetensi) {
-      var pctK = _data.kpi.kelaikanPersen || _data.kpi.pctAwakLengkap || 100;
+      var pctK = _data.kpi.pctAwakLengkap !== undefined
+        ? _data.kpi.pctAwakLengkap
+        : (nTotalVal > 0 ? ((nLengkapVal / nTotalVal) * 100).toFixed(1) : '0.0');
       kpiSubKompetensi.innerHTML =
         '<span style="font-weight:600; color:var(--text);">' + pctK + '%</span>' +
         ' <span style="color:var(--muted);">memenuhi standar wajib STCW-F</span>';
@@ -143,7 +187,7 @@ var RingkasanView = (function () {
     // 3. Bilah Proporsi AKN (DESIGN.md §7.2 & §8.0)
     var lblPeriode = document.getElementById('label-ringkasan-akn-periode');
     if (lblPeriode && _data.aknMeta) {
-      lblPeriode.textContent = 'Periode ' + (_data.aknMeta.periode || '--') + (_data.aknMeta.isCarried ? ' (Diwarisi / Carry)' : '');
+      lblPeriode.textContent = 'Periode ' + (_data.aknMeta.periode || '--');
     }
 
     var trackListEl = document.getElementById('ringkasan-track-list');
@@ -241,8 +285,9 @@ var RingkasanView = (function () {
             ? '<span class="delta-down mono">-' + k.kekuranganKursi + ' kursi</span>'
             : '<span style="color:var(--muted);" class="mono">0</span>';
 
+          var kIdArg = Format.escape(k.kapalId || '');
           return (
-            '<tr class="clickable" onclick="Router.navigate(\'sijil\')">' +
+            '<tr class="clickable" tabindex="0" role="button" onclick="RingkasanView.openKapalSijil(\'' + kIdArg + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();RingkasanView.openKapalSijil(\'' + kIdArg + '\');}">' +
               '<td>' +
                 '<div class="cell-primary">' + Format.escape(k.namaKapal) + '</div>' +
                 '<div class="cell-sub">' + Format.escape(k.pangkalanId) + '</div>' +
@@ -310,7 +355,10 @@ var RingkasanView = (function () {
 
   return {
     init: init,
-    loadData: loadData
+    loadData: loadData,
+    openKapalSijil: openKapalSijil,
+    dismissOnboard: dismissOnboard,
+    openOnboard: openOnboard
   };
 })();
 </script>

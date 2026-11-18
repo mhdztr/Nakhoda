@@ -177,15 +177,22 @@ var ShellUI = (function () {
     Array.prototype.forEach.call(inputs, function (inp) {
       if (inp.getAttribute('data-cal-bound') === '1') return;
       inp.setAttribute('data-cal-bound', '1');
+      if (!inp.getAttribute('title')) {
+        inp.setAttribute('title', 'Pilih tanggal melalui ikon kalender (ketik manual dinonaktifkan)');
+      }
       inp.addEventListener('keydown', function (e) {
-        if (e.key !== 'Tab' && e.key !== 'Escape') {
+        if (e.key === 'Tab' || e.key === 'Escape') return;
+        if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown') {
           e.preventDefault();
-          return false;
+          if (typeof inp.showPicker === 'function') {
+            try { inp.showPicker(); } catch (ignore) {}
+          }
+          return;
         }
+        e.preventDefault();
       });
       inp.addEventListener('paste', function (e) {
         e.preventDefault();
-        return false;
       });
       inp.addEventListener('click', function () {
         if (typeof inp.showPicker === 'function') {
@@ -195,11 +202,25 @@ var ShellUI = (function () {
     });
   }
 
+  function bindRowKeyboard(tr, handler) {
+    if (!tr || typeof handler !== 'function') return;
+    tr.setAttribute('tabindex', '0');
+    tr.setAttribute('role', 'button');
+    tr.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (e.target && /^(button|input|select|a)$/i.test(e.target.tagName)) return;
+        e.preventDefault();
+        handler(e);
+      }
+    });
+  }
+
   return {
     toggleMobileNav: toggleMobileNav,
     closeMobileNav: closeMobileNav,
     syncHeaderDatum: syncHeaderDatum,
-    bindCalendarInputs: bindCalendarInputs
+    bindCalendarInputs: bindCalendarInputs,
+    bindRowKeyboard: bindRowKeyboard
   };
 })();
 
@@ -212,19 +233,19 @@ var GlobalLoader = (function () {
   var _pillTimer = null;
 
   var LABEL_MAP = {
-    'ringkasan_': 'Loading Ringkasan...',
-    'akn_': 'Loading Komposisi AKN...',
-    'dir_syncSikap': 'Syncing data SIKAP...',
-    'dir_': 'Loading Direktori Awak...',
-    'kom_saveSertifikat': 'Saving sertifikat...',
-    'kom_': 'Loading Kompetensi...',
+    'ringkasan_': 'Memuat Ringkasan...',
+    'akn_': 'Memuat Komposisi AKN...',
+    'dir_syncSikap': 'Sync data SIKAP...',
+    'dir_': 'Memuat Direktori Awak...',
+    'kom_saveSertifikat': 'Menyimpan sertifikat...',
+    'kom_': 'Memuat Kompetensi...',
     'sijil_assignAwak': 'Menempatkan awak kapal...',
-    'sijil_uploadSuratTugas': 'Uploading Surat Tugas...',
-    'sijil_': 'Loading Papan Sijil...',
-    'keg_': 'Loading Log Kegiatan...',
-    'lap_': 'Loading Executive Report...',
-    'admin_': 'Loading Admin & Audit Log...',
-    'auth_': 'Authenticating...'
+    'sijil_uploadSuratTugas': 'Mengunggah Surat Tugas...',
+    'sijil_': 'Memuat Papan Sijil...',
+    'keg_': 'Memuat Log Kegiatan...',
+    'lap_': 'Memuat Executive Report...',
+    'admin_': 'Memuat User & Audit Log...',
+    'auth_': 'Memeriksa sesi...'
   };
 
   function _resolveLabel(funcName) {
@@ -234,7 +255,7 @@ var GlobalLoader = (function () {
         return LABEL_MAP[prefix];
       }
     }
-    return 'Loading data...';
+    return 'Memuat data...';
   }
 
   function start(labelOrFunc) {
@@ -819,14 +840,27 @@ var Router = (function () {
 
   var _routes = {};
   var _currentRoute = null;
+  var _pendingState = null;
   var _initialized = false;
 
   function register(route, handler) {
     _routes[route] = handler;
   }
 
-  function navigate(route) {
-    window.location.hash = '#/' + route;
+  function navigate(route, stateObj) {
+    _pendingState = stateObj || null;
+    var targetHash = '#/' + route;
+    if (window.location.hash === targetHash) {
+      _handleHashChange();
+    } else {
+      window.location.hash = targetHash;
+    }
+  }
+
+  function consumeState() {
+    var st = _pendingState;
+    _pendingState = null;
+    return st;
   }
 
   function _handleHashChange() {
@@ -961,6 +995,27 @@ var Router = (function () {
     });
 
     window.addEventListener('hashchange', _handleHashChange);
+    // Pintasan keyboard '/' untuk fokus pencarian di rute aktif
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+      var activeEl = document.activeElement;
+      if (activeEl && /^(input|textarea|select)$/i.test(activeEl.tagName)) return;
+      if (document.querySelector('.modal-overlay.active')) return;
+      var searchMap = {
+        'direktori': 'dir-search-input',
+        'kompetensi': 'kom-matriks-search',
+        'sijil': 'sijil-search-input',
+        'kegiatan': 'keg-search-input',
+        'admin-users': 'admin-user-search',
+        'admin-audit': 'admin-audit-search'
+      };
+      var id = searchMap[_currentRoute];
+      var inp = id ? document.getElementById(id) : null;
+      if (inp && inp.offsetParent !== null) {
+        e.preventDefault();
+        inp.focus();
+      }
+    });
     _handleHashChange();
   }
 
@@ -968,6 +1023,7 @@ var Router = (function () {
     init: init,
     register: register,
     navigate: navigate,
+    consumeState: consumeState,
     getCurrentRoute: function () { return _currentRoute; }
   };
 })();
