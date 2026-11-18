@@ -145,7 +145,7 @@ function _healAknKategori4(sheet, rows) {
     var best = latestBatchPerPeriode[rp];
     if (!best || !best.batchId) return;
     var bId = String(r.BatchID || '');
-    if (bId && bId !== best.batchId) {
+    if (bId !== best.batchId) {
       updateRowCells(sheet, idx + 2, { 'Status': ROW_STATUS.SUPERSEDED });
       r.Status = ROW_STATUS.SUPERSEDED;
       changed = true;
@@ -184,8 +184,32 @@ function akn_getPapan(token, filterOrPeriode) {
     // Hitung matriks 2x4 dengan pure/Carry.js
     var resolved = resolveMatrix(rowsAkn, p);
 
-    // Auto-simpulkan dari Master_Awak bila periode berjalan belum memiliki snapshot aktif atau POA masih 0
-    if ((resolved.totals.AKN_KESELURUHAN === 0 || resolved.totals.AKN_POA === 0) && p >= akn_getCurrentPeriode()) {
+    // Deteksi snapshot periode berjalan yang belum sinkron, parsial (campuran carried + langsung), atau masih menyimpan sisa seed lama
+    var needsResync = false;
+    var curPeriodeNow = akn_getCurrentPeriode();
+    if (p >= curPeriodeNow) {
+      var hasCarriedCell = false;
+      var hasDirectCell = false;
+      AKN_KATEGORIS.forEach(function (kat) {
+        var cKes = resolved.matrix && resolved.matrix.AKN_KESELURUHAN && resolved.matrix.AKN_KESELURUHAN[kat];
+        if (cKes && cKes.rowId) {
+          if (cKes.carried) hasCarriedCell = true;
+          else hasDirectCell = true;
+        } else {
+          hasCarriedCell = true;
+        }
+      });
+      var hasLegacySeedOnSheet = rowsAkn.some(function (r) {
+        return String(r.Status || '').toUpperCase() === ROW_STATUS.ACTIVE &&
+          (String(r.RowID || '').indexOf('AKN-SEED-') === 0 || String(r.BatchID || '').indexOf('BATCH-SEED-') === 0);
+      });
+      if (resolved.totals.AKN_KESELURUHAN === 0 || resolved.totals.AKN_POA === 0 ||
+          (hasCarriedCell && hasDirectCell) || hasLegacySeedOnSheet) {
+        needsResync = true;
+      }
+    }
+
+    if (needsResync) {
       var autoSync = akn_syncFromAwak(session.userId, 'Sinkronisasi otomatis komposisi dari Direktori Awak');
       if (autoSync && autoSync.success) {
         rowsAkn = sheetToObjects(sheetAkn);
@@ -666,65 +690,13 @@ function akn_getCurrentPeriode() {
 
 /**
  * Inisialisasi baseline snapshot komposisi AKN (idempoten bila sheet masih kosong)
- * agar selaras dengan 396 personil pada Master_Awak.
+ * langsung dari data Master_Awak agar tidak menggunakan angka dummy terpisah.
  */
 function akn_ensureSeeded() {
   try {
     var sheet = openAwakSheet(SHEET_AWAK.PENGAWAKAN_AKN);
     if (sheet.getLastRow() > 1) return;
-
-    var curP = akn_getCurrentPeriode();
-    var snapshots = [
-      {
-        periode: '2026-10-W02',
-        kes: { PNS: 214, P3K: 116, P3K_PARUH_WAKTU: 22, PJLP: 36 },
-        poa: { PNS: 80, P3K: 39, P3K_PARUH_WAKTU: 6, PJLP: 13 },
-        ket: 'Snapshot komposisi rutin Oktober minggu ke-2'
-      },
-      {
-        periode: '2026-10-W03',
-        kes: { PNS: 216, P3K: 118, P3K_PARUH_WAKTU: 22, PJLP: 35 },
-        poa: { PNS: 81, P3K: 40, P3K_PARUH_WAKTU: 6, PJLP: 12 },
-        ket: 'Penempatan 2 perwira dek baru hasil diklat pembentukan'
-      },
-      {
-        periode: '2026-10-W04',
-        kes: { PNS: 217, P3K: 120, P3K_PARUH_WAKTU: 22, PJLP: 35 },
-        poa: { PNS: 81, P3K: 41, P3K_PARUH_WAKTU: 6, PJLP: 12 },
-        ket: 'Penyesuaian SK penugasan kapal pengawas wilayah barat'
-      },
-      {
-        periode: curP,
-        kes: { PNS: 218, P3K: 122, P3K_PARUH_WAKTU: 22, PJLP: 34 },
-        poa: { PNS: 82, P3K: 42, P3K_PARUH_WAKTU: 6, PJLP: 12 },
-        ket: 'Rekapitulasi kekuatan 396 awak kapal pengawas aktif periode berjalan'
-      }
-    ];
-
-    var headers = STD_COLS.concat(['Scope', 'Kategori', 'Jumlah', 'Keterangan', 'BatchID']);
-    var outRows = [];
-    var now = new Date();
-
-    snapshots.forEach(function (snap, sIdx) {
-      var bId = 'BATCH-SEED-0' + (sIdx + 1);
-      AKN_KATEGORIS.forEach(function (kat, kIdx) {
-        outRows.push([
-          'AKN-SEED-' + (sIdx + 1) + '-K' + (kIdx + 1), DIVISI_ID.AWAK, snap.periode, 'USR-KATIMJA-AWAK-001',
-          now, 'ACTIVE', '', '', '', '', 'AKN_KESELURUHAN', kat, snap.kes[kat], snap.ket, bId
-        ]);
-        outRows.push([
-          'AKN-SEED-' + (sIdx + 1) + '-P' + (kIdx + 1), DIVISI_ID.AWAK, snap.periode, 'USR-KATIMJA-AWAK-001',
-          now, 'ACTIVE', '', '', '', '', 'AKN_POA', kat, snap.poa[kat], snap.ket, bId
-        ]);
-      });
-    });
-
-    if (outRows.length > 0) {
-      sheet.getRange(2, 1, outRows.length, headers.length).setValues(outRows);
-      if (typeof applyFormalSheetFormatting === 'function') {
-        applyFormalSheetFormatting(sheet, SHEET_AWAK.PENGAWAKAN_AKN);
-      }
-    }
+    akn_syncFromAwak('SYSTEM_SEED', 'Inisialisasi otomatis komposisi dari Direktori Awak');
   } catch (e) {
     Logger.log('[akn_ensureSeeded] ' + e.message);
   }
@@ -774,7 +746,10 @@ function akn_syncFromAwak(userId, keteranganMutasi) {
     }
     for (var i = 0; i < existingAknRows.length; i++) {
       var r = existingAknRows[i];
-      if (String(r.Periode || '') === curPeriode && String(r.Status || '').toUpperCase() === 'ACTIVE') {
+      var rStatus = String(r.Status || '').toUpperCase();
+      var isLegacySeed = String(r.RowID || '').indexOf('AKN-SEED-') === 0 ||
+        String(r.BatchID || '').indexOf('BATCH-SEED-') === 0;
+      if (rStatus === 'ACTIVE' && (String(r.Periode || '') === curPeriode || isLegacySeed)) {
         updateRowCells(sheetAkn, i + 2, { 'Status': 'SUPERSEDED' });
       }
     }
