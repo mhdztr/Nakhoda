@@ -24,8 +24,8 @@ function sanitizeNamaPersonel(rawNama) {
   if (!rawNama || typeof rawNama !== 'string') return '';
   var s = String(rawNama).toUpperCase().trim();
 
-  // Hapus gelar kehormatan/akademik di awal nama (diulang maks 3x untuk gelar bertumpuk mis. Dr. Hj.)
-  for (var i = 0; i < 3; i++) {
+  // Hapus gelar kehormatan/akademik di awal nama (diulang maks 5x untuk gelar bertumpuk mis. Capt. Prof. Dr. H.)
+  for (var i = 0; i < 5; i++) {
     s = s.replace(/^(?:CAPT|PROF|DR|DRS|DRA|IR|HJ|H)(?:\.|\s+)+(?=[A-Z])/i, '');
   }
 

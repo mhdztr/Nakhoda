@@ -952,6 +952,16 @@ async function runVisualTests() {
     if (aknChecks.matrixText.includes('PPPK tenaga fungsional') || aknChecks.matrixText.includes('PPPK tenaga pelaksana')) {
       throw new Error('Komposisi AKN masih menampilkan kategori PPPK lama');
     }
+    if (aknChecks.rekapRowCount < 1) {
+      throw new Error('Tabel Rekapitulasi per Jabatan di Komposisi AKN kosong');
+    }
+    const calLockCheck = await page.evaluate(() => {
+      const ds = document.getElementById('akn-date-single');
+      return !!(ds && String(ds.getAttribute('onkeydown') || '').includes('return false'));
+    });
+    if (!calLockCheck) {
+      throw new Error('Input kalender #akn-date-single harus terkunci terhadap ketik manual');
+    }
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '02_komposisi_desktop.png') });
 
     // 3. Direktori Awak

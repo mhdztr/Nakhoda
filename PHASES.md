@@ -212,8 +212,8 @@ ROADMAP PENGEMBANGAN NAKHODA v1.0
     - Otomasi `_pushAwakToSikap()` yang memicu flag `DISPARITAS_NAKHODA` di SIKAP saat data baru/perubahan masuk dari Nakhoda.
 - **Deliverables & Checklist:**
   - [x] Seluruh dokumen `.md` di NAKHODA & SIKAP tersinkronisasi 100%.
-  - [ ] Unit test normalisasi nama, aturan kondisional NIP, 4 kategori AKN, dan filter periode 100% lulus.
-  - [ ] Linter `node lint_ui.js` (`0 errors`) dan verifikasi visual Playwright lulus di NAKHODA & SIKAP.
+  - [x] Unit test normalisasi nama, aturan kondisional NIP, 4 kategori AKN, dan filter periode 100% lulus.
+  - [x] Linter `node lint_ui.js` (`0 errors`) dan verifikasi visual Playwright lulus di NAKHODA & SIKAP.
 
 ---
 
