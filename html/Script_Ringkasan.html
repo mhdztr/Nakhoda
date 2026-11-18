@@ -281,14 +281,28 @@ var RingkasanView = (function () {
       }
     }
 
-    // 5. Papan Sijil Ringkas Armada Table
+    // 5. Papan Sijil Ringkas Armada Table (Maksimal 5 baris prioritas + tautan See more ke Papan Sijil)
     var tbodySijil = document.getElementById('tbody-ringkasan-sijil');
+    var sijilCountInfo = document.getElementById('ringkasan-sijil-count-info');
     if (tbodySijil) {
       var kapalList = _data.sijilKapalRingkas || [];
-      if (kapalList.length === 0) {
+      var previewKapal = kapalList.slice(0, 5);
+      var totalKapal = (_data.sijilSummary && _data.sijilSummary.totalKapal) ? _data.sijilSummary.totalKapal : kapalList.length;
+
+      if (sijilCountInfo) {
+        if (previewKapal.length === 0) {
+          sijilCountInfo.textContent = '0 kapal pengawas';
+        } else if (totalKapal > previewKapal.length) {
+          sijilCountInfo.textContent = 'Menampilkan ' + Format.number(previewKapal.length) + ' dari ' + Format.number(totalKapal) + ' kapal pengawas';
+        } else {
+          sijilCountInfo.textContent = 'Menampilkan seluruh ' + Format.number(totalKapal) + ' kapal pengawas';
+        }
+      }
+
+      if (previewKapal.length === 0) {
         tbodySijil.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Data kapal armada belum tersedia.</td></tr>';
       } else {
-        tbodySijil.innerHTML = kapalList.map(function (k) {
+        tbodySijil.innerHTML = previewKapal.map(function (k) {
           var klsLabel = String(k.kelasKapal || '').replace('_', ' ');
           var defisitHtml = (k.kekuranganKursi > 0)
             ? '<span class="delta-down mono">-' + k.kekuranganKursi + ' kursi</span>'
