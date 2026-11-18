@@ -16,31 +16,16 @@ var RingkasanView = (function () {
     'PJLP': 'PJLP / pegawai non-ASN'
   };
 
-  var ONBOARD_KEY = 'nakhoda_onboard_dismissed';
-
-  function _syncOnboardVisibility() {
-    var card = document.getElementById('ringkasan-onboard-card');
-    if (!card) return;
-    var dismissed = false;
-    try { dismissed = localStorage.getItem(ONBOARD_KEY) === '1'; } catch (e) {}
-    card.classList.toggle('hidden', dismissed);
-  }
-
   function dismissOnboard() {
-    try { localStorage.setItem(ONBOARD_KEY, '1'); } catch (e) {}
-    _syncOnboardVisibility();
+    Modal.close('modal-ringkasan-onboard');
   }
 
   function openOnboard() {
-    try { localStorage.removeItem(ONBOARD_KEY); } catch (e) {}
-    _syncOnboardVisibility();
-    var card = document.getElementById('ringkasan-onboard-card');
-    if (card && card.scrollIntoView) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    Modal.open('modal-ringkasan-onboard');
   }
 
   function init() {
     _bindEvents();
-    _syncOnboardVisibility();
     loadData();
   }
 
@@ -85,6 +70,13 @@ var RingkasanView = (function () {
       btnRefresh.disabled = true;
       btnRefresh.classList.add('loading');
     }
+
+    var tbSijilSkel = document.getElementById('tbody-ringkasan-sijil');
+    var tbSertSkel = document.getElementById('tbody-ringkasan-sertifikat');
+    var tbJabSkel = document.getElementById('tbody-ringkasan-jabatan');
+    if (tbSijilSkel && !_data) tbSijilSkel.innerHTML = ShellUI.skeletonRows(6, 4);
+    if (tbSertSkel && !_data) tbSertSkel.innerHTML = ShellUI.skeletonRows(4, 3);
+    if (tbJabSkel && !_data) tbJabSkel.innerHTML = ShellUI.skeletonRows(5, 4);
 
     rpc('ringkasan_get', token, {})
       .then(function (data) {
@@ -155,13 +147,29 @@ var RingkasanView = (function () {
 
     var kpiSertifikatUrgent = document.getElementById('kpi-sertifikat-urgent');
     var kpiSubSertifikat = document.getElementById('kpi-sub-sertifikat');
+    var nUrg = _data.kpi.sertifikatUrgentTotal !== undefined ? _data.kpi.sertifikatUrgentTotal : (_data.kpi.sertifikatUrgent || 0);
+    var nExp = _data.kpi.sertifikatExpired !== undefined ? _data.kpi.sertifikatExpired : _data.kpi.expired;
+    var nSeg = _data.kpi.sertifikatSegeraHabis !== undefined ? _data.kpi.sertifikatSegeraHabis : _data.kpi.segeraHabis;
+
+    if ((nExp === undefined || nSeg === undefined) && Array.isArray(_data.antreanSertifikatUrgent)) {
+      var expCalc = 0;
+      var segCalc = 0;
+      _data.antreanSertifikatUrgent.forEach(function (item) {
+        var st = String(item.status || item.statusBerlaku || '').toUpperCase();
+        if (st === 'KEDALUWARSA' || Number(item.sisaHari) < 0) expCalc++;
+        else segCalc++;
+      });
+      if (nExp === undefined) nExp = expCalc;
+      if (nSeg === undefined) nSeg = segCalc;
+    }
+    nExp = nExp || 0;
+    nSeg = nSeg || 0;
+    if (nUrg < nExp + nSeg) nUrg = nExp + nSeg;
+
     if (kpiSertifikatUrgent) {
-      var nUrg = _data.kpi.sertifikatUrgentTotal !== undefined ? _data.kpi.sertifikatUrgentTotal : (_data.kpi.sertifikatUrgent || 0);
       kpiSertifikatUrgent.textContent = Format.number(nUrg);
     }
     if (kpiSubSertifikat) {
-      var nExp = _data.kpi.sertifikatExpired !== undefined ? _data.kpi.sertifikatExpired : (_data.kpi.expired || 0);
-      var nSeg = _data.kpi.sertifikatSegeraHabis !== undefined ? _data.kpi.sertifikatSegeraHabis : (_data.kpi.segeraHabis || 0);
       kpiSubSertifikat.innerHTML =
         '<span style="color:var(--negative); font-weight:500;">' + nExp + ' kedaluwarsa</span>' +
         ' <span style="color:var(--muted);">· ' + nSeg + ' &le; 90 hari</span>';
@@ -186,14 +194,15 @@ var RingkasanView = (function () {
 
     // 3. Bilah Proporsi AKN (DESIGN.md §7.2 & §8.0)
     var lblPeriode = document.getElementById('label-ringkasan-akn-periode');
-    if (lblPeriode && _data.aknMeta) {
-      lblPeriode.textContent = 'Periode ' + (_data.aknMeta.periode || '--');
+    if (lblPeriode) {
+      var aknPer = (_data.aknMeta && _data.aknMeta.periode) || (_data.akn && _data.akn.periode) || _data.periode || '--';
+      lblPeriode.textContent = 'Periode ' + aknPer;
     }
 
     var trackListEl = document.getElementById('ringkasan-track-list');
     if (trackListEl) {
       var categories = ['PNS', 'P3K', 'P3K_PARUH_WAKTU', 'PJLP'];
-      var mat = _data.aknTerbaru || {};
+      var mat = _data.aknTerbaru || (_data.akn && _data.akn.matrix) || {};
       var trackHtml = '';
 
       categories.forEach(function (cat) {
@@ -246,26 +255,26 @@ var RingkasanView = (function () {
 
           return (
             '<tr>' +
-              '<td>' +
-                '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<td data-label="Personil">' +
+                '<div style="display:flex; align-items:center; gap:8px;">' +
                   '<div class="avatar-sm" style="background-color:' + bg + ';">' + inis + '</div>' +
                   '<div style="min-width:0;">' +
                     '<div class="cell-primary">' + Format.escape(nama) + '</div>' +
-                    '<div style="font-size:11px; color:var(--muted);">' + Format.escape(s.jabatan || s.namaKapal || '-') + '</div>' +
+                    '<div style="font-size:12px; color:var(--muted);">' + Format.escape(s.jabatan || s.namaKapal || '-') + '</div>' +
                   '</div>' +
                 '</div>' +
               '</td>' +
-              '<td>' +
-                '<div class="cell-primary" style="font-size:13px; font-weight:500; color:var(--text);">' + Format.escape(namaPel) + '</div>' +
-                '<div class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.escape(s.nomorSertifikat || s.sertifikatId || '-') + '</div>' +
+              '<td data-label="Sertifikat">' +
+                '<div class="cell-primary">' + Format.escape(namaPel) + '</div>' +
+                '<div class="mono tnum" style="font-size:12px; color:var(--muted);">' + Format.escape(s.nomorSertifikat || s.sertifikatId || '-') + '</div>' +
               '</td>' +
-              '<td>' +
+              '<td data-label="Masa berlaku">' +
                 '<div class="mono tnum" style="font-size:12px; color:var(--text);">' + Format.date(tgl) + '</div>' +
-                '<div style="font-size:11px;">' +
+                '<div style="font-size:12px;">' +
                   (s.sisaHari < 0 ? '<span style="color:var(--negative); font-weight:500;">Lewat ' + Math.abs(s.sisaHari) + ' hari</span>' : '<span style="color:var(--warning); font-weight:500;">' + s.sisaHari + ' hari lagi</span>') +
                 '</div>' +
               '</td>' +
-              '<td style="text-align:center;">' + Format.statusBadge(st === 'KEDALUWARSA' ? 'KEDALUWARSA' : 'SEGERA_HABIS') + '</td>' +
+              '<td data-label="Status" style="text-align:center;">' + Format.statusBadge(st === 'KEDALUWARSA' ? 'KEDALUWARSA' : 'SEGERA_HABIS') + '</td>' +
             '</tr>'
           );
         }).join('');
@@ -288,39 +297,40 @@ var RingkasanView = (function () {
           var kIdArg = Format.escape(k.kapalId || '');
           return (
             '<tr class="clickable" tabindex="0" role="button" onclick="RingkasanView.openKapalSijil(\'' + kIdArg + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();RingkasanView.openKapalSijil(\'' + kIdArg + '\');}">' +
-              '<td>' +
+              '<td data-label="Kapal pengawas">' +
                 '<div class="cell-primary">' + Format.escape(k.namaKapal) + '</div>' +
                 '<div class="cell-sub">' + Format.escape(k.pangkalanId) + '</div>' +
               '</td>' +
-              '<td><span class="badge badge-neutral">' + Format.escape(klsLabel) + '</span></td>' +
-              '<td class="text-right mono tnum">' + (k.kebutuhanMinimum || 0) + '</td>' +
-              '<td class="text-right mono tnum"><strong>' + (k.jumlahAwakBertugas || 0) + '</strong></td>' +
-              '<td class="text-right">' + defisitHtml + '</td>' +
-              '<td class="text-center">' + Format.statusBadge(k.statusOperasi) + '</td>' +
+              '<td data-label="Kelas"><span class="badge badge-neutral">' + Format.escape(klsLabel) + '</span></td>' +
+              '<td data-label="Kebutuhan" class="text-right mono tnum">' + (k.kebutuhanMinimum || 0) + '</td>' +
+              '<td data-label="Terisi" class="text-right mono tnum"><strong>' + (k.jumlahAwakBertugas || 0) + '</strong></td>' +
+              '<td data-label="Defisit" class="text-right">' + defisitHtml + '</td>' +
+              '<td data-label="Kelaikan" class="text-center">' + Format.statusBadge(k.statusOperasi) + '</td>' +
             '</tr>'
           );
         }).join('');
       }
     }
 
-    // 6. Agenda Kegiatan Terkini Container
+    // 6. Agenda Kegiatan Terkini Container (Baris Ledger Berbatas Garis Tipis)
     var kegContainer = document.getElementById('ringkasan-kegiatan-container');
     if (kegContainer) {
       var kegiatan = _data.kegiatanTerbaru || [];
       if (kegiatan.length === 0) {
         kegContainer.innerHTML = '<div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Belum ada agenda kegiatan pengawakan tercatat.</div>';
       } else {
-        kegContainer.innerHTML = kegiatan.map(function (kg) {
+        kegContainer.innerHTML = kegiatan.map(function (kg, idx) {
+          var borderBottom = idx < kegiatan.length - 1 ? 'border-bottom:1px solid var(--rule);' : '';
           return (
-            '<div style="padding:10px 12px; border:1px solid var(--rule); border-radius:var(--radius-control); background-color:var(--ground);">' +
-              '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:11px; color:var(--muted);">' +
+            '<div style="padding:12px 0; ' + borderBottom + '">' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px; font-size:12px; color:var(--muted);">' +
                 '<span class="mono tnum">' + Format.date(kg.tanggalMulai) + '</span>' +
-                '<span class="badge badge-neutral">' + Format.escape(kg.jenisKegiatan) + '</span>' +
+                '<span style="color:var(--ink-secondary); font-weight:500;">' + Format.escape(kg.jenisKegiatan) + '</span>' +
               '</div>' +
               '<div style="font-size:13px; font-weight:500; color:var(--text); line-height:1.4;">' +
                 Format.escape(kg.judulKegiatan) +
               '</div>' +
-              '<div style="font-size:11px; color:var(--muted); margin-top:4px;">' +
+              '<div style="font-size:12px; color:var(--muted); margin-top:4px;">' +
                 Format.escape(kg.wilayah) + ' · ' + Format.number(kg.jumlahPeserta) + ' peserta' +
               '</div>' +
             '</div>'
@@ -337,16 +347,18 @@ var RingkasanView = (function () {
         tbodyJab.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--muted);">Belum ada data kekuatan per jabatan.</td></tr>';
       } else {
         tbodyJab.innerHTML = jabs.map(function (j) {
+          var jbtName = j.kelompokJabatan || j.jabatan || '-';
+          var ideal = j.idealArmada !== undefined ? j.idealArmada : (j.kebutuhan || 0);
           var diff = j.selisih || 0;
           var diffHtml = diff < 0
             ? '<span class="delta-down mono">' + diff + '</span>'
             : (diff > 0 ? '<span class="delta-up mono">+' + diff + '</span>' : '<span class="mono" style="color:var(--muted);">0</span>');
           return '<tr>' +
-            '<td class="cell-primary">' + Format.escape(j.kelompokJabatan) + '</td>' +
-            '<td class="text-right mono tnum" style="color:var(--accent);">' + Format.number(j.poaPusat || 0) + '</td>' +
-            '<td class="text-right mono tnum" style="font-weight:600;">' + Format.number(j.eksisting || 0) + '</td>' +
-            '<td class="text-right mono tnum">' + (j.idealArmada > 0 ? Format.number(j.idealArmada) : '-') + '</td>' +
-            '<td class="text-right">' + diffHtml + '</td>' +
+            '<td data-label="Kelompok jabatan" class="cell-primary">' + Format.escape(jbtName) + '</td>' +
+            '<td data-label="Dit. POA" class="text-right mono tnum" style="color:var(--accent-ink);">' + Format.number(j.poaPusat || 0) + '</td>' +
+            '<td data-label="Eksisting aktif" class="text-right mono tnum" style="font-weight:500;">' + Format.number(j.eksisting || 0) + '</td>' +
+            '<td data-label="Standar ideal" class="text-right mono tnum">' + (ideal > 0 ? Format.number(ideal) : '-') + '</td>' +
+            '<td data-label="Selisih" class="text-right">' + diffHtml + '</td>' +
           '</tr>';
         }).join('');
       }

@@ -151,7 +151,7 @@ input[type="number"] {
 #app-main {
   flex: 1;
   min-width: 0;
-  padding: 20px var(--pad) 48px var(--pad);
+  padding: 24px var(--pad) 48px var(--pad);
   max-width: 1440px;
 }
 
@@ -180,8 +180,8 @@ input[type="number"] {
 .brand-box {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 0 2px 14px 2px;
+  gap: 12px;
+  padding: 0 4px 16px 4px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 12px;
 }
@@ -211,12 +211,12 @@ input[type="number"] {
 .brand-title-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .brand-text h1 {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--text);
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -225,13 +225,13 @@ input[type="number"] {
 
 .brand-badge {
   font-size: 11px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 2px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: var(--radius-chip);
   border: 1px solid var(--border);
-  background-color: var(--raised);
+  background-color: transparent;
   color: var(--muted);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   line-height: 1.3;
 }
 
@@ -243,19 +243,19 @@ input[type="number"] {
   font-weight: 400;
 }
 
-/* ── Navigasi Sidebar (Sentence Case, Tanpa Huruf Kapital Berjarak) ── */
+/* ── Navigasi Sidebar (Sentence Case, Skala 4px, Tanpa Strip Kiri) ── */
 .nav-group-title {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
-  font-weight: 600;
-  padding: 16px 10px 6px 10px;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  padding: 20px 8px 8px 8px;
+  letter-spacing: 0;
 }
 
 .nav-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .nav-item,
@@ -265,20 +265,20 @@ button.nav-item,
   align-items: center;
   justify-content: flex-start !important;
   text-align: left !important;
-  gap: 10px;
+  gap: 8px;
   height: var(--ctl-h-md);
-  padding: 0 10px;
+  padding: 0 8px;
   border-radius: var(--radius-chip);
   color: var(--muted);
   text-decoration: none;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
   border: 1px solid transparent;
   background: transparent;
   width: 100%;
   position: relative;
-  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out), box-shadow var(--dur-ui) var(--ease-out);
+  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out);
 }
 
 .nav-item span {
@@ -286,29 +286,17 @@ button.nav-item,
 }
 
 .nav-item:hover:not(.active) {
-  background-color: #FFFFFF;
+  background-color: var(--surface);
   color: var(--text);
   border-color: var(--border);
 }
 
 .nav-item.active,
 #app-sidebar .nav-item.active {
-  background-color: #FFFFFF !important;
+  background-color: var(--surface) !important;
   color: var(--text) !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   border: 1px solid var(--border) !important;
-}
-
-.nav-item.active::before,
-#app-sidebar .nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: -1px;
-  top: -1px;
-  bottom: -1px;
-  width: 3.5px;
-  background-color: var(--accent);
-  border-radius: 3px 0 0 3px;
 }
 
 .nav-item svg {
@@ -323,66 +311,60 @@ button.nav-item,
 
 .nav-item.active svg,
 #app-sidebar .nav-item.active svg {
-  stroke: var(--accent) !important;
-  stroke-width: 2 !important;
+  stroke: var(--text) !important;
+  stroke-width: 1.5 !important;
 }
 
 .nav-badge {
   margin-left: auto;
   font-size: 11px;
-  padding: 1px 6px;
-  border-radius: 2px;
-  background-color: var(--pill-negative-bg);
-  color: var(--pill-negative-ink);
-  font-weight: 600;
-  border: 1px solid rgba(196, 36, 42, 0.2);
+  padding: 2px 6px;
+  border-radius: var(--radius-chip);
+  background-color: var(--raised);
+  color: var(--ink-secondary);
+  font-weight: 500;
+  border: none;
 }
 
 .nav-item.active .nav-badge {
   background-color: var(--accent-soft);
   color: var(--accent-ink);
-  font-weight: 600;
-  border-color: rgba(217, 72, 15, 0.2);
+  font-weight: 500;
 }
 
-/* ── Dasar Sidebar: Kartu Akun Sharp Ledger (DESIGN.md §3.3 & §4.1) ── */
+/* ── Dasar Sidebar: Identitas Pengguna & Keluar Tanpa Kotak Bertumpuk ── */
 .sidebar-footer {
   margin-top: auto;
-  padding: 14px 0 0 0;
+  padding: 12px 0 0 0;
   border-top: 1px solid var(--border);
   width: 100%;
   box-sizing: border-box;
 }
 
 .sidebar-account-box {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border);
+  background-color: transparent;
+  border: none;
   border-radius: var(--radius-chip);
-  padding: 7px 8px;
+  padding: 8px 4px;
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
   box-sizing: border-box;
-  transition: border-color var(--dur-ui) var(--ease-out);
-}
-
-.sidebar-account-box:hover {
-  border-color: var(--control);
 }
 
 .sidebar-account-box .user-avatar {
   width: var(--ctl-h-sm);
   height: var(--ctl-h-sm);
-  border-radius: 3px;
-  border: 1px solid rgba(15, 18, 20, 0.12);
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--border);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
   font-family: var(--font-mono);
-  background-color: var(--raised);
+  background-color: var(--surface);
   color: var(--text);
   flex-shrink: 0;
   box-sizing: border-box;
@@ -393,12 +375,12 @@ button.nav-item,
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 
 .sidebar-account-box .user-name {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -407,9 +389,9 @@ button.nav-item,
 }
 
 .sidebar-account-box .user-role {
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--muted);
-  font-weight: 500;
+  font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -511,12 +493,12 @@ button.nav-item,
 .view-panel {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  animation: viewFadeIn 140ms var(--ease-out);
+  gap: 24px;
+  animation: viewFadeIn 160ms var(--ease-out);
 }
 
 @keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(3px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -528,21 +510,10 @@ button.nav-item,
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  min-height: var(--header-datum-h, 76px);
-  padding: 0 0 14px 0;
+  min-height: 56px;
+  padding: 0 0 16px 0;
   margin-bottom: 0;
   border-bottom: 1px solid var(--border);
-}
-
-.page-header::after,
-.screen-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  width: 44px;
-  height: 2px;
-  background-color: var(--accent);
 }
 
 .page-title-group,
@@ -557,7 +528,7 @@ button.nav-item,
 .screen-title-wrap h2,
 .page-header h1 {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text);
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -769,6 +740,17 @@ button svg,
   border-color: var(--negative);
 }
 
+.btn-tertiary {
+  background-color: transparent;
+  color: var(--muted);
+  border-color: transparent;
+}
+
+.btn-tertiary:hover {
+  background-color: var(--raised);
+  color: var(--text);
+}
+
 .ctl-row {
   display: flex;
   align-items: center;
@@ -861,13 +843,13 @@ textarea::placeholder {
 }
 
 .kpi-col {
-  padding: 18px 20px;
+  padding: 20px;
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 4px;
-  min-height: 94px;
+  min-height: 96px;
   min-width: 0;
 }
 
@@ -884,7 +866,7 @@ textarea::placeholder {
 
 .kpi-value {
   font-size: 24px;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--text);
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -945,8 +927,8 @@ textarea::placeholder {
 }
 
 .card-title {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--text);
   letter-spacing: -0.01em;
   min-width: 0;
@@ -1071,7 +1053,7 @@ textarea::placeholder {
 
 .track-bar {
   width: 100%;
-  height: 8px;
+  height: 6px;
   background-color: var(--raised);
   border-radius: var(--radius-chip);
   overflow: hidden;
@@ -1686,13 +1668,13 @@ th.text-center {
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-control);
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-size: 13px;
   color: var(--text);
-  box-shadow: 0 4px 12px rgba(15, 18, 20, 0.08);
+  box-shadow: 0 1px 2px rgba(15, 18, 20, 0.05);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 260px;
   max-width: 400px;
 }
@@ -1834,7 +1816,7 @@ th.text-center {
   }
   .table-mobile-cards td[data-label]::before {
     content: attr(data-label) ": ";
-    font-size: 11px;
+    font-size: 12px;
     color: var(--muted);
     font-weight: 500;
   }
@@ -1873,36 +1855,19 @@ th.text-center {
   border: 1px dashed var(--control);
 }
 
-/* ── Panduan Onboarding Ringkas, Pemulihan Error, & Pembagi Form ── */
-.onboard-card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  padding: 16px 20px;
-  margin-bottom: 16px;
-}
-
-.onboard-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-
+/* ── Panduan Onboarding (Modal 2 Kolom) ── */
 .onboard-steps {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .onboard-step {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 10px 12px;
-  border: 1px solid var(--rule);
+  padding: 12px 16px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-control);
   background-color: var(--ground);
   text-align: left;
@@ -1913,30 +1878,31 @@ th.text-center {
   white-space: normal !important;
   align-items: flex-start !important;
   justify-content: flex-start !important;
+  transition: background-color var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out);
 }
 
 .onboard-step:hover {
   border-color: var(--control);
-  background-color: var(--raised);
+  background-color: var(--surface);
 }
 
 .onboard-step-num {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--accent-ink);
   font-family: var(--font-mono);
 }
 
 .onboard-step-title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--text);
 }
 
 .onboard-step-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .form-section-divider {

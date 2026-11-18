@@ -1,15 +1,15 @@
 <!-- html/views/Ringkasan.html — Dasbor Ringkasan Eksekutif Pengawakan (Open-Plane / Achromatic Ledger) -->
 <div id="view-ringkasan" class="app-view">
   
-  <!-- Baris Judul & Temuan Berbasis Data (DESIGN.md §1.2 & §5.1) -->
+  <!-- Baris Judul & Aksi Utama (Skala 4px, 1 Sekunder + 1 Primer + Panduan) -->
   <div class="page-header">
     <div class="page-title-group">
       <h1 class="page-title">Ringkasan Eksekutif Pengawakan</h1>
     </div>
     <div class="page-actions">
-      <button type="button" class="btn btn-secondary-md" id="btn-ringkasan-onboard-open" title="Lihat panduan alur kerja operasional Nakhoda">
+      <button type="button" class="btn btn-sm btn-tertiary" id="btn-ringkasan-onboard-open" title="Lihat alur kerja operasional Nakhoda">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span>Panduan alur</span>
+        <span>Panduan</span>
       </button>
       <button type="button" class="btn btn-secondary-md" id="btn-ringkasan-refresh">
         <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
@@ -22,42 +22,8 @@
     </div>
   </div>
 
-  <!-- Panduan Alur Operasional Pengguna Baru (Dismissible & Replayable) -->
-  <div id="ringkasan-onboard-card" class="onboard-card hidden">
-    <div class="onboard-head">
-      <div>
-        <div style="font-size:14px; font-weight:600; color:var(--text);">Alur kerja operasional Nakhoda</div>
-        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Urutan kerja harian Timja Pengawakan dari pendataan personel hingga pelaporan armada. Klik langkah untuk langsung menuju menu.</div>
-      </div>
-      <button type="button" class="btn btn-secondary-sm" id="btn-ringkasan-onboard-dismiss">Tutup panduan</button>
-    </div>
-    <div class="onboard-steps">
-      <a href="#/direktori" class="onboard-step" onclick="event.preventDefault(); Router.navigate('direktori');">
-        <span class="onboard-step-num">01 · Direktori Awak</span>
-        <span class="onboard-step-title">Data &amp; Sync SIKAP</span>
-        <span class="onboard-step-desc">Tambahkan awak baru atau Sync SIKAP agar profil personel masuk ke basis data.</span>
-      </a>
-      <a href="#/kompetensi" class="onboard-step" onclick="event.preventDefault(); Router.navigate('kompetensi');">
-        <span class="onboard-step-num">02 · Kompetensi &amp; BST</span>
-        <span class="onboard-step-title">Catat Sertifikat</span>
-        <span class="onboard-step-desc">Rekam sertifikat wajib STCW-F &amp; BST serta pantau yang habis dalam 90 hari.</span>
-      </a>
-      <a href="#/sijil" class="onboard-step" onclick="event.preventDefault(); Router.navigate('sijil');">
-        <span class="onboard-step-num">03 · Papan Sijil</span>
-        <span class="onboard-step-title">Tempatkan ke Kapal</span>
-        <span class="onboard-step-desc">Isi kursi kosong Safe Manning kapal pengawas dan lampirkan Surat Tugas.</span>
-      </a>
-      <a href="#/kegiatan" class="onboard-step" onclick="event.preventDefault(); Router.navigate('kegiatan');">
-        <span class="onboard-step-num">04 · Log &amp; Laporan</span>
-        <span class="onboard-step-title">Pembinaan &amp; Ekspor</span>
-        <span class="onboard-step-desc">Catat kegiatan pembinaan beserta bukti, lalu cetak Executive Report.</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- Strip KPI Satu Kontainer (DESIGN.md §5.3) -->
+  <!-- Strip KPI Satu Kontainer (Langsung di Atas Lipatan Desktop & Mobile) -->
   <div class="kpi-container">
-    <!-- KPI 1: Kekuatan Personil AKN (Lead Metric 30px) -->
     <div class="kpi-col">
       <div class="kpi-label">Total personil AKN</div>
       <div class="kpi-value-lead mono tnum" id="kpi-total-akn">--</div>
@@ -66,7 +32,6 @@
       </div>
     </div>
 
-    <!-- KPI 2: Kepatuhan Standar STCW-F (24px) -->
     <div class="kpi-col">
       <div class="kpi-label">Awak berkualifikasi lengkap</div>
       <div class="kpi-value mono tnum" id="kpi-awak-lengkap">--</div>
@@ -75,7 +40,6 @@
       </div>
     </div>
 
-    <!-- KPI 3: Revalidasi Sertifikat Mendesak (24px) -->
     <div class="kpi-col">
       <div class="kpi-label">Sertifikat habis &le; 90 hari</div>
       <div class="kpi-value mono tnum" id="kpi-sertifikat-urgent">--</div>
@@ -84,7 +48,6 @@
       </div>
     </div>
 
-    <!-- KPI 4: Kelaikan Safe Manning Kapal (24px) -->
     <div class="kpi-col">
       <div class="kpi-label">Kelaikan safe manning armada</div>
       <div class="kpi-value mono tnum" id="kpi-kapal-laik">--</div>
@@ -94,85 +57,20 @@
     </div>
   </div>
 
-  <!-- Grid 2 Kolom: Bilah Proporsi AKN & Antrean Sertifikat Mendesak -->
-  <div class="grid-2col">
-    
-    <!-- Kolom Kiri: Distribusi Kekuatan AKN (Track Bar Oranye Keselamatan) -->
-    <div class="card">
-      <div class="card-header">
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
-          <h2 class="card-title">Komposisi awak kapal negara (AKN)</h2>
-          <span class="badge badge-neutral mono" id="label-ringkasan-akn-periode">Periode --</span>
-        </div>
-        <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('komposisi')">
-          <span>Kelola komposisi &rarr;</span>
-        </button>
-      </div>
-
-      <!-- Daftar 5 Kategori Kepegawaian dengan Bilah Proporsi -->
-      <div class="track-list" id="ringkasan-track-list">
-        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat distribusi komposisi AKN...</div>
-      </div>
-
-      <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px 12px; font-size:12px; color:var(--muted);">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="display:flex; align-items:center; gap:6px;">
-            <div style="width:10px; height:10px; background-color:var(--accent); border-radius:2px;"></div>
-            <span>Pusat (Dit. POA)</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <div style="width:10px; height:10px; background-color:var(--raised); border:1px solid var(--control); border-radius:2px;"></div>
-            <span>Keseluruhan PSDKP</span>
-          </div>
-        </div>
-        <div id="ringkasan-total-rasio" class="mono" style="font-weight:600; color:var(--text);">--</div>
-      </div>
-    </div>
-
-    <!-- Kolom Kanan: Prioritas Revalidasi Sertifikasi (<= 90 Hari) -->
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">Prioritas revalidasi sertifikasi (&le; 90 hari)</h2>
-        <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('kompetensi')">
-          <span>Semua sertifikat &rarr;</span>
-        </button>
-      </div>
-
-      <div class="table-wrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Personil</th>
-              <th>Sertifikat</th>
-              <th>Masa berlaku</th>
-              <th class="text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-ringkasan-sertifikat">
-            <tr>
-              <td colspan="4" style="text-align:center; padding:24px; color:var(--muted);">Memuat data sertifikat...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Grid 2fr : 1fr — Papan Sijil Ringkas & Agenda Terkini -->
+  <!-- Momen Utama (2fr : 1fr) — Kesiapan Formasi Safe Manning Armada + Proporsi Komposisi AKN -->
   <div class="grid-2fr-1fr">
     
-    <!-- Kolom Kiri: Papan Sijil Ringkas Armada -->
-    <div class="card">
+    <!-- Kolom Kiri (2fr): Kesiapan Formasi Safe Manning Armada -->
+    <div class="card card-flush">
       <div class="card-header">
         <h2 class="card-title">Kesiapan formasi safe manning armada</h2>
-        <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('sijil')">
-          <span>Buka papan sijil 2D &rarr;</span>
+        <button type="button" class="btn btn-sm btn-tertiary" onclick="Router.navigate('sijil')">
+          <span>Papan sijil</span>
         </button>
       </div>
 
       <div class="table-wrap">
-        <table class="table">
+        <table class="table table-mobile-cards">
           <thead>
             <tr>
               <th>Nama kapal pengawas</th>
@@ -192,32 +90,97 @@
       </div>
     </div>
 
-    <!-- Kolom Kanan: Agenda Kegiatan Operasional Terkini -->
+    <!-- Kolom Kanan (1fr): Komposisi AKN 4 Kategori Baku -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">Agenda kegiatan terkini</h2>
-        <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('kegiatan')">
-          <span>Lihat log &rarr;</span>
+        <div>
+          <h2 class="card-title">Komposisi AKN</h2>
+          <div class="mono" style="font-size:12px; color:var(--muted); margin-top:2px;" id="label-ringkasan-akn-periode">Periode --</div>
+        </div>
+        <button type="button" class="btn btn-sm btn-tertiary" onclick="Router.navigate('komposisi')">
+          <span>Kelola</span>
         </button>
       </div>
 
-      <div id="ringkasan-kegiatan-container" style="display:flex; flex-direction:column; gap:12px;">
+      <!-- Komposisi 4 Kategori Baku AKN -->
+      <div class="track-list" id="ringkasan-track-list">
+        <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat distribusi komposisi AKN...</div>
+      </div>
+
+      <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px 12px; font-size:12px; color:var(--muted);">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:8px; height:8px; background-color:var(--accent); border-radius:2px;"></div>
+            <span>Dit. POA</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:8px; height:8px; background-color:var(--raised); border:1px solid var(--control); border-radius:2px;"></div>
+            <span>PSDKP</span>
+          </div>
+        </div>
+        <div id="ringkasan-total-rasio" class="mono" style="font-weight:500; color:var(--text);">--</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Baris Kedua (2fr : 1fr) — Prioritas Revalidasi Sertifikasi & Agenda Kegiatan Terkini -->
+  <div class="grid-2fr-1fr">
+
+    <!-- Kolom Kiri (2fr): Prioritas Revalidasi Sertifikasi (<= 90 Hari) -->
+    <div class="card card-flush">
+      <div class="card-header">
+        <h2 class="card-title">Prioritas revalidasi sertifikasi (&le; 90 hari)</h2>
+        <button type="button" class="btn btn-sm btn-tertiary" onclick="Router.navigate('kompetensi')">
+          <span>Semua sertifikat</span>
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table table-mobile-cards">
+          <thead>
+            <tr>
+              <th>Personil</th>
+              <th>Sertifikat</th>
+              <th>Masa berlaku</th>
+              <th class="text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-ringkasan-sertifikat">
+            <tr>
+              <td colspan="4" style="text-align:center; padding:24px; color:var(--muted);">Memuat data sertifikat...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Kolom Kanan (1fr): Agenda Kegiatan Operasional Terkini (Tanpa Kotak Bertumpuk) -->
+    <div class="card">
+      <div class="card-header" style="margin-bottom:8px;">
+        <h2 class="card-title">Agenda kegiatan terkini</h2>
+        <button type="button" class="btn btn-sm btn-tertiary" onclick="Router.navigate('kegiatan')">
+          <span>Lihat log</span>
+        </button>
+      </div>
+
+      <div id="ringkasan-kegiatan-container" style="display:flex; flex-direction:column;">
         <div style="padding:20px 0; text-align:center; color:var(--muted); font-size:12px;">Memuat agenda kegiatan...</div>
       </div>
     </div>
 
   </div>
 
-  <!-- Postur Kekuatan per Jabatan Awak (Ringkasan Pimpinan) -->
-  <div class="card">
+  <!-- Postur Kekuatan per Kelompok Jabatan Awak -->
+  <div class="card card-flush">
     <div class="card-header">
       <h2 class="card-title">Postur kekuatan per kelompok jabatan awak</h2>
-      <button type="button" class="btn btn-secondary-sm" onclick="Router.navigate('komposisi')">
-        <span>Rincian komposisi &rarr;</span>
+      <button type="button" class="btn btn-sm btn-tertiary" onclick="Router.navigate('komposisi')">
+        <span>Rincian</span>
       </button>
     </div>
     <div class="table-wrap">
-      <table class="table">
+      <table class="table table-mobile-cards">
         <thead>
           <tr>
             <th>Kelompok jabatan</th>
@@ -236,4 +199,44 @@
     </div>
   </div>
 
+</div>
+
+<!-- ── MODAL PANDUAN ALUR OPERASIONAL (DIPICU TOMBOL PANDUAN HEADER) ── -->
+<div id="modal-ringkasan-onboard" class="modal-overlay">
+  <div class="modal-box modal-box-wide">
+    <div class="modal-header">
+      <div class="modal-title">Alur kerja operasional Nakhoda</div>
+      <button type="button" class="modal-close" aria-label="Tutup panduan" onclick="Modal.close('modal-ringkasan-onboard')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">
+        Urutan kerja Timja Pengawakan dari pendataan personel hingga pelaporan armada. Pilih langkah untuk membuka modul terkait.
+      </p>
+      <div class="onboard-steps">
+        <a href="#/direktori" class="onboard-step" onclick="event.preventDefault(); Modal.close('modal-ringkasan-onboard'); Router.navigate('direktori');">
+          <span class="onboard-step-num">01 · Direktori Awak</span>
+          <span class="onboard-step-title">Data &amp; Sync SIKAP</span>
+          <span class="onboard-step-desc">Tambahkan awak baru atau Sync SIKAP agar profil personel masuk ke basis data.</span>
+        </a>
+        <a href="#/kompetensi" class="onboard-step" onclick="event.preventDefault(); Modal.close('modal-ringkasan-onboard'); Router.navigate('kompetensi');">
+          <span class="onboard-step-num">02 · Kompetensi &amp; BST</span>
+          <span class="onboard-step-title">Catat Sertifikat</span>
+          <span class="onboard-step-desc">Rekam sertifikat wajib STCW-F &amp; BST serta pantau yang habis dalam 90 hari.</span>
+        </a>
+        <a href="#/sijil" class="onboard-step" onclick="event.preventDefault(); Modal.close('modal-ringkasan-onboard'); Router.navigate('sijil');">
+          <span class="onboard-step-num">03 · Papan Sijil</span>
+          <span class="onboard-step-title">Tempatkan ke Kapal</span>
+          <span class="onboard-step-desc">Isi kursi kosong Safe Manning kapal pengawas dan lampirkan Surat Tugas.</span>
+        </a>
+        <a href="#/kegiatan" class="onboard-step" onclick="event.preventDefault(); Modal.close('modal-ringkasan-onboard'); Router.navigate('kegiatan');">
+          <span class="onboard-step-num">04 · Log &amp; Laporan</span>
+          <span class="onboard-step-title">Pembinaan &amp; Ekspor</span>
+          <span class="onboard-step-desc">Catat kegiatan pembinaan beserta bukti, lalu cetak Executive Report.</span>
+        </a>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary-md" onclick="Modal.close('modal-ringkasan-onboard')">Mengerti</button>
+    </div>
+  </div>
 </div>
