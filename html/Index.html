@@ -146,11 +146,58 @@
   </main>
 </div>
 
+<!-- ── MODAL KONFIRMASI GLOBAL (PENGGANTI window.confirm) ── -->
+<div id="modal-global-confirm" class="modal-overlay">
+  <div class="modal-box modal-box-sm">
+    <div class="modal-header">
+      <div class="modal-title" id="confirm-modal-title">Konfirmasi tindakan</div>
+      <button type="button" class="modal-close" aria-label="Tutup modal" onclick="Modal.close('modal-global-confirm')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-modal-message" style="font-size:13px; line-height:1.5; color:var(--text); margin:0;">Lanjutkan tindakan ini?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary-md" id="btn-confirm-cancel" onclick="Modal.close('modal-global-confirm')">Batal</button>
+      <button type="button" class="btn btn-primary-md" id="btn-confirm-ok">Lanjutkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL SESI BERAKHIR (PRESERVE FORM STATE — DESIGN.md §10) ── -->
+<div id="modal-session-expired" class="modal-overlay">
+  <div class="modal-box modal-box-sm">
+    <div class="modal-header">
+      <div class="modal-title">Sesi berakhir</div>
+      <button type="button" class="modal-close" aria-label="Tutup modal" onclick="Modal.close('modal-session-expired')">&times;</button>
+    </div>
+    <form id="form-session-reauth">
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--muted); line-height:1.45; margin-bottom:14px;">
+          Sesi masuk Anda telah kedaluwarsa. Masuk kembali untuk melanjutkan tanpa kehilangan data formulir yang sedang dikerjakan.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="reauth-ident">Email atau NIP</label>
+          <input type="text" id="reauth-ident" class="form-control-md" required autocomplete="username">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="reauth-password">Password</label>
+          <input type="password" id="reauth-password" class="form-control-md" required autocomplete="current-password" placeholder="Masukkan password Anda">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-md" onclick="AuthApp.logout(false); Modal.close('modal-session-expired');">Keluar</button>
+        <button type="submit" id="btn-reauth-submit" class="btn btn-primary-md">Masuk kembali</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ── TOASTER GLOBAL ── -->
 <div id="toaster"></div>
 
 <!-- ── SCRIPT CORE & CONTROLLERS ── -->
 <?!= html_include('html/Script_Format'); ?>
+<?!= html_include('html/assets/Charts'); ?>
 <?!= html_include('html/Script_Core'); ?>
 <?!= html_include('html/Script_Ringkasan'); ?>
 <?!= html_include('html/Script_Akn'); ?>

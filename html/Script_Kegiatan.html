@@ -288,32 +288,53 @@ var KegiatanView = (function () {
       return String(it.status || '').toUpperCase() !== 'VOID';
     });
 
-    var html = '<div style="position:relative; padding-left:24px; border-left:2px solid var(--border); display:flex; flex-direction:column; gap:24px; margin-left:12px;">';
+    if (activeItems.length === 0) {
+      container.innerHTML = '<div style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada agenda aktif untuk ditampilkan pada garis waktu.</div>';
+      return;
+    }
+
+    var minMs = Infinity;
+    var maxMs = -Infinity;
+    activeItems.forEach(function (keg) {
+      var s = new Date(keg.tanggalMulai).getTime();
+      var e = new Date(keg.tanggalSelesai || keg.tanggalMulai).getTime();
+      if (!isNaN(s) && s < minMs) minMs = s;
+      if (!isNaN(e) && e > maxMs) maxMs = e;
+    });
+    if (!isFinite(minMs) || !isFinite(maxMs)) {
+      minMs = Date.now();
+      maxMs = minMs + 86400000;
+    }
+    var spanMs = Math.max(maxMs - minMs, 86400000 * 7);
+    var todayMs = Date.now();
+
+    var html = '<div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); padding-bottom:8px; border-bottom:1px solid var(--border); margin-bottom:10px;">' +
+      '<span class="mono tnum">Awal rentang: ' + Format.date(new Date(minMs).toISOString().substring(0, 10)) + '</span>' +
+      '<span class="mono tnum">Akhir rentang: ' + Format.date(new Date(maxMs).toISOString().substring(0, 10)) + '</span>' +
+    '</div><div class="timeline-list">';
 
     activeItems.forEach(function (keg) {
       var jenisLabel = JENIS_LABELS[keg.jenisKegiatan] || keg.jenisKegiatan;
-      var dateRange = Format.date(keg.tanggalMulai);
-      if (keg.tanggalSelesai && keg.tanggalSelesai !== keg.tanggalMulai) {
-        dateRange += ' &ndash; ' + Format.date(keg.tanggalSelesai);
-      }
+      var sMs = new Date(keg.tanggalMulai).getTime() || minMs;
+      var eMs = new Date(keg.tanggalSelesai || keg.tanggalMulai).getTime() || sMs;
+      if (eMs < sMs) eMs = sMs;
+      var leftPct = Math.max(0, Math.min(92, ((sMs - minMs) / spanMs) * 100));
+      var widthPct = Math.max(8, Math.min(100 - leftPct, (((eMs - sMs) + 86400000) / spanMs) * 100));
+      var barClass = eMs < todayMs ? 'timeline-bar timeline-bar-done' : (sMs > todayMs ? 'timeline-bar timeline-bar-upcoming' : 'timeline-bar timeline-bar-active');
+      var dateRange = Format.date(keg.tanggalMulai) + (keg.tanggalSelesai && keg.tanggalSelesai !== keg.tanggalMulai ? ' – ' + Format.date(keg.tanggalSelesai) : '');
 
-      html += '<div style="position:relative;">' +
-        // Bullet titik orange pada garis waktu
-        '<div style="position:absolute; left:-31px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--accent); border:2px solid var(--bg);"></div>' +
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">' +
-          '<div>' +
-            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">' +
-              '<span class="mono tnum" style="font-size:11px; font-weight:600; color:var(--accent);">' + dateRange + '</span>' +
-              (keg.wilayah ? '<span style="font-size:11px; padding:1px 6px; background:var(--surface); border:1px solid var(--border); border-radius:3px; color:var(--muted);">' + Format.escape(keg.wilayah) + '</span>' : '') +
-              '<span style="font-size:11px; color:var(--muted);">· ' + Format.escape(jenisLabel) + '</span>' +
-            '</div>' +
-            '<div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px;">' + Format.escape(keg.judulKegiatan) + '</div>' +
-            (keg.deskripsi ? '<p style="font-size:12px; color:var(--text-secondary); line-height:1.5; margin:0 0 6px 0; max-width:680px;">' + Format.escape(keg.deskripsi) + '</p>' : '') +
-            '<div style="display:flex; align-items:center; gap:12px; font-size:11px; color:var(--muted);">' +
-              '<span><strong>' + Format.number(keg.jumlahPeserta) + '</strong> personil peserta</span>' +
-              (keg.evidenceCount > 0 ? '<span>· <strong>' + keg.evidenceCount + '</strong> berkas lampiran</span>' : '') +
-            '</div>' +
+      html += '<div class="timeline-item">' +
+        '<div>' +
+          '<div style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(keg.judulKegiatan) + '</div>' +
+          '<div class="mono" style="font-size:11px; color:var(--muted); margin-top:2px;">' + dateRange + (keg.wilayah ? ' · ' + Format.escape(keg.wilayah) : '') + ' · ' + Format.escape(jenisLabel) + '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="timeline-track" title="' + Format.escape(dateRange) + '">' +
+            '<div class="' + barClass + '" style="left:' + leftPct.toFixed(1) + '%; width:' + widthPct.toFixed(1) + '%;"></div>' +
           '</div>' +
+          '<div style="font-size:11px; color:var(--muted); margin-top:4px;">' + Format.number(keg.jumlahPeserta) + ' peserta' + (keg.evidenceCount > 0 ? ' · ' + keg.evidenceCount + ' bukti' : '') + '</div>' +
+        '</div>' +
+        '<div style="text-align:right;">' +
           '<button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.openDetailSheet(\'' + keg.rowId + '\')">Detail</button>' +
         '</div>' +
       '</div>';
@@ -354,12 +375,12 @@ var KegiatanView = (function () {
         if (Array.isArray(data.evidence) && data.evidence.length > 0) {
           filesHtml = '<div style="display:flex; flex-direction:column; gap:8px;">';
           data.evidence.forEach(function (ev) {
-            filesHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);">' +
+            filesHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-control);">' +
               '<div style="display:flex; align-items:center; gap:8px; overflow:hidden;">' +
                 '<svg viewBox="0 0 24 24" style="width:16px; height:16px; stroke:var(--accent); stroke-width:2; fill:none; flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
                 '<div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
                   '<div style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(ev.JudulFile || 'Dokumen Bukti') + '</div>' +
-                  '<div style="font-size:10px; color:var(--muted);">' + Format.date(ev.Timestamp) + '</div>' +
+                  '<div style="font-size:11px; color:var(--muted);">' + Format.date(ev.Timestamp) + '</div>' +
                 '</div>' +
               '</div>' +
               (ev.FileUrl ? '<a href="' + ev.FileUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-sm" style="flex-shrink:0;">Buka berkas</a>' : '') +
@@ -370,7 +391,7 @@ var KegiatanView = (function () {
 
         var voidInfo = '';
         if (isVoid) {
-          voidInfo = '<div style="padding:12px; background:var(--negative-bg); border:1px solid var(--negative-border); border-radius:var(--radius-sm); margin-bottom:16px; font-size:12px; color:var(--negative);">' +
+          voidInfo = '<div style="padding:12px; background:var(--pill-negative-bg); border:1px solid var(--negative); border-radius:var(--radius-control); margin-bottom:16px; font-size:12px; color:var(--pill-negative-ink);">' +
             '<strong>Agenda ini telah dianulir.</strong><br>' +
             'Alasan: ' + Format.escape(k.VoidReason || 'Tidak ada catatan alasan.') + '<br>' +
             '<span style="font-size:11px; color:var(--muted);">' + Format.date(k.VoidedAt) + '</span>' +
@@ -379,7 +400,7 @@ var KegiatanView = (function () {
 
         var bHtml = voidInfo +
           '<div style="display:flex; flex-direction:column; gap:16px;">' +
-            '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);">' +
+            '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-control);">' +
               '<div>' +
                 '<div style="font-size:11px; color:var(--muted);">Jenis pembinaan</div>' +
                 '<div style="font-size:12px; font-weight:600; color:var(--text);">' + Format.escape(jenisLabel) + '</div>' +
@@ -400,7 +421,7 @@ var KegiatanView = (function () {
 
             '<div>' +
               '<div style="font-size:12px; font-weight:600; color:var(--text); margin-bottom:6px;">Ringkasan notula &amp; pembahasan</div>' +
-              '<div style="font-size:12px; line-height:1.6; color:var(--text); padding:12px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); white-space:pre-wrap;">' +
+              '<div style="font-size:12px; line-height:1.6; color:var(--text); padding:12px; background:var(--ground); border:1px solid var(--border); border-radius:var(--radius-control); white-space:pre-wrap;">' +
                 (Format.escape(k.Deskripsi) || 'Tidak ada notula terlampir.') +
               '</div>' +
             '</div>' +
@@ -526,7 +547,7 @@ var KegiatanView = (function () {
     var html = '';
     _stagedFiles.forEach(function (f, idx) {
       var sizeKb = Math.round(f.size / 1024);
-      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:11px;">' +
+      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:var(--ground); border:1px solid var(--border); border-radius:var(--radius-control); font-size:11px;">' +
         '<div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:380px;">' +
           '<strong>' + Format.escape(f.name) + '</strong> (' + sizeKb + ' KB)' +
         '</div>' +

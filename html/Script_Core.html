@@ -103,9 +103,30 @@ var Modal = (function () {
     }
   });
 
+  function confirm(opts) {
+    var o = opts || {};
+    var titleEl = document.getElementById('confirm-modal-title');
+    var msgEl = document.getElementById('confirm-modal-message');
+    var okBtn = document.getElementById('btn-confirm-ok');
+    if (!titleEl || !msgEl || !okBtn) {
+      if (typeof o.onConfirm === 'function') o.onConfirm();
+      return;
+    }
+    titleEl.textContent = o.title || 'Konfirmasi tindakan';
+    msgEl.textContent = o.message || 'Lanjutkan tindakan ini?';
+    okBtn.textContent = o.confirmLabel || 'Lanjutkan';
+    okBtn.className = o.danger ? 'btn btn-danger-md' : 'btn btn-primary-md';
+    okBtn.onclick = function () {
+      close('modal-global-confirm');
+      if (typeof o.onConfirm === 'function') o.onConfirm();
+    };
+    open('modal-global-confirm');
+  }
+
   return {
     open: open,
-    close: close
+    close: close,
+    confirm: confirm
   };
 })();
 
@@ -131,9 +152,30 @@ var Sheet = (function () {
     document.body.style.overflow = '';
   }
 
+  function confirm(opts) {
+    var o = opts || {};
+    var titleEl = document.getElementById('confirm-modal-title');
+    var msgEl = document.getElementById('confirm-modal-message');
+    var okBtn = document.getElementById('btn-confirm-ok');
+    if (!titleEl || !msgEl || !okBtn) {
+      if (typeof o.onConfirm === 'function') o.onConfirm();
+      return;
+    }
+    titleEl.textContent = o.title || 'Konfirmasi tindakan';
+    msgEl.textContent = o.message || 'Lanjutkan tindakan ini?';
+    okBtn.textContent = o.confirmLabel || 'Lanjutkan';
+    okBtn.className = o.danger ? 'btn btn-danger-md' : 'btn btn-primary-md';
+    okBtn.onclick = function () {
+      close('modal-global-confirm');
+      if (typeof o.onConfirm === 'function') o.onConfirm();
+    };
+    open('modal-global-confirm');
+  }
+
   return {
     open: open,
-    close: close
+    close: close,
+    confirm: confirm
   };
 })();
 
@@ -215,12 +257,28 @@ var ShellUI = (function () {
     });
   }
 
+  function skeletonRows(colCount, rowCount) {
+    var cols = colCount || 4;
+    var rows = rowCount || 4;
+    var html = '';
+    for (var r = 0; r < rows; r++) {
+      html += '<tr>';
+      for (var c = 0; c < cols; c++) {
+        var w = c === 0 ? '68%' : (c === cols - 1 ? '44px' : '55%');
+        html += '<td><span class="skeleton-bar" style="width:' + w + ';"></span></td>';
+      }
+      html += '</tr>';
+    }
+    return html;
+  }
+
   return {
     toggleMobileNav: toggleMobileNav,
     closeMobileNav: closeMobileNav,
     syncHeaderDatum: syncHeaderDatum,
     bindCalendarInputs: bindCalendarInputs,
-    bindRowKeyboard: bindRowKeyboard
+    bindRowKeyboard: bindRowKeyboard,
+    skeletonRows: skeletonRows
   };
 })();
 
@@ -369,9 +427,8 @@ function rpc(funcName, params) {
         }
         if (response.success === false) {
           var err = response.error || 'Terjadi error pada server.';
-          if (err.indexOf('UNAUTHORIZED') !== -1) {
-            Toast.error('Sesi Anda expired. Silakan login kembali.');
-            AuthApp.logout(false);
+          if (err.indexOf('UNAUTHORIZED') !== -1 && funcName.indexOf('auth_') !== 0) {
+            AuthApp.promptReauth();
           }
           return reject(new Error(err));
         }
@@ -383,9 +440,8 @@ function rpc(funcName, params) {
       .withFailureHandler(function (err) {
         if (!skipLoader) GlobalLoader.done();
         var msg = err && err.message ? err.message : String(err);
-        if (msg.indexOf('UNAUTHORIZED') !== -1) {
-          Toast.error('Sesi Anda tidak valid. Silakan login kembali.');
-          AuthApp.logout(false);
+        if (msg.indexOf('UNAUTHORIZED') !== -1 && funcName.indexOf('auth_') !== 0) {
+          AuthApp.promptReauth();
         }
         reject(new Error(msg));
       });
@@ -807,13 +863,51 @@ var AuthApp = (function () {
     showLogin();
   }
 
+  function promptReauth() {
+    var modal = document.getElementById('modal-session-expired');
+    if (!modal || modal.classList.contains('active')) return;
+    var u = getUser() || {};
+    var identInp = document.getElementById('reauth-ident');
+    var pwdInp = document.getElementById('reauth-password');
+    if (identInp && !identInp.value) identInp.value = u.email || u.nip || '';
+    if (pwdInp) pwdInp.value = '';
+    Modal.open('modal-session-expired');
+  }
+
   function _initAppEvents() {
     var btnLogout = document.getElementById('btn-logout');
     if (btnLogout) {
       btnLogout.onclick = function () {
-        if (confirm('Apakah Anda yakin ingin keluar dari Nakhoda?')) {
-          logout(true);
-        }
+        Modal.confirm({
+          title: 'Keluar dari Nakhoda',
+          message: 'Apakah Anda yakin ingin keluar dari sesi saat ini?',
+          confirmLabel: 'Logout',
+          danger: true,
+          onConfirm: function () { logout(true); }
+        });
+      };
+    }
+
+    var reauthForm = document.getElementById('form-session-reauth');
+    if (reauthForm && !reauthForm._bound) {
+      reauthForm._bound = true;
+      reauthForm.onsubmit = function (e) {
+        e.preventDefault();
+        var ident = (document.getElementById('reauth-ident') || {}).value || '';
+        var pwd = (document.getElementById('reauth-password') || {}).value || '';
+        var btn = document.getElementById('btn-reauth-submit');
+        if (btn) { btn.disabled = true; btn.textContent = 'Memeriksa...'; }
+        rpc('auth_login', { ident: ident.trim(), password: pwd })
+          .then(function (res) {
+            if (btn) { btn.disabled = false; btn.textContent = 'Masuk kembali'; }
+            setSession(res.token, res.user, true);
+            Modal.close('modal-session-expired');
+            Toast.success('Sesi diperbarui. Anda dapat menyimpan ulang data.');
+          })
+          .catch(function (err) {
+            if (btn) { btn.disabled = false; btn.textContent = 'Masuk kembali'; }
+            Toast.error((err && err.message) ? err.message : 'Gagal verifikasi ulang sesi.');
+          });
       };
     }
   }
@@ -823,6 +917,7 @@ var AuthApp = (function () {
     getToken: getToken,
     getUser: getUser,
     logout: logout,
+    promptReauth: promptReauth,
     showLogin: showLogin,
     showRegister: showRegister,
     showRegisterStep1: showRegisterStep1,
@@ -868,6 +963,17 @@ var Router = (function () {
 
     var rawHash = window.location.hash || '#/ringkasan';
     var cleanRoute = rawHash.replace(/^#\/?/, '').split('?')[0] || 'ringkasan';
+
+    // Route Guard: cegah akses langsung URL hash ke Admin bagi role non-pimpinan (STAF)
+    if (cleanRoute === 'admin-users' || cleanRoute === 'admin-audit') {
+      var u = AuthApp.getUser() || {};
+      var role = String(u.role || '').toUpperCase();
+      if (role !== 'SUPERADMIN' && role !== 'KADIV' && role !== 'DIREKTUR') {
+        Toast.error('Akses ditolak: menu administrasi hanya untuk Katimja / Administrator.');
+        window.location.hash = '#/ringkasan';
+        return;
+      }
+    }
 
     // Highlight nav item di sidebar
     var navItems = document.querySelectorAll('#app-sidebar .nav-item');

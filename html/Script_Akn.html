@@ -119,28 +119,6 @@ var AknView = (function () {
         _recalculateAkn();
       };
     }
-
-    if (btnNoChange) {
-      btnNoChange.onclick = function () {
-        _confirmNoChange();
-      };
-    }
-
-    var formRevisi = document.getElementById('form-akn-revisi');
-    if (formRevisi) {
-      formRevisi.onsubmit = function (e) {
-        e.preventDefault();
-        _submitRevisi();
-      };
-    }
-
-    var formAnulir = document.getElementById('form-akn-anulir');
-    if (formAnulir) {
-      formAnulir.onsubmit = function (e) {
-        e.preventDefault();
-        _submitAnulir();
-      };
-    }
   }
 
   function load(filterOrPeriode) {
@@ -209,7 +187,7 @@ var AknView = (function () {
     if (kpiPoaEl) kpiPoaEl.textContent = Format.number(totPoa);
     if (kpiPoaPctEl) {
       var poaPct = totKes > 0 ? ((totPoa / totKes) * 100).toFixed(1) : 0;
-      kpiPoaPctEl.innerHTML = '<span class="mono">' + poaPct + '% dari total keseluruhan</span>';
+      kpiPoaPctEl.textContent = '(' + poaPct + '%)';
     }
 
     var kpiStatusText = document.getElementById('kpi-akn-status-text');
@@ -248,9 +226,9 @@ var AknView = (function () {
               '<div class="cell-primary">' + (KATEGORI_LABELS[kat] || kat) + '</div>' +
               '<div class="cell-sub mono">' + kat + '</div>' +
             '</td>' +
-            '<td class="text-right mono tnum" style="color:var(--accent); font-weight:600;">' + Format.number(poa) + '</td>' +
-            '<td class="text-right mono tnum" style="font-weight:600;">' + Format.number(kes) + '</td>' +
-            '<td>' +
+            '<td class="text-right mono tnum" data-label="Dit. POA" style="color:var(--accent-ink); font-weight:600;">' + Format.number(poa) + '</td>' +
+            '<td class="text-right mono tnum" data-label="PSDKP" style="font-weight:600;">' + Format.number(kes) + '</td>' +
+            '<td data-label="Proporsi pusat">' +
               '<div style="display:flex; align-items:center; gap:8px;">' +
                 '<div class="track-bar" style="flex:1;">' +
                   '<div class="track-fill" style="width:' + pct + '%;"></div>' +
@@ -258,7 +236,7 @@ var AknView = (function () {
                 '<span class="mono tnum" style="font-size:11px; width:44px; text-align:right;">' + pct + '%</span>' +
               '</div>' +
             '</td>' +
-            '<td class="text-right mono tnum">' + Format.deltaText(deltaKat) + '</td>' +
+            '<td class="text-right mono tnum" data-label="Dinamika">' + Format.deltaText(deltaKat) + '</td>' +
           '</tr>';
       });
 
@@ -293,22 +271,24 @@ var AknView = (function () {
       return;
     }
     tbody.innerHTML = list.map(function (row) {
+      var jbtName = row.kelompokJabatan || row.jabatan || '-';
+      var ideal = row.idealArmada !== undefined ? row.idealArmada : (row.kebutuhan || 0);
       var diff = row.selisih || 0;
       var diffHtml = diff < 0
         ? '<span class="delta-down mono">' + diff + '</span>'
         : (diff > 0 ? '<span class="delta-up mono">+' + diff + '</span>' : '<span class="mono" style="color:var(--muted);">0</span>');
-      var badge = row.idealArmada === 0
+      var badge = ideal === 0
         ? '<span class="pill pill-neutral"><span class="pill-dot"></span>Penunjang</span>'
         : (diff >= 0
           ? '<span class="pill pill-positive"><span class="pill-dot"></span>Terpenuhi</span>'
           : '<span class="pill pill-negative"><span class="pill-dot"></span>Kurang ' + Math.abs(diff) + '</span>');
       return '<tr>' +
-        '<td><div class="cell-primary">' + Format.escape(row.kelompokJabatan) + '</div></td>' +
-        '<td class="text-right mono tnum" style="color:var(--accent);">' + Format.number(row.poaPusat || 0) + '</td>' +
-        '<td class="text-right mono tnum" style="font-weight:600;">' + Format.number(row.eksisting || 0) + '</td>' +
-        '<td class="text-right mono tnum">' + (row.idealArmada > 0 ? Format.number(row.idealArmada) : '-') + '</td>' +
-        '<td class="text-right">' + diffHtml + '</td>' +
-        '<td class="text-center">' + badge + '</td>' +
+        '<td><div class="cell-primary">' + Format.escape(jbtName) + '</div></td>' +
+        '<td class="text-right mono tnum" data-label="Dit. POA" style="color:var(--accent-ink);">' + Format.number(row.poaPusat || 0) + '</td>' +
+        '<td class="text-right mono tnum" data-label="Eksisting" style="font-weight:600;">' + Format.number(row.eksisting || 0) + '</td>' +
+        '<td class="text-right mono tnum" data-label="Ideal">' + (ideal > 0 ? Format.number(ideal) : '-') + '</td>' +
+        '<td class="text-right" data-label="Selisih">' + diffHtml + '</td>' +
+        '<td class="text-center" data-label="Ketercukupan">' + badge + '</td>' +
       '</tr>';
     }).join('');
   }
@@ -345,28 +325,7 @@ var AknView = (function () {
       });
   }
 
-  function _confirmNoChange() {
-    var token = AuthApp.getToken();
-    var periode = _currentPeriode;
-    if (!confirm('Konfirmasi bahwa komposisi personil periode ' + periode + ' tetap dan tidak memiliki mutasi?')) {
-      return;
-    }
-
-    rpc('akn_konfirmasiTanpaMutasi', {
-      token: token,
-      periode: periode,
-      catatan: 'Dikonfirmasi tidak ada mutasi oleh staf'
-    })
-      .then(function (res) {
-        Toast.success(res.message || 'Konfirmasi berhasil disimpan.');
-        load(periode);
-      })
-      .catch(function (err) {
-        Toast.error('Gagal konfirmasi: ' + err.message);
-      });
-  }
-
-  function _renderRiwayat(rows, userRole) {
+  function _renderRiwayat(rows) {
     var tbody = document.getElementById('akn-riwayat-tbody');
     if (!tbody) return;
 
@@ -377,100 +336,20 @@ var AknView = (function () {
 
     var html = '';
     rows.forEach(function (r) {
-      var canAnulir = (userRole === 'KADIV' || userRole === 'SUPERADMIN') && r.status === 'ACTIVE';
-      var canRevisi = r.status === 'ACTIVE';
       var scopeLabel = r.scope === 'AKN_POA' ? 'Pusat (POA)' : 'PSDKP';
 
       html += '<tr>' +
-        '<td>' + Format.statusBadge(r.status) + '</td>' +
+        '<td data-label="Status">' + Format.statusBadge(r.status) + '</td>' +
         '<td>' +
           '<div class="cell-primary">' + Format.escape(scopeLabel + ' — ' + (KATEGORI_LABELS[r.kategori] || r.kategori)) + '</div>' +
-          (r.keterangan ? '<div class="cell-sub">' + Format.escape(r.keterangan) + '</div>' : '') +
         '</td>' +
-        '<td class="text-right mono tnum" style="font-weight:600;">' + Format.number(r.jumlah) + '</td>' +
-        '<td class="mono" style="font-size:11px; color:var(--muted);">' + Format.dateTime(r.timestamp) + '</td>' +
-        '<td class="text-center">' +
-          '<div style="display:inline-flex; gap:4px;">' +
-            (canRevisi ? '<button type="button" class="btn btn-secondary-sm btn-revisi" data-id="' + r.rowId + '" data-desc="' + scopeLabel + ' ' + (KATEGORI_LABELS[r.kategori] || r.kategori) + '" data-val="' + r.jumlah + '">Revisi</button>' : '') +
-            (canAnulir ? '<button type="button" class="btn btn-danger-sm btn-anulir" data-id="' + r.rowId + '">Anulir</button>' : '') +
-          '</div>' +
-        '</td>' +
+        '<td class="text-right mono tnum" data-label="Jumlah" style="font-weight:600;">' + Format.number(r.jumlah) + '</td>' +
+        '<td class="mono" data-label="Waktu" style="font-size:11px; color:var(--muted);">' + Format.dateTime(r.timestamp) + '</td>' +
+        '<td data-label="Keterangan" style="font-size:12px; color:var(--muted);">' + Format.escape(r.keterangan || 'Terkalkulasi otomatis') + '</td>' +
       '</tr>';
     });
 
     tbody.innerHTML = html;
-
-    tbody.querySelectorAll('.btn-revisi').forEach(function (btn) {
-      btn.onclick = function () {
-        var id = btn.getAttribute('data-id');
-        var desc = btn.getAttribute('data-desc');
-        var val = btn.getAttribute('data-val');
-        _openRevisiModal(id, desc, val);
-      };
-    });
-
-    tbody.querySelectorAll('.btn-anulir').forEach(function (btn) {
-      btn.onclick = function () {
-        var id = btn.getAttribute('data-id');
-        _openAnulirModal(id);
-      };
-    });
-  }
-
-  function _openRevisiModal(rowId, desc, val) {
-    document.getElementById('revisi-row-id').value = rowId;
-    document.getElementById('revisi-target-desc').textContent = desc;
-    document.getElementById('revisi-jumlah-baru').value = val;
-    document.getElementById('revisi-alasan').value = '';
-    Modal.open('modal-akn-revisi');
-  }
-
-  function _submitRevisi() {
-    var token = AuthApp.getToken();
-    var rowId = document.getElementById('revisi-row-id').value;
-    var jBaru = document.getElementById('revisi-jumlah-baru').value;
-    var alasan = document.getElementById('revisi-alasan').value.trim();
-
-    rpc('akn_revisi', {
-      token: token,
-      rowId: rowId,
-      jumlahBaru: jBaru,
-      alasanRevisi: alasan
-    })
-      .then(function (res) {
-        Modal.close('modal-akn-revisi');
-        Toast.success(res.message || 'Data berhasil direvisi.');
-        load(_currentPeriode);
-      })
-      .catch(function (err) {
-        Toast.error('Gagal revisi: ' + err.message);
-      });
-  }
-
-  function _openAnulirModal(rowId) {
-    document.getElementById('anulir-row-id').value = rowId;
-    document.getElementById('anulir-alasan').value = '';
-    Modal.open('modal-akn-anulir');
-  }
-
-  function _submitAnulir() {
-    var token = AuthApp.getToken();
-    var rowId = document.getElementById('anulir-row-id').value;
-    var alasan = document.getElementById('anulir-alasan').value.trim();
-
-    rpc('akn_anulir', {
-      token: token,
-      rowId: rowId,
-      alasanAnulir: alasan
-    })
-      .then(function (res) {
-        Modal.close('modal-akn-anulir');
-        Toast.success(res.message || 'Data berhasil dianulir.');
-        load(_currentPeriode);
-      })
-      .catch(function (err) {
-        Toast.error('Gagal anulir: ' + err.message);
-      });
   }
 
   function _loadTren() {
@@ -489,71 +368,13 @@ var AknView = (function () {
   }
 
   function _renderSvgLineChart(container, data) {
-    if (!data || data.length === 0) {
-      container.innerHTML = '<span style="font-size:12px; color:var(--muted);">Belum ada riwayat tren data multi-periode.</span>';
-      return;
+    if (typeof Charts !== 'undefined' && Charts.line) {
+      Charts.line(container, data, {
+        valueKey: 'totalPoa',
+        labelKey: 'periode',
+        unitLabel: 'Dit. POA'
+      });
     }
-
-    var width = container.clientWidth || 440;
-    var height = 200;
-    var padding = { top: 20, right: 24, bottom: 30, left: 44 };
-
-    var maxVal = 10;
-    data.forEach(function (d) {
-      var k = d.totalKeseluruhan || 0;
-      if (k > maxVal) maxVal = k;
-    });
-    maxVal = Math.ceil(maxVal * 1.12);
-
-    var chartW = width - padding.left - padding.right;
-    var chartH = height - padding.top - padding.bottom;
-    var n = data.length;
-    var stepX = n > 1 ? (chartW / (n - 1)) : chartW;
-
-    var svg = '<svg width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" style="font-family:var(--font-mono); font-size:10px;">';
-
-    // Garis Grid Horizontal
-    for (var g = 0; g <= 3; g++) {
-      var val = Math.round((maxVal / 3) * g);
-      var y = padding.top + chartH - (val / maxVal) * chartH;
-      svg += '<line x1="' + padding.left + '" y1="' + y + '" x2="' + (width - padding.right) + '" y2="' + y + '" stroke="var(--rule)" stroke-dasharray="3,3" />';
-      svg += '<text x="' + (padding.left - 6) + '" y="' + (y + 3) + '" text-anchor="end" fill="var(--muted)">' + val + '</text>';
-    }
-
-    // Bangun Jalur Polyline
-    var pointsKes = [];
-    var pointsPoa = [];
-
-    data.forEach(function (d, i) {
-      var x = padding.left + (n > 1 ? (i * stepX) : (chartW / 2));
-      var yKes = padding.top + chartH - ((d.totalKeseluruhan || 0) / maxVal) * chartH;
-      var yPoa = padding.top + chartH - ((d.totalPoa || 0) / maxVal) * chartH;
-
-      pointsKes.push(x.toFixed(1) + ',' + yKes.toFixed(1));
-      pointsPoa.push(x.toFixed(1) + ',' + yPoa.toFixed(1));
-
-      var shortPeriod = String(d.periode || '').substring(5);
-      svg += '<text x="' + x.toFixed(1) + '" y="' + (height - 8) + '" text-anchor="middle" fill="var(--muted)" font-size="9">' + Format.escape(shortPeriod) + '</text>';
-    });
-
-    // Jalur Keseluruhan (Tinta Gelap)
-    svg += '<polyline points="' + pointsKes.join(' ') + '" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round" />';
-
-    // Jalur Dit. POA (Oranye Keselamatan)
-    svg += '<polyline points="' + pointsPoa.join(' ') + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" />';
-
-    // Titik Simpul
-    data.forEach(function (d, i) {
-      var x = padding.left + (n > 1 ? (i * stepX) : (chartW / 2));
-      var yKes = padding.top + chartH - ((d.totalKeseluruhan || 0) / maxVal) * chartH;
-      var yPoa = padding.top + chartH - ((d.totalPoa || 0) / maxVal) * chartH;
-
-      svg += '<circle cx="' + x.toFixed(1) + '" cy="' + yKes.toFixed(1) + '" r="3" fill="#FFFFFF" stroke="var(--primary)" stroke-width="2"><title>' + d.periode + ' PSDKP: ' + d.totalKeseluruhan + '</title></circle>';
-      svg += '<circle cx="' + x.toFixed(1) + '" cy="' + yPoa.toFixed(1) + '" r="3" fill="#FFFFFF" stroke="var(--accent)" stroke-width="2"><title>' + d.periode + ' Dit. POA: ' + d.totalPoa + '</title></circle>';
-    });
-
-    svg += '</svg>';
-    container.innerHTML = svg;
   }
 
   return {

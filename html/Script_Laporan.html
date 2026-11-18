@@ -46,6 +46,41 @@ var LaporanView = (function () {
         _exportData('SIJIL');
       };
     }
+
+    var inpNama = document.getElementById('lap-input-penandatangan');
+    var inpNip = document.getElementById('lap-input-nip-penandatangan');
+    var saveSignatory = function () {
+      var valNama = inpNama ? inpNama.value.trim() : '';
+      var valNip = inpNip ? inpNip.value.trim() : '';
+      try {
+        localStorage.setItem('nakhoda_lap_signatory', JSON.stringify({ nama: valNama, nip: valNip }));
+      } catch (e) {}
+      _applySignatory();
+    };
+    if (inpNama) inpNama.addEventListener('input', saveSignatory);
+    if (inpNip) inpNip.addEventListener('input', saveSignatory);
+  }
+
+  function _applySignatory() {
+    var namaEl = document.getElementById('lap-nama-penandatangan');
+    var nipEl = document.getElementById('lap-nip-penandatangan');
+    var inpNama = document.getElementById('lap-input-penandatangan');
+    var inpNip = document.getElementById('lap-input-nip-penandatangan');
+
+    var stored = {};
+    try {
+      stored = JSON.parse(localStorage.getItem('nakhoda_lap_signatory') || '{}') || {};
+    } catch (e) { stored = {}; }
+
+    var serverSig = (_previewData && _previewData.penandaTangan) ? _previewData.penandaTangan : {};
+    var namaVal = (stored.nama || serverSig.nama || '').trim();
+    var nipVal = (stored.nip || serverSig.nip || '').trim();
+
+    if (inpNama && !inpNama.value && namaVal) inpNama.value = namaVal;
+    if (inpNip && !inpNip.value && nipVal) inpNip.value = nipVal;
+
+    if (namaEl) namaEl.textContent = namaVal || 'Eris Riswandi';
+    if (nipEl) nipEl.textContent = nipVal ? ('NIP. ' + nipVal.replace(/^NIP\.\s*/i, '')) : 'NIP. -';
   }
 
   function loadPreview() {
@@ -54,6 +89,11 @@ var LaporanView = (function () {
 
     var btnPrint = document.getElementById('btn-lap-print');
     if (btnPrint) btnPrint.classList.add('loading');
+
+    var tableAknBody = document.querySelector('#lap-table-akn tbody');
+    var tableArmadaBody = document.querySelector('#lap-table-armada tbody');
+    if (tableAknBody) tableAknBody.innerHTML = ShellUI.skeletonRows(3, 4);
+    if (tableArmadaBody) tableArmadaBody.innerHTML = ShellUI.skeletonRows(6, 4);
 
     rpc('lap_getPreviewData', token, { jenisLaporan: 'KOMPREHENSIF' })
       .then(function (data) {
@@ -67,7 +107,17 @@ var LaporanView = (function () {
       })
       .catch(function (err) {
         if (btnPrint) btnPrint.classList.remove('loading');
-        Toast.error(err.message || 'Gagal memuat preview laporan.');
+        var msg = (err && err.message) ? err.message : 'Gagal memuat preview laporan.';
+        var narasiEl = document.getElementById('lap-narasi-temuan');
+        if (narasiEl) {
+          narasiEl.innerHTML = '<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; border:1px solid var(--negative); background:var(--pill-negative-bg); border-radius:var(--radius-control); color:var(--pill-negative-ink);">' +
+            '<span>' + Format.escape(msg) + '</span>' +
+            '<button type="button" class="btn btn-secondary-sm" onclick="LaporanView.loadPreview()">Coba lagi</button>' +
+          '</div>';
+        }
+        if (tableAknBody) tableAknBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:12px; color:var(--negative);">Gagal memuat komposisi.</td></tr>';
+        if (tableArmadaBody) tableArmadaBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:12px; color:var(--negative);">Gagal memuat armada.</td></tr>';
+        Toast.error(msg);
       });
   }
 
@@ -93,6 +143,7 @@ var LaporanView = (function () {
 
     var penyusunEl = document.getElementById('lap-nama-penyusun');
     if (penyusunEl && _previewData.pencetak) penyusunEl.textContent = _previewData.pencetak;
+    _applySignatory();
 
     // 3. Metrik 4-Box
     var totAwak = document.getElementById('lap-total-awak');
@@ -103,7 +154,10 @@ var LaporanView = (function () {
     if (totAwak && r.kpi) totAwak.textContent = Format.number(r.kpi.totalAwak || r.kpi.totalAknKeseluruhan || 0);
     if (totKapal && r.sijilSummary) totKapal.textContent = Format.number(r.sijilSummary.totalKapal || 0);
     if (kapalLaik && r.sijilSummary) kapalLaik.textContent = Format.number(r.sijilSummary.laikOperasi || 0) + ' Unit';
-    if (kelaikanSert && r.kpi) kelaikanSert.textContent = (r.kpi.kelaikanPersen || 0) + '%';
+    if (kelaikanSert && r.kpi) {
+      var kPct = r.kpi.pctAwakLengkap !== undefined ? r.kpi.pctAwakLengkap : (r.kpi.kelaikanPersen || 0);
+      kelaikanSert.textContent = kPct + '%';
+    }
 
     // 4. Narasi Temuan
     var narasiEl = document.getElementById('lap-narasi-temuan');
@@ -136,16 +190,16 @@ var LaporanView = (function () {
         var label = KATEGORI_LABELS[kat] || kat;
 
         aknHtml += '<tr style="border-bottom:1px solid #E4E7EC;">' +
-          '<td style="padding:6px 8px;">' + Format.escape(label) + '</td>' +
-          '<td class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(pPoa) + '</td>' +
-          '<td class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(pKes) + '</td>' +
+          '<td data-label="Status kepegawaian" style="padding:6px 8px;">' + Format.escape(label) + '</td>' +
+          '<td data-label="Pusat (Dit. POA)" class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(pPoa) + '</td>' +
+          '<td data-label="Keseluruhan Ditjen" class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(pKes) + '</td>' +
         '</tr>';
       });
 
       aknHtml += '<tr style="background:#F8F9FA; font-weight:700; border-top:2px solid #15181B;">' +
-        '<td style="padding:6px 8px;">TOTAL PERSONIL AKN</td>' +
-        '<td class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(sumPoa) + '</td>' +
-        '<td class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(sumKes) + '</td>' +
+        '<td data-label="Ringkasan" style="padding:6px 8px;">TOTAL PERSONIL AKN</td>' +
+        '<td data-label="Total Pusat (Dit. POA)" class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(sumPoa) + '</td>' +
+        '<td data-label="Total Keseluruhan Ditjen" class="mono tnum" style="padding:6px 8px; text-align:right;">' + Format.number(sumKes) + '</td>' +
       '</tr>';
 
       tableAkn.innerHTML = aknHtml;
@@ -171,12 +225,12 @@ var LaporanView = (function () {
         var statusColor = k.statusOperasi === 'LAIK' ? '#2B8A3E' : (k.statusOperasi === 'KRITIS' ? '#C92A2A' : '#D9480F');
 
         armadaHtml += '<tr style="border-bottom:1px solid #E4E7EC;">' +
-          '<td style="padding:6px 8px; font-weight:600;">' + Format.escape(k.namaKapal) + '</td>' +
-          '<td style="padding:6px 8px;">' + Format.escape(k.kelasKapal) + '</td>' +
-          '<td class="mono tnum" style="padding:6px 8px; text-align:center;">' + Format.number(k.kebutuhanMinimum || 0) + '</td>' +
-          '<td class="mono tnum" style="padding:6px 8px; text-align:center;">' + Format.number(k.jumlahAwakBertugas || 0) + '</td>' +
-          '<td class="mono tnum" style="padding:6px 8px; text-align:center; font-weight:600; color:' + devColor + ';">' + devText + '</td>' +
-          '<td style="padding:6px 8px; text-align:center; font-weight:600; font-size:10px; color:' + statusColor + ';">' + Format.escape(k.statusOperasi || 'LAIK') + '</td>' +
+          '<td data-label="Nama kapal" style="padding:6px 8px; font-weight:600;">' + Format.escape(k.namaKapal) + '</td>' +
+          '<td data-label="Kelas" style="padding:6px 8px;">' + Format.escape(k.kelasKapal) + '</td>' +
+          '<td data-label="Kebutuhan" class="mono tnum" style="padding:6px 8px; text-align:center;">' + Format.number(k.kebutuhanMinimum || 0) + '</td>' +
+          '<td data-label="Terisi" class="mono tnum" style="padding:6px 8px; text-align:center;">' + Format.number(k.jumlahAwakBertugas || 0) + '</td>' +
+          '<td data-label="Deviasi" class="mono tnum" style="padding:6px 8px; text-align:center; font-weight:600; color:' + devColor + ';">' + devText + '</td>' +
+          '<td data-label="Status formasi" style="padding:6px 8px; text-align:center; font-weight:600; font-size:11px; color:' + statusColor + ';">' + Format.escape(k.statusOperasi || 'LAIK') + '</td>' +
         '</tr>';
       });
 

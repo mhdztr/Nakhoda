@@ -1,0 +1,80 @@
+<script>
+/**
+ * html/assets/Charts.html
+ * Helper visualisasi SVG datar untuk Nakhoda (DESIGN.md §8 — 1 seri data utama, axis >= 11px, responsif).
+ */
+var Charts = (function () {
+  'use strict';
+
+  function line(container, data, options) {
+    if (!container) return;
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML = '<span style="font-size:12px; color:var(--muted);">Belum ada riwayat tren data multi-periode.</span>';
+      return;
+    }
+
+    var opts = options || {};
+    var valueKey = opts.valueKey || 'totalPoa';
+    var labelKey = opts.labelKey || 'periode';
+    var unitLabel = opts.unitLabel || 'Dit. POA';
+    var strokeColor = opts.strokeColor || 'var(--accent)';
+
+    var width = Math.max(container.clientWidth || 440, 280);
+    var height = opts.height || 200;
+    var padding = { top: 20, right: 20, bottom: 30, left: 44 };
+
+    var maxVal = 10;
+    data.forEach(function (d) {
+      var v = Number(d[valueKey] || 0);
+      if (v > maxVal) maxVal = v;
+    });
+    maxVal = Math.ceil(maxVal * 1.15);
+
+    var chartW = width - padding.left - padding.right;
+    var chartH = height - padding.top - padding.bottom;
+    var n = data.length;
+    var stepX = n > 1 ? (chartW / (n - 1)) : chartW;
+
+    var svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" style="width:100%; height:' + height + 'px; display:block; font-family:var(--font-mono); font-size:11px;">';
+
+    // 4 garis grid horizontal tanpa garis sumbu-Y (DESIGN.md §8)
+    for (var g = 0; g <= 3; g++) {
+      var val = Math.round((maxVal / 3) * g);
+      var y = padding.top + chartH - (val / maxVal) * chartH;
+      svg += '<line x1="' + padding.left + '" y1="' + y.toFixed(1) + '" x2="' + (width - padding.right) + '" y2="' + y.toFixed(1) + '" stroke="#E5E5E5" stroke-width="1" />';
+      svg += '<text x="' + (padding.left - 8) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end" fill="var(--muted)">' + val + '</text>';
+    }
+
+    var pts = [];
+    var labelEvery = n > 8 ? 2 : 1;
+    data.forEach(function (d, i) {
+      var x = padding.left + (n > 1 ? (i * stepX) : (chartW / 2));
+      var v = Number(d[valueKey] || 0);
+      var yPos = padding.top + chartH - (v / maxVal) * chartH;
+      pts.push(x.toFixed(1) + ',' + yPos.toFixed(1));
+      if (i % labelEvery === 0 || i === n - 1) {
+        var shortPeriod = String(d[labelKey] || '').replace(/^\d{4}-/, '');
+        svg += '<text x="' + x.toFixed(1) + '" y="' + (height - 8) + '" text-anchor="middle" fill="var(--muted)">' + Format.escape(shortPeriod) + '</text>';
+      }
+    });
+
+    svg += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + strokeColor + '" stroke-width="2" />';
+
+    // Target hover invisible hit area (tanpa penanda titik mencolok kecuali tooltip hover — DESIGN.md §8)
+    data.forEach(function (d, i) {
+      var x = padding.left + (n > 1 ? (i * stepX) : (chartW / 2));
+      var v = Number(d[valueKey] || 0);
+      var yPos = padding.top + chartH - (v / maxVal) * chartH;
+      svg += '<circle cx="' + x.toFixed(1) + '" cy="' + yPos.toFixed(1) + '" r="6" fill="transparent" stroke="none"><title>' + Format.escape(String(d[labelKey] || '')) + ' · ' + Format.escape(unitLabel) + ': ' + v + '</title></circle>';
+    });
+
+    svg += '</svg>';
+    container.innerHTML = svg;
+  }
+
+  return {
+    line: line
+  };
+})();
+</script>
+

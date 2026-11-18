@@ -12,7 +12,7 @@
         <span>Sync SIKAP</span>
       </button>
       <button type="button" id="btn-batch-assign" class="btn btn-secondary-md hidden">
-        <span>Penugasan massal</span>
+        <span>Ubah kategori massal</span>
         <span class="badge badge-accent mono" id="selected-count-badge">0</span>
       </button>
       <button type="button" id="btn-tambah-awak" class="btn btn-primary-md">
@@ -146,8 +146,11 @@
     </div>
 
     <!-- Paginasi Tabel -->
-    <div style="padding:12px 18px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--muted);">
-      <div id="dir-page-info" class="mono">Menampilkan 0 dari 0 data</div>
+    <div style="padding:12px 18px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:12px; color:var(--muted);">
+      <div>
+        <div id="dir-page-info" class="mono">Menampilkan 0 dari 0 data</div>
+        <div style="font-size:11px; color:var(--muted); margin-top:2px;">Centang baris awak untuk membuka aksi ubah kategori massal.</div>
+      </div>
       <div style="display:flex; gap:6px;">
         <button type="button" id="btn-dir-prev" class="btn btn-secondary-sm" disabled>&larr; Sebelumnya</button>
         <button type="button" id="btn-dir-next" class="btn btn-secondary-sm" disabled>Berikutnya &rarr;</button>
@@ -427,12 +430,12 @@
   </div>
 </div>
 
-<!-- ── MODAL PENUGASAN MASSAL KATEGORI ── -->
+<!-- ── MODAL UBAH KATEGORI MASSAL ── -->
 <div id="modal-dir-batch" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-title">Penugasan kategori kepegawaian massal</div>
-      <button type="button" class="modal-close" onclick="Modal.close('modal-dir-batch')">&times;</button>
+      <div class="modal-title">Ubah kategori kepegawaian massal</div>
+      <button type="button" class="modal-close" aria-label="Tutup modal" onclick="Modal.close('modal-dir-batch')">&times;</button>
     </div>
     <form id="form-dir-batch">
       <div class="modal-body">

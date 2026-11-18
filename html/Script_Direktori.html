@@ -235,6 +235,9 @@ var DirektoriView = (function () {
     var statusAktif = (document.getElementById('dir-filter-status') || {}).value || '';
     var search = (document.getElementById('dir-search-input') || {}).value || '';
 
+    var tbody = document.getElementById('dir-list-tbody');
+    if (tbody) tbody.innerHTML = ShellUI.skeletonRows(8, 5);
+
     rpc('dir_list', {
       token: token,
       periodeMode: periodeMode,
@@ -385,15 +388,15 @@ var DirektoriView = (function () {
       var isUpt = a.statusPenempatan === 'DIPERBANTUKAN_UPT';
       var kapalText = (a.namaKapal && a.namaKapal !== '-') ? a.namaKapal : (isUpt ? a.pangkalanId : 'Dit. POA Pusat');
       var durasiSub = (a.durasiKapalTeks && a.durasiKapalTeks !== '-') ? ('Durasi: ' + a.durasiKapalTeks) : (isUpt ? 'Diperbantukan UPT' : 'Pusat POA');
-      var uptTag = isUpt ? ' <span class="badge badge-neutral" style="font-size:10px; margin-left:4px;">UPT</span>' : '';
+      var uptTag = isUpt ? ' <span class="badge badge-neutral" style="font-size:11px; margin-left:4px;">UPT</span>' : '';
       var bstPill = Format.statusBadge(a.bstStatus || 'BELUM_ADA');
       var sizeTag = (a.ukuranBaju || a.ukuranSepatu)
-        ? ('<div class="cell-sub mono" style="font-size:10px;">Baju: ' + Format.escape(a.ukuranBaju || '-') + ' · Sepatu: ' + Format.escape(a.ukuranSepatu || '-') + '</div>')
+        ? ('<div class="cell-sub mono" style="font-size:11px;">Baju: ' + Format.escape(a.ukuranBaju || '-') + ' · Sepatu: ' + Format.escape(a.ukuranSepatu || '-') + '</div>')
         : '';
 
       html +=
         '<tr class="clickable" data-id="' + a.pegawaiId + '" style="' + (isNonAktif ? 'opacity:0.75;' : '') + '">' +
-          '<td style="text-align:center;" onclick="event.stopPropagation();">' +
+          '<td class="td-mobile-check" style="text-align:center;" onclick="event.stopPropagation();">' +
             '<input type="checkbox" class="cb-select-awak" data-id="' + a.pegawaiId + '" aria-label="Pilih personil ' + Format.escape(a.nama) + '" ' + (isChecked ? 'checked' : '') + '>' +
           '</td>' +
           '<td>' +
@@ -834,18 +837,19 @@ var DirektoriView = (function () {
     var token = AuthApp.getToken();
     if (!token) return;
 
-    if (!confirm('Lakukan sinkronisasi data master aparatur dan sertifikasi dengan sistem SIKAP Ditjen PSDKP?\n\nProses ini akan memperbarui data demografis personil, mengimpor awak baru, dan menyinkronkan rekaman sertifikat kepelautan/diklat ke register kompetensi Nakhoda.')) {
-      return;
-    }
+    Modal.confirm({
+      title: 'Sync SIKAP Ditjen PSDKP',
+      message: 'Sinkronkan data master aparatur, awak baru, dan sertifikat kepelautan/diklat dari SIKAP ke register Nakhoda?',
+      confirmLabel: 'Mulai sinkronisasi',
+      onConfirm: function () {
+        var btn = document.getElementById('btn-sync-sikap');
+        var origHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<span>Sinkronisasi...</span>';
+        }
 
-    var btn = document.getElementById('btn-sync-sikap');
-    var origHtml = btn ? btn.innerHTML : '';
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = '<span>Sinkronisasi...</span>';
-    }
-
-    rpc('dir_syncSikap', { token: token })
+        rpc('dir_syncSikap', { token: token })
       .then(function (res) {
         if (btn) {
           btn.disabled = false;
@@ -875,6 +879,8 @@ var DirektoriView = (function () {
         }
         Toast.error('Gagal sinkronisasi SIKAP: ' + (err.message || err));
       });
+      }
+    });
   }
 
   return {

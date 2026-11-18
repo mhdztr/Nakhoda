@@ -145,8 +145,8 @@ var SijilView = (function () {
       var bg = Format.avatarBg(a.nama);
       var inis = Format.initials(a.nama);
       var shipStatus = a.kapalId
-        ? '<span class="pill pill-warning" style="font-size:10px; padding:1px 6px;">Aktif di ' + Format.escape(a.kapalId) + '</span>'
-        : '<span class="pill pill-neutral" style="font-size:10px; padding:1px 6px;">Bebas tugas</span>';
+        ? '<span class="pill pill-warning" style="font-size:11px; padding:1px 7px;">Aktif di ' + Format.escape(a.kapalId) + '</span>'
+        : '<span class="pill pill-neutral" style="font-size:11px; padding:1px 7px;">Bebas tugas</span>';
 
       return (
         '<div class="combobox-item" data-peg-id="' + a.pegawaiId + '">' +
@@ -774,24 +774,28 @@ var SijilView = (function () {
   }
 
   function _confirmUnassign(rowId, pegawaiId, nama) {
-    if (!confirm('Apakah Anda yakin ingin menurunkan personil ' + nama + ' dari penugasan kapal ini?')) {
-      return;
-    }
-
-    var token = AuthApp.getToken();
-    rpc('sijil_unassignAwak', {
-      token: token,
-      rowId: rowId,
-      pegawaiId: pegawaiId
-    })
-      .then(function (res) {
-        Toast.success(res.message || 'Personil berhasil diturunkan.');
-        load();
-        if (_currentKapalId) openKapalSheet(_currentKapalId);
-      })
-      .catch(function (err) {
-        Toast.error('Gagal menurunkan awak: ' + err.message);
-      });
+    Modal.confirm({
+      title: 'Turunkan personil dari kapal',
+      message: 'Turunkan ' + (nama || 'personil ini') + ' dari penugasan kapal? Kursi formasi akan dibuka kembali.',
+      confirmLabel: 'Ya, turunkan',
+      danger: true,
+      onConfirm: function () {
+        var token = AuthApp.getToken();
+        rpc('sijil_unassignAwak', {
+          token: token,
+          rowId: rowId,
+          pegawaiId: pegawaiId
+        })
+          .then(function (res) {
+            Toast.success(res.message || 'Personil berhasil diturunkan.');
+            load();
+            if (_currentKapalId) openKapalSheet(_currentKapalId);
+          })
+          .catch(function (err) {
+            Toast.error('Gagal menurunkan awak: ' + err.message);
+          });
+      }
+    });
   }
 
   function closeAssignModal() {

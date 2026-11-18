@@ -782,7 +782,7 @@ function buildHtml() {
               success: true,
               data: [
                 { userId: 'USR-01', nama: 'Super Administrator Nakhoda', email: 'superadmin@nakhoda.go.id', nip: '198501012010011001', role: 'SUPERADMIN', divisiId: 'DIV-AWAK', namaDivisi: 'Timja Pengawakan', status: 'APPROVED', registeredAt: '2026-01-01' },
-                { userId: 'USR-02', nama: 'Ir. H. Syarifuddin, M.Si', email: 'katimja.awak@nakhoda.go.id', nip: '198207152006041002', role: 'KADIV', divisiId: 'DIV-AWAK', namaDivisi: 'Timja Pengawakan', status: 'APPROVED', registeredAt: '2026-01-05' },
+                { userId: 'USR-02', nama: 'Eris Riswandi', email: 'katimja.awak@nakhoda.go.id', nip: '198207152006041002', role: 'KADIV', divisiId: 'DIV-AWAK', namaDivisi: 'Timja Pengawakan', status: 'APPROVED', registeredAt: '2026-01-05' },
                 { userId: 'USR-03', nama: 'Staf Pengawakan Lapangan', email: 'staf.awak@nakhoda.go.id', nip: '199402102019021003', role: 'STAF', divisiId: 'DIV-AWAK', namaDivisi: 'Timja Pengawakan', status: 'APPROVED', registeredAt: '2026-01-10' }
               ]
             });
@@ -808,7 +808,7 @@ function buildHtml() {
               success: true,
               data: [
                 { logId: 'LOG-001', aksi: 'UPDATE', sheetTarget: 'TX_Sijil_Penugasan', rowIdTarget: 'AWAK-SIJ-098', alasan: 'Pencatatan mutasi kru kapal', timestamp: '2026-03-01T08:12:00Z', userId: 'USR-01', userName: 'Super Administrator', userRole: 'SUPERADMIN' },
-                { logId: 'LOG-002', aksi: 'INSERT', sheetTarget: 'TX_Pelatihan_Awak', rowIdTarget: 'AWAK-SRT-441', alasan: 'Perekaman sertifikat baru STCW-F', timestamp: '2026-03-01T07:45:00Z', userId: 'USR-02', userName: 'Ir. H. Syarifuddin, M.Si', userRole: 'KADIV' }
+                { logId: 'LOG-002', aksi: 'INSERT', sheetTarget: 'TX_Pelatihan_Awak', rowIdTarget: 'AWAK-SRT-441', alasan: 'Perekaman sertifikat baru STCW-F', timestamp: '2026-03-01T07:45:00Z', userId: 'USR-02', userName: 'Eris Riswandi', userRole: 'KADIV' }
               ]
             });
           }, 10);

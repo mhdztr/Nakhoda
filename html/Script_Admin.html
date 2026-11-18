@@ -136,10 +136,15 @@ var AdminView = (function () {
       btnRefresh.classList.add('loading');
     }
 
+    var tbodyUsers = document.getElementById('admin-user-tbody');
+    var tbodyPending = document.getElementById('admin-pending-tbody');
+    if (tbodyUsers) tbodyUsers.innerHTML = ShellUI.skeletonRows(7, 5);
+    if (tbodyPending) tbodyPending.innerHTML = ShellUI.skeletonRows(5, 2);
+
     // Ambil data users dan antrean pending approvals secara paralel
     Promise.all([
-      rpc('admin_getUsers', token).catch(function () { return []; }),
-      rpc('auth_getPendingApprovals', token).catch(function () { return []; })
+      rpc('admin_getUsers', token),
+      rpc('auth_getPendingApprovals', token)
     ]).then(function (results) {
       if (btnRefresh) {
         btnRefresh.disabled = false;
@@ -150,7 +155,6 @@ var AdminView = (function () {
       _pendingUsers = Array.isArray(results[1]) ? results[1] : [];
 
       // Hitung metrik
-      var total = _users.length;
       var pendingCount = _pendingUsers.length;
       var approvedCount = 0;
       var privilegedCount = 0;
@@ -161,6 +165,8 @@ var AdminView = (function () {
         if (st === 'APPROVED') approvedCount++;
         if (rl === 'SUPERADMIN' || rl === 'DIREKTUR' || rl === 'KADIV') privilegedCount++;
       });
+
+      var total = Math.max(_users.length, pendingCount + approvedCount);
 
       // Update badge sidebar
       var navBadgeUsers = document.getElementById('nav-badge-users');
@@ -202,7 +208,14 @@ var AdminView = (function () {
         btnRefresh.disabled = false;
         btnRefresh.classList.remove('loading');
       }
-      Toast.error(err.message || 'Gagal memuat data user.');
+      var msg = (err && err.message) ? err.message : 'Gagal memuat data user.';
+      if (tbodyUsers) {
+        tbodyUsers.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:32px 16px; color:var(--negative);">' +
+          '<div>' + Format.escape(msg) + '</div>' +
+          '<button type="button" class="btn btn-secondary-sm" style="margin-top:10px;" onclick="AdminView.loadUsers()">Coba lagi</button>' +
+        '</td></tr>';
+      }
+      Toast.error(msg);
     });
   }
 
@@ -225,8 +238,8 @@ var AdminView = (function () {
       var avatarBg = Format.avatarBg(u.nama);
 
       html += '<tr>' +
-        '<td class="mono tnum" style="font-size:11px; color:var(--muted); white-space:nowrap;">' + Format.date(u.registeredAt) + '</td>' +
-        '<td>' +
+        '<td data-label="Waktu daftar" class="mono tnum" style="font-size:11px; color:var(--muted); white-space:nowrap;">' + Format.date(u.registeredAt) + '</td>' +
+        '<td data-label="Pemohon">' +
           '<div style="display:flex; align-items:center; gap:10px;">' +
             '<div class="avatar-sm" style="background-color:' + avatarBg + ';">' + initials + '</div>' +
             '<div style="min-width:0;">' +
@@ -235,12 +248,12 @@ var AdminView = (function () {
             '</div>' +
           '</div>' +
         '</td>' +
-        '<td><span class="mono" style="font-size:12px; color:var(--text);">' + Format.escape(u.email) + '</span></td>' +
-        '<td>' +
+        '<td data-label="Email kedinasan"><span class="mono" style="font-size:12px; color:var(--text);">' + Format.escape(u.email) + '</span></td>' +
+        '<td data-label="Usulan peran">' +
           '<div style="font-size:12px; font-weight:600; color:var(--text);">' + Format.escape(ROLE_LABELS[u.role] || u.role) + '</div>' +
           '<div style="font-size:11px; color:var(--muted);">' + Format.escape(u.namaDivisi || u.divisiId || '—') + '</div>' +
         '</td>' +
-        '<td style="text-align:right; white-space:nowrap;">' +
+        '<td data-label="Keputusan" style="text-align:right; white-space:nowrap;">' +
           '<div style="display:inline-flex; justify-content:flex-end; gap:6px;">' +
             '<button type="button" class="btn btn-primary-sm" onclick="AdminView.openApprovalModal(\'' + u.userId + '\', \'APPROVED\')">Setujui</button>' +
             '<button type="button" class="btn btn-negative-sm" onclick="AdminView.openApprovalModal(\'' + u.userId + '\', \'REJECTED\')">Tolak</button>' +
@@ -294,18 +307,18 @@ var AdminView = (function () {
       var roleName = ROLE_LABELS[u.role] || u.role;
 
       html += '<tr>' +
-        '<td style="white-space:nowrap;">' + badgeStatus + '</td>' +
-        '<td>' +
+        '<td data-label="Status" style="white-space:nowrap;">' + badgeStatus + '</td>' +
+        '<td data-label="Nama personil">' +
           '<div style="display:flex; align-items:center; gap:10px;">' +
             '<div class="avatar-sm" style="background-color:' + avatarBg + ';">' + initials + '</div>' +
             '<div class="cell-primary" style="min-width:0;">' + Format.escape(u.nama) + '</div>' +
           '</div>' +
         '</td>' +
-        '<td style="white-space:nowrap;"><span class="mono tnum" style="font-size:12px; color:var(--muted);">' + (u.nip || '—') + '</span></td>' +
-        '<td style="white-space:nowrap;"><span class="mono" style="font-size:12px; color:var(--text);">' + Format.escape(u.email) + '</span></td>' +
-        '<td style="white-space:nowrap;"><span style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(roleName) + '</span></td>' +
-        '<td><span style="font-size:12px; color:var(--muted);">' + Format.escape(u.namaDivisi || u.divisiId || '—') + '</span></td>' +
-        '<td style="text-align:right; white-space:nowrap;">' +
+        '<td data-label="NIP" style="white-space:nowrap;"><span class="mono tnum" style="font-size:12px; color:var(--muted);">' + (u.nip || '—') + '</span></td>' +
+        '<td data-label="Email" style="white-space:nowrap;"><span class="mono" style="font-size:12px; color:var(--text);">' + Format.escape(u.email) + '</span></td>' +
+        '<td data-label="Peran sistem" style="white-space:nowrap;"><span style="font-size:12px; font-weight:500; color:var(--text);">' + Format.escape(roleName) + '</span></td>' +
+        '<td data-label="Divisi / unit"><span style="font-size:12px; color:var(--muted);">' + Format.escape(u.namaDivisi || u.divisiId || '—') + '</span></td>' +
+        '<td data-label="Aksi" style="text-align:right; white-space:nowrap;">' +
           '<div style="display:inline-flex; justify-content:flex-end; gap:6px;">' +
             '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openEditUserModal(\'' + u.userId + '\')">Ubah</button>' +
             '<button type="button" class="btn btn-secondary-sm" onclick="AdminView.openResetPwdModal(\'' + u.userId + '\')">Reset password</button>' +
@@ -326,6 +339,9 @@ var AdminView = (function () {
       btnRefresh.disabled = true;
       btnRefresh.classList.add('loading');
     }
+
+    var tbodyAudit = document.getElementById('admin-audit-tbody');
+    if (tbodyAudit) tbodyAudit.innerHTML = ShellUI.skeletonRows(6, 5);
 
     var limit = parseInt((document.getElementById('admin-audit-limit') || {}).value, 10) || 300;
 
@@ -349,7 +365,14 @@ var AdminView = (function () {
           btnRefresh.disabled = false;
           btnRefresh.classList.remove('loading');
         }
-        Toast.error(err.message || 'Gagal memuat audit log.');
+        var msg = (err && err.message) ? err.message : 'Gagal memuat audit log.';
+        if (tbodyAudit) {
+          tbodyAudit.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:32px 16px; color:var(--negative);">' +
+            '<div>' + Format.escape(msg) + '</div>' +
+            '<button type="button" class="btn btn-secondary-sm" style="margin-top:10px;" onclick="AdminView.loadAudit()">Coba lagi</button>' +
+          '</td></tr>';
+        }
+        Toast.error(msg);
       });
   }
 
@@ -374,7 +397,10 @@ var AdminView = (function () {
     if (countInfo) countInfo.textContent = Format.number(filtered.length) + ' catatan';
 
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:32px 0;">Tidak ada catatan audit yang cocok dengan filter.</td></tr>';
+      var emptyMsg = _auditRows.length === 0
+        ? 'Belum ada rekaman audit log pada sistem. Setiap perubahan data akan tercatat otomatis di sini.'
+        : 'Tidak ada catatan audit yang cocok dengan filter pencarian.';
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:32px 16px;">' + emptyMsg + '</td></tr>';
       return;
     }
 
@@ -382,27 +408,27 @@ var AdminView = (function () {
     filtered.forEach(function (r) {
       var ak = String(r.aksi || '').toUpperCase();
       var badgeType = 'neutral';
-      if (ak === 'INSERT') badgeType = 'positive';
+      if (ak === 'INSERT' || ak === 'CREATE') badgeType = 'positive';
       else if (ak === 'UPDATE' || ak === 'APPROVE') badgeType = 'warning';
-      else if (ak === 'DELETE' || ak === 'REJECT') badgeType = 'negative';
+      else if (ak === 'DELETE' || ak === 'REJECT' || ak === 'ANULIR') badgeType = 'negative';
 
-      var aksiBadge = '<span class="status-badge" style="display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:2px 8px; border-radius:12px; font-weight:600; font-family:var(--font-mono);">' +
+      var aksiBadge = '<span class="badge badge-' + badgeType + ' mono">' +
         Format.escape(ak) +
       '</span>';
 
       html += '<tr>' +
-        '<td><span class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.escape(r.logId) + '</span></td>' +
-        '<td><span class="mono tnum" style="font-size:12px; color:var(--text);">' + Format.date(r.timestamp) + '</span></td>' +
-        '<td>' +
+        '<td data-label="Log ID"><span class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.escape(r.logId) + '</span></td>' +
+        '<td data-label="Waktu pencatatan"><span class="mono tnum" style="font-size:12px; color:var(--text);">' + Format.date(r.timestamp) + '</span></td>' +
+        '<td data-label="Pelaku aksi">' +
           '<div style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(r.userName || r.userId) + '</div>' +
           '<div class="mono" style="font-size:11px; color:var(--muted);">' + Format.escape(r.userRole || '') + '</div>' +
         '</td>' +
-        '<td style="text-align:center;">' + aksiBadge + '</td>' +
-        '<td>' +
+        '<td data-label="Aksi" style="text-align:center;">' + aksiBadge + '</td>' +
+        '<td data-label="Tabel &amp; ID target">' +
           '<div class="mono" style="font-size:12px; font-weight:600; color:var(--text);">' + Format.escape(r.sheetTarget) + '</div>' +
           '<div class="mono tnum" style="font-size:11px; color:var(--muted);">' + Format.escape(r.rowIdTarget || '—') + '</div>' +
         '</td>' +
-        '<td><span style="font-size:12px; color:var(--text); line-height:1.4;">' + Format.escape(r.alasan || '—') + '</span></td>' +
+        '<td data-label="Keterangan"><span style="font-size:12px; color:var(--text); line-height:1.4;">' + Format.escape(r.alasan || '—') + '</span></td>' +
       '</tr>';
     });
 

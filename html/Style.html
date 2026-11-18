@@ -224,9 +224,9 @@ input[type="number"] {
 }
 
 .brand-badge {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 1px 5px;
+  padding: 1px 6px;
   border-radius: 2px;
   border: 1px solid var(--border);
   background-color: var(--raised);
@@ -236,7 +236,7 @@ input[type="number"] {
 }
 
 .brand-acronym-desc {
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--muted);
   line-height: 1.35;
   margin: 0;
@@ -297,7 +297,6 @@ button.nav-item,
   color: var(--text) !important;
   font-weight: 600 !important;
   border: 1px solid var(--border) !important;
-  box-shadow: 0 1px 2px rgba(15, 18, 20, 0.05) !important;
 }
 
 .nav-item.active::before,
@@ -365,13 +364,11 @@ button.nav-item,
   gap: 8px;
   width: 100%;
   box-sizing: border-box;
-  box-shadow: 0 1px 2px rgba(15, 18, 20, 0.04);
-  transition: border-color var(--dur-ui) var(--ease-out), box-shadow var(--dur-ui) var(--ease-out);
+  transition: border-color var(--dur-ui) var(--ease-out);
 }
 
 .sidebar-account-box:hover {
   border-color: var(--control);
-  box-shadow: 0 1px 3px rgba(15, 18, 20, 0.07);
 }
 
 .sidebar-account-box .user-avatar {
@@ -1594,10 +1591,10 @@ th.text-center {
   border-radius: 2px;
   background-color: var(--raised);
   border: 1px solid var(--border);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   font-family: var(--font-mono);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .sijil-crew-card {
@@ -1714,10 +1711,10 @@ th.text-center {
   line-height: 1.4;
 }
 
-.toast-success, .toast-positive { border-left: 3px solid var(--positive); }
-.toast-error, .toast-negative   { border-left: 3px solid var(--negative); }
-.toast-warning                  { border-left: 3px solid var(--warning); }
-.toast-info                     { border-left: 3px solid var(--primary); }
+.toast-success, .toast-positive { border-color: var(--positive); }
+.toast-error, .toast-negative   { border-color: var(--negative); }
+.toast-warning                  { border-color: var(--warning); }
+.toast-info                     { border-color: var(--control); }
 
 /* ── Responsif Mobile (<= 768px — DESIGN.md §4.4) ── */
 @media (max-width: 960px) {
@@ -1820,6 +1817,14 @@ th.text-center {
     height: auto;
     padding: 12px 14px;
     border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .table-mobile-cards td.td-mobile-check {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: auto !important;
+    padding: 0;
   }
   .table-mobile-cards td {
     padding: 4px 0;
@@ -1833,6 +1838,39 @@ th.text-center {
     color: var(--muted);
     font-weight: 500;
   }
+}
+
+.skeleton-bar {
+  height: 12px;
+  border-radius: var(--radius-chip);
+  background-color: var(--raised);
+  display: inline-block;
+}
+
+.modal-box-sm {
+  max-width: 440px;
+}
+
+.modal-box-md {
+  max-width: 480px;
+}
+
+.modal-box-wide {
+  max-width: 640px;
+}
+
+.timeline-bar-done {
+  background-color: var(--chart-2);
+}
+
+.timeline-bar-active {
+  background-color: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+}
+
+.timeline-bar-upcoming {
+  background-color: transparent;
+  border: 1px dashed var(--control);
 }
 
 /* ── Panduan Onboarding Ringkas, Pemulihan Error, & Pembagi Form ── */
@@ -1992,14 +2030,13 @@ th.text-center {
   right: 20px;
   z-index: 9998;
   background-color: #FFFFFF;
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-chip);
+  border: 1px solid var(--control);
+  border-radius: var(--radius-control);
   padding: 8px 14px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 4px 16px rgba(15, 18, 20, 0.12);
+  box-shadow: 0 4px 16px rgba(15, 18, 20, 0.1);
   font-size: 12px;
   font-weight: 600;
   color: var(--text);

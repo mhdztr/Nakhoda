@@ -374,9 +374,13 @@ var KompetensiView = (function () {
     if (nipEl) nipEl.textContent = d.nipDisplay || '-';
     if (klsEl) klsEl.textContent = String(d.kelasKapal || 'Kelas II').replace('_', ' ');
 
-    var k = d.kelaikan || { persen: 100, terpenuhi: 0, totalWajib: 0 };
-    if (pctText) pctText.textContent = k.persen + '% (' + k.terpenuhi + ' / ' + k.totalWajib + ' terpenuhi)';
-    if (pctBar) pctBar.style.width = k.persen + '%';
+    var k = d.kelaikan || { persen: 0, terpenuhi: 0, totalWajib: 0 };
+    if (pctText) {
+      pctText.textContent = (k.totalWajib === 0)
+        ? '0% (Belum ada standar wajib)'
+        : (k.persen + '% (' + k.terpenuhi + ' / ' + k.totalWajib + ' terpenuhi)');
+    }
+    if (pctBar) pctBar.style.width = (k.totalWajib === 0 ? 0 : k.persen) + '%';
 
     if (listEl) {
       var items = d.matriks || [];
@@ -384,12 +388,8 @@ var KompetensiView = (function () {
         listEl.innerHTML = '<div style="padding:18px; text-align:center; color:var(--muted); font-size:12px;">Tidak ada standar wajib terkonfigurasi untuk jabatan ini.</div>';
       } else {
         listEl.innerHTML = items.map(function (m) {
-          var borderLeft = m.hasCert
-            ? (m.status === 'BERLAKU' ? '3px solid var(--positive)' : (m.status === 'SEGERA_HABIS' ? '3px solid var(--warning)' : '3px solid var(--negative)'))
-            : '3px solid var(--border)';
-
           return (
-            '<div style="padding:10px 12px; border:1px solid var(--border); border-left:' + borderLeft + '; border-radius:var(--radius-control); background-color:var(--surface);">' +
+            '<div style="padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-control); background-color:var(--surface);">' +
               '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
                 '<div>' +
                   '<div style="font-size:13px; font-weight:500; color:var(--text);">' + Format.escape(m.namaPelatihan) + '</div>' +
