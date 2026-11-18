@@ -124,6 +124,9 @@
           <div class="user-name" id="shell-user-name" title="User">Memuat...</div>
           <div class="user-role" id="shell-user-role" title="Role">Staf Pengawakan</div>
         </div>
+        <button type="button" id="btn-sidebar-tour" class="btn-icon-box" title="Panduan interaktif" aria-label="Buka panduan interaktif" onclick="if(typeof NakhodaTour!=='undefined')NakhodaTour.start(0);">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
         <button type="button" id="btn-logout" class="btn-logout-box" title="Logout" aria-label="Logout">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
@@ -198,6 +201,7 @@
 <!-- ── SCRIPT CORE & CONTROLLERS ── -->
 <?!= html_include('html/Script_Format'); ?>
 <?!= html_include('html/assets/Charts'); ?>
+<?!= html_include('html/assets/OnboardingTour'); ?>
 <?!= html_include('html/Script_Core'); ?>
 <?!= html_include('html/Script_Ringkasan'); ?>
 <?!= html_include('html/Script_Akn'); ?>

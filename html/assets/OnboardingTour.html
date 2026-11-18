@@ -1,0 +1,424 @@
+<!-- html/assets/OnboardingTour.html — Spotlight Interactive Tour (Achromatic Ledger + Design Taste Restraint) -->
+<div id="tour-layer" class="tour-layer hidden" aria-hidden="true">
+  <!-- Dimmed Scrim + Potongan Spotlight SVG Tajam -->
+  <svg id="tour-backdrop-svg" class="tour-backdrop-svg" width="100%" height="100%">
+    <defs>
+      <mask id="tour-spotlight-mask">
+        <rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF"></rect>
+        <rect id="tour-hole-rect" x="0" y="0" width="0" height="0" rx="8" ry="8" fill="#000000"></rect>
+      </mask>
+    </defs>
+    <rect x="0" y="0" width="100%" height="100%" fill="rgba(15, 18, 20, 0.62)" mask="url(#tour-spotlight-mask)"></rect>
+  </svg>
+
+  <!-- Bingkai Sorotan Target -->
+  <div id="tour-spotlight-ring" class="tour-spotlight-ring"></div>
+
+  <!-- Popover Penjelas dengan Panah Terarah -->
+  <div id="tour-popover" class="tour-popover" role="dialog" aria-modal="true" aria-labelledby="tour-title">
+    <span id="tour-arrow" class="tour-arrow" aria-hidden="true"></span>
+
+    <div class="tour-head">
+      <div class="tour-meta">
+        <span id="tour-step-counter" class="tour-step-badge mono tnum">01 / 07</span>
+        <span id="tour-module-label" class="tour-module-tag">Ringkasan</span>
+      </div>
+      <button type="button" class="tour-close" id="tour-btn-close" aria-label="Tutup panduan">&times;</button>
+    </div>
+
+    <div id="tour-progress" class="tour-progress" aria-hidden="true"></div>
+
+    <h3 id="tour-title" class="tour-title">-</h3>
+    <p id="tour-desc" class="tour-desc">-</p>
+    <ul id="tour-details" class="tour-details"></ul>
+
+    <div class="tour-footer">
+      <button type="button" class="btn btn-sm btn-tertiary" id="tour-btn-skip">Lewati</button>
+      <div class="tour-footer-nav">
+        <button type="button" class="btn btn-secondary-sm" id="tour-btn-prev">Kembali</button>
+        <button type="button" class="btn btn-primary-sm" id="tour-btn-next">Lanjut</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * html/assets/OnboardingTour.html
+ * Pengontrol Spotlight Onboarding Terpandu Lintas-Modul Nakhoda
+ */
+var NakhodaTour = (function () {
+  'use strict';
+
+  var STORAGE_KEY = 'nakhoda_tour_done';
+  var _isActive = false;
+  var _stepIdx = 0;
+  var _resizeTimer = null;
+  var _settleTimer = null;
+  var _eventsBound = false;
+
+  var STEPS = [
+    {
+      route: 'ringkasan',
+      module: '01 · Ringkasan',
+      selector: '#view-ringkasan .kpi-container',
+      title: 'Pantau 4 indikator pengawakan utama',
+      desc: 'Panel ini merangkum total personil AKN, kelengkapan sertifikat STCW-F, sertifikat mendekati kedaluwarsa, dan kelaikan formasi kapal.',
+      details: [
+        'Angka dihitung otomatis dari Direktori, Kompetensi, dan Papan Sijil tanpa input manual.',
+        'Tekan Refresh di kanan atas kapan saja untuk memuat ulang kondisi terbaru.'
+      ]
+    },
+    {
+      route: 'ringkasan',
+      module: '02 · Kesiapan Armada',
+      selector: '#view-ringkasan .grid-2fr-1fr .card-flush',
+      title: 'Prioritas kapal pengawas kurang awak',
+      desc: 'Tabel ini mengurutkan kapal dari defisit kursi terbanyak agar kebutuhan awak segera ditindaklanjuti.',
+      details: [
+        'Klik baris kapal mana saja untuk langsung melompat ke panel penempatan awaknya di Papan Sijil.',
+        'Panel di kanan (atau bawah di ponsel) menampilkan proporsi 4 kategori baku AKN.'
+      ]
+    },
+    {
+      route: 'direktori',
+      module: '03 · Direktori Awak',
+      selector: '#view-direktori .page-actions',
+      title: 'Tarik data SIKAP atau tambah awak baru',
+      desc: 'Gunakan Sync SIKAP untuk menyelaraskan master aparatur pusat, atau tambahkan personil operasional langsung melalui formulir awak.',
+      details: [
+        'Nama otomatis dirapikan ke huruf kapital tanpa gelar atau tanda baca.',
+        'NIP 18 digit wajib untuk PNS, P3K, dan P3K Paruh Waktu; otomatis nonaktif bagi PJLP.',
+        'Perubahan data mengirim status disparitas ke SIKAP untuk verifikasi TU.'
+      ]
+    },
+    {
+      route: 'kompetensi',
+      module: '04 · Kompetensi & BST',
+      selector: '#view-kompetensi .page-header',
+      title: 'Pantau masa berlaku STCW-F & catat sertifikat',
+      desc: 'Tab Tindak lanjut menampilkan sertifikat yang sudah kedaluwarsa atau tersisa 90 hari; tab Matriks memetakan kelengkapan tiap personil.',
+      details: [
+        'Tekan Catat sertifikat untuk memilih diklat standar SIKAP atau menginput jenis sertifikat lain.',
+        'Lampirkan bukti pindaian PDF/JPG agar riwayat pelatihan siap diperiksa.'
+      ]
+    },
+    {
+      route: 'sijil',
+      module: '05 · Papan Sijil 2D',
+      selector: '#view-sijil .sijil-legend-glossary',
+      title: 'Baca deviasi kursi formasi Safe Manning',
+      desc: 'Setiap sel membandingkan jumlah awak aktif terhadap standar minimum jabatan di masing-masing kelas kapal pengawas.',
+      details: [
+        'Sel merah (-1, -2) menunjukkan posisi wajib yang masih kekurangan awak.',
+        'Klik baris kapal untuk membuka panel Sijil, menugaskan/menurunkan awak, dan mengunggah SPT.'
+      ]
+    },
+    {
+      route: 'komposisi',
+      module: '06 · Komposisi AKN',
+      selector: '#view-komposisi .page-actions',
+      title: 'Rekap otomatis 4 kategori & filter periode',
+      desc: 'Kekuatan PNS, P3K, P3K Paruh Waktu, dan PJLP diagregasi otomatis dari Direktori tanpa form mutasi manual.',
+      details: [
+        'Ganti mode Minggu kalender, Rentang tanggal, atau Triwulan lewat pemilih tanggal.',
+        'Tekan Recalculate apabila perlu menghitung ulang potret periode berjalan.'
+      ]
+    },
+    {
+      route: 'laporan',
+      module: '07 · Executive Report',
+      selector: '#view-laporan .no-print',
+      title: 'Atur penandatangan & cetak dokumen resmi',
+      desc: 'Setelah mencatat agenda pembinaan di Log kegiatan, lengkapi pejabat penandatangan lalu ekspor CSV atau cetak A4 dari layar ini.',
+      details: [
+        'Isi nama Katimja (mis. Eris Riswandi) beserta NIP pejabat; isian tersimpan otomatis.',
+        'Gunakan Print / Save PDF untuk lembar kop resmi KKP atau Export CSV untuk olah data.'
+      ]
+    }
+  ];
+
+  function _bindEvents() {
+    if (_eventsBound) return;
+    _eventsBound = true;
+
+    var btnSkip = document.getElementById('tour-btn-skip');
+    var btnClose = document.getElementById('tour-btn-close');
+    var btnPrev = document.getElementById('tour-btn-prev');
+    var btnNext = document.getElementById('tour-btn-next');
+
+    if (btnSkip) btnSkip.onclick = function () { stop(true); };
+    if (btnClose) btnClose.onclick = function () { stop(true); };
+    if (btnPrev) btnPrev.onclick = function () { prev(); };
+    if (btnNext) btnNext.onclick = function () { next(); };
+
+    window.addEventListener('resize', function () {
+      if (!_isActive) return;
+      clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(_positionCurrent, 60);
+    });
+
+    window.addEventListener('scroll', function () {
+      if (!_isActive) return;
+      _positionCurrent();
+    }, true);
+
+    document.addEventListener('keydown', function (e) {
+      if (!_isActive) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        stop(true);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prev();
+      }
+    });
+  }
+
+  function start(index) {
+    _bindEvents();
+    var layer = document.getElementById('tour-layer');
+    if (!layer) return;
+
+    _isActive = true;
+    _stepIdx = (typeof index === 'number' && index >= 0 && index < STEPS.length) ? index : 0;
+    layer.classList.remove('hidden');
+    layer.setAttribute('aria-hidden', 'false');
+    _goToStep(_stepIdx);
+  }
+
+  function stop(markDone) {
+    _isActive = false;
+    clearTimeout(_settleTimer);
+    clearTimeout(_resizeTimer);
+    var layer = document.getElementById('tour-layer');
+    if (layer) {
+      layer.classList.add('hidden');
+      layer.setAttribute('aria-hidden', 'true');
+    }
+    if (markDone !== false) {
+      try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
+    }
+  }
+
+  function next() {
+    if (_stepIdx >= STEPS.length - 1) {
+      stop(true);
+      Toast.success('Panduan operasional selesai. Gunakan ikon (?) di pojok kiri bawah untuk mengulang.');
+      return;
+    }
+    _goToStep(_stepIdx + 1);
+  }
+
+  function prev() {
+    if (_stepIdx <= 0) return;
+    _goToStep(_stepIdx - 1);
+  }
+
+  function _goToStep(idx) {
+    _stepIdx = idx;
+    var step = STEPS[_stepIdx];
+    if (!step) return;
+
+    _renderPopoverContent(step);
+
+    if (typeof Router !== 'undefined' && Router.getCurrentRoute && Router.getCurrentRoute() !== step.route) {
+      Router.navigate(step.route);
+    }
+
+    clearTimeout(_settleTimer);
+    setTimeout(function () {
+      _scrollTargetIntoView(step);
+      _positionCurrent();
+    }, 110);
+
+    // Posisikan ulang setelah data RPC async selesai me-render tinggi kontainer
+    _settleTimer = setTimeout(function () {
+      if (_isActive) _positionCurrent();
+    }, 420);
+  }
+
+  function _renderPopoverContent(step) {
+    var counterEl = document.getElementById('tour-step-counter');
+    var modEl = document.getElementById('tour-module-label');
+    var progEl = document.getElementById('tour-progress');
+    var titleEl = document.getElementById('tour-title');
+    var descEl = document.getElementById('tour-desc');
+    var detEl = document.getElementById('tour-details');
+    var btnPrev = document.getElementById('tour-btn-prev');
+    var btnNext = document.getElementById('tour-btn-next');
+
+    var numStr = (_stepIdx + 1 < 10 ? '0' : '') + (_stepIdx + 1);
+    var totStr = (STEPS.length < 10 ? '0' : '') + STEPS.length;
+
+    if (counterEl) counterEl.textContent = numStr + ' / ' + totStr;
+    if (modEl) modEl.textContent = step.module;
+    if (titleEl) titleEl.textContent = step.title;
+    if (descEl) descEl.textContent = step.desc;
+
+    if (progEl) {
+      var segs = '';
+      for (var i = 0; i < STEPS.length; i++) {
+        var cls = i <= _stepIdx ? 'tour-progress-seg active' : 'tour-progress-seg';
+        segs += '<span class="' + cls + '"></span>';
+      }
+      progEl.innerHTML = segs;
+    }
+
+    if (detEl) {
+      detEl.innerHTML = (step.details || []).map(function (line) {
+        return '<li>' + Format.escape(line) + '</li>';
+      }).join('');
+    }
+
+    if (btnPrev) btnPrev.classList.toggle('hidden', _stepIdx === 0);
+    if (btnNext) btnNext.textContent = (_stepIdx === STEPS.length - 1) ? 'Selesai' : 'Lanjut';
+  }
+
+  function _findVisibleTarget(selector) {
+    var el = document.querySelector(selector);
+    if (el && el.offsetParent !== null) return el;
+    var activeView = document.querySelector('#outlet-content > .app-view:not(.hidden)');
+    return activeView ? (activeView.querySelector('.page-header') || activeView) : null;
+  }
+
+  function _scrollTargetIntoView(step) {
+    var target = _findVisibleTarget(step.selector);
+    if (target && target.scrollIntoView) {
+      var r = target.getBoundingClientRect();
+      if (r.top < 16 || r.bottom > window.innerHeight - 16) {
+        target.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }
+    }
+  }
+
+  function _clamp(val, min, max) {
+    return Math.max(min, Math.min(max, val));
+  }
+
+  function _positionCurrent() {
+    if (!_isActive) return;
+    var step = STEPS[_stepIdx];
+    if (!step) return;
+
+    var target = _findVisibleTarget(step.selector);
+    var hole = document.getElementById('tour-hole-rect');
+    var ring = document.getElementById('tour-spotlight-ring');
+    var pop = document.getElementById('tour-popover');
+    var arrow = document.getElementById('tour-arrow');
+    if (!hole || !ring || !pop || !arrow) return;
+
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var pad = 6;
+
+    if (!target) {
+      hole.setAttribute('width', '0');
+      hole.setAttribute('height', '0');
+      ring.style.display = 'none';
+      arrow.style.display = 'none';
+      pop.style.left = Math.round((vw - pop.offsetWidth) / 2) + 'px';
+      pop.style.top = Math.round((vh - pop.offsetHeight) / 2) + 'px';
+      return;
+    }
+
+    var r = target.getBoundingClientRect();
+    var hx = _clamp(r.left - pad, 4, vw - 16);
+    var hy = _clamp(r.top - pad, 4, vh - 16);
+    var hw = _clamp(r.width + pad * 2, 24, vw - hx - 4);
+    var hh = _clamp(r.height + pad * 2, 24, vh - hy - 4);
+
+    hole.setAttribute('x', hx.toFixed(1));
+    hole.setAttribute('y', hy.toFixed(1));
+    hole.setAttribute('width', hw.toFixed(1));
+    hole.setAttribute('height', hh.toFixed(1));
+
+    ring.style.display = 'block';
+    ring.style.left = hx.toFixed(1) + 'px';
+    ring.style.top = hy.toFixed(1) + 'px';
+    ring.style.width = hw.toFixed(1) + 'px';
+    ring.style.height = hh.toFixed(1) + 'px';
+
+    var popW = pop.offsetWidth || 344;
+    var popH = pop.offsetHeight || 240;
+    var gap = 14;
+    var margin = 12;
+
+    var placement = 'bottom';
+    if (hy + hh + gap + popH <= vh - margin) {
+      placement = 'bottom';
+    } else if (hy - gap - popH >= margin) {
+      placement = 'top';
+    } else if (vw >= 768 && hx + hw + gap + popW <= vw - margin) {
+      placement = 'right';
+    } else if (vw >= 768 && hx - gap - popW >= margin) {
+      placement = 'left';
+    } else {
+      // Fallback: pilih sisi dengan sisa ruang vertikal paling luas
+      placement = (vh - (hy + hh) >= hy) ? 'bottom' : 'top';
+    }
+
+    var holeCx = hx + hw / 2;
+    var holeCy = hy + hh / 2;
+    var popLeft = 0;
+    var popTop = 0;
+    var showArrow = true;
+
+    if (placement === 'bottom') {
+      popLeft = _clamp(holeCx - popW / 2, margin, vw - popW - margin);
+      popTop = hy + hh + gap;
+      if (popTop + popH > vh - margin) {
+        popTop = Math.max(margin, vh - popH - margin);
+        if (popTop < hy + hh + 6) showArrow = false;
+      }
+    } else if (placement === 'top') {
+      popLeft = _clamp(holeCx - popW / 2, margin, vw - popW - margin);
+      popTop = hy - gap - popH;
+      if (popTop < margin) {
+        popTop = margin;
+        if (popTop + popH > hy - 6) showArrow = false;
+      }
+    } else if (placement === 'right') {
+      popLeft = hx + hw + gap;
+      popTop = _clamp(holeCy - popH / 2, margin, vh - popH - margin);
+    } else {
+      popLeft = hx - gap - popW;
+      popTop = _clamp(holeCy - popH / 2, margin, vh - popH - margin);
+    }
+
+    pop.style.left = Math.round(popLeft) + 'px';
+    pop.style.top = Math.round(popTop) + 'px';
+
+    arrow.className = 'tour-arrow tour-arrow-' + placement;
+    arrow.style.top = '';
+    arrow.style.left = '';
+    arrow.style.right = '';
+    arrow.style.bottom = '';
+
+    if (!showArrow) {
+      arrow.style.display = 'none';
+    } else {
+      arrow.style.display = 'block';
+      if (placement === 'bottom' || placement === 'top') {
+        var arrowX = _clamp(holeCx - popLeft - 5, 16, popW - 26);
+        arrow.style.left = Math.round(arrowX) + 'px';
+      } else {
+        var arrowY = _clamp(holeCy - popTop - 5, 16, popH - 26);
+        arrow.style.top = Math.round(arrowY) + 'px';
+      }
+    }
+  }
+
+  return {
+    start: start,
+    stop: stop,
+    next: next,
+    prev: prev,
+    isActive: function () { return _isActive; }
+  };
+})();
+</script>
+

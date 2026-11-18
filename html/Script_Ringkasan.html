@@ -17,11 +17,11 @@ var RingkasanView = (function () {
   };
 
   function dismissOnboard() {
-    Modal.close('modal-ringkasan-onboard');
+    if (typeof NakhodaTour !== 'undefined') NakhodaTour.stop(true);
   }
 
   function openOnboard() {
-    Modal.open('modal-ringkasan-onboard');
+    if (typeof NakhodaTour !== 'undefined') NakhodaTour.start(0);
   }
 
   function init() {

@@ -398,11 +398,12 @@ button.nav-item,
   line-height: 1.2;
 }
 
+.sidebar-account-box .btn-icon-box,
 .sidebar-account-box .btn-logout-box {
   width: var(--ctl-h-sm);
   height: var(--ctl-h-sm);
   min-width: var(--ctl-h-sm);
-  border-radius: 3px;
+  border-radius: var(--radius-chip);
   border: 1px solid var(--border);
   background-color: var(--ground);
   color: var(--muted);
@@ -419,20 +420,28 @@ button.nav-item,
               transform 90ms var(--ease-out);
 }
 
+.sidebar-account-box .btn-icon-box:hover {
+  background-color: var(--surface);
+  border-color: var(--control);
+  color: var(--text);
+}
+
 .sidebar-account-box .btn-logout-box:hover {
   background-color: var(--pill-negative-bg);
   border-color: #FD886C;
   color: var(--negative);
 }
 
+.sidebar-account-box .btn-icon-box:active,
 .sidebar-account-box .btn-logout-box:active {
   transform: scale(0.95);
 }
 
+.sidebar-account-box .btn-icon-box svg,
 .sidebar-account-box .btn-logout-box svg {
   width: 14px;
   height: 14px;
-  stroke-width: 1.75;
+  stroke-width: 1.6;
   stroke: currentColor;
   fill: none;
 }
@@ -1853,6 +1862,182 @@ th.text-center {
 .timeline-bar-upcoming {
   background-color: transparent;
   border: 1px dashed var(--control);
+}
+
+/* ── Spotlight Interactive Onboarding Tour (Ledger Taste) ── */
+.tour-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+}
+
+.tour-backdrop-svg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tour-spotlight-ring {
+  position: fixed;
+  pointer-events: none;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-card);
+  z-index: 9001;
+  transition: left var(--dur-ui) var(--ease-out),
+              top var(--dur-ui) var(--ease-out),
+              width var(--dur-ui) var(--ease-out),
+              height var(--dur-ui) var(--ease-out);
+}
+
+.tour-popover {
+  position: fixed;
+  z-index: 9002;
+  width: 352px;
+  max-width: calc(100vw - 24px);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  box-shadow: 0 12px 32px rgba(15, 18, 20, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tour-arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--surface);
+  transform: rotate(45deg);
+}
+
+.tour-arrow-bottom {
+  top: -6px;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+.tour-arrow-top {
+  bottom: -6px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.tour-arrow-right {
+  left: -6px;
+  border-bottom: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+.tour-arrow-left {
+  right: -6px;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.tour-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tour-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tour-step-badge {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-ink);
+}
+
+.tour-module-tag {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.tour-close {
+  width: var(--ctl-h-sm);
+  height: var(--ctl-h-sm);
+  border-radius: var(--radius-chip);
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.tour-close:hover {
+  background-color: var(--raised);
+  color: var(--text);
+}
+
+.tour-progress {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.tour-progress-seg {
+  height: 2px;
+  background-color: var(--rule);
+  border-radius: 1px;
+}
+
+.tour-progress-seg.active {
+  background-color: var(--accent);
+}
+
+.tour-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.tour-desc {
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tour-details {
+  margin: 4px 0 0 0;
+  padding: 10px 12px 10px 26px;
+  background-color: var(--ground);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tour-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  margin-top: 4px;
+  border-top: 1px solid var(--rule);
+}
+
+.tour-footer-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ── Panduan Onboarding (Modal 2 Kolom) ── */

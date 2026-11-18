@@ -708,6 +708,11 @@ var AuthApp = (function () {
         showAppShell();
         _initAppEvents();
         Router.init();
+        try {
+          if (!localStorage.getItem('nakhoda_tour_done') && typeof NakhodaTour !== 'undefined') {
+            setTimeout(function () { NakhodaTour.start(0); }, 450);
+          }
+        } catch (e) {}
       })
       .catch(function (err) {
         if (btnSubmit) {
