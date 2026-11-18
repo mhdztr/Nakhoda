@@ -163,17 +163,20 @@ var KegiatanView = (function () {
           subEl.textContent = res.findingSubtitle || (_items.length + ' agenda kegiatan pembinaan tercatat dalam sistem.');
         }
 
-        // Metrik Strip 4-Kolom
-        var m = res.metrics || {};
+        // Metrik Strip 4-Kolom (Kompatibel dengan res.stats dari KegiatanService & mock res.metrics)
+        var m = res.metrics || res.stats || {};
         var kpiTotal = document.getElementById('kpi-keg-total');
         var kpiPeserta = document.getElementById('kpi-keg-peserta');
         var kpiLampiran = document.getElementById('kpi-keg-lampiran');
         var kpiBulanIni = document.getElementById('kpi-keg-bulan-ini');
 
-        if (kpiTotal) kpiTotal.textContent = Format.number(m.totalKegiatan || _items.length);
+        var totKeg = m.totalKegiatan !== undefined ? m.totalKegiatan : _items.length;
+        var totBulan = m.kegiatanBulanIni !== undefined ? m.kegiatanBulanIni : (m.bulanBerjalan || 0);
+
+        if (kpiTotal) kpiTotal.textContent = Format.number(totKeg);
         if (kpiPeserta) kpiPeserta.textContent = Format.number(m.totalPeserta || 0);
         if (kpiLampiran) kpiLampiran.textContent = Format.number(m.totalLampiran || 0);
-        if (kpiBulanIni) kpiBulanIni.textContent = Format.number(m.kegiatanBulanIni || 0);
+        if (kpiBulanIni) kpiBulanIni.textContent = Format.number(totBulan);
 
         var totalInfo = document.getElementById('keg-total-info');
         if (totalInfo) totalInfo.textContent = Format.number(res.total || _items.length) + ' agenda';
@@ -293,51 +296,51 @@ var KegiatanView = (function () {
       return;
     }
 
-    var minMs = Infinity;
-    var maxMs = -Infinity;
-    activeItems.forEach(function (keg) {
-      var s = new Date(keg.tanggalMulai).getTime();
-      var e = new Date(keg.tanggalSelesai || keg.tanggalMulai).getTime();
-      if (!isNaN(s) && s < minMs) minMs = s;
-      if (!isNaN(e) && e > maxMs) maxMs = e;
+    // Urutkan kronologis terbaru ke terlama untuk tampilan timeline vertikal
+    var sorted = activeItems.slice().sort(function (a, b) {
+      return String(b.tanggalMulai || '').localeCompare(String(a.tanggalMulai || ''));
     });
-    if (!isFinite(minMs) || !isFinite(maxMs)) {
-      minMs = Date.now();
-      maxMs = minMs + 86400000;
-    }
-    var spanMs = Math.max(maxMs - minMs, 86400000 * 7);
-    var todayMs = Date.now();
 
-    var html = '<div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); padding-bottom:8px; border-bottom:1px solid var(--border); margin-bottom:10px;">' +
-      '<span class="mono tnum">Awal rentang: ' + Format.date(new Date(minMs).toISOString().substring(0, 10)) + '</span>' +
-      '<span class="mono tnum">Akhir rentang: ' + Format.date(new Date(maxMs).toISOString().substring(0, 10)) + '</span>' +
-    '</div><div class="timeline-list">';
+    var html = '<div style="display:flex; flex-direction:column;">';
 
-    activeItems.forEach(function (keg) {
+    sorted.forEach(function (keg, idx) {
       var jenisLabel = JENIS_LABELS[keg.jenisKegiatan] || keg.jenisKegiatan;
-      var sMs = new Date(keg.tanggalMulai).getTime() || minMs;
-      var eMs = new Date(keg.tanggalSelesai || keg.tanggalMulai).getTime() || sMs;
-      if (eMs < sMs) eMs = sMs;
-      var leftPct = Math.max(0, Math.min(92, ((sMs - minMs) / spanMs) * 100));
-      var widthPct = Math.max(8, Math.min(100 - leftPct, (((eMs - sMs) + 86400000) / spanMs) * 100));
-      var barClass = eMs < todayMs ? 'timeline-bar timeline-bar-done' : (sMs > todayMs ? 'timeline-bar timeline-bar-upcoming' : 'timeline-bar timeline-bar-active');
-      var dateRange = Format.date(keg.tanggalMulai) + (keg.tanggalSelesai && keg.tanggalSelesai !== keg.tanggalMulai ? ' – ' + Format.date(keg.tanggalSelesai) : '');
+      var dateRange = Format.date(keg.tanggalMulai) + (keg.tanggalSelesai && keg.tanggalSelesai !== keg.tanggalMulai ? ' - ' + Format.date(keg.tanggalSelesai) : '');
+      var isLast = idx === sorted.length - 1;
+      var wilayahTag = keg.wilayah
+        ? '<span style="font-size:11px; color:var(--ink-secondary); background:var(--ground); border:1px solid var(--border); border-radius:var(--radius-chip); padding:1px 8px;">' + Format.escape(keg.wilayah) + '</span>'
+        : '';
+      var deskHtml = keg.deskripsi
+        ? '<div style="font-size:13px; color:var(--muted); line-height:1.45; margin-bottom:6px;">' + Format.escape(keg.deskripsi) + '</div>'
+        : '';
 
-      html += '<div class="timeline-item">' +
-        '<div>' +
-          '<div style="font-size:13px; font-weight:600; color:var(--text);">' + Format.escape(keg.judulKegiatan) + '</div>' +
-          '<div class="mono" style="font-size:11px; color:var(--muted); margin-top:2px;">' + dateRange + (keg.wilayah ? ' · ' + Format.escape(keg.wilayah) : '') + ' · ' + Format.escape(jenisLabel) + '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="timeline-track" title="' + Format.escape(dateRange) + '">' +
-            '<div class="' + barClass + '" style="left:' + leftPct.toFixed(1) + '%; width:' + widthPct.toFixed(1) + '%;"></div>' +
+      html +=
+        '<div class="timeline-row" style="display:flex; align-items:stretch; gap:14px;">' +
+          '<div style="width:18px; display:flex; flex-direction:column; align-items:center; flex-shrink:0;">' +
+            '<span style="width:10px; height:10px; border-radius:50%; background-color:var(--accent); margin-top:5px; flex-shrink:0;"></span>' +
+            (isLast ? '' : '<span style="width:1px; flex:1; background-color:var(--border); margin-top:6px;"></span>') +
           '</div>' +
-          '<div style="font-size:11px; color:var(--muted); margin-top:4px;">' + Format.number(keg.jumlahPeserta) + ' peserta' + (keg.evidenceCount > 0 ? ' · ' + keg.evidenceCount + ' bukti' : '') + '</div>' +
-        '</div>' +
-        '<div style="text-align:right;">' +
-          '<button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.openDetailSheet(\'' + keg.rowId + '\')">Detail</button>' +
-        '</div>' +
-      '</div>';
+          '<div style="flex:1; min-width:0; padding-bottom:' + (isLast ? '4px' : '20px') + ';">' +
+            '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">' +
+              '<div style="min-width:0; flex:1;">' +
+                '<div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:4px;">' +
+                  '<span class="mono tnum" style="font-size:12px; font-weight:600; color:var(--accent-ink);">' + dateRange + '</span>' +
+                  wilayahTag +
+                  '<span style="font-size:12px; color:var(--muted);">· ' + Format.escape(jenisLabel) + '</span>' +
+                '</div>' +
+                '<div style="font-size:14px; font-weight:600; color:var(--text); line-height:1.35; margin-bottom:2px;">' + Format.escape(keg.judulKegiatan) + '</div>' +
+                deskHtml +
+                '<div style="font-size:12px; color:var(--muted);">' +
+                  '<strong style="color:var(--text); font-weight:600;">' + Format.number(keg.jumlahPeserta || 0) + '</strong> personil peserta' +
+                  (keg.evidenceCount > 0 ? ' · <strong style="color:var(--text); font-weight:600;">' + Format.number(keg.evidenceCount) + '</strong> berkas lampiran' : '') +
+                '</div>' +
+              '</div>' +
+              '<div style="flex-shrink:0;">' +
+                '<button type="button" class="btn btn-secondary-sm" onclick="KegiatanView.openDetailSheet(\'' + keg.rowId + '\')">Detail</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
     });
 
     html += '</div>';
