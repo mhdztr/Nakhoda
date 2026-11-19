@@ -404,7 +404,7 @@ var SijilView = (function () {
         if (mDef) mDef.textContent = Format.number(defisit);
 
         if (mKurSub) {
-          mKurSub.textContent = kurang > 0 ? (res.metrics.kritis + ' kapal berstatus kritis <= -2') : 'Seluruh kapal siap operasi';
+          mKurSub.textContent = kurang > 0 ? (res.metrics.kritis + ' kapal kritis (defisit 2+ kursi)') : 'Seluruh kapal siap operasi';
         }
         if (mAwakSub) {
           mAwakSub.textContent = 'Awak bertugas di laut: ' + Format.number(bertugas) + ' personil';
@@ -764,7 +764,7 @@ var SijilView = (function () {
               '<td class="text-right mono tnum">' + r.minimum + '</td>' +
               '<td class="text-right mono tnum" style="font-weight:600;">' + r.terisi + '</td>' +
               '<td class="text-center">' +
-                (isOk ? '<span class="pill pill-positive"><span class="pill-dot"></span>Sesuai</span>' : '<span class="pill pill-negative"><span class="pill-dot"></span>Kurang ' + r.kurang + '</span>') +
+                (isOk ? '<span class="pill pill-positive">Sesuai</span>' : '<span class="pill pill-negative">Kurang ' + r.kurang + '</span>') +
               '</td>' +
             '</tr>'
           );

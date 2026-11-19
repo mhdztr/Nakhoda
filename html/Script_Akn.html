@@ -278,10 +278,10 @@ var AknView = (function () {
         ? '<span class="delta-down mono">' + diff + '</span>'
         : (diff > 0 ? '<span class="delta-up mono">+' + diff + '</span>' : '<span class="mono" style="color:var(--muted);">0</span>');
       var badge = ideal === 0
-        ? '<span class="pill pill-neutral"><span class="pill-dot"></span>Penunjang</span>'
+        ? '<span class="pill pill-neutral">Penunjang</span>'
         : (diff >= 0
-          ? '<span class="pill pill-positive"><span class="pill-dot"></span>Terpenuhi</span>'
-          : '<span class="pill pill-negative"><span class="pill-dot"></span>Kurang ' + Math.abs(diff) + '</span>');
+          ? '<span class="pill pill-positive">Terpenuhi</span>'
+          : '<span class="pill pill-negative">Kurang ' + Math.abs(diff) + '</span>');
       return '<tr>' +
         '<td><div class="cell-primary">' + Format.escape(jbtName) + '</div></td>' +
         '<td class="text-right mono tnum" data-label="Dit. POA" style="color:var(--accent-ink);">' + Format.number(row.poaPusat || 0) + '</td>' +

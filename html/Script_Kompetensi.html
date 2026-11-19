@@ -285,10 +285,10 @@ var KompetensiView = (function () {
           var hasStandards = (k.totalWajib || 0) > 0;
           var barPct = hasStandards ? k.persen : 0;
           var statusPill = !hasStandards
-            ? '<span class="pill pill-neutral"><span class="pill-dot"></span>Belum dipetakan</span>'
+            ? '<span class="pill pill-neutral">Belum dipetakan</span>'
             : (k.isLaik
-              ? '<span class="pill pill-positive"><span class="pill-dot"></span>Lengkap</span>'
-              : '<span class="pill pill-warning"><span class="pill-dot"></span>Belum lengkap</span>');
+              ? '<span class="pill pill-positive">Lengkap</span>'
+              : '<span class="pill pill-warning">Belum lengkap</span>');
           var bg = Format.avatarBg(a.nama);
           var inis = Format.initials(a.nama);
 

@@ -331,7 +331,7 @@ var DirektoriView = (function () {
 
     if (pillEl) {
       pillEl.className = conflicts.length > 0 ? 'pill pill-negative' : 'pill pill-warning';
-      pillEl.innerHTML = '<span class="pill-dot"></span>' + (conflicts.length > 0 ? 'Konflik Sijil & SIKAP' : 'Perhatian SIKAP');
+      pillEl.innerHTML = '' + (conflicts.length > 0 ? 'Konflik Sijil & SIKAP' : 'Perhatian SIKAP');
     }
     if (titleEl) {
       titleEl.textContent = conflicts.length > 0

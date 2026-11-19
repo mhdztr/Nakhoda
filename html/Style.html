@@ -9,22 +9,22 @@
  */
 
 :root {
-  /* ── 1. Token Permukaan & Tinta (Achromatic Ledger — Light Mode) ── */
-  --ground:            #F4F5F6;
+  /* ── 1. Token Permukaan & Tinta (Maritime Operational Ledger — Cool Slate Paper) ── */
+  --ground:            #F2F4F7;
   --surface:           #FFFFFF;
-  --raised:            #ECEEF0;
-  --active:            #E7E9EC;
-  --border:            #E3E5E8;
-  --rule:              #EEF0F2;
-  --control:           #CDD1D6;
+  --raised:            #E9EDF2;
+  --active:            #E1E6EC;
+  --border:            rgba(15, 23, 32, 0.09);
+  --rule:              rgba(15, 23, 32, 0.055);
+  --control:           #C8D0D8;
 
-  --text:              #0F1214;
-  --ink-secondary:     #2C3137;
-  --muted:             #5B626A;
-  --faint:             #66707A;
+  --text:              #0F1720;
+  --ink-secondary:     #28323D;
+  --muted:             #53606E;
+  --faint:             #677482;
 
-  --primary:           #15181B;
-  --primary-hover:     #25292D;
+  --primary:           #0F1720;
+  --primary-hover:     #222C38;
 
   /* ── 2. Warna Data Utama (Oranye Keselamatan Laut / International Safety Orange) ── */
   --accent:            #D9480F;
@@ -841,10 +841,10 @@ textarea::placeholder {
   gap: 12px;
 }
 
-/* ── Strip KPI Satu Kontainer (DESIGN.md §5.3) ── */
+/* ── Strip KPI Asimetris (Lead Metric + Supporting Readouts) ── */
 .kpi-container {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(220px, 1.35fr) repeat(3, minmax(0, 1fr));
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
@@ -860,6 +860,11 @@ textarea::placeholder {
   gap: 4px;
   min-height: 96px;
   min-width: 0;
+}
+
+.kpi-col:first-child {
+  background-color: rgba(15, 23, 32, 0.014);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .kpi-col:last-child {
@@ -1237,15 +1242,16 @@ th.text-center {
   border-color: transparent;
 }
 
-/* ── Pil Status (Status Pills — DESIGN.md §5.6) ── */
+/* ── Tag Status Ledger (Tanpa Pill Bulat & Tanpa Dot) ── */
 .pill,
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  height: 20px;
-  padding: 0 8px;
-  border-radius: var(--radius-pill);
+  height: 22px;
+  padding: 0 7px;
+  border-radius: var(--radius-chip);
+  border: 1px solid transparent;
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
@@ -1253,11 +1259,7 @@ th.text-center {
 }
 
 .pill-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background-color: currentColor;
-  flex-shrink: 0;
+  display: none;
 }
 
 .status-plain {
@@ -1270,28 +1272,33 @@ th.text-center {
 .pill-positive,
 .badge-positive,
 .badge-success {
-  background-color: var(--pill-positive-bg);
-  color: var(--pill-positive-ink);
+  background-color: rgba(36, 123, 80, 0.08);
+  border-color: rgba(36, 123, 80, 0.20);
+  color: #15633E;
 }
 
 .pill-negative,
 .badge-negative,
 .badge-danger {
-  background-color: var(--pill-negative-bg);
-  color: var(--pill-negative-ink);
+  background-color: rgba(196, 36, 42, 0.08);
+  border-color: rgba(196, 36, 42, 0.22);
+  color: #9E1C20;
 }
 
 .pill-warning,
 .badge-warning {
-  background-color: var(--pill-warning-bg);
-  color: var(--pill-warning-ink);
+  background-color: rgba(180, 120, 0, 0.09);
+  border-color: rgba(180, 120, 0, 0.22);
+  color: #7A5100;
 }
 
 .pill-neutral,
 .badge-neutral,
 .badge-muted {
-  background-color: var(--pill-neutral-bg);
-  color: var(--pill-neutral-ink);
+  background-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-chip);
+  color: var(--muted);
 }
 
 .badge-accent {
@@ -2176,7 +2183,6 @@ th.text-center {
   display: block;
   object-fit: cover;
   object-position: 10% bottom;
-  filter: url(#nakhoda-duotone-vector);
   will-change: transform, opacity;
   user-select: none;
   -webkit-user-drag: none;
@@ -2386,6 +2392,14 @@ th.text-center {
 
 .auth-submit-cta {
   gap: 8px;
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #FFFFFF;
+}
+
+.auth-submit-cta:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
 .auth-submit-arrow {
