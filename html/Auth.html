@@ -1,10 +1,9 @@
-<!-- html/Auth.html — Layar Masuk & Registrasi Nakhoda (Right-Docked Auth + Vector Mono/Duotone Print Plate) -->
-<div id="auth-stage" class="auth-stage" data-print-mode="duotone">
+<!-- html/Auth.html — Layar Masuk & Registrasi Nakhoda (Right-Docked Auth + Full-Bleed Duotone Vector Background) -->
+<div id="auth-stage" class="auth-stage">
 
-  <!-- Filter SVG Cetak Grafis Vektor (Duotone Lithograph & Mono Engraving) -->
+  <!-- Filter SVG Duotone Vector Lithograph -->
   <svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;" aria-hidden="true">
     <defs>
-      <!-- Duotone Vector: Deep Slate Navy Ink -> Warm Burnt-Orange Undertone -> Ledger Paper -->
       <filter id="nakhoda-duotone-vector" color-interpolation-filters="sRGB">
         <feColorMatrix type="matrix" values="
           0.2126 0.7152 0.0722 0 0
@@ -12,30 +11,15 @@
           0.2126 0.7152 0.0722 0 0
           0      0      0      1 0" result="lum"/>
         <feComponentTransfer in="lum">
-          <!-- Stops: [ink #10161D, slate #25303C, terracotta-slate #8F4526, mist #C9CFD6, paper #F4F5F6] -->
           <feFuncR type="table" tableValues="0.063 0.145 0.560 0.788 0.957"/>
           <feFuncG type="table" tableValues="0.086 0.188 0.271 0.812 0.961"/>
           <feFuncB type="table" tableValues="0.114 0.235 0.149 0.839 0.965"/>
         </feComponentTransfer>
       </filter>
-
-      <!-- Mono Engraving: Tinta Hitam Pekat -> Baja Tajam -> Kertas -->
-      <filter id="nakhoda-mono-engraving" color-interpolation-filters="sRGB">
-        <feColorMatrix type="matrix" values="
-          0.2126 0.7152 0.0722 0 0
-          0.2126 0.7152 0.0722 0 0
-          0.2126 0.7152 0.0722 0 0
-          0      0      0      1 0" result="monoLum"/>
-        <feComponentTransfer in="monoLum">
-          <feFuncR type="table" tableValues="0.045 0.125 0.340 0.780 0.957"/>
-          <feFuncG type="table" tableValues="0.055 0.145 0.365 0.795 0.961"/>
-          <feFuncB type="table" tableValues="0.065 0.165 0.395 0.810 0.965"/>
-        </feComponentTransfer>
-      </filter>
     </defs>
   </svg>
 
-  <!-- 1. KANVAS LATAR VEKTOR AWAK KAPAL PENGAWAS -->
+  <!-- 1. LATAR BELAKANG DUOTONE VEKTOR FULL-BLEED DENGAN SMOOTH FADE -->
   <div id="auth-visual-stage" class="auth-visual-stage" aria-hidden="true">
     <div class="auth-vector-plate">
       <img
@@ -45,48 +29,9 @@
         alt=""
         decoding="async"
       />
-      <div class="auth-vector-wash"></div>
       <div class="auth-print-texture"></div>
+      <div class="auth-vector-wash"></div>
       <div id="auth-cursor-lens" class="auth-cursor-lens"></div>
-    </div>
-
-    <!-- Panggung Faktual Kiri Bawah (Plain Copy + Tabular Ledger) -->
-    <div class="auth-stage-ledger">
-      <div class="auth-ledger-eyebrow">
-        <svg viewBox="0 0 24 24" width="18" height="18" style="display:block;flex-shrink:0;" aria-hidden="true">
-          <rect x="2" y="2" width="10" height="10" fill="#D9480F"/>
-          <rect x="12" y="2" width="10" height="10" fill="#0F1214"/>
-          <rect x="2" y="12" width="10" height="10" fill="#0F1214"/>
-          <rect x="12" y="12" width="10" height="10" fill="#D9480F"/>
-        </svg>
-        <span>Ditjen PSDKP · KKP RI</span>
-      </div>
-
-      <h1 class="auth-stage-headline">Kesiapan pengawakan armada kapal pengawas</h1>
-
-      <div class="auth-ledger-metrics">
-        <div class="auth-ledger-metric">
-          <div class="auth-ledger-val tnum">442</div>
-          <div class="auth-ledger-lbl">Personel AKN aktif (396 PNS, 46 P3K)</div>
-        </div>
-        <div class="auth-ledger-metric">
-          <div class="auth-ledger-val tnum">24</div>
-          <div class="auth-ledger-lbl">Kapal pengawas kelas I s.d. V</div>
-        </div>
-        <div class="auth-ledger-metric">
-          <div class="auth-ledger-val tnum">STCW-F</div>
-          <div class="auth-ledger-lbl">Standar sertifikasi &amp; papan sijil</div>
-        </div>
-      </div>
-
-      <div class="auth-mode-bar" aria-label="Gaya cetak pelat latar">
-        <span class="auth-mode-caption">Pelat latar</span>
-        <div class="auth-mode-switch" role="group" aria-label="Pilih mode vektor latar">
-          <button type="button" class="auth-mode-btn active" data-mode="duotone" onclick="AuthApp.setPrintMode('duotone')">Duotone</button>
-          <button type="button" class="auth-mode-btn" data-mode="mono" onclick="AuthApp.setPrintMode('mono')">Mono</button>
-          <button type="button" class="auth-mode-btn" data-mode="halftone" onclick="AuthApp.setPrintMode('halftone')">Halftone</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -108,7 +53,7 @@
             <span class="auth-window-title">Nakhoda</span>
             <span class="brand-badge">Dit. POA</span>
           </div>
-          <p class="auth-window-sub">Daftar awak, sertifikat, dan kegiatan Timja Pengawakan</p>
+          <p class="auth-window-sub">Naungan Awak Kapal Armada Pengawasan</p>
         </div>
       </div>
 
@@ -118,7 +63,7 @@
       <!-- Form 1: Masuk (Login) -->
       <form id="form-login" class="auth-form-panel" onsubmit="event.preventDefault(); AuthApp.submitLogin();">
         <div class="auth-panel-head">
-          <h2 class="auth-panel-title">Masuk ke sistem</h2>
+          <h1 class="auth-panel-title">Masuk ke sistem</h1>
           <p class="auth-panel-desc">Gunakan email kedinasan atau 18 digit NIP terdaftar</p>
         </div>
 
@@ -243,7 +188,7 @@
       </div>
 
       <div class="auth-window-footer">
-        <span>Lupa password? Hubungi Admin / Katimja Pengawakan · Dit. POA</span>
+        <span>Ditjen PSDKP KKP RI · Lupa password? Hubungi Admin / Katimja Pengawakan</span>
       </div>
     </main>
   </div>
