@@ -656,6 +656,20 @@ var AuthApp = (function () {
     if (!stage || stage.getAttribute('data-bound') === '1') return;
     stage.setAttribute('data-bound', '1');
 
+    var togglePwdBtn = document.getElementById('btn-toggle-password');
+    var pwdInput = document.getElementById('login-password');
+    if (togglePwdBtn && pwdInput) {
+      togglePwdBtn.addEventListener('click', function () {
+        var isHidden = pwdInput.type === 'password';
+        pwdInput.type = isHidden ? 'text' : 'password';
+        togglePwdBtn.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+        togglePwdBtn.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
+        togglePwdBtn.innerHTML = isHidden
+          ? '<svg viewBox="0 0 24 24" class="auth-eye-icon" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+          : '<svg viewBox="0 0 24 24" class="auth-eye-icon" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+      });
+    }
+
     if (window.matchMedia) {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
@@ -746,14 +760,20 @@ var AuthApp = (function () {
         hideReveal();
         return;
       }
-      if (e.target && e.target.closest && e.target.closest('.auth-window')) {
+      if (e.target && e.target.closest && e.target.closest('.auth-dock-right')) {
         hideReveal();
         return;
       }
       if (!plateW || !plateH) measure();
       if (!plateW || !plateH) return;
 
-      targetX = e.clientX - plateLeft;
+      var localX = e.clientX - plateLeft;
+      if (localX < 0 || localX > plateW) {
+        hideReveal();
+        return;
+      }
+
+      targetX = localX;
       targetY = e.clientY - plateTop;
 
       if (!isActive) {
