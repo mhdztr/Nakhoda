@@ -8,7 +8,7 @@
 5. `PHASES.md` — Roadmap dan rencana tahapan kerja aktif.
 
 ## 2. Aturan Keras & Non-Negotiable
-- **Git & GitHub Hanya Milik User:** Agent dilarang menjalankan perintah `git add`, `git commit`, `git push`, dsb. Agent hanya bertugas menyiapkan kode dan mengingatkan user.
+- **Git & GitHub Hanya Milik User:** Agent dilarang menjalankan perintah `git add`, `git commit`, `git push`, dsb. Agent hanya bertugas menyiapkan kode, mengingatkan user, dan **selalu menyertakan usulan *commit message* di akhir respons** setiap kali selesai mengerjakan perubahan.
 - **Prinsip Anti-Gabruk:** 2 sub-modul input (Komposisi AKN dan Log Kegiatan) wajib memiliki form dan alur terpisah.
 - **Snapshot Total:** Form komposisi AKN menginput total terkini, bukan selisih mutasi.
 - **Kohesi Kontrol UI 3-Tier:** Semua tombol dan input terikat pada tier `LG: 40px`, `MD: 32px`, `SM: 26px`.
