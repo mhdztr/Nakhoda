@@ -70,11 +70,23 @@ test('Nama — sanitizeNamaPersonel huruf besar tanpa gelar/simbol/petik/angka &
 
   const ctx = {};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', 'data', 'SeedAwak.js'), 'utf8'), ctx);
-  assert.equal(ctx.SEED_AWAK_ARMADA.length, 396);
+  assert.equal(ctx.SEED_AWAK_ARMADA.length, 442);
+  let p3kCount = 0;
+  let pnsCount = 0;
+  const seenNips = new Set();
   ctx.SEED_AWAK_ARMADA.forEach((a) => {
     assert.match(a.nama, /^[A-Z ]+$/, `Nama harus HURUF BESAR A-Z spasi untuk ${a.pegawaiId}: ${a.nama}`);
     assert.ok(!/^\d+$/.test(a.nama), `Nama tidak boleh angka untuk ${a.pegawaiId}`);
+    if (a.kategoriKepegawaian === 'P3K') p3kCount++;
+    else if (a.kategoriKepegawaian === 'PNS') pnsCount++;
+    if (a.nip && a.nip !== '-') {
+      assert.match(a.nip, /^\d{18}$/, `NIP harus 18 digit untuk ${a.pegawaiId}`);
+      assert.ok(!seenNips.has(a.nip), `NIP duplikat ditemukan pada SeedAwak: ${a.nip} (${a.pegawaiId})`);
+      seenNips.add(a.nip);
+    }
   });
+  assert.equal(p3kCount, 46);
+  assert.equal(pnsCount, 396);
 });
 
 test('DateUtil — resolvePeriodeWindow & dateToAknPeriode (TW1-TW4, SEM1-SEM2, kalender)', () => {

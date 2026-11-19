@@ -203,8 +203,16 @@ function akn_getPapan(token, filterOrPeriode) {
         return String(r.Status || '').toUpperCase() === ROW_STATUS.ACTIVE &&
           (String(r.RowID || '').indexOf('AKN-SEED-') === 0 || String(r.BatchID || '').indexOf('BATCH-SEED-') === 0);
       });
+      var seedHasP3k = typeof SEED_AWAK_ARMADA !== 'undefined' && Array.isArray(SEED_AWAK_ARMADA) &&
+        SEED_AWAK_ARMADA.some(function (s) {
+          return String(s.kategoriKepegawaian || '').toUpperCase() === 'P3K' || /^\d{12}21\d{4}$/.test(String(s.nip || ''));
+        });
+      var curP3kCount = (resolved.matrix && resolved.matrix.AKN_KESELURUHAN && resolved.matrix.AKN_KESELURUHAN.P3K)
+        ? Number(resolved.matrix.AKN_KESELURUHAN.P3K.jumlah || 0)
+        : 0;
       if (resolved.totals.AKN_KESELURUHAN === 0 || resolved.totals.AKN_POA === 0 ||
-          (hasCarriedCell && hasDirectCell) || hasLegacySeedOnSheet) {
+          (hasCarriedCell && hasDirectCell) || hasLegacySeedOnSheet ||
+          (seedHasP3k && curP3kCount === 0)) {
         needsResync = true;
       }
     }

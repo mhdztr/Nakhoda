@@ -1,6 +1,6 @@
 /**
  * data/SeedAwak.js
- * Dataset Resmi 396 Awak Kapal Pengawas Armada Ditjen PSDKP KKP RI
+ * Dataset Resmi 442 Awak Kapal Pengawas Armada Ditjen PSDKP KKP RI (396 PNS + 46 P3K)
  * (Seluruh nama telah dinormalisasi menjadi HURUF BESAR A-Z tanpa gelar/simbol)
  */
 
@@ -15,7 +15,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0014",
@@ -27,7 +28,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0015",
@@ -39,7 +41,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0016",
@@ -51,7 +54,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0017",
@@ -63,7 +67,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0018",
@@ -75,7 +80,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0019",
@@ -87,7 +93,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0020",
@@ -99,7 +106,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0021",
@@ -111,7 +119,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0022",
@@ -123,7 +132,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0023",
@@ -135,7 +145,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0024",
@@ -147,7 +158,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0025",
@@ -155,11 +167,12 @@ var SEED_AWAK_ARMADA = [
     "nama": "ABDI SABRIN RIFALDI LAGGA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Juru Mudi",
-    "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Serang",
+    "jabatanLengkap": "Serang Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0026",
@@ -171,7 +184,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0027",
@@ -183,7 +197,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0028",
@@ -195,7 +210,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0029",
@@ -207,7 +223,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0030",
@@ -219,7 +236,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0031",
@@ -231,7 +249,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0032",
@@ -243,7 +262,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0033",
@@ -255,7 +275,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0034",
@@ -267,7 +288,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0035",
@@ -279,7 +301,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0036",
@@ -291,7 +314,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0037",
@@ -303,7 +327,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0038",
@@ -315,7 +340,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0039",
@@ -327,7 +353,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0040",
@@ -339,7 +366,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0041",
@@ -351,7 +379,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0042",
@@ -363,7 +392,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0043",
@@ -375,19 +405,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
-  },
-  {
-    "pegawaiId": "PEG-0044",
-    "nip": "199712112020121002",
-    "nama": "SUKMA PUTRA MAULANA",
-    "unit": "Stasiun PSDKP Biak",
-    "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Juru Mudi",
-    "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_II",
-    "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0045",
@@ -399,7 +418,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0046",
@@ -411,7 +431,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0047",
@@ -423,7 +444,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0048",
@@ -435,7 +457,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0049",
@@ -447,7 +470,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0050",
@@ -459,7 +483,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0051",
@@ -471,7 +496,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0052",
@@ -483,7 +509,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0053",
@@ -495,7 +522,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0054",
@@ -507,7 +535,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0055",
@@ -519,7 +548,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Mudi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0057",
@@ -531,7 +561,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0058",
@@ -543,7 +574,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0059",
@@ -555,7 +587,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0060",
@@ -567,7 +600,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0061",
@@ -579,7 +613,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0062",
@@ -591,7 +626,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0063",
@@ -603,7 +639,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0064",
@@ -615,7 +652,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0065",
@@ -627,7 +665,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0066",
@@ -639,7 +678,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0067",
@@ -651,7 +691,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0068",
@@ -663,7 +704,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0069",
@@ -675,7 +717,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0070",
@@ -687,7 +730,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0071",
@@ -699,7 +743,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0072",
@@ -711,7 +756,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0073",
@@ -723,7 +769,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0074",
@@ -735,7 +782,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0075",
@@ -747,7 +795,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0076",
@@ -759,7 +808,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0077",
@@ -771,7 +821,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0078",
@@ -783,7 +834,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0079",
@@ -795,7 +847,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0080",
@@ -807,7 +860,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0081",
@@ -819,7 +873,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0082",
@@ -831,7 +886,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0083",
@@ -843,7 +899,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0084",
@@ -855,7 +912,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0085",
@@ -867,7 +925,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0086",
@@ -879,7 +938,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0087",
@@ -891,7 +951,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0088",
@@ -903,7 +964,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0089",
@@ -915,7 +977,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0090",
@@ -927,7 +990,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0091",
@@ -939,7 +1003,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0092",
@@ -951,7 +1016,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0093",
@@ -963,7 +1029,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0094",
@@ -975,7 +1042,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0095",
@@ -987,7 +1055,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0096",
@@ -999,7 +1068,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0097",
@@ -1011,7 +1081,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Juru Minyak Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0098",
@@ -1023,7 +1094,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0099",
@@ -1035,7 +1107,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0100",
@@ -1047,7 +1120,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0101",
@@ -1059,7 +1133,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0102",
@@ -1071,7 +1146,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0103",
@@ -1083,7 +1159,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0104",
@@ -1095,7 +1172,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0105",
@@ -1107,7 +1185,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0106",
@@ -1119,7 +1198,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0107",
@@ -1131,7 +1211,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0108",
@@ -1143,7 +1224,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0109",
@@ -1155,7 +1237,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0110",
@@ -1167,7 +1250,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0111",
@@ -1179,7 +1263,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0112",
@@ -1191,7 +1276,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0113",
@@ -1203,7 +1289,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0114",
@@ -1215,7 +1302,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0115",
@@ -1227,7 +1315,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0116",
@@ -1239,7 +1328,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0117",
@@ -1251,7 +1341,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0118",
@@ -1263,7 +1354,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas IV",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0119",
@@ -1275,7 +1367,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0120",
@@ -1287,7 +1380,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0121",
@@ -1299,7 +1393,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0122",
@@ -1311,19 +1406,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
-  },
-  {
-    "pegawaiId": "PEG-0123",
-    "nip": "198109182005021003",
-    "nama": "LUCKY MICHAEL NAJOAN",
-    "unit": "Pangkalan PSDKP Batam",
-    "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Kepala Kamar Mesin Kapal",
-    "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_III",
-    "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0124",
@@ -1335,7 +1419,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0125",
@@ -1347,7 +1432,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0126",
@@ -1359,7 +1445,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0127",
@@ -1371,7 +1458,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0128",
@@ -1383,7 +1471,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0129",
@@ -1395,7 +1484,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0130",
@@ -1407,7 +1497,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0131",
@@ -1419,7 +1510,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0132",
@@ -1431,7 +1523,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0133",
@@ -1443,7 +1536,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0134",
@@ -1455,7 +1549,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0135",
@@ -1467,7 +1562,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0136",
@@ -1479,7 +1575,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0137",
@@ -1491,7 +1588,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0138",
@@ -1503,7 +1601,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0139",
@@ -1515,7 +1614,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0140",
@@ -1527,7 +1627,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0141",
@@ -1539,7 +1640,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0142",
@@ -1551,7 +1653,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0143",
@@ -1563,7 +1666,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0144",
@@ -1575,7 +1679,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0145",
@@ -1587,7 +1692,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0146",
@@ -1599,7 +1705,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0147",
@@ -1611,7 +1718,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0148",
@@ -1623,7 +1731,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0149",
@@ -1635,7 +1744,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0150",
@@ -1647,7 +1757,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0151",
@@ -1659,7 +1770,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0152",
@@ -1671,7 +1783,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0153",
@@ -1683,7 +1796,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0154",
@@ -1695,7 +1809,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0155",
@@ -1707,7 +1822,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0156",
@@ -1719,7 +1835,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0157",
@@ -1731,7 +1848,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0158",
@@ -1743,7 +1861,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0159",
@@ -1755,7 +1874,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0160",
@@ -1767,7 +1887,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0161",
@@ -1779,7 +1900,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0162",
@@ -1791,7 +1913,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0163",
@@ -1803,7 +1926,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0164",
@@ -1815,7 +1939,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0165",
@@ -1827,7 +1952,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0166",
@@ -1835,11 +1961,12 @@ var SEED_AWAK_ARMADA = [
     "nama": "M NASIR",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Kelasi Kapal",
-    "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Juru Mudi",
+    "jabatanLengkap": "Juru Mudi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0167",
@@ -1851,7 +1978,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0168",
@@ -1863,7 +1991,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0169",
@@ -1875,7 +2004,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0170",
@@ -1887,7 +2017,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0171",
@@ -1899,7 +2030,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0172",
@@ -1911,11 +2043,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Kelasi Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0173",
-    "nip": "-",
+    "nip": "198604052006041003",
     "nama": "AZER APNER PATE",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -1923,11 +2056,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0174",
-    "nip": "-",
+    "nip": "198207192005021001",
     "nama": "RUDI SUDARMAJI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -1935,11 +2069,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0175",
-    "nip": "-",
+    "nip": "198210142003121001",
     "nama": "AGUS SOLIHIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -1947,11 +2082,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0176",
-    "nip": "-",
+    "nip": "197806142008011012",
     "nama": "RONNY JOHN FERDINAND PAULUS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -1959,11 +2095,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0177",
-    "nip": "-",
+    "nip": "198505252008011005",
     "nama": "TOTONG WINARTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -1971,11 +2108,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0178",
-    "nip": "-",
+    "nip": "198712142010121003",
     "nama": "SINGGIH AJI NOSA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -1983,31 +2121,34 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0179",
-    "nip": "-",
+    "nip": "198810022008011003",
     "nama": "SYAFARI ARDIANSYAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Markonis",
-    "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Serang",
+    "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0180",
-    "nip": "-",
+    "nip": "198810142008011001",
     "nama": "OKA RELI PURWONO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Markonis",
-    "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Serang",
+    "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0181",
@@ -2019,7 +2160,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0182",
@@ -2031,11 +2173,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0183",
-    "nip": "-",
+    "nip": "198810062009011001",
     "nama": "OKY RIANSYAH",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2043,7 +2186,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0184",
@@ -2055,11 +2199,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0185",
-    "nip": "-",
+    "nip": "199010102018011001",
     "nama": "JAMES BAGENSA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2067,7 +2212,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0186",
@@ -2079,7 +2225,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0187",
@@ -2091,7 +2238,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0188",
@@ -2103,7 +2251,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0189",
@@ -2115,7 +2264,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0190",
@@ -2127,7 +2277,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0191",
@@ -2139,7 +2290,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0192",
@@ -2151,7 +2303,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0193",
@@ -2163,7 +2316,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0194",
@@ -2175,7 +2329,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0195",
@@ -2187,11 +2342,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0196",
-    "nip": "-",
+    "nip": "198309232005021002",
     "nama": "JAMES ROBERTO SIHOMBING",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2199,7 +2355,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0197",
@@ -2211,7 +2368,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0198",
@@ -2223,7 +2381,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0199",
@@ -2235,11 +2394,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Markonis Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0200",
-    "nip": "-",
+    "nip": "198110162005021001",
     "nama": "DEDY ARYANTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2247,11 +2407,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0201",
-    "nip": "-",
+    "nip": "198611292015031001",
     "nama": "RIZKI SUTARDI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2259,11 +2420,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0202",
-    "nip": "-",
+    "nip": "198203062005021003",
     "nama": "RUSLI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2271,11 +2433,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0203",
-    "nip": "-",
+    "nip": "198503232006041002",
     "nama": "RUSLI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2283,11 +2446,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0204",
-    "nip": "-",
+    "nip": "198109122015031001",
     "nama": "ADE SUBHAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2295,11 +2459,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0205",
-    "nip": "-",
+    "nip": "198209232015031001",
     "nama": "ISMAIL LUBIS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2307,11 +2472,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0206",
-    "nip": "-",
+    "nip": "198801142007011002",
     "nama": "JOESUF",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2319,11 +2485,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0207",
-    "nip": "-",
+    "nip": "198702242007011001",
     "nama": "ABDUL RAZAK USEMAHU",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2331,11 +2498,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0208",
-    "nip": "-",
+    "nip": "198810292015031002",
     "nama": "JABORNOK SITUMORANG",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2343,11 +2511,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0209",
-    "nip": "-",
+    "nip": "198611012018011001",
     "nama": "MUH NASRUL LATULANIT",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2355,11 +2524,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0210",
-    "nip": "-",
+    "nip": "197911172003121001",
     "nama": "FRANGKY RICHARD SUPIT",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2367,11 +2537,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0211",
-    "nip": "-",
+    "nip": "198505152015031003",
     "nama": "DWI NAZARUDIN AMRULLAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2379,11 +2550,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0212",
-    "nip": "-",
+    "nip": "199005082018011003",
     "nama": "GIAN LUCA VIALLI PAKPAHAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2391,11 +2563,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0213",
-    "nip": "-",
+    "nip": "198912032015031003",
     "nama": "EKO PRASETYO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2403,11 +2576,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0214",
-    "nip": "-",
+    "nip": "198602122015031002",
     "nama": "HARI RUSTAMAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2415,11 +2589,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0215",
-    "nip": "-",
+    "nip": "199010212015031003",
     "nama": "RAJIB AHMAD",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2427,11 +2602,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0216",
-    "nip": "-",
+    "nip": "199011222018011002",
     "nama": "TRIYONO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2439,11 +2615,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0217",
-    "nip": "-",
+    "nip": "199204122015031004",
     "nama": "RAMA ANGGA SAPUTRA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2451,11 +2628,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0218",
-    "nip": "-",
+    "nip": "198805152007011003",
     "nama": "APYAM MEI KABAREK",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2463,11 +2641,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0219",
-    "nip": "-",
+    "nip": "198406082007011001",
     "nama": "ACEP FERY SUGIARTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2475,11 +2654,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0220",
-    "nip": "-",
+    "nip": "198506012007011005",
     "nama": "AHMAD THOLIB",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2487,11 +2667,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0221",
-    "nip": "-",
+    "nip": "198603182014031001",
     "nama": "SUKRIYADI MAWARDI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2499,11 +2680,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0222",
-    "nip": "-",
+    "nip": "199203032015031002",
     "nama": "DWI HARTONO GOBEL",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2511,11 +2693,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0223",
-    "nip": "-",
+    "nip": "198108102014031001",
     "nama": "ARKALAUS D",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2523,11 +2706,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0224",
-    "nip": "-",
+    "nip": "198008082003121004",
     "nama": "DWI HENDARTO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2535,11 +2719,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0225",
-    "nip": "-",
+    "nip": "198311222015031002",
     "nama": "SODIK",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2547,11 +2732,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0226",
-    "nip": "-",
+    "nip": "198703022015031003",
     "nama": "FERI SUPRIADI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2559,7 +2745,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0227",
@@ -2571,7 +2758,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0228",
@@ -2583,7 +2771,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0229",
@@ -2595,11 +2784,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0230",
-    "nip": "-",
+    "nip": "199103062015031005",
     "nama": "DAVID PERMADI ZAEN",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2607,7 +2797,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0231",
@@ -2619,11 +2810,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0232",
-    "nip": "-",
+    "nip": "198008102005021007",
     "nama": "NEHEMIA BOTHMIR",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2631,11 +2823,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0233",
-    "nip": "-",
+    "nip": "198802192015031001",
     "nama": "FEBRI VALENTINO",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2643,11 +2836,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0234",
-    "nip": "-",
+    "nip": "199112112018011001",
     "nama": "AJI SETIYAWAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2655,11 +2849,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0235",
-    "nip": "-",
+    "nip": "197010292002121001",
     "nama": "SUHARYANTO",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2667,7 +2862,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0236",
@@ -2679,11 +2875,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0237",
-    "nip": "-",
+    "nip": "198512122018011003",
     "nama": "DEDI NOFRIADI",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2691,11 +2888,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0238",
-    "nip": "-",
+    "nip": "198505172007011002",
     "nama": "DEDI IRAWAN",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -2703,7 +2901,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0239",
@@ -2715,7 +2914,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0240",
@@ -2727,7 +2927,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0241",
@@ -2739,7 +2940,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0242",
@@ -2751,7 +2953,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0243",
@@ -2763,7 +2966,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0244",
@@ -2775,7 +2979,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0245",
@@ -2787,7 +2992,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0246",
@@ -2799,7 +3005,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0247",
@@ -2811,7 +3018,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0248",
@@ -2823,7 +3031,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0249",
@@ -2835,7 +3044,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0250",
@@ -2847,7 +3057,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0251",
@@ -2859,7 +3070,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0252",
@@ -2871,7 +3083,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0253",
@@ -2883,7 +3096,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0254",
@@ -2895,7 +3109,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0255",
@@ -2907,7 +3122,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0256",
@@ -2919,7 +3135,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0257",
@@ -2931,7 +3148,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0258",
@@ -2943,7 +3161,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0259",
@@ -2955,7 +3174,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0260",
@@ -2967,7 +3187,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0261",
@@ -2979,7 +3200,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0262",
@@ -2991,7 +3213,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0263",
@@ -3003,7 +3226,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0264",
@@ -3015,7 +3239,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0265",
@@ -3027,7 +3252,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0266",
@@ -3039,7 +3265,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0267",
@@ -3051,7 +3278,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0268",
@@ -3063,7 +3291,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0269",
@@ -3075,7 +3304,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0270",
@@ -3087,11 +3317,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Masinis I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_MESIN",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0271",
-    "nip": "-",
+    "nip": "198208222006041003",
     "nama": "MARCELINO WILLOBRORDUS MATURBONGS",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3099,11 +3330,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0272",
-    "nip": "-",
+    "nip": "198906182014031001",
     "nama": "HERYOKO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3111,11 +3343,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0273",
-    "nip": "-",
+    "nip": "198202042014031001",
     "nama": "FRANKY FIAN KUMESAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3123,11 +3356,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0274",
-    "nip": "-",
+    "nip": "198509232009011002",
     "nama": "RONALD RABUNG",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3135,11 +3369,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0275",
-    "nip": "-",
+    "nip": "198301062005021002",
     "nama": "WAWAN GUNAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3147,11 +3382,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0276",
-    "nip": "-",
+    "nip": "198208182008011009",
     "nama": "SYAMSUDDIN SYARIA KUBI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3159,11 +3395,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0277",
-    "nip": "-",
+    "nip": "198912012015031001",
     "nama": "ZULRHIZKI MAHARDHIKA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3171,11 +3408,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0278",
-    "nip": "-",
+    "nip": "198803262015031003",
     "nama": "SATRIA TEGUH SEMBADA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3183,11 +3421,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0279",
-    "nip": "-",
+    "nip": "198709142009011001",
     "nama": "RIZALDI RAHMAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3195,23 +3434,26 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0280",
-    "nip": "-",
+    "nip": "199110172015031003",
     "nama": "ANGGY YUDHA PRADANA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
     "kelompokJabatan": "Mualim",
-    "jabatanLengkap": "Mualim I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "jabatanLengkap": "Mualim II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kapalId": "KP-ORCA-05",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0281",
-    "nip": "-",
+    "nip": "198201052006041002",
     "nama": "REMY RAYMOND ROTINSULU",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3219,11 +3461,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0282",
-    "nip": "-",
+    "nip": "198301022009011005",
     "nama": "IWAN KURNIAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3231,11 +3474,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0283",
-    "nip": "-",
+    "nip": "198611262007011002",
     "nama": "ABDULLAH BUDIMAN FIRMANSYAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3243,11 +3487,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0284",
-    "nip": "-",
+    "nip": "198903082015031001",
     "nama": "ZAINUDIN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3255,11 +3500,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0285",
-    "nip": "-",
+    "nip": "198307162003121006",
     "nama": "ABJAN FARUK",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3267,11 +3513,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0286",
-    "nip": "-",
+    "nip": "198804072015031001",
     "nama": "GOLDEN ISRAEL SUMA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3279,11 +3526,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0287",
-    "nip": "-",
+    "nip": "198604212005021002",
     "nama": "BERKAT NIATMAN GULO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3291,11 +3539,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0288",
-    "nip": "-",
+    "nip": "198405212006041002",
     "nama": "MICKAEL CHIMILOV TOLOSANG",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3303,11 +3552,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0289",
-    "nip": "-",
+    "nip": "199201062015031002",
     "nama": "SANGGORO NUR IMAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3315,11 +3565,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0290",
-    "nip": "-",
+    "nip": "199203022015031002",
     "nama": "IDIL ARDIANSYAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3327,11 +3578,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0291",
-    "nip": "-",
+    "nip": "198811102018011001",
     "nama": "NOVEN AFRINDO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3339,11 +3591,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0292",
-    "nip": "-",
+    "nip": "198801112007011003",
     "nama": "MUHAMMAD NASRUL",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3351,11 +3604,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim III Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0293",
-    "nip": "-",
+    "nip": "198010282005021001",
     "nama": "EKO MARSIANO PUTRA TANGKAWAROUW",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3363,11 +3617,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0294",
-    "nip": "-",
+    "nip": "198802032015031002",
     "nama": "ROMI CHANDRA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3375,11 +3630,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0295",
-    "nip": "-",
+    "nip": "198803172015031004",
     "nama": "IDA BAGUS KADE ADI SUAMBARA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3387,11 +3643,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0296",
-    "nip": "-",
+    "nip": "199311012018011004",
     "nama": "BENI ASBA PUTRA",
     "unit": "Pangkalan PSDKP Batam",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3399,7 +3656,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0297",
@@ -3411,11 +3669,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0298",
-    "nip": "-",
+    "nip": "198712092015031002",
     "nama": "RAHMAT ARBA",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3423,11 +3682,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0299",
-    "nip": "-",
+    "nip": "199308192018011004",
     "nama": "MUHAMMAD LEONARDO",
     "unit": "Pangkalan PSDKP Benoa",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3435,19 +3695,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim III Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
-  },
-  {
-    "pegawaiId": "PEG-0300",
-    "nip": "199308082020121002",
-    "nama": "SAFRUDIN",
-    "unit": "Pangkalan PSDKP Benoa",
-    "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Mualim",
-    "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_II",
-    "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0301",
@@ -3459,11 +3708,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0302",
-    "nip": "-",
+    "nip": "198406302015031003",
     "nama": "PUTRA KUSUMA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3471,11 +3721,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0303",
-    "nip": "-",
+    "nip": "198501312008011004",
     "nama": "HERY POERNAMA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3483,7 +3734,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0304",
@@ -3495,7 +3747,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0305",
@@ -3507,7 +3760,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0306",
@@ -3519,7 +3773,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0307",
@@ -3531,11 +3786,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0308",
-    "nip": "-",
+    "nip": "198810072014031001",
     "nama": "ARIYANTO LUBIS",
     "unit": "Pangkalan PSDKP Lampulo",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3543,7 +3799,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0309",
@@ -3555,7 +3812,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0310",
@@ -3567,7 +3825,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0311",
@@ -3579,7 +3838,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0312",
@@ -3591,7 +3851,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0313",
@@ -3603,7 +3864,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0314",
@@ -3615,7 +3877,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0315",
@@ -3627,7 +3890,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0316",
@@ -3639,7 +3903,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0317",
@@ -3651,7 +3916,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0318",
@@ -3663,7 +3929,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0319",
@@ -3675,7 +3942,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0320",
@@ -3687,7 +3955,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0321",
@@ -3699,7 +3968,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0322",
@@ -3711,11 +3981,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0323",
-    "nip": "-",
+    "nip": "198206052007011001",
     "nama": "IRWAN HIDAYAT",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3723,7 +3994,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0324",
@@ -3735,7 +4007,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim II Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0325",
@@ -3747,7 +4020,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0326",
@@ -3759,7 +4033,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0327",
@@ -3771,11 +4046,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Mualim I Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0328",
-    "nip": "-",
+    "nip": "198301202003121003",
     "nama": "ISMAIL MARZUKI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3783,11 +4059,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0329",
-    "nip": "-",
+    "nip": "198406052007011002",
     "nama": "ILMAN RUSTAM",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3795,11 +4072,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0330",
-    "nip": "-",
+    "nip": "198108252006041001",
     "nama": "MUHAMMAD MARUF",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3807,11 +4085,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0331",
-    "nip": "-",
+    "nip": "198110172003121002",
     "nama": "PRIYO KURNIAWAN",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3819,11 +4098,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0332",
-    "nip": "-",
+    "nip": "197904012006041003",
     "nama": "SUTISNA WIJAYA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3831,11 +4111,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0333",
-    "nip": "-",
+    "nip": "198007132003121001",
     "nama": "EKO PRIYONO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3843,11 +4124,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0334",
-    "nip": "-",
+    "nip": "197803082003121002",
     "nama": "LATHALANSYAH HADE",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3855,11 +4137,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0335",
-    "nip": "-",
+    "nip": "198601262010121003",
     "nama": "LINGGA BUDI KUSUMA",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3867,11 +4150,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0336",
-    "nip": "-",
+    "nip": "198706302009121001",
     "nama": "ALDI FIRMANSYAH",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -3879,19 +4163,21 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0337",
-    "nip": "-",
+    "nip": "197910172003121005",
     "nama": "MANUEL AUPARAI",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Nahkoda",
-    "jabatanLengkap": "Nakhoda Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Mualim",
+    "jabatanLengkap": "Mualim Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0338",
@@ -3903,7 +4189,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0339",
@@ -3915,7 +4202,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0340",
@@ -3927,7 +4215,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0341",
@@ -3939,7 +4228,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0342",
@@ -3951,7 +4241,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0343",
@@ -3963,19 +4254,21 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0344",
-    "nip": "-",
+    "nip": "198204072007011001",
     "nama": "JAPARUDDIN LALLA",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Nahkoda",
-    "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Mualim",
+    "jabatanLengkap": "Mualim Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0345",
@@ -3987,7 +4280,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0346",
@@ -3999,7 +4293,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0347",
@@ -4011,7 +4306,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0348",
@@ -4023,7 +4319,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0349",
@@ -4035,7 +4332,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0350",
@@ -4047,7 +4345,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0351",
@@ -4059,7 +4358,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0352",
@@ -4071,7 +4371,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0353",
@@ -4083,7 +4384,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0354",
@@ -4095,7 +4397,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0355",
@@ -4107,7 +4410,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0356",
@@ -4119,7 +4423,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0357",
@@ -4131,19 +4436,21 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0358",
-    "nip": "-",
+    "nip": "198707272014031001",
     "nama": "ERIN BOY RAJAGUKGUK",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Nahkoda",
-    "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Mualim",
+    "jabatanLengkap": "Mualim Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0359",
@@ -4155,7 +4462,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0360",
@@ -4167,31 +4475,21 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0361",
-    "nip": "-",
+    "nip": "197902182014031001",
     "nama": "RINONDANG PANGGABEAN",
     "unit": "Stasiun PSDKP Belawan",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Nahkoda",
-    "jabatanLengkap": "Nakhoda Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Mualim",
+    "jabatanLengkap": "Mualim Kapal Kelas IV Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_IV",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
-  },
-  {
-    "pegawaiId": "PEG-0362",
-    "nip": "198807162014071001",
-    "nama": "MUHAMMAD IQBAL",
-    "unit": "Stasiun PSDKP Belawan",
-    "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Nahkoda",
-    "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
-    "tingkatKelas": "KELAS_V",
-    "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0363",
@@ -4203,7 +4501,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0364",
@@ -4215,7 +4514,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0365",
@@ -4227,11 +4527,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0366",
-    "nip": "-",
+    "nip": "197810102003121004",
     "nama": "ISWANDI WAHID",
     "unit": "Stasiun PSDKP Cilacap",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -4239,7 +4540,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0367",
@@ -4251,7 +4553,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0368",
@@ -4263,11 +4566,12 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0369",
-    "nip": "-",
+    "nip": "196904121992031003",
     "nama": "SAMSON",
     "unit": "Stasiun PSDKP Pontianak",
     "lingkup": "AWAK_KAPAL_ARMADA",
@@ -4275,7 +4579,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0370",
@@ -4287,7 +4592,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0371",
@@ -4299,7 +4605,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0372",
@@ -4311,7 +4618,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0373",
@@ -4323,7 +4631,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0374",
@@ -4335,7 +4644,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0375",
@@ -4347,7 +4657,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0376",
@@ -4359,7 +4670,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Nakhoda Kapal Kelas V Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_V",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0472",
@@ -4367,11 +4679,12 @@ var SEED_AWAK_ARMADA = [
     "nama": "SUKARIM",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Serang",
-    "jabatanLengkap": "Serang Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Juru Mudi",
+    "jabatanLengkap": "Juru Mudi Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0473",
@@ -4383,7 +4696,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0474",
@@ -4395,7 +4709,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0475",
@@ -4407,7 +4722,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0476",
@@ -4419,7 +4735,9 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kapalId": "KP-ORCA-05",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0477",
@@ -4431,7 +4749,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_I",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0478",
@@ -4439,11 +4758,12 @@ var SEED_AWAK_ARMADA = [
     "nama": "SUIGIT DUKI WIBOWO",
     "unit": "Armada Kapal Pengawas (Pusat)",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Serang",
-    "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Juru Mudi",
+    "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0479",
@@ -4455,7 +4775,9 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kapalId": "KP-PAUS-01",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0480",
@@ -4467,7 +4789,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0481",
@@ -4479,7 +4802,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0482",
@@ -4491,7 +4815,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0483",
@@ -4503,7 +4828,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0484",
@@ -4515,7 +4841,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0485",
@@ -4527,7 +4854,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0486",
@@ -4539,7 +4867,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0487",
@@ -4551,7 +4880,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_II",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0488",
@@ -4559,11 +4889,12 @@ var SEED_AWAK_ARMADA = [
     "nama": "DANY MAULANA DWI JAYANTO",
     "unit": "Pangkalan PSDKP Bitung",
     "lingkup": "AWAK_KAPAL_ARMADA",
-    "kelompokJabatan": "Serang",
-    "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
+    "kelompokJabatan": "Juru Mudi",
+    "jabatanLengkap": "Juru Mudi II Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0489",
@@ -4575,7 +4906,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0490",
@@ -4587,7 +4919,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0491",
@@ -4599,7 +4932,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0492",
@@ -4611,7 +4945,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0493",
@@ -4623,7 +4958,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0494",
@@ -4635,7 +4971,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0495",
@@ -4647,7 +4984,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0496",
@@ -4659,7 +4997,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0497",
@@ -4671,7 +5010,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0498",
@@ -4683,7 +5023,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0499",
@@ -4695,7 +5036,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0500",
@@ -4707,7 +5049,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0501",
@@ -4719,7 +5062,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0502",
@@ -4731,7 +5075,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0503",
@@ -4743,7 +5088,8 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
-    "statusAktif": "AKTIF"
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
   },
   {
     "pegawaiId": "PEG-0504",
@@ -4755,6 +5101,657 @@ var SEED_AWAK_ARMADA = [
     "jabatanLengkap": "Serang Kapal Kelas III Kapal Pengawas Kelautan dan Perikanan",
     "tingkatKelas": "KELAS_III",
     "rumpun": "AWAK_DEK",
+    "statusAktif": "AKTIF",
+    "kategoriKepegawaian": "PNS"
+  },
+  {
+    "pegawaiId": "PEG-0378",
+    "nip": "198306052025211072",
+    "nama": "RIDUAN",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0379",
+    "nip": "199602122025211036",
+    "nama": "PUTRA PRADANA MAHA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0380",
+    "nip": "198106232025211033",
+    "nama": "WANDI SIHALOHO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0381",
+    "nip": "199501222025211026",
+    "nama": "KIKI JANUAR BAHARI",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0382",
+    "nip": "198612192025211035",
+    "nama": "NURIMAN",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0383",
+    "nip": "199610042025211044",
+    "nama": "EFENDI SILASI NAINGGOLAN",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0384",
+    "nip": "198406122025211061",
+    "nama": "MORESKO ADRIANO MANTOUW",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0385",
+    "nip": "197701132025211013",
+    "nama": "STENLY PANGERAPAN",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0386",
+    "nip": "199801202025211030",
+    "nama": "RAMDHAN DWI NUGROHO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0387",
+    "nip": "197812072025211023",
+    "nama": "ABDUL HARIS",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0388",
+    "nip": "198410222025211037",
+    "nama": "DEDE SUHYANA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0389",
+    "nip": "197304292025211008",
+    "nama": "HERMAN ABDUL HALIM BANDU",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0390",
+    "nip": "198906192025211039",
+    "nama": "DWI PRASETYO NUGROHO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0391",
+    "nip": "199503042025211028",
+    "nama": "BENY RIYADI",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0392",
+    "nip": "199604292025211016",
+    "nama": "PERNANDO PANGIHUTAN SIREGAR",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0393",
+    "nip": "199512142025211031",
+    "nama": "BAGAS KALBU WIWORO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0394",
+    "nip": "198603162025211052",
+    "nama": "MIKENDRO VIKTOR TUELA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0395",
+    "nip": "198606262025211061",
+    "nama": "RICO DANIEL MANDIANGAN",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0396",
+    "nip": "198302152025211046",
+    "nama": "MUKMIN",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0397",
+    "nip": "198001022025211037",
+    "nama": "AHMAD ALI RIDWAN",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0398",
+    "nip": "199401152025211046",
+    "nama": "SAID IMAM MADA ALI",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0399",
+    "nip": "198808132025211039",
+    "nama": "RENDI YURIANSYAH",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0400",
+    "nip": "197811162025211022",
+    "nama": "DAUD SULI",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0402",
+    "nip": "199006112025211049",
+    "nama": "BUDIHARDJO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0403",
+    "nip": "199806102025211018",
+    "nama": "MUHAMMAD RIZAL",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0404",
+    "nip": "197507292025211017",
+    "nama": "YOHANIS SUMBI BATARA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0405",
+    "nip": "198208172025211056",
+    "nama": "DERI GUSRIANTO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0406",
+    "nip": "198902192025211064",
+    "nama": "ELY B YONGKOM",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0407",
+    "nip": "198902082025211057",
+    "nama": "RUDI HARTONO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0408",
+    "nip": "198210242025211036",
+    "nama": "DATAM",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0409",
+    "nip": "198003082025211034",
+    "nama": "HAPENDI KRISTIAN KORWA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0410",
+    "nip": "198107262025211028",
+    "nama": "MUZAKIR KUDARATI",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0411",
+    "nip": "198607182025211047",
+    "nama": "FIRMANTO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0412",
+    "nip": "199311082025211048",
+    "nama": "ALFIEN MEKEL",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0413",
+    "nip": "199304032025211049",
+    "nama": "KING ABDUL AZIS",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0414",
+    "nip": "198006162025211040",
+    "nama": "NUR WAHYUDI",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0437",
+    "nip": "199602112025211034",
+    "nama": "RANGGA MUKTI",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Penata Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0438",
+    "nip": "198310072025211034",
+    "nama": "OKVAN SYAHMAWI ABBRA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Penata Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0439",
+    "nip": "198302272025211036",
+    "nama": "ANTON DWI SUSILO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Penata Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0441",
+    "nip": "199409072025211043",
+    "nama": "ELIAS LATUPEIRISSA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Penata Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0442",
+    "nip": "198201032025211044",
+    "nama": "SUGIANTO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Penata Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0466",
+    "nip": "198807042025211050",
+    "nama": "RIVALDI SAID",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Pengelola Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0467",
+    "nip": "198712142025211055",
+    "nama": "PETRUS JOKO HARTONO",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Pengelola Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0505",
+    "nip": "199011192025211059",
+    "nama": "BAKRI",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0506",
+    "nip": "198506222025211062",
+    "nama": "OLDY RONGA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0507",
+    "nip": "197706062025211059",
+    "nama": "SULEMAN BUGIS",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kelasi Kapal",
+    "jabatanLengkap": "Operator Layanan Operasional Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "P3K",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0508",
+    "nip": "198705152007011004",
+    "nama": "LA HAKIM",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Markonis",
+    "jabatanLengkap": "Markonis Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "PNS",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0509",
+    "nip": "198505052003121003",
+    "nama": "LA YUNAN",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Juru Mudi",
+    "jabatanLengkap": "Juru Mudi Kapal Kelas II Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_II",
+    "rumpun": "AWAK_DEK",
+    "kategoriKepegawaian": "PNS",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0510",
+    "nip": "197906102008111001",
+    "nama": "MALIUS SALEM",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Juru Minyak",
+    "jabatanLengkap": "Juru Minyak Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_MESIN",
+    "kategoriKepegawaian": "PNS",
+    "statusAktif": "AKTIF"
+  },
+  {
+    "pegawaiId": "PEG-0511",
+    "nip": "198311222007011002",
+    "nama": "RIORIANTO PAKAYA",
+    "unit": "Armada Kapal Pengawas (Pusat)",
+    "lingkup": "AWAK_KAPAL_ARMADA",
+    "kelompokJabatan": "Kepala Kamar Mesin Kapal",
+    "jabatanLengkap": "Kepala Kamar Mesin Kapal Kelas I Kapal Pengawas Kelautan dan Perikanan",
+    "tingkatKelas": "KELAS_I",
+    "rumpun": "AWAK_MESIN",
+    "kategoriKepegawaian": "PNS",
     "statusAktif": "AKTIF"
   }
 ];
