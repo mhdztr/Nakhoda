@@ -2153,8 +2153,14 @@ th.text-center {
   padding: 28px 48px;
   background-color: var(--ground);
   overflow: hidden;
-  --cx: 38%;
-  --cy: 45%;
+  --clip-top: 40%;
+  --clip-right: 40%;
+  --clip-bottom: 40%;
+  --clip-left: 40%;
+  --fx: 0px;
+  --fy: 0px;
+  --rw: 196px;
+  --rh: 132px;
 }
 
 .auth-visual-stage {
@@ -2202,21 +2208,46 @@ th.text-center {
     linear-gradient(180deg, rgba(244, 245, 246, 0.22) 0%, rgba(244, 245, 246, 0) 14%, rgba(244, 245, 246, 0) 88%, rgba(244, 245, 246, 0.65) 100%);
 }
 
-.auth-cursor-lens {
+.auth-real-reveal {
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 200ms var(--ease-out);
-  background: radial-gradient(
-    200px circle at var(--cx) var(--cy),
-    rgba(217, 72, 15, 0.09) 0%,
-    rgba(15, 18, 20, 0.03) 48%,
-    rgba(244, 245, 246, 0) 72%
-  );
+  clip-path: inset(var(--clip-top) var(--clip-right) var(--clip-bottom) var(--clip-left) round 10px);
+  transition: opacity 180ms var(--ease-out);
+  will-change: clip-path, opacity;
 }
 
-.auth-stage.is-pointer-active .auth-cursor-lens {
+.auth-real-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 10% bottom;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.auth-reveal-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--rw);
+  height: var(--rh);
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(15, 18, 20, 0.24),
+    0 12px 28px rgba(15, 18, 20, 0.22);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(var(--fx), var(--fy), 0);
+  transition: opacity 180ms var(--ease-out);
+  will-change: transform, opacity;
+}
+
+.auth-stage.is-reveal-active .auth-real-reveal,
+.auth-stage.is-reveal-active .auth-reveal-frame {
   opacity: 1;
 }
 
@@ -2435,6 +2466,10 @@ th.text-center {
   .auth-vector-img {
     object-position: 12% 38%;
   }
+  .auth-real-reveal,
+  .auth-reveal-frame {
+    display: none !important;
+  }
   .auth-vector-wash {
     background: linear-gradient(180deg, rgba(244, 245, 246, 0.08) 0%, rgba(244, 245, 246, 0) 18%, rgba(244, 245, 246, 0) 58%, rgba(244, 245, 246, 0.72) 84%, var(--ground) 100%);
   }
@@ -2461,8 +2496,16 @@ th.text-center {
   }
 }
 
+@media (hover: none), (pointer: coarse) {
+  .auth-real-reveal,
+  .auth-reveal-frame {
+    display: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .auth-cursor-lens {
+  .auth-real-reveal,
+  .auth-reveal-frame {
     display: none !important;
   }
   *, *::before, *::after {

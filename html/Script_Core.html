@@ -651,19 +651,12 @@ var AuthApp = (function () {
     }
   }
 
-  function setPrintMode(mode) {
-    var allowed = (mode === 'mono' || mode === 'halftone' || mode === 'duotone') ? mode : 'duotone';
-    var stage = document.getElementById('auth-stage');
-    if (stage) {
-      stage.setAttribute('data-print-mode', allowed);
-      var btns = stage.querySelectorAll('.auth-mode-btn');
-      Array.prototype.forEach.call(btns, function (b) {
-        b.classList.toggle('active', b.getAttribute('data-mode') === allowed);
-      });
-    }
-    try {
-      localStorage.setItem('nakhoda_auth_print_mode', allowed);
-    } catch (e) {}
+  function _isInCrewFaceZone(nx, ny, clientX, authWinRect) {
+    if (authWinRect && clientX >= authWinRect.left - 18) return false;
+    if (nx < 0.01 || nx > 0.66) return false;
+    var topBound = 0.16 + nx * 0.16;
+    var botBound = 0.54 + nx * 0.08;
+    return ny >= topBound && ny <= botBound;
   }
 
   function _bindAuthStageInteractions() {
@@ -671,31 +664,106 @@ var AuthApp = (function () {
     if (!stage || stage.getAttribute('data-bound') === '1') return;
     stage.setAttribute('data-bound', '1');
 
-    try {
-      var savedMode = localStorage.getItem('nakhoda_auth_print_mode');
-      if (savedMode) setPrintMode(savedMode);
-    } catch (e) {}
-
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
+    if (window.matchMedia) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
     }
 
     var plate = stage.querySelector('.auth-vector-plate');
-    if (plate) {
-      plate.addEventListener('mousemove', function (e) {
-        var rect = plate.getBoundingClientRect();
-        if (!rect.width || !rect.height) return;
-        var px = (((e.clientX - rect.left) / rect.width) * 100).toFixed(2) + '%';
-        var py = (((e.clientY - rect.top) / rect.height) * 100).toFixed(2) + '%';
-        stage.style.setProperty('--cx', px);
-        stage.style.setProperty('--cy', py);
-        stage.classList.add('is-pointer-active');
-      });
+    var authWindow = stage.querySelector('.auth-window');
+    if (!plate) return;
 
-      plate.addEventListener('mouseleave', function () {
-        stage.classList.remove('is-pointer-active');
-      });
+    var WIN_W = 196;
+    var WIN_H = 132;
+    var isActive = false;
+    var targetX = 0;
+    var targetY = 0;
+    var curX = 0;
+    var curY = 0;
+    var rafId = 0;
+
+    function applyFrame(rect) {
+      var winRect = authWindow ? authWindow.getBoundingClientRect() : null;
+      var maxRight = rect.width - 8;
+      if (winRect && winRect.width > 0) {
+        maxRight = Math.min(maxRight, (winRect.left - rect.left) - 16);
+      }
+      var left = Math.max(8, Math.min(curX - WIN_W / 2, Math.max(8, maxRight - WIN_W)));
+      var top = Math.max(8, Math.min(curY - WIN_H / 2, rect.height - WIN_H - 8));
+      var right = Math.max(0, rect.width - (left + WIN_W));
+      var bottom = Math.max(0, rect.height - (top + WIN_H));
+
+      stage.style.setProperty('--clip-top', top.toFixed(1) + 'px');
+      stage.style.setProperty('--clip-right', right.toFixed(1) + 'px');
+      stage.style.setProperty('--clip-bottom', bottom.toFixed(1) + 'px');
+      stage.style.setProperty('--clip-left', left.toFixed(1) + 'px');
+      stage.style.setProperty('--fx', left.toFixed(1) + 'px');
+      stage.style.setProperty('--fy', top.toFixed(1) + 'px');
     }
+
+    function tick() {
+      rafId = 0;
+      if (!isActive) return;
+      var rect = plate.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      curX += (targetX - curX) * 0.22;
+      curY += (targetY - curY) * 0.22;
+      applyFrame(rect);
+
+      if (Math.abs(targetX - curX) > 0.25 || Math.abs(targetY - curY) > 0.25) {
+        rafId = window.requestAnimationFrame(tick);
+      }
+    }
+
+    function hideReveal() {
+      if (!isActive) return;
+      isActive = false;
+      stage.classList.remove('is-reveal-active');
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    }
+
+    stage.addEventListener('mousemove', function (e) {
+      if (window.innerWidth <= 960) {
+        hideReveal();
+        return;
+      }
+      if (e.target && e.target.closest && e.target.closest('.auth-window')) {
+        hideReveal();
+        return;
+      }
+      var rect = plate.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      var relX = e.clientX - rect.left;
+      var relY = e.clientY - rect.top;
+      var nx = relX / rect.width;
+      var ny = relY / rect.height;
+      var winRect = authWindow ? authWindow.getBoundingClientRect() : null;
+
+      if (!_isInCrewFaceZone(nx, ny, e.clientX, winRect)) {
+        hideReveal();
+        return;
+      }
+
+      targetX = relX;
+      targetY = relY;
+
+      if (!isActive) {
+        curX = targetX;
+        curY = targetY;
+        applyFrame(rect);
+        isActive = true;
+        stage.classList.add('is-reveal-active');
+      } else if (!rafId) {
+        rafId = window.requestAnimationFrame(tick);
+      }
+    });
+
+    stage.addEventListener('mouseleave', hideReveal);
   }
 
   function showLogin() {
@@ -975,7 +1043,6 @@ var AuthApp = (function () {
     getUser: getUser,
     logout: logout,
     promptReauth: promptReauth,
-    setPrintMode: setPrintMode,
     showLogin: showLogin,
     showRegister: showRegister,
     showRegisterStep1: showRegisterStep1,
