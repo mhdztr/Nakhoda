@@ -633,6 +633,71 @@ var AuthApp = (function () {
     }
   }
 
+  function _replayAuthPanelEnter(el) {
+    if (!el) return;
+    el.classList.remove('auth-view-enter');
+    void el.offsetWidth;
+    el.classList.add('auth-view-enter');
+  }
+
+  function _setCtaButtonState(btn, disabled, labelText) {
+    if (!btn) return;
+    btn.disabled = Boolean(disabled);
+    var lbl = btn.querySelector('.btn-label');
+    if (lbl) {
+      lbl.textContent = labelText;
+    } else {
+      btn.textContent = labelText;
+    }
+  }
+
+  function setPrintMode(mode) {
+    var allowed = (mode === 'mono' || mode === 'halftone' || mode === 'duotone') ? mode : 'duotone';
+    var stage = document.getElementById('auth-stage');
+    if (stage) {
+      stage.setAttribute('data-print-mode', allowed);
+      var btns = stage.querySelectorAll('.auth-mode-btn');
+      Array.prototype.forEach.call(btns, function (b) {
+        b.classList.toggle('active', b.getAttribute('data-mode') === allowed);
+      });
+    }
+    try {
+      localStorage.setItem('nakhoda_auth_print_mode', allowed);
+    } catch (e) {}
+  }
+
+  function _bindAuthStageInteractions() {
+    var stage = document.getElementById('auth-stage');
+    if (!stage || stage.getAttribute('data-bound') === '1') return;
+    stage.setAttribute('data-bound', '1');
+
+    try {
+      var savedMode = localStorage.getItem('nakhoda_auth_print_mode');
+      if (savedMode) setPrintMode(savedMode);
+    } catch (e) {}
+
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    var plate = stage.querySelector('.auth-vector-plate');
+    if (plate) {
+      plate.addEventListener('mousemove', function (e) {
+        var rect = plate.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        var px = (((e.clientX - rect.left) / rect.width) * 100).toFixed(2) + '%';
+        var py = (((e.clientY - rect.top) / rect.height) * 100).toFixed(2) + '%';
+        stage.style.setProperty('--cx', px);
+        stage.style.setProperty('--cy', py);
+        stage.classList.add('is-pointer-active');
+      });
+
+      plate.addEventListener('mouseleave', function () {
+        stage.classList.remove('is-pointer-active');
+      });
+    }
+  }
+
   function showLogin() {
     _showAlert('');
     var fLogin = document.getElementById('form-login');
@@ -640,7 +705,10 @@ var AuthApp = (function () {
     var fReg2 = document.getElementById('form-register-step2');
     var vPending = document.getElementById('view-pending');
 
-    if (fLogin) fLogin.classList.remove('hidden');
+    if (fLogin) {
+      fLogin.classList.remove('hidden');
+      _replayAuthPanelEnter(fLogin);
+    }
     if (fReg1) fReg1.classList.add('hidden');
     if (fReg2) fReg2.classList.add('hidden');
     if (vPending) vPending.classList.add('hidden');
@@ -654,7 +722,10 @@ var AuthApp = (function () {
     var vPending = document.getElementById('view-pending');
 
     if (fLogin) fLogin.classList.add('hidden');
-    if (fReg1) fReg1.classList.remove('hidden');
+    if (fReg1) {
+      fReg1.classList.remove('hidden');
+      _replayAuthPanelEnter(fReg1);
+    }
     if (fReg2) fReg2.classList.add('hidden');
     if (vPending) vPending.classList.add('hidden');
   }
@@ -663,7 +734,10 @@ var AuthApp = (function () {
     _showAlert('');
     var fReg1 = document.getElementById('form-register-step1');
     var fReg2 = document.getElementById('form-register-step2');
-    if (fReg1) fReg1.classList.remove('hidden');
+    if (fReg1) {
+      fReg1.classList.remove('hidden');
+      _replayAuthPanelEnter(fReg1);
+    }
     if (fReg2) fReg2.classList.add('hidden');
   }
 
@@ -681,17 +755,11 @@ var AuthApp = (function () {
       return;
     }
 
-    if (btnSubmit) {
-      btnSubmit.disabled = true;
-      btnSubmit.textContent = 'Memverifikasi...';
-    }
+    _setCtaButtonState(btnSubmit, true, 'Memverifikasi...');
 
     rpc('auth_login', { identifier: ident, password: pass })
       .then(function (result) {
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Login';
-        }
+        _setCtaButtonState(btnSubmit, false, 'Login');
 
         if (!result || !result.user) {
           _showAlert('Respons masuk tidak valid dari server.', true);
@@ -715,10 +783,7 @@ var AuthApp = (function () {
         } catch (e) {}
       })
       .catch(function (err) {
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Login';
-        }
+        _setCtaButtonState(btnSubmit, false, 'Login');
         _showAlert(err.message || 'Login gagal. Periksa kembali email/NIP dan password.', true);
       });
   }
@@ -743,10 +808,7 @@ var AuthApp = (function () {
       return;
     }
 
-    if (btnOtp) {
-      btnOtp.disabled = true;
-      btnOtp.textContent = 'Mengirim Kode OTP...';
-    }
+    _setCtaButtonState(btnOtp, true, 'Mengirim Kode OTP...');
 
     rpc('auth_requestOtp', {
       nama: nama,
@@ -757,10 +819,7 @@ var AuthApp = (function () {
       roleDilamar: role
     })
       .then(function () {
-        if (btnOtp) {
-          btnOtp.disabled = false;
-          btnOtp.textContent = 'Kirim Kode OTP';
-        }
+        _setCtaButtonState(btnOtp, false, 'Kirim Kode OTP');
         _regEmail = email;
         var sentEl = document.getElementById('otp-sent-email');
         if (sentEl) sentEl.textContent = email;
@@ -768,15 +827,15 @@ var AuthApp = (function () {
         var fReg1 = document.getElementById('form-register-step1');
         var fReg2 = document.getElementById('form-register-step2');
         if (fReg1) fReg1.classList.add('hidden');
-        if (fReg2) fReg2.classList.remove('hidden');
+        if (fReg2) {
+          fReg2.classList.remove('hidden');
+          _replayAuthPanelEnter(fReg2);
+        }
 
         _showAlert('Kode verifikasi 6-digit telah dikirimkan ke email ' + email, false);
       })
       .catch(function (err) {
-        if (btnOtp) {
-          btnOtp.disabled = false;
-          btnOtp.textContent = 'Kirim Kode OTP';
-        }
+        _setCtaButtonState(btnOtp, false, 'Kirim Kode OTP');
         _showAlert(err.message || 'Gagal mengirim kode verifikasi OTP.', true);
       });
   }
@@ -792,15 +851,12 @@ var AuthApp = (function () {
       return;
     }
 
-    if (btnRegSubmit) {
-      btnRegSubmit.disabled = true;
-      btnRegSubmit.textContent = 'Memverifikasi...';
-    }
+    _setCtaButtonState(btnRegSubmit, true, 'Memverifikasi...');
 
     rpc('auth_verifyOtp', { email: _regEmail, code: code })
       .then(function (otpResult) {
         _pendingOtpToken = otpResult.pendingToken;
-        if (btnRegSubmit) btnRegSubmit.textContent = 'Mendaftarkan Akun...';
+        _setCtaButtonState(btnRegSubmit, true, 'Mendaftarkan Akun...');
 
         var payload = {
           nama: document.getElementById('reg-nama').value.trim(),
@@ -815,18 +871,12 @@ var AuthApp = (function () {
         return rpc('auth_register', payload);
       })
       .then(function (regResult) {
-        if (btnRegSubmit) {
-          btnRegSubmit.disabled = false;
-          btnRegSubmit.textContent = 'Verifikasi & Daftarkan Akun';
-        }
+        _setCtaButtonState(btnRegSubmit, false, 'Verifikasi & Daftarkan Akun');
         Toast.success('Pendaftaran akun berhasil dikirim.');
         _showApprovalScreen(regResult);
       })
       .catch(function (err) {
-        if (btnRegSubmit) {
-          btnRegSubmit.disabled = false;
-          btnRegSubmit.textContent = 'Verifikasi & Daftarkan Akun';
-        }
+        _setCtaButtonState(btnRegSubmit, false, 'Verifikasi & Daftarkan Akun');
         _showAlert(err.message || 'Verifikasi kode OTP gagal.', true);
       });
   }
@@ -843,6 +893,7 @@ var AuthApp = (function () {
     if (fReg2) fReg2.classList.add('hidden');
     if (vPending) {
       vPending.classList.remove('hidden');
+      _replayAuthPanelEnter(vPending);
       var nameEl = document.getElementById('pending-user-name');
       if (nameEl) nameEl.textContent = userData.nama || userData.email || 'Pengguna';
 
@@ -865,6 +916,7 @@ var AuthApp = (function () {
   }
 
   function _initAuthForms() {
+    _bindAuthStageInteractions();
     showLogin();
   }
 
@@ -923,6 +975,7 @@ var AuthApp = (function () {
     getUser: getUser,
     logout: logout,
     promptReauth: promptReauth,
+    setPrintMode: setPrintMode,
     showLogin: showLogin,
     showRegister: showRegister,
     showRegisterStep1: showRegisterStep1,
