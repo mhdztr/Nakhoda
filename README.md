@@ -1,7 +1,24 @@
 # Nakhoda (Naungan Awak Kapal Armada)
+
+![Runtime: Google Apps Script](https://img.shields.io/badge/runtime-Google%20Apps%20Script-4285F4?logo=google&logoColor=white)
+![Status: internal use](https://img.shields.io/badge/status-internal%20use-orange)
+![Language: JavaScript](https://img.shields.io/badge/language-JavaScript-f7e03a?logo=javascript&logoColor=black)
+
 > **Aplikasi Satelit Mandiri Timja Pengawakan — Dit. POA**  
 > *Direktorat Jenderal Pengawasan Sumber Daya Kelautan dan Perikanan (Ditjen PSDKP)*  
 > *Kementerian Kelautan dan Perikanan Republik Indonesia (KKP RI)*
+
+> **Status:** aplikasi internal KKP RI. Tidak ada lisensi open-source yang diberikan. Lihat [Penggunaan & Lisensi](#7-penggunaan--lisensi).
+
+## Daftar Isi
+
+- [1. Ikhtisar Sistem](#1-ikhtisar-sistem)
+- [2. 8 Sub-Modul Mandiri (Prinsip Anti-Gabruk)](#2-8-sub-modul-mandiri-prinsip-anti-gabruk)
+- [3. Desain Antarmuka & Identitas Visual](#3-desain-antarmuka--identitas-visual)
+- [4. Panduan Verifikasi QA](#4-panduan-verifikasi-qa)
+- [5. Referensi Dokumen Wajib Proyek](#5-referensi-dokumen-wajib-proyek)
+- [6. Repositori Terkait](#6-repositori-terkait)
+- [7. Penggunaan & Lisensi](#7-penggunaan--lisensi)
 
 ---
 
@@ -67,32 +84,46 @@ Antarmuka Nakhoda dibangun dengan arsitektur **Open Plane (Achromatic Ledger)** 
 
 ## 4. Panduan Verifikasi QA
 
-Sebelum melakukan deployment, jalankan serangkaian pengujian penjaminan mutu mandiri:
+Sebelum melakukan deployment, jalankan serangkaian pengujian penjaminan mutu mandiri. Perintah berikut tersedia dari clone repositori mana pun:
 
 ```bash
-# 1. Audit konsistensi UI, 3-tier kontrol, dan arsitektur Nakhoda
-node lint_ui.js
-
-# 2. Verifikasi sintaksis JavaScript
+# 1. Verifikasi sintaksis JavaScript
 node -c Code.js services/*.js utils/*.js data/*.js pure/*.js
 
-# 3. Eksekusi unit test modul murni
+# 2. Eksekusi unit test modul murni
 node --test tests/*.test.js
 
-# 4. Audit skill desain untuk halaman publik (butuh Node 22+ dan Chrome/Chromium)
-node .agents/skills/design-taste-frontend/scripts/consistency.mjs html/Index.html \
-  --page software --profile .taste-skill/chrome \
-  --category "<jenis layanan>" --primary "<aksi utama>"
+# 3. Verifikasi antarmuka via Playwright
+node tests/verify_playwright.js
 ```
+
+> **Catatan:** `lint_ui.js` (audit konsistensi UI dan 3-tier kontrol) serta skrip `.agents/skills/design-taste-frontend/scripts/consistency.mjs` adalah helper lokal yang **di-gitignore** agar tidak ter-push ke Apps Script. Keduanya hanya tersedia di lingkungan kerja lokal. Bila tersedia, jalankan `node lint_ui.js` dan, dengan Node 22+ serta Chrome/Chromium, audit skill desain:
+>
+> ```bash
+> node .agents/skills/design-taste-frontend/scripts/consistency.mjs html/Index.html \
+>   --page software --profile .taste-skill/chrome \
+>   --category "<jenis layanan>" --primary "<aksi utama>"
+> ```
 
 ---
 
 ## 5. Referensi Dokumen Wajib Proyek
 
-1. [PRD.md](file:///home/pinefeast/Projects/Nakhoda/PRD.md) — Kebutuhan fungsional dan aturan bisnis (Sumber kebenaran tertinggi).
-2. [ARCHITECTURE.md](file:///home/pinefeast/Projects/Nakhoda/ARCHITECTURE.md) — Arsitektur teknis, locking, carry-forward, dan state machine sertifikat.
-3. [DATA_SCHEMA.md](file:///home/pinefeast/Projects/Nakhoda/DATA_SCHEMA.md) — Skema kolom tabel transaksi dan master.
-4. [DESIGN.md](file:///home/pinefeast/Projects/Nakhoda/DESIGN.md) — Standar desain visual Achromatic Ledger, Oranye Keselamatan, dan 3-tier scale.
-5. [PHASES.md](file:///home/pinefeast/Projects/Nakhoda/PHASES.md) — Roadmap pengembangan 11 fase dan kriteria penerimaan.
-6. [AGENTS.md](file:///home/pinefeast/Projects/Nakhoda/AGENTS.md) — Panduan kerja dan batasan keras AI coding agent.
-7. [CHANGELOG.md](file:///home/pinefeast/Projects/Nakhoda/CHANGELOG.md) — Catatan riwayat pembaruan sistem per versi.
+1. [PRD.md](PRD.md) — Kebutuhan fungsional dan aturan bisnis (Sumber kebenaran tertinggi).
+2. [ARCHITECTURE.md](ARCHITECTURE.md) — Arsitektur teknis, locking, carry-forward, dan state machine sertifikat.
+3. [DATA_SCHEMA.md](DATA_SCHEMA.md) — Skema kolom tabel transaksi dan master.
+4. [DESIGN.md](DESIGN.md) — Standar desain visual Achromatic Ledger, Oranye Keselamatan, dan 3-tier scale.
+5. [PHASES.md](PHASES.md) — Roadmap pengembangan 11 fase dan kriteria penerimaan.
+6. [AGENTS.md](AGENTS.md) — Panduan kerja dan batasan keras AI coding agent.
+7. [CHANGELOG.md](CHANGELOG.md) — Catatan riwayat pembaruan sistem per versi.
+
+---
+
+## 6. Repositori Terkait
+
+- [Radar POA](https://github.com/mhdztr/Radar-POA) — pusat agregasi eksekutif yang membaca data Nakhoda.
+- [SIKAP](https://github.com/mhdztr/SIKAP) — menerima push sync profil awak dari Nakhoda dengan status `DISPARITAS_NAKHODA` untuk diverifikasi Subbag TU.
+
+## 7. Penggunaan & Lisensi
+
+Aplikasi internal Kementerian Kelautan dan Perikanan Republik Indonesia (Ditjen PSDKP / Direktorat POA). **Tidak ada lisensi open-source yang diberikan** atas kode, dokumentasi, atau aset dalam repositori ini. Penggunaan, reproduksi, dan distribusi hanya dengan izin pemilik sistem.
